@@ -76,69 +76,69 @@
 \newtheorem{remark}[theorem]{注记}
 \newtheorem{notation}[theorem]{记号}
 
-% --- 用 tcolorbox 给每类环境加彩色边框 ---
-% 定理/命题/引理/推论/猜想：蓝色左边条
+% --- 用 tcolorbox 给每类环境加圆角方框 + 淡底色 ---
+% 定理/命题/引理/推论/猜想：蓝色圆角框
 \tcolorboxenvironment{theorem}{
-  blanker, breakable, left=5mm,
+  enhanced, breakable, arc=3pt,
   before skip=10pt, after skip=10pt,
-  borderline west={2pt}{0pt}{blue!60!black},
-  colback=blue!3,
+  colback=blue!4, colframe=blue!40!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
 }
 \tcolorboxenvironment{proposition}{
-  blanker, breakable, left=5mm,
+  enhanced, breakable, arc=3pt,
   before skip=10pt, after skip=10pt,
-  borderline west={2pt}{0pt}{blue!50!black},
-  colback=blue!3,
+  colback=blue!4, colframe=blue!35!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
 }
 \tcolorboxenvironment{lemma}{
-  blanker, breakable, left=5mm,
+  enhanced, breakable, arc=3pt,
   before skip=10pt, after skip=10pt,
-  borderline west={2pt}{0pt}{blue!50!black},
-  colback=blue!3,
+  colback=blue!4, colframe=blue!35!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
 }
 \tcolorboxenvironment{corollary}{
-  blanker, breakable, left=5mm,
+  enhanced, breakable, arc=3pt,
   before skip=10pt, after skip=10pt,
-  borderline west={2pt}{0pt}{blue!50!black},
-  colback=blue!3,
+  colback=blue!4, colframe=blue!35!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
 }
 \tcolorboxenvironment{conjecture}{
-  blanker, breakable, left=5mm,
+  enhanced, breakable, arc=3pt,
   before skip=10pt, after skip=10pt,
-  borderline west={2pt}{0pt}{blue!50!black},
-  colback=blue!3,
+  colback=blue!4, colframe=blue!35!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
 }
 
-% 定义：绿色左边条
+% 定义：绿色圆角框
 \tcolorboxenvironment{definition}{
-  blanker, breakable, left=5mm,
+  enhanced, breakable, arc=3pt,
   before skip=10pt, after skip=10pt,
-  borderline west={2pt}{0pt}{green!50!black},
-  colback=green!3,
+  colback=green!4, colframe=green!40!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
 }
 
-% 例：橙色左边条
+% 例：橙色圆角框
 \tcolorboxenvironment{example}{
-  blanker, breakable, left=5mm,
+  enhanced, breakable, arc=3pt,
   before skip=10pt, after skip=10pt,
-  borderline west={2pt}{0pt}{orange!70!black},
-  colback=orange!3,
+  colback=orange!4, colframe=orange!50!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
 }
 
-% 注记：灰色左边条
+% 注记：灰色圆角框
 \tcolorboxenvironment{remark}{
-  blanker, breakable, left=5mm,
+  enhanced, breakable, arc=3pt,
   before skip=10pt, after skip=10pt,
-  borderline west={2pt}{0pt}{gray!50},
-  colback=gray!5,
+  colback=gray!6, colframe=gray!40,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
 }
 
-% 习题：紫色左边条
+% 习题：紫色圆角框
 \tcolorboxenvironment{exercise}{
-  blanker, breakable, left=5mm,
+  enhanced, breakable, arc=3pt,
   before skip=10pt, after skip=10pt,
-  borderline west={2pt}{0pt}{violet!60!black},
-  colback=violet!3,
+  colback=violet!4, colframe=violet!40!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
 }
 
 % ============================================================================
