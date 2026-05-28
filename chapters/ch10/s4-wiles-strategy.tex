@@ -3,6 +3,7 @@
 % ============================================================================
 
 \providecommand{\rhobar}{\bar{\rho}}
+\providecommand{\Sel}{\operatorname{Sel}}
 
 Wiles 证明最令人震撼的地方，
 不只在于它解决了一个三百多年的猜想，
@@ -104,6 +105,79 @@ Taylor--Wiles 的决定性发明是引入一族辅助素数 $Q_n$，
   R_\infty\cong T_\infty,
 \]
 然后再下降回原始的最小情形。
+
+\subsection*{补充：Selmer 群如何进入 $R=T$}
+CSS 对 Wiles 方法的改编特别强调：
+所谓“比较两个局部环大小”，
+真正承担数值信息的对象并不是环本身的显式方程，
+而是由 Galois 上同调定义出的 Selmer 群。
+
+\begin{definition}[上同调定义的 Selmer 群]
+设 $M$ 是一个带 $G_\Q$ 作用的离散 $\ell$-初群，
+并在每个素数 $v$ 固定一个局部条件
+\[
+  L_v\subset H^1(\Q_v,M).
+\]
+则对应的 Selmer 群定义为
+\[
+  \Sel_{\mathcal L}(\Q,M)
+  =\ker\!\left(H^1(\Q,M)\to \prod_v H^1(\Q_v,M)/L_v\right).
+\]
+对椭圆曲线 $E/\Q$ 与 $M=E[\ell]$，
+通常取 $L_v$ 为 Kummer 映射像，得到经典的 $\ell$-Selmer 群。
+\end{definition}
+
+\begin{proposition}[Selmer 群与 Tate--Shafarevich 群]
+\label{prop:ch10-selmer-sha}
+对椭圆曲线 $E/\Q$ 与素数 $\ell$，存在正合列
+\[
+  0\to E(\Q)\otimes \Z/\ell\Z
+  \to \Sel(\Q,E[\ell])
+  \to \text{Tate--Shafarevich 群的 }\ell\text{-挠部分}
+  \to 0.
+\]
+因此 Selmer 群同时测量了有理点秩与 Tate--Shafarevich 群的失败局部--整体原理。
+\end{proposition}
+
+\begin{proof}[说明]
+Kummer 正合列
+\[
+  0\to E[\ell]\to E(\bar\Q)\xrightarrow{\ell} E(\bar\Q)\to 0
+\]
+在全局与局部 Galois 上同调之间给出连接映射。
+把所有局部可解条件同时施加到 $H^1(\Q,E[\ell])$ 上，
+便得到 Selmer 群；
+其商正好记录那些在每个 $\Q_v$ 上都可解、但不来自全局点的扭类，
+也就是 Tate--Shafarevich 群的相应部分。
+\end{proof}
+
+\begin{theorem}[Wiles 数值判据中的对偶 Selmer 公式]
+\label{thm:ch10-wiles-selmer-duality}
+设 $f$ 是与极大理想 $\mathfrak m$ 对应的模形式，$T_f$ 是其 $\ell$-进 Galois 晶格，$V_f=T_f\otimes \Q_\ell$。
+则在适当的最小局部条件下，Poitou--Tate 对偶给出
+\[
+  \bigl|\Sel(\Q,V_f/T_f)\bigr|
+  =
+  \bigl|\Sel(\Q,T_f^*(1)/V_f^*(1))\bigr|,
+\]
+这里右边是对偶表示的 Selmer 群。
+更常见地，人们把它写成两边长度或余维相等。
+\end{theorem}
+
+\begin{proof}[说明]
+局部 Tate 对偶把每个 $H^1(\Q_v,-)$ 上的允许局部条件与其正交补配对起来；
+Poitou--Tate 全局对偶则把这些局部配对拼成一个全局 Euler 特征公式。
+在 Wiles 所需的最小情形里，
+局部条件被精心选择到恰好自对偶，
+于是原始 Selmer 群与对偶 Selmer 群拥有相同的有限大小。
+这就是切空间长度可以被精确配平的根本原因。
+\end{proof}
+
+\textbf{注。}
+形变环 $R$ 的 cotangent space 大小由原始 Selmer 群控制，
+而 Hecke 环 $T$ 的 congruence ideal 则由模形式间的同余控制。
+Wiles 的数值判据所做的，正是借助上面的对偶性把两边的长度比较变成一个闭合的算术恒等式；
+这也解释了为什么 Selmer 群是 $R=T$ 定理里的真正“计量单位”。
 
 \begin{theorem}[Ribet 水平下降]
 \label{thm:ribet}

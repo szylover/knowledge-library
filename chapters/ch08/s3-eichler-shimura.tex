@@ -236,6 +236,100 @@ Eichler--Shimura 定理则说明，这种一致不是偶然，
 而是所有素数处都成立。
 \end{example}
 
+\subsection*{补充：$\ell$-进上同调与 Eichler--Shimura}
+CSS 中 Ribet 的综述特别强调：Eichler--Shimura 不应只被理解为一个关于复积分的恒等式，
+它更是把 Hecke 算子的复分析定义，
+与 $G_\Q$ 在模曲线上同调中的作用统一起来的比较定理。
+正因为有这一层上同调解释，
+第\ref{ch:galois}章里的 Deligne 表示才不是“另起炉灶”，
+而是第\ref{ch:eichler-shimura}章故事的自然延伸。
+
+\begin{definition}[$\ell$-进上同调与 Hecke 作用]
+设 $X_0(N)_{\bar\Q}=X_0(N)\times_{\Q}\bar\Q$，$\ell$ 为任一素数。
+记
+\[
+  H^1_\ell\bigl(X_0(N)_{\bar\Q},\Z_\ell\bigr)
+  =H^1_{\text{\'{e}t}}\bigl(X_0(N)_{\bar\Q},\Z_\ell\bigr).
+\]
+它是一个有限生成 $\Z_\ell$-模，
+带有连续的 $G_\Q$ 作用。
+每个 Hecke 对应
+\[
+  X_0(N) \xleftarrow{\pi_1} C_n \xrightarrow{\pi_2} X_0(N)
+\]
+都诱导出上同调自同态
+\[
+  T_n=(\pi_2)_*\pi_1^*
+  \colon H^1_\ell\bigl(X_0(N)_{\bar\Q},\Z_\ell\bigr)\to H^1_\ell\bigl(X_0(N)_{\bar\Q},\Z_\ell\bigr),
+\]
+而且这与 $G_\Q$ 作用彼此交换。
+于是 Hecke 代数与绝对 Galois 群同时作用在同一个 $\ell$-进对象上。
+\end{definition}
+
+\begin{theorem}[复上同调形式的 Eichler--Shimura 同构]
+\label{thm:ch08-eichler-shimura-cohomology}
+存在 Hecke 等变同构
+\[
+  H^1\bigl(X_0(N)(\C),\C\bigr)
+  \cong 
+  \Sk_2(\GammaO(N))\oplus \overline{\Sk_2(\GammaO(N))}.
+\]
+更精确地说，$H^{1,0}$ 与全纯 cusp form 对应，$H^{0,1}$ 与其复共轭对应。
+\end{theorem}
+
+\begin{proof}[说明]
+解析上，权 $2$ cusp form 可看成模曲线上的全纯微分 $f(z)dz$。
+因此
+\[
+  H^0\bigl(X_0(N),\Omega^1\bigr)\cong \Sk_2(\GammaO(N)).
+\]
+再由 Hodge 分解
+\[
+  H^1(X_0(N),\C)=H^{1,0}\oplus H^{0,1}
+\]
+以及复共轭把 $H^{1,0}$ 送到 $H^{0,1}$，
+便得到上式。
+Hecke 对应既作用在微分上，也作用在奇异上同调上，
+两种作用由 pullback/pushforward 构造而完全相容，
+故这是 Hecke 等变同构。
+\end{proof}
+
+\begin{proposition}[从复分析到 Galois 表示的桥]
+\label{prop:ch08-hecke-galois-bridge}
+比较同构
+\[
+  H^1\bigl(X_0(N)(\C),\Q_\ell\bigr)
+  \cong
+  H^1_{\text{\'{e}t}}\bigl(X_0(N)_{\bar\Q},\Q_\ell\bigr)
+\]
+把复上同调中的 Hecke 特征子空间，
+送到带 $G_\Q$ 作用的 $\ell$-进子空间。
+对任一新形式 $f$，与 $f$ 对应的 Hecke 等特征部分给出一个二维 $\ell$-进表示；
+在好素数 $p\nmid N\ell$ 处，其 Frobenius 特征多项式正是
+\[
+  X^2-a_p(f)X+p.
+\]
+\end{proposition}
+
+\begin{proof}[说明]
+\cref{thm:ch08-eichler-shimura} 已说明：
+在 Jacobian 或其 Tate 模的 $f$-等特征部分上，Hecke 算子 $T_p$ 与 Frobenius 满足相同的特征多项式关系。
+而 CSS 中 Ribet 的视角强调，
+这并不是偶然的局部 Euler 因子匹配，
+而是因为 Hecke 对应先在上同调层面统一出现，
+随后再经由比较定理转译为 $G_\Q$ 的线性作用。
+因此 $a_p(f)$ 既是复分析中 $T_p$ 的特征值，
+也是第\ref{ch:galois}章里 Deligne 表示在 $\Frob_p$ 上的迹。
+\end{proof}
+
+\textbf{注。}
+从这个角度看，Eichler--Shimura 定理有三层内容：
+一是权 $2$ 模形式与模曲线微分之间的解析识别；
+二是 Hecke 对应在复上同调中的线性代数；
+三是把这些特征子空间送入 $\ell$-进上同调后得到的 Galois 表示。
+Wiles 时代真正需要的，正是这第三层：
+它使“模形式的 Fourier 系数”变成了“二维 Galois 表示的 Frobenius 迹”。
+
 到这里，模形式与椭圆曲线之间的桥梁已经搭成：
 下一节要利用它，把模形式 $L$-函数早已知道的解析延拓与函数方程，
 全部继承给椭圆曲线的 Hasse--Weil $L$-函数。

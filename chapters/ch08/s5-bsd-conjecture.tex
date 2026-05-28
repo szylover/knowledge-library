@@ -83,7 +83,54 @@ BSD 还有一个更精细的“首项公式”版本，
 还把 $L(s,E)$ 在 $s=1$ 的首项与 regulator、Tamagawa 数、周期以及 Tate--Shafarevich 群的阶联系起来。
 本章只需要最基本的秩猜想版本。
 
-\begin{theorem}[已知结果的一个里程碑]
+\subsection*{补充：Gross--Zagier 与 Kolyvagin}
+CSS 第 VIII 篇 Rubin 的文章说明，
+BSD 在解析秩 $0$ 与 $1$ 的情形之所以能真正落地，
+并不只是因为模性给了我们解析延拓，
+更因为 Heegner 点与 Euler 系统把中心值、导数与 Selmer 群连接了起来。
+
+\begin{theorem}[Gross--Zagier 公式，粗略形式]
+\label{thm:ch08-gross-zagier}
+设 $E/\Q$ 是模椭圆曲线，$K$ 是满足 Heegner 假设的虚二次域。
+则存在由模参数化构造出的 Heegner 点 $P_K\in E(K)$，
+使得
+\[
+  L'(1,E/K)\doteq \hat h(P_K),
+\]
+其中 $\hat h$ 是 N\'eron--Tate 高度，符号 $\doteq$ 表示两边相差一个显式的非零常数。
+特别地，若 $L'(1,E)\neq 0$ 且根数为 $-1$，
+则适当选择 $K$ 后可得到 $\hat h(P_K)>0$，从而 $P_K$ 是无限阶点。
+\end{theorem}
+
+\begin{proof}[说明]
+Gross--Zagier 的核心是把 Rankin--Selberg 型 $L$-函数在中心点的导数，
+解释为模曲线上特殊除子经由模参数化送到 $E$ 后的高度配对。
+CSS 的 Rubin 综述把这一点视作“解析量产生算术点”的范例：
+一旦导数非零，就得到真正的全局点，而不只是局部迹信息。
+\end{proof}
+
+\begin{theorem}[Kolyvagin，解析秩 $0$ 的情形]
+\label{thm:ch08-kolyvagin-rank-zero}
+若模椭圆曲线 $E/\Q$ 满足
+\[
+  L(1,E)\neq 0,
+\]
+则
+\[
+  \rank E(\Q)=0,
+\]
+而且 Tate--Shafarevich 群是有限的。
+\end{theorem}
+
+\begin{proof}[说明]
+Kolyvagin 构造了一族由 Heegner 点导出的 Euler 系统类，
+并证明只要中心值非零，
+这些类就足以把相关 Selmer 群压到最小可能大小。
+结果便是：没有无限阶有理点留下来，
+同时 Tate--Shafarevich 群也被迫有限。
+\end{proof}
+
+\begin{theorem}[Gross--Zagier--Kolyvagin，解析秩至多 $1$]
 \label{thm:ch08-gz-kolyvagin}
 若模椭圆曲线 $E/\Q$ 满足
 \[
@@ -91,19 +138,20 @@ BSD 还有一个更精细的“首项公式”版本，
 \]
 则
 \[
-  \ord_{s=1}L(s,E)=\rank E(\Q).
+  \ord_{s=1}L(s,E)=\rank E(\Q),
 \]
-换言之，BSD 猜想在解析秩 $0$ 与 $1$ 的情形成立。
+并且当解析秩为 $0$ 或 $1$ 时，BSD 首项公式中的有限性部分也成立：
+相关的 Tate--Shafarevich 群是有限的。
 \end{theorem}
 
 \begin{proof}[说明]
-这一定理由 Gross--Zagier 的 Heegner 点公式与 Kolyvagin 的 Euler 系统方法共同推出。
-Gross--Zagier 把 $L'(1,E)$ 的非零性转化为某个 Heegner 点具有正 N\'eron--Tate 高度，
-从而给出一个无限阶有理点；
-Kolyvagin 再利用 Euler 系统控制 Selmer 群与 Tate--Shafarevich 群，
-最终得到秩恰好等于解析秩。
-证明远超本书范围，
-这里记住其结论即可。
+当 $L(1,E)\neq 0$ 时，结论由 \cref{thm:ch08-kolyvagin-rank-zero} 给出。
+当 $L(1,E)=0$ 但 $L'(1,E)\neq 0$ 时，
+Gross--Zagier 先产生一个无限阶 Heegner 点，
+从而给出 $\rank E(\Q)\ge 1$；
+Kolyvagin 再用 Euler 系统证明秩不可能超过 $1$，
+并同时控制 Tate--Shafarevich 群的有限性。
+因此解析秩 $0$ 与 $1$ 两种情形都得到 BSD 的秩结论。
 \end{proof}
 
 \begin{example}[秩 $0$ 的经典例子]
@@ -146,12 +194,17 @@ BSD 猜想预言 $L(s,E)$ 在 $s=1$ 处有一重零点；
 BSD 猜想的重要性并不只是“又一个深猜想”。
 真正关键的是：
 Eichler--Shimura 理论已经把 $E$ 的局部点数、模形式的 Hecke 特征值和解析函数 $L(s,E)$ 连成了一条链。
+Gross--Zagier 与 Kolyvagin 则进一步说明，
+这条链在解析秩至多 $1$ 时并非纯粹哲学，
+而是真的能把中心值与导数翻译成有理点和 Selmer 群结构。
 因此即使我们暂时还不能证明 BSD 的全部内容，
 也已经获得了一种极强的思想框架：
 \[
   \text{有限域点数}
   \Longrightarrow
   L(s,E)
+  \Longrightarrow
+  \text{Heegner 点与 Euler 系统}
   \Longrightarrow
   \text{有理点秩}.
 \]

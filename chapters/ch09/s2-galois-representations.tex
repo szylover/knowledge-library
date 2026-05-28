@@ -274,8 +274,74 @@ Brauer--Nesbitt 定理断言：
 模 $\ell$ 约化即得最后一个同余式。
 \end{proof}
 
+\subsection*{补充：Serre 的模性猜想}
+CSS 中 Edixhoven 的文章把一个看似简单、实则极深的问题推到前台：
+哪些二维 mod $\ell$ 表示会来自模形式？
+Wiles 的方法处理的是“已知 residual 表示模，推出某些 $\ell$-进提升也模”；
+Serre 猜想则反过来断言，
+只要 residual 表示本身满足最基本的奇性与不可约性条件，
+它一开始就应当是模的。
+
+\begin{theorem}[Serre 猜想，现已成定理]
+\label{thm:ch09-serre-conjecture}
+设
+\[
+  \rhobar\colon G_\Q\to \GL_2(\F_\ell)
+\]
+是奇的、不可约的连续表示。
+则存在某个归一化特征模形式 $f$，使得
+\[
+  \rhobar\cong \rhobar_{f,\lambda}
+\]
+对某个 $\lambda\mid \ell$ 成立。
+更强地，Serre 预测了 $f$ 的最小权与最小级别；
+Khare--Wintenberger 在 2009 年证明了这一完整猜想。
+\end{theorem}
+
+\begin{proof}[历史说明]
+Serre 在 1987 年提出该猜想时，
+它已把第\ref{sec:ch09-ribet}节的水平下降哲学压缩成一句极其大胆的话：
+模形式空间不仅解释某些 residual 表示，
+而且应该解释全部奇、不可约的二维 residual 表示。
+Khare--Wintenberger 的证明结合了模性提升、水平下降与辅助手段归纳，
+其整体风格正延续了 Wiles--Taylor--Wiles 的路线。
+\end{proof}
+
+\begin{definition}[Serre 权与 Serre 级别，粗略描述]
+\label{def:ch09-serre-weight-level}
+对满足上面假设的 $\rhobar$，Serre 猜想附带两个精确的局部预测：
+\begin{itemize}
+  \item Serre 权 $k(\rhobar)$ 由局部限制 $\rhobar|_{G_{\Q_\ell}}$ 决定；
+  在最简单的情形里，若 $\rhobar|_{I_\ell}$ 半单且形如
+  \[
+    \begin{pmatrix}
+      \omega^{k-1} & 0\\ 0 & 1
+    \end{pmatrix},
+  \]
+  其中 $\omega$ 是模 $\ell$ 分圆特征，
+  则预测的最小权正是这个整数 $k$（落在 $2\le k\le \ell+1$ 的标准范围内）；
+  \item Serre 级别 $N(\rhobar)$ 由各素数处的 Artin 导子指数决定，
+  也就是
+  \[
+    N(\rhobar)=\prod_{p\neq \ell} p^{n_p(\rhobar)}.
+  \]
+  这里 $n_p(\rhobar)$ 衡量 $\rhobar$ 在 $p$ 处的分歧深度。
+\end{itemize}
+\end{definition}
+
+\textbf{注。}
+这两个局部公式与第\ref{sec:ch09-ribet}节的 Ribet 定理直接相连：
+Ribet 水平下降恰恰说明，
+当某个素数 $p$ 在 residual 表示中已经“看不见”时，
+Serre 级别中的 $p$ 指数就应下降。
+从这个意义上说，Carayol 关于导子与级别精确对应的结果，
+以及 Edixhoven 关于权的精细分析，
+共同完成了 Serre 猜想中“最小模形式参数”的字典。
+
 本节的结论可以压缩成一句话：
 \emph{连续 Galois 表示是在有限维线性空间上观察 $G_\Q$ 的方式，
 而无分歧素数处的 Frobenius 矩阵是这份观察中最可计算的坐标。}
+Serre 猜想则进一步说：
+这些坐标在二维奇不可约 mod $\ell$ 情形下，最终总能在模形式空间中找到来源。
 下一节我们把这个语言立即用到椭圆曲线上，
 从而得到本章第一类真正算术化的二维表示。

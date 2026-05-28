@@ -107,6 +107,68 @@ Schlessinger 判据把可表性化为几个关于小扩张的粘合条件。
 这些数据恰好足以构造一个泛对象 $R$。
 \end{proof}
 
+\subsection*{补充：Schlessinger 判据与 de Smit--Lenstra 的显式构造}
+CSS 第 V 篇 de Smit--Lenstra 的贡献，
+在于把“存在某个泛形变环”这句话从抽象可表性，
+推进到可以写出生成元和关系的交换代数框架中。
+
+\begin{theorem}[Schlessinger 判据，粗略表述]
+\label{thm:ch10-schlessinger}
+设 $\mathcal F\colon \mathrm{CNL}_\Lambda\to \mathrm{Sets}$ 是保剩余域的函子。
+若它满足对小扩张的纤维积满射性、切空间有限维、以及自同构受控等条件，
+则 $\mathcal F$ 至少有一个 hull；
+若进一步满足相应的精确粘合条件，
+则 $\mathcal F$ 由某个完备 Noether 局部环可表。
+\end{theorem}
+
+\begin{proof}[说明]
+Schlessinger 的思想是：
+无穷小提升问题只需在 Artinian 小扩张之间检查是否能兼容粘合。
+对 Galois 形变函子，
+绝对不可约性使严格同构类的自动同构群足够小，
+于是这些抽象条件可以借助 $H^1$ 与 $H^2$ 的维数有限性来验证。
+这正是 Mazur 定理背后的范畴论骨架。
+\end{proof}
+
+\begin{proposition}[de Smit--Lenstra 的显式形状]
+\label{prop:ch10-desmit-lenstra}
+若形变函子可表，且其切空间维数为 $d$，阻碍空间最小生成元数为 $r$，
+则相应的泛形变环可以写成
+\[
+  R\cong \Lambda[[x_1,\dots,x_d]]/(f_1,\dots,f_r).
+\]
+换言之，泛形变环就是“变量数减去关系数”的一个显式完备交候选；
+Taylor--Wiles 方法的任务，正是证明在模性情形里这些关系数恰好与 Hecke 环匹配。
+\end{proposition}
+
+\begin{proof}[说明]
+切空间维数给出需要多少个无穷小参数 $x_i$ 才能生成所有一阶形变。
+从幂级数环到 $R$ 的满射随后总能构造出来；
+其核由若干关系式生成，而这些关系的最少个数受到阻碍空间控制。
+de Smit--Lenstra 的文章把这一过程写得极为具体，
+使“泛环存在”不再只是抽象的 Yoneda 结论。
+\end{proof}
+
+\begin{proposition}[切空间与 Selmer 群]
+\label{prop:ch10-tangent-selmer}
+设 $R$ 是满足局部条件 $\mathcal L$ 的泛形变环，极大理想为 $\mathfrak m_R$。
+则有自然同构
+\[
+  \Hom_k\bigl(\mathfrak m_R/(\mathfrak m_R^2,\ell),k\bigr)
+  \cong
+  H^1_{\mathcal L}(G_\Q,\mathrm{ad}^0\rhobar),
+\]
+右边正是带局部条件的 Selmer 群。
+\end{proposition}
+
+\begin{proof}[说明]
+把 $R$ 映到双数环 $k[\varepsilon]/(\varepsilon^2)$ 的同态，
+正好描述 $\rhobar$ 的一阶形变。
+而一阶形变由 $1$-cocycle 给出，模去严格同构后便得到 $H^1$。
+各个局部条件要求这些 cocycle 在 $G_{\Q_v}$ 上落入指定子空间，
+因此全局允许的一阶形变恰是 Selmer 群。
+\end{proof}
+
 从切空间的角度看，
 形变环并不是一个神秘盒子。
 若 $\mathfrak m_R$ 是其极大理想，
@@ -195,6 +257,27 @@ $R_Q$、$T_Q$、$\Delta_Q$、patched module、complete intersection、numerical 
 而是暂时把问题放到一个更有自由度的空间里，
 让两边更容易比较；
 比较完成后，再把多余自由度剥掉。}
+
+\begin{proposition}[Taylor--Wiles 打补丁的更细图像]
+\label{prop:ch10-patching-details}
+取一族 Taylor--Wiles 辅助素数集 $Q_n$，并令 $\Delta_{Q_n}$ 表示相应的有限 $\ell$-群。
+则带级别结构的形变环与 Hecke 环满足：
+\begin{itemize}
+  \item $R_{Q_n}$ 比最小形变环多出大约 $\#Q_n$ 个局部变量；
+  \item 模形式侧存在一个 patched module $M_\infty$，它同时是 $R_\infty$ 与 $S_\infty=\Lambda[[\Delta_\infty]]$-模；
+  \item 通过控制 $M_\infty$ 在 $S_\infty$ 上的自由性，可推出 $R_\infty$ 是 complete intersection，且 $R_\infty\cong T_\infty$。
+\end{itemize}
+把额外变量再模掉，就回到最小层的 $R\cong T$。
+\end{proposition}
+
+\begin{proof}[说明]
+辅助素数的选择保证局部形变环在这些新素数处几乎是平滑的，
+所以它们只增加可控的自由变量，而不会带来新的难以处理关系。
+另一方面，模形式空间在增加级别后会携带与 $\Delta_{Q_n}$ 相容的群代数作用，
+这使 patched module 能同时看到 Galois 与 Hecke 两边的结构。
+当极限对象 $M_\infty$ 足够自由时，
+环的关系数便被压缩到最小，最终得到 complete intersection 与同构结论。
+\end{proof}
 
 把这件事想象成“打补丁”是非常贴切的：
 我们并不是一次看清整个形变空间，

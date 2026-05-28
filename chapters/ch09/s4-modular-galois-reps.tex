@@ -276,10 +276,70 @@ Frobenius 矩阵可逆。
 就得到第二个等式。
 \end{proof}
 
+\subsection*{补充：Langlands--Tunnell 定理与权 $1$ 起点}
+Wiles 证明最微妙的一步之一，
+是它并不是从“任意 residual 表示都模”出发，
+而是精准地从 mod $3$ 情形起跑。
+这一步的理由正是 Langlands--Tunnell 定理。
+
+\begin{theorem}[Langlands--Tunnell，常用形式]
+\label{thm:ch09-langlands-tunnell}
+设
+\[
+  \rhobar\colon G_\Q\to \GL_2(\F_3)
+\]
+是连续、奇且绝对不可约的表示。
+则 $\rhobar$ 是模的：
+存在某个权 $1$ 特征模形式 $g$，使得对某个 $\lambda\mid 3$ 有
+\[
+  \rhobar\cong \rhobar_{g,\lambda}.
+\]
+\end{theorem}
+
+\begin{proof}[说明]
+关键点在于 mod $3$ 世界里的像是可解的。
+更准确地说，$\PGL_2(\F_3)\cong S_4$，
+而 $S_4$ 有标准的三维复表示；
+把 $\rhobar$ 的射影像送入这个三维表示，
+便得到一个可解的复 Artin 表示。
+Langlands 关于可解基变换与自守诱导的函子性，
+再加上 Tunnell 对八面体情形的明确构造，
+把这个 Artin 表示提升到 $\GL_2(\mathbb A_\Q)$ 上的自同构表示，
+并识别为一个权 $1$ 模形式。
+最后再回到其 mod $3$ 约化，就得到原来的 $\rhobar$。
+\end{proof}
+
+\textbf{注。}
+在 Wiles 的证明链里，Langlands--Tunnell 的角色不是“顺便给一个例子”，
+而是提供第一个真正的 residual 模性输入。
+对半稳定椭圆曲线 $E/\Q$，若 $\rhobar_{E,3}$ 绝对不可约，
+那么它满足上述定理的假设，
+于是 $\rhobar_{E,3}$ 先由一个权 $1$ 模形式控制。
+接下来 Wiles 的模性提升定理才有起点，
+把这份 residual 模性推进到权 $2$、导子受控的 $3$-进提升上。
+
+\begin{proposition}[为何这正好适合 Wiles]
+\label{prop:ch09-lt-starts-wiles}
+设 $E/\Q$ 为半稳定椭圆曲线。
+若 $\rhobar_{E,3}$ 绝对不可约，
+则 Langlands--Tunnell 定理给出它的 residual 模性；
+因此在满足最小局部条件时，
+Wiles 的 $R=T$ 机器可用于比较 $\rho_{E,3}$ 与模形式侧的提升。
+\end{proposition}
+
+\begin{proof}[说明]
+第\ref{sec:ch10-wiles-strategy}节会把“比较所有提升”组织成形变环与 Hecke 环的同构问题。
+但这个机器至少需要一个已知是模的 residual 点作为起始数据。
+Langlands--Tunnell 恰好在 mod $3$ 提供了这件事，
+这就是为什么 Wiles 的原始证明首先围绕 $3$-进与 $5$-进表示展开。
+\end{proof}
+
 本节的结论可概括为：
 Hecke 特征值并不只是 Fourier 系数，
 而是某份二维 Galois 表示在 Frobenius 上的迹。
 一旦这份表示写下来，
 模形式与椭圆曲线就站到了完全相同的语言里。
+Langlands--Tunnell 更进一步说明，
+某些 residual 表示甚至在进入 Wiles 提升理论之前就已经是模的。
 下一节的 Ribet 定理正是在这种共同语言中，
 说明某些看似属于级别的信息，其实在 residual 表示里已经消失。 

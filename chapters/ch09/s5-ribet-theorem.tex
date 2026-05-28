@@ -79,6 +79,46 @@ Frey 曲线的每个奇坏素数都可以从级别中一个个删掉。
 其补因子称为 $p$-\textbf{new} 部分。
 \end{definition}
 
+\begin{theorem}[Ihara 引理，Ribet 所需的形式]
+\label{thm:ch09-ihara-lemma}
+设 $p\nmid N$，$\ell\neq p$，$\mathfrak m\subset \mathbb T(Np)$ 是非 Eisenstein 极大理想。
+把退化映射诱导的同态记为
+\[
+  \delta=\alpha^*+\beta^*\colon J_0(N)^2\to J_0(Np).
+\]
+则在 $\mathfrak m$-扭点上，$\ker \delta$ 不含新的非平凡 $\mathfrak m$-部分；
+等价地，$J_0(N)[\mathfrak n]^2\to J_0(Np)[\mathfrak m]$ 在与 $\mathfrak m$ 相容的极大理想处是单射。
+\end{theorem}
+
+\begin{proof}[作用说明]
+这一定理保证 old 部分不会把 residual 信息“吞掉”。
+Ribet 证明最关键的困难，
+正是要说明若 $\rhobar$ 在 $p$ 处无分歧，
+那么它在级别 $Np$ 上出现时，必然已经在 old 部分留下痕迹。
+Ihara 引理排除了 old/new 交叉里潜藏的额外扭点，
+从而使 level lowering 真正可行。
+\end{proof}
+
+\begin{proposition}[Carayol 的导子--级别对应]
+\label{prop:ch09-carayol-conductor}
+设 $f$ 是权 $2$ 新形式，$\rho_{f,\lambda}$ 为其 $\ell$-进表示。
+则对每个 $p\neq \ell$，
+局部表示 $\rho_{f,\lambda}|_{G_{\Q_p}}$ 的 Artin 导子指数，
+与 $f$ 级别中 $p$ 的指数精确一致。
+特别地，若 residual 表示在 $p$ 处无分歧，
+则 Serre 级别不应再含有该素数的贡献；
+这正说明 Ribet 定理不是偶然降级，而是导子公式的必然反映。
+\end{proposition}
+
+\begin{proof}[说明]
+Carayol 把第\ref{sec:ch09-modular-galois}节中由模形式得到的 Galois 表示，
+与新形式理论中的级别结构逐素数对照。
+因此级别上的每一位素数，
+都能在局部惯性作用与导子指数中被读出来；
+而 level lowering 所做的，正是当这些导子指数在 mod $\ell$ 世界里变小后，
+把模形式级别同步降下来。
+\end{proof}
+
 \begin{proposition}[Steinberg 情形的局部特征]
 \label{prop:ch09-steinberg-local}
 设 $f\in \Sk_2(\GammaO(Np))$ 是 $p$-new 归一化特征新形式，$p\nmid N$。
@@ -253,6 +293,14 @@ Tate 曲线理论说明：
 在乘法约化处，惯性作用模 $p$ 后恰由这个判别式指数控制；
 当该指数被 $p$ 整除时，
 $\rhobar_{E,p}$ 在 $q$ 处无分歧。
+
+另一方面，半稳定性保证这些奇素数在导子里都只以一次出现，
+所以局部型恰是 \cref{prop:ch09-steinberg-local} 中的 Steinberg 情形。
+再结合 \cref{prop:ch09-carayol-conductor}，
+可知级别中出现的每一个奇素数 $q\mid abc$，
+都正对应 residual 表示导子里的一次局部分歧贡献；
+而既然这份贡献在 mod $p$ 后已经消失，
+Ribet 水平下降就允许把该素数从级别中删去。
 
 因此，只要 $\rhobar_{E,p}$ 来自某个级别含有 $q$ 的新形式，
 就满足 Ribet 定理的局部假设，
