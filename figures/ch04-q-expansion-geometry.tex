@@ -1,0 +1,73 @@
+% figures/ch04-q-expansion-geometry.tex
+% q 展开的几何意义：τ → q = e^{2πiτ} 把竖带映到穿孔圆盘
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth, font=\small, scale=1.1]
+
+% === 左侧：上半平面的竖带 ===
+\begin{scope}[xshift=-4.2cm]
+  % 阴影填充带
+  \fill[blue!8]
+    (-1, 0.3) rectangle (1, 3.5);
+  % 边界
+  \draw[thick, blue!60!black] (-1, 0.3) -- (-1, 3.5);
+  \draw[thick, blue!60!black] (1, 0.3) -- (1, 3.5);
+  \draw[dashed, gray] (-1.5, 0.3) -- (1.5, 0.3)
+    node[right, font=\footnotesize] {$\im(\tau) = Y$};
+  % 坐标轴
+  \draw[->] (-1.6, 0) -- (1.6, 0) node[right] {$\Re(\tau)$};
+  \draw[->] (0, 0) -- (0, 3.8) node[above] {$\im(\tau)$};
+  % 刻度
+  \node[below] at (-1, 0) {$-\tfrac{1}{2}$};
+  \node[below] at (1, 0) {$\tfrac{1}{2}$};
+  % 示例点
+  \fill[red!70!black] (0.3, 1.5) circle (2pt);
+  \node[right, red!70!black, font=\footnotesize] at (0.33, 1.5) {$\tau$};
+  % 顶部箭头（∞方向）
+  \draw[->, green!50!black, line width=1.2pt] (0, 3.2) -- (0, 3.7);
+  \node[green!50!black, right, font=\footnotesize] at (0.05, 3.5) {$\infty$};
+  % 标签
+  \node[blue!60!black] at (0, 0.9) {$\HH$（竖带）};
+\end{scope}
+
+% === 中间箭头 ===
+\draw[->, thick, purple!70!black, line width=1.5pt]
+  (-1.8, 1.8) -- (-0.3, 1.8)
+  node[above, midway, font=\footnotesize, purple!70!black]
+  {$q = e^{2\pi i\tau}$};
+
+% === 右侧：穿孔圆盘 ===
+\begin{scope}[xshift=1.8cm]
+  % 圆盘
+  \fill[orange!10] (0,0) circle (2cm);
+  \fill[white] (0,0) circle (0.25cm);  % 穿孔
+  \draw[thick, orange!70!black] (0,0) circle (2cm);
+  \draw[thick, dashed, orange!40!black] (0,0) circle (0.25cm);
+  % r=|q|=e^{-2πY}的圆
+  \draw[dashed, blue!50!black] (0,0) circle (1.2cm);
+  \node[blue!50!black, font=\footnotesize] at (1.05, 0.65)
+    {$|q|=e^{-2\pi Y}$};
+  % 示例点 q
+  \fill[red!70!black] (0.6, 0.9) circle (2pt);
+  \node[right, red!70!black, font=\footnotesize] at (0.63, 0.9) {$q(\tau)$};
+  % 穿孔标签
+  \node[font=\footnotesize, gray] at (0, -0.45) {$q=0$};
+  \draw[->, gray, shorten >=3pt] (0.0, -0.42) -- (0.0, -0.23);
+  % 外圆标签
+  \node[font=\footnotesize, orange!70!black] at (1.6, -1.6)
+    {$|q|=1$};
+  \node[font=\footnotesize] at (0, -2.5) {穿孔圆盘 $\mathbb{D}^*$};
+\end{scope}
+
+% === 对应关系注记 ===
+\node[font=\footnotesize, align=left, text=gray!70!black] at (0, -1.5)
+  {$\im(\tau)\to+\infty$ $\Leftrightarrow$ $q\to 0$\quad；\quad
+   $\tau \equiv \tau+1$ $\Leftrightarrow$ $q$ 不变（周期性）};
+
+\end{tikzpicture}
+\caption{$q$-展开的几何意义。映射 $q = e^{2\pi i\tau}$ 把上半平面中的竖带
+$\{|\Re(\tau)| \leq \frac{1}{2},\, \im(\tau) > Y\}$（左）
+双全纯地映到穿孔圆盘 $\{0 < |q| < e^{-2\pi Y}\}$（右）。
+$\tau \to \infty$ 对应 $q \to 0$，模形式在尖点全纯等价于在 $q=0$ 处可去奇点。}
+\label{fig:q-expansion-geometry}
+\end{figure}

@@ -405,3 +405,127 @@ $\frac{(-2\pi i\xi)^{k-1}}{(k-1)!}$，故
   = \frac{(-2\pi i)^k}{(k-1)!} \sum_{m=1}^{\infty} m^{k-1} e^{2\pi i m c\tau}.
 \]
 \end{example}
+
+
+% ============================================================================
+\section{$q$-展开的推导}
+\label{sec:eisenstein-q-expansion}
+% ============================================================================
+
+有了 Poisson 求和的准备，现在可以完整地推导 $G_k$ 的 $q$-展开。
+
+\input{figures/ch04-q-expansion-geometry}
+
+\begin{theorem}[$G_k$ 的 $q$-展开]
+\label{thm:Gk-q-expansion}
+对偶整数 $k \geq 4$，令 $q = e^{2\pi i\tau}$（$\tau \in \HH$），则
+\[
+  G_k(\tau) = 2\zeta(k)
+  + \frac{2(2\pi i)^k}{(k-1)!} \sum_{n=1}^{\infty} \sigma_{k-1}(n)\, q^n,
+\]
+其中 $\sigma_{k-1}(n) = \sum_{d \mid n} d^{k-1}$ 是 $n$ 的因子的 $(k-1)$ 次幂之和。
+\end{theorem}
+
+\begin{proof}
+由\cref{ex:Gk-first-terms}，
+\[
+  G_k(\tau) = 2\zeta(k) + 2\sum_{c=1}^{\infty} S_c(\tau),
+  \qquad S_c(\tau) = \sum_{d \in \Z} (c\tau + d)^{-k}.
+\]
+由\cref{ex:poisson-for-eisenstein}（Poisson 求和对 $S_c$），
+\[
+  S_c(\tau) = \frac{(-2\pi i)^k}{(k-1)!} \sum_{m=1}^{\infty} m^{k-1} e^{2\pi i mc\tau}
+  = \frac{(2\pi i)^k}{(k-1)!} \sum_{m=1}^{\infty} m^{k-1} q^{mc}.
+\]
+（用了 $(-1)^k = 1$ 因为 $k$ 为偶数。）
+
+代入：
+\[
+  G_k(\tau)
+  = 2\zeta(k) + \frac{2(2\pi i)^k}{(k-1)!}
+    \sum_{c=1}^{\infty} \sum_{m=1}^{\infty} m^{k-1} q^{mc}.
+\]
+交换求和顺序，令 $n = mc$（固定 $n$，$m$ 跑遍 $n$ 的正因子，$c = n/m$）：
+\begin{align}
+  \sum_{c=1}^{\infty} \sum_{m=1}^{\infty} m^{k-1} q^{mc}
+  &= \sum_{n=1}^{\infty} \left(\sum_{m \mid n} m^{k-1}\right) q^n
+  = \sum_{n=1}^{\infty} \sigma_{k-1}(n)\, q^n.
+\end{align}
+这就完成了证明。
+\end{proof}
+
+\textbf{从 $G_k$ 到 $E_k$。}
+用\cref{prop:bernoulli-zeta}，$2\zeta(k) = -\frac{(2\pi i)^k B_k}{k!}$，故
+\[
+  E_k(\tau)
+  = \frac{G_k(\tau)}{2\zeta(k)}
+  = 1 - \frac{2k}{B_k} \sum_{n=1}^{\infty} \sigma_{k-1}(n)\, q^n.
+\]
+（验证：$\frac{2(2\pi i)^k/(k-1)!}{2\zeta(k)} = \frac{2(2\pi i)^k/(k-1)!}{-(2\pi i)^k B_k/k!}
+= \frac{-2k!}{(k-1)! B_k} = \frac{-2k}{B_k}$。）
+
+\begin{example}[$\sigma_{k-1}$ 的计算]
+\label{ex:sigma-computation}
+\leavevmode
+\begin{itemize}
+  \item $\sigma_3(1) = 1^3 = 1$，$\sigma_3(2) = 1^3 + 2^3 = 9$，
+    $\sigma_3(3) = 1 + 27 = 28$，$\sigma_3(4) = 1 + 8 + 64 = 73$，
+    $\sigma_3(6) = 1 + 8 + 27 + 216 = 252$。
+  \item $\sigma_5(1) = 1$，$\sigma_5(2) = 1 + 32 = 33$，
+    $\sigma_5(3) = 1 + 243 = 244$，$\sigma_5(4) = 1 + 32 + 1024 = 1057$。
+\end{itemize}
+
+验证 $E_4$ 的前几项：
+$1 + 240(q + 9q^2 + 28q^3 + 73q^4 + \cdots)
+= 1 + 240q + 2160q^2 + 6720q^3 + 17520q^4 + \cdots$ \quad $(\checkmark)$
+\end{example}
+
+\begin{proposition}[$E_4, E_6$ 与 $\Delta$]
+\label{prop:E4-E6-Delta}
+\index{判别形式 (discriminant form)}\index{Delta@$\Delta(\tau)$}
+\index{Ramanujan tau 函数}\index{tau@$\tau(n)$}
+定义
+\[
+  \Delta(\tau) = \frac{E_4(\tau)^3 - E_6(\tau)^2}{1728}.
+\]
+则 $\Delta$ 是权 $12$ 的\textbf{尖点形式}（$\Delta(\infty) = 0$），
+且有乘积公式
+\[
+  \Delta(\tau) = q \prod_{n=1}^{\infty}(1-q^n)^{24}
+  = \sum_{n=1}^{\infty} \tau(n)\, q^n,
+\]
+其中 $\tau(n)$ 是 \textbf{Ramanujan $\tau$-函数}，$\tau(1) = 1$，$\tau(2) = -24$，
+$\tau(3) = 252$，$\tau(4) = -1472$，$\ldots$
+\end{proposition}
+
+\begin{proof}
+\textbf{$\Delta$ 是尖点形式}：$E_4(\infty) = 1$，$E_6(\infty) = 1$，故
+$\Delta(\infty) = (1 - 1)/1728 = 0$，满足尖点条件。
+权 $12 = k$ 由 $E_4^3$（权 $4 \times 3 = 12$）和 $E_6^2$（权 $6 \times 2 = 12$）的差给出。
+
+\textbf{$\Delta$ 在 $\HH$ 上无零点（乘积公式）}：这比较深刻，
+用到模形式空间的维数理论（见\cref{ch:dimension}）：
+$\Sk_{12}(\SL_2(\Z))$ 恰好是一维的，
+且 $\eta(\tau)^{24}$ 是其中一个非零元（Dedekind $\eta$ 函数
+$\eta(\tau) = q^{1/24}\prod_{n=1}^\infty(1-q^n)$ 的 $24$ 次幂），
+由比较常数项得 $\Delta(\tau) = q\prod_{n=1}^\infty(1-q^n)^{24}$。
+\end{proof}
+
+\textbf{$\Delta$ 与 Ramanujan 猜想。}
+Ramanujan 在 1916 年观察到 $\tau(n)$ 的三个猜想：
+\begin{enumerate}
+  \item \textbf{乘性}：$\tau(mn) = \tau(m)\tau(n)$ 当 $\gcd(m,n) = 1$；
+  \item \textbf{Hecke 关系}：$\tau(p^{r+1}) = \tau(p)\tau(p^r) - p^{11}\tau(p^{r-1})$；
+  \item \textbf{估计}：$|\tau(p)| \leq 2p^{11/2}$。
+\end{enumerate}
+前两条由 Mordell（1917）证明，第三条（Ramanujan 猜想）由 Deligne 在 1974 年
+利用 Weil 猜想的证明给出。乘性与 Hecke 算子有关（第三章），
+估计与代数几何有关，这两个方向最终都汇入费马大定理的证明链。
+
+\begin{example}[验证 $\tau$ 的乘性]
+\label{ex:tau-multiplicative}
+验证 $\tau(2)\tau(3) = \tau(6)$：
+$(-24)(252) = -6048$，而 $\tau(6) = -6048$（$\checkmark$，需要计算 $q^6$ 系数）。
+
+详细：$\Delta = q - 24q^2 + 252q^3 - 1472q^4 + 4830q^5 - 6048q^6 + \cdots$
+\end{example}
