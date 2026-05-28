@@ -1,0 +1,71 @@
+% figures/ch04-dirichlet-character.tex
+% Dirichlet 特征 χ mod 5 的值示意表
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[font=\small, >=Stealth]
+
+% === 标题 ===
+\node[font=\normalsize\bfseries] at (0, 2.8) {$(\Z/5\Z)^\times$ 上的特征};
+
+% 单位根在单位圆上的位置
+\draw[gray!40] (0,0) circle (1.5cm);
+\draw[->] (-2, 0) -- (2, 0) node[right, font=\footnotesize] {$\Re$};
+\draw[->] (0, -2) -- (0, 2) node[above, font=\footnotesize] {$\Im$};
+
+% 四个四次单位根
+\foreach \ang/\val/\lab in {
+  0/{$1$}/{$\chi(1)=1$},
+  90/{$i$}/{$\chi(2)=i$},
+  180/{$-1$}/{$\chi(3)=-1$},
+  270/{$-i$}/{$\chi(4)=-i$}
+}{
+  \fill[blue!70!black] ({1.5*cos(\ang)}, {1.5*sin(\ang)}) circle (3pt);
+  \node[font=\footnotesize] at ({1.9*cos(\ang)}, {1.9*sin(\ang)}) {\val};
+}
+
+% 对应的 a mod 5
+\node[red!70!black, font=\footnotesize] at (1.5+0.4, -0.3) {$a=1$};
+\node[red!70!black, font=\footnotesize] at (0.2, 1.5+0.3) {$a=2$};
+\node[red!70!black, font=\footnotesize] at (-1.5-0.5, -0.3) {$a=3$};
+\node[red!70!black, font=\footnotesize] at (0.2, -1.5-0.3) {$a=4$};
+
+% 生成元 2 的标注
+\draw[->, thick, orange!70!black, bend left=20]
+  ({1.5*cos(0)+0.1}, {1.5*sin(0)}) to ({1.5*cos(90)}, {1.5*sin(90)+0.1});
+\node[orange!70!black, font=\footnotesize] at (1.2, 0.9) {$\times 2$};
+
+% === 右侧：表格 ===
+\begin{scope}[xshift=5cm, yshift=0.3cm]
+\node[font=\footnotesize\bfseries] at (0, 2.2) {特征值表};
+
+% 表格内容
+\foreach \row/\a/\ca/\cb/\cc/\cd in {
+  0/{$a \bmod 5$}/{$1$}/{$2$}/{$3$}/{$4$},
+  -0.7/{$\chi_0$ (主特征)}/{$1$}/{$1$}/{$1$}/{$1$},
+  -1.4/{$\chi_1$}/{$1$}/{$i$}/{$-i$}/{$-1$},
+  -2.1/{$\chi_2$}/{$1$}/{$-1$}/{$-1$}/{$1$},
+  -2.8/{$\bar\chi_1$}/{$1$}/{$-i$}/{$i$}/{$-1$}
+}{
+  \node[font=\footnotesize, anchor=east] at (-1.2, \row) {\ca};
+  \node[font=\footnotesize] at (-0.4, \row) {\cb};
+  \node[font=\footnotesize] at (0.4, \row) {\cc};
+  \node[font=\footnotesize] at (1.2, \row) {\cd};
+  \node[font=\footnotesize, anchor=east] at (-2.0, \row) {\a};
+}
+% 分隔线
+\draw[gray] (-2.3, -0.35) -- (1.5, -0.35);
+\draw[gray] (-2.3, 1.8) -- (1.5, 1.8);
+
+% 列标签
+\node[font=\footnotesize\bfseries, anchor=east] at (-2.0, 1.9) {特征 $\backslash$ $a$};
+
+\end{scope}
+
+\end{tikzpicture}
+\caption{模 $5$ 的 Dirichlet 特征。$(\Z/5\Z)^\times = \{1,2,3,4\}$
+是循环群，生成元 $2$（因为 $2^1=2, 2^2=4, 2^3=3, 2^4=1 \pmod 5$）。
+共有 $4$ 个特征，对应四次单位根 $\{1, i, -1, -i\}$（左侧单位圆）。
+$\chi_0$ 是主特征，$\chi_1$ 是将生成元 $2$ 映到 $i$ 的特征。
+所有特征延拓到 $\Z$ 上时，令 $\chi(n) = 0$ 若 $\gcd(n,5)>1$。}
+\label{fig:dirichlet-character}
+\end{figure}
