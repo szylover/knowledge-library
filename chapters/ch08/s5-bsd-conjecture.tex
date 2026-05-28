@@ -1,0 +1,159 @@
+\section{Birch--Swinnerton-Dyer 猜想}
+\label{sec:ch08-bsd}
+% ============================================================================
+
+到这里，本章已经把两条原本分离的主线合在了一起：
+一边是由 Hecke 特征值控制的模形式 $L$-函数，
+另一边是由有限域点数与有理点组成的椭圆曲线算术。
+Eichler--Shimura 定理告诉我们，
+椭圆曲线的 Hasse--Weil $L$-函数继承了模形式的解析性质；
+于是自然会问：
+\emph{这个解析函数在中心点 $s=1$ 的行为，究竟反映了椭圆曲线的什么算术量？}
+
+\textbf{我们遇到了什么问题？}
+对一条椭圆曲线 $E/\Q$，
+我们既关心它有多少有限域上的点，
+也更关心它有多少有理点。
+有限域点数由各个 $a_p(E)$ 控制，
+有理点则组成群 $E(\Q)$。
+但从定义上看，
+$L(s,E)$ 是由前者拼出来的解析对象，
+而 $E(\Q)$ 是一个全局算术对象；
+两者之间并没有显然的桥梁。
+如果 BSD 猜想成立，
+那么中心点的零点阶数恰恰就是那座桥：
+它把局部信息的无穷乘积，压缩成全局群结构里的一个整数。
+
+\textbf{核心思想是什么？}
+Mordell 定理先告诉我们：
+$E(\Q)$ 虽然通常是无限的，
+但无限性只会以非常受控的方式出现：
+它总能写成
+\[
+  E(\Q)\cong \Z^r\oplus E(\Q)_{\mathrm{tors}}.
+\]
+其中 $r$ 称为秩。
+BSD 猜想进一步说，
+这个纯代数定义出来的整数 $r$，
+应当等于解析函数 $L(s,E)$ 在 $s=1$ 的零点阶数。
+也就是说，
+“有多少独立的有理点”
+应该等于
+“中心点处消失了多少阶”。
+
+\textbf{引入之后能得到什么？}
+一旦把秩与中心零点联系起来，
+解析方法便能反过来指导算术研究：
+若 $L(1,E)\neq0$，就应预期 $r=0$；
+若 $L(s,E)$ 在 $s=1$ 有一重零点，
+就应预期存在一个真正的无限阶有理点。
+更重要的是，
+即使 BSD 还远未完全解决，
+Eichler--Shimura 已经告诉我们：
+这些解析量可以通过模形式来计算。
+这正是现代椭圆曲线算术的基本工作方式。
+
+\input{figures/ch08-bsd-bridge}
+
+先回忆有理点群的结构。
+
+\begin{theorem}[Mordell]
+\label{thm:ch08-mordell}
+对任意椭圆曲线 $E/\Q$，群 $E(\Q)$ 是有限生成 Abel 群。
+因此存在唯一整数 $r\ge0$，使得
+\[
+  E(\Q)\cong \Z^r\oplus E(\Q)_{\mathrm{tors}}.
+\]
+这个整数 $r$ 称为 $E(\Q)$ 的\textbf{秩}。
+\end{theorem}
+
+\begin{definition}[BSD 猜想]
+\label{def:ch08-bsd}
+设 $E/\Q$ 是椭圆曲线。
+Birch--Swinnerton-Dyer 猜想断言
+\[
+  \ord_{s=1}L(s,E)=\rank E(\Q).
+\]
+也就是说，解析秩等于代数秩。
+\end{definition}
+
+\textbf{注。}
+BSD 还有一个更精细的“首项公式”版本，
+它不仅预测零点阶数，
+还把 $L(s,E)$ 在 $s=1$ 的首项与 regulator、Tamagawa 数、周期以及 Tate--Shafarevich 群的阶联系起来。
+本章只需要最基本的秩猜想版本。
+
+\begin{theorem}[已知结果的一个里程碑]
+\label{thm:ch08-gz-kolyvagin}
+若模椭圆曲线 $E/\Q$ 满足
+\[
+  \ord_{s=1}L(s,E)\le 1,
+\]
+则
+\[
+  \ord_{s=1}L(s,E)=\rank E(\Q).
+\]
+换言之，BSD 猜想在解析秩 $0$ 与 $1$ 的情形成立。
+\end{theorem}
+
+\begin{proof}[说明]
+这一定理由 Gross--Zagier 的 Heegner 点公式与 Kolyvagin 的 Euler 系统方法共同推出。
+Gross--Zagier 把 $L'(1,E)$ 的非零性转化为某个 Heegner 点具有正 N\'eron--Tate 高度，
+从而给出一个无限阶有理点；
+Kolyvagin 再利用 Euler 系统控制 Selmer 群与 Tate--Shafarevich 群，
+最终得到秩恰好等于解析秩。
+证明远超本书范围，
+这里记住其结论即可。
+\end{proof}
+
+\begin{example}[秩 $0$ 的经典例子]
+\label{ex:ch08-rank0}
+曲线
+\[
+  E\colon y^2=x^3-x
+\]
+有四个显然的有理点
+\[
+  O,\ (0,0),\ (1,0),\ (-1,0),
+\]
+它们全部都是挠点；
+实际上
+\[
+  E(\Q)_{\mathrm{tors}}\cong \Z/2\Z\oplus \Z/2\Z.
+\]
+这条曲线的秩为 $0$，
+因此 BSD 预言 $L(1,E)\neq0$。
+数值计算也确实如此。
+\end{example}
+
+\begin{example}[秩 $1$ 的经典模曲线例子]
+\label{ex:ch08-rank1}
+导子 $37$ 的曲线
+\[
+  E\colon y^2+y=x^3-x
+\]
+是一个经典的秩 $1$ 例子。
+点 $(0,0)\in E(\Q)$ 是无限阶点，
+因此
+\[
+  \rank E(\Q)=1.
+\]
+BSD 猜想预言 $L(s,E)$ 在 $s=1$ 处有一重零点；
+事实上这正是 Gross--Zagier--Kolyvagin 理论可完全处理的情形。
+\end{example}
+
+从全书主线来看，
+BSD 猜想的重要性并不只是“又一个深猜想”。
+真正关键的是：
+Eichler--Shimura 理论已经把 $E$ 的局部点数、模形式的 Hecke 特征值和解析函数 $L(s,E)$ 连成了一条链。
+因此即使我们暂时还不能证明 BSD 的全部内容，
+也已经获得了一种极强的思想框架：
+\[
+  \text{有限域点数}
+  \Longrightarrow
+  L(s,E)
+  \Longrightarrow
+  \text{有理点秩}.
+\]
+第\ref{ch:galois}章将继续把这条链推向 $\ell$-adic Galois 表示，
+那里 Frobenius 特征多项式会再次成为主角。

@@ -1,0 +1,241 @@
+\section{Eichler--Shimura 关系}
+\label{sec:eichler-shimura-relation}
+% ============================================================================
+
+现在该把前两节的动机与几何真正合起来了。
+第\ref{ch:jacobians}章已经告诉我们：
+每个权 $2$ 归一化特征新形式 $f$ 都给出一个模 Abel 簇
+\[
+  A_f=J_0(N)/I_fJ_0(N).
+\]
+但直到目前为止，$A_f$ 仍然只是“被 Hecke 特征值切出来的一块 Jacobian”。
+如果我们希望它真正成为椭圆曲线模性的桥梁，
+就必须回答一个更硬的问题：
+\emph{$A_f$ 在每个素数处的局部 zeta 因子，是否真的由 $f$ 的系数 $a_p(f)$ 控制？}
+
+\textbf{我们遇到了什么问题？}
+Hecke 代数在复微分上作用，
+Frobenius 却在有限域约化后的 Tate 模上作用。
+两者不仅定义不同，
+连所在空间都不同。
+若没有某种比较定理，
+我们根本无法把“$T_p$ 的特征值是 $a_p(f)$”改写成“Frobenius 的特征值决定 $L_p(s,A_f)$”。
+这正是上一节模 $p$ 版 Eichler--Shimura 关系的意义：
+它把 Hecke 算子直接写成 Frobenius 与其对偶的和，
+于是一个解析特征值问题立刻变成了局部 zeta 因子的线性代数问题。
+
+\textbf{核心思想是什么？}
+把 $V_\ell J_0(N)$ 按 Hecke 特征值分解后，
+与 $f$ 对应的那一块正是 $V_\ell A_f$。
+在这块空间上，$T_p$ 的作用等于标量 $a_p(f^\sigma)$；
+而另一方面，由上一节的结果，
+同一个 $T_p$ 也等于 $\Frob_p+p\Frob_p^{-1}$。
+因此 Frobenius 的特征值 $\alpha_{p,\sigma},\beta_{p,\sigma}$ 必须满足
+\[
+  \alpha_{p,\sigma}+\beta_{p,\sigma}=a_p(f^\sigma),
+  \qquad
+  \alpha_{p,\sigma}\beta_{p,\sigma}=p.
+\]
+这恰好就是局部 Euler 因子的二次分母。
+
+\textbf{引入之后能得到什么？}
+一旦完成这一步，
+模 Abel 簇 $A_f$ 的 Hasse--Weil $L$-函数就会分解成 $f$ 及其所有 Galois 共轭的模形式 $L$-函数之积：
+\[
+  L(s,A_f)=\prod_{\sigma:K_f\hookrightarrow\C}L(s,f^\sigma).
+\]
+特别地，当 $K_f=\Q$ 时，
+$A_f$ 是椭圆曲线，且
+\[
+  L(s,A_f)=L(s,f).
+\]
+这正是“椭圆曲线来自模形式”在 $L$-函数层面的精确表达。
+
+\input{figures/ch08-l-bridge}
+
+先把局部 $L$-因子写成 Frobenius 特征多项式。
+
+\begin{definition}[Abel 簇的局部 $L$-因子]
+\label{def:ch08-local-factor-abelian}
+设 $A/\Q$ 是维数为 $g$ 的 Abel 簇，$p$ 是一个好素数，取 $\ell\neq p$。
+记
+\[
+  V_\ell A = T_\ell A\otimes_{\Z_\ell}\Q_\ell.
+\]
+则 $A$ 在 $p$ 处的局部 $L$-因子定义为
+\[
+  L_p(s,A)=\det\bigl(1-\Frob_p p^{-s}\mid V_\ell A\bigr)^{-1}.
+\]
+它与 $\ell$ 的选择无关。
+\end{definition}
+
+\begin{proposition}[$f$-等特征部分上的 Hecke 作用]
+\label{prop:ch08-f-isotypic}
+设 $f\in \Sk_2(\GammaO(N))$ 是归一化特征新形式，系数域为 $K_f$。
+则
+\[
+  V_\ell A_f\otimes_{\Q_\ell}\overline{\Q}_\ell
+\]
+按嵌入 $\sigma:K_f\hookrightarrow\overline{\Q}_\ell$ 分解成二维子空间的直和，
+并且对每个 $n$，Hecke 算子 $T_n$ 在第 $\sigma$ 个二维子空间上的迹为
+\[
+  a_n(f^\sigma).
+\]
+特别地，$T_p$ 在这块空间上的特征多项式由各个 $a_p(f^\sigma)$ 决定。
+\end{proposition}
+
+\begin{proof}
+由第\ref{ch:jacobians}章的 \cref{prop:cotangent-of-Af} 与 \cref{thm:dim-Af}，
+$H^0(A_f,\Omega^1)$ 由 $f$ 的所有 Galois 共轭 $f^\sigma$ 张成。
+于是复上同调
+\[
+  H^1(A_f,\C)=H^{1,0}(A_f)\oplus H^{0,1}(A_f)
+\]
+分解成这些共轭及其复共轭对应的二维块。
+Hecke 算子保持 Hodge 分解，
+并在 $H^{1,0}$ 上按 $a_n(f^\sigma)$ 作用；
+比较定理把这组分解转移到 $\ell$-adic 上同调，
+得到
+\[
+  V_\ell A_f\otimes\overline{\Q}_\ell
+  \cong \bigoplus_{\sigma} V_{f^\sigma,\ell},
+\]
+其中每个 $V_{f^\sigma,\ell}$ 维数为 $2$。
+在这块空间上，$T_n$ 的迹正是 $a_n(f^\sigma)$，命题得证。
+\end{proof}
+
+\begin{theorem}[Eichler--Shimura]
+\label{thm:ch08-eichler-shimura}
+设 $f\in \Sk_2(\GammaO(N))$ 是归一化特征新形式，$A_f$ 是对应的模 Abel 簇。
+则
+\[
+  L(s,A_f)=\prod_{\sigma:K_f\hookrightarrow\C}L(s,f^\sigma).
+\]
+等价地，对每个好素数 $p\nmid N$，
+有
+\[
+  L_p(s,A_f)=\prod_{\sigma}
+  \frac{1}{1-a_p(f^\sigma)p^{-s}+p^{1-2s}},
+\]
+而对坏素数 $p\mid N$，有
+\[
+  L_p(s,A_f)=\prod_{\sigma}\frac{1}{1-a_p(f^\sigma)p^{-s}}.
+\]
+\end{theorem}
+
+\begin{proof}
+先设 $p\nmid N$。
+由上一节的 \cref{thm:ch08-modp-es}，
+在 $V_\ell J_0(N)$ 上有
+\[
+  T_p=\Frob_p+p\Frob_p^{-1}.
+\]
+把这个等式限制到 \cref{prop:ch08-f-isotypic} 的第 $\sigma$ 个二维子空间 $V_{f^\sigma,\ell}$ 上。
+设 Frobenius 在该空间上的两个特征值为 $\alpha_{p,\sigma},\beta_{p,\sigma}$。
+因为 $T_p$ 的迹等于 $a_p(f^\sigma)$，
+所以
+\[
+  \alpha_{p,\sigma}+\beta_{p,\sigma}=a_p(f^\sigma).
+\]
+又因为 $\beta_{p,\sigma}=p\alpha_{p,\sigma}^{-1}$，
+故
+\[
+  \alpha_{p,\sigma}\beta_{p,\sigma}=p.
+\]
+因此 Frobenius 的特征多项式为
+\[
+  X^2-a_p(f^\sigma)X+p.
+\]
+于是对应的局部因子是
+\[
+  \det\bigl(1-\Frob_p p^{-s}\mid V_{f^\sigma,\ell}\bigr)^{-1}
+  =\frac{1}{(1-\alpha_{p,\sigma}p^{-s})(1-\beta_{p,\sigma}p^{-s})}
+  =\frac{1}{1-a_p(f^\sigma)p^{-s}+p^{1-2s}}.
+\]
+把所有 $\sigma$ 相乘，便得 $L_p(s,A_f)$ 的好素数公式。
+
+再看 $p\mid N$。
+对权 $2$ 新形式，坏素数处的局部 Euler 因子由新形式理论给出为
+\[
+  L_p(s,f^\sigma)=\frac{1}{1-a_p(f^\sigma)p^{-s}}.
+\]
+另一方面，$A_f$ 在该处的局部 Galois 表示是半稳定的，
+其惯性不变量上的 Frobenius 只贡献一个一次因子，
+正好由同一个 $U_p$ 特征值 $a_p(f^\sigma)$ 给出。
+因此坏素数处的局部因子也逐个一致。
+
+把所有素数处的局部因子相乘，便得到
+\[
+  L(s,A_f)=\prod_{\sigma:K_f\hookrightarrow\C}L(s,f^\sigma).
+\]
+证毕。
+\end{proof}
+
+\textbf{注。}
+文献里常把上式口语写成
+\[
+  L(s,A_f)=L(s,f)^{[K_f:\Q]}.
+\]
+严格说来，精确公式应当写成对所有 Galois 共轭 $f^\sigma$ 的乘积；
+只有当 $K_f=\Q$ 时，
+这个记号才真的退化成单个函数的幂。
+
+\begin{corollary}[有理系数情形]
+\label{cor:ch08-rational-coefficients}
+若 $K_f=\Q$，则 $A_f$ 是椭圆曲线，且
+\[
+  L(s,A_f)=L(s,f).
+\]
+\end{corollary}
+
+\begin{proof}
+由第\ref{ch:jacobians}章的 \cref{cor:kf-q-elliptic}，$K_f=\Q$ 时 $A_f$ 是一维 Abel 簇，也就是椭圆曲线。
+再由 \cref{thm:ch08-eichler-shimura}，乘积只剩一个嵌入，故
+\[
+  L(s,A_f)=L(s,f).
+\]
+\end{proof}
+
+\begin{example}[级别 $11$ 的唯一新形式]
+\label{ex:ch08-level11}
+由 \cref{ex:level11-newform}，
+$\Sk_2(\GammaO(11))$ 的唯一归一化新形式是
+\[
+  f=q-2q^2-q^3+2q^4+q^5+\cdots.
+\]
+由 \cref{ex:level11-modular-abelian}，对应的模 Abel 簇就是椭圆曲线
+\[
+  E\colon y^2+y=x^3-x^2-10x-20.
+\]
+直接数点可得
+\[
+  \#E(\F_2)=5,
+  \qquad
+  \#E(\F_3)=5,
+  \qquad
+  \#E(\F_5)=5.
+\]
+所以
+\[
+  a_2(E)=2+1-5=-2,
+  \qquad
+  a_3(E)=3+1-5=-1,
+  \qquad
+  a_5(E)=5+1-5=1.
+\]
+这恰好与 $f$ 的 Fourier 系数
+\[
+  a_2(f)=-2,
+  \qquad a_3(f)=-1,
+  \qquad a_5(f)=1
+\]
+一致。
+因此在三个好素数处，
+$E$ 与 $f$ 的局部 Euler 因子已经逐项相同；
+Eichler--Shimura 定理则说明，这种一致不是偶然，
+而是所有素数处都成立。
+\end{example}
+
+到这里，模形式与椭圆曲线之间的桥梁已经搭成：
+下一节要利用它，把模形式 $L$-函数早已知道的解析延拓与函数方程，
+全部继承给椭圆曲线的 Hasse--Weil $L$-函数。

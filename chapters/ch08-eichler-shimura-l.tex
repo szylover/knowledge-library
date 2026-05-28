@@ -1,8 +1,29 @@
 % ============================================================================
 \chapter{Eichler-Shimura 关系与 $L$-函数}
+\label{ch:eichler-shimura}
 \label{ch:eichler-shimura-l}
 % ============================================================================
 % 对应 Diamond \& Shurman Chapter 8
 
-% TODO: 好约化、Eichler-Shimura 关系、
-%       模形式的 L-函数、函数方程、Hasse-Weil L-函数
+前一章把 $X_0(N)$、Hecke 对应与整模型放到了同一个代数几何框架里；
+本章要做的，是把这套几何真正推向算术结论：
+把 Hecke 特征值 $a_p(f)$ 与有限域上的 Frobenius 迹联系起来，
+再把这种联系改写成 $L$-函数恒等式。
+对权 $2$ 新形式 $f$，这正是模 Abel 簇 $A_f$ 与椭圆曲线模性的核心桥梁。
+
+本章结构如下：
+\begin{itemize}
+  \item \textbf{§\ref{sec:ch08-motivation}} 解释为什么 Hecke 特征值与点数公式本应属于同一故事。
+  \item \textbf{§\ref{sec:ch08-reduction-mod-p}} 讨论 $X_0(N)$ 在好素数处的模 $p$ 约化与 Frobenius 对应。
+  \item \textbf{§\ref{sec:eichler-shimura-relation}} 证明 Eichler--Shimura 关系，并推出 $L(s,A_f)$ 与 $L(s,f)$ 的一致。
+  \item \textbf{§\ref{sec:ch08-l-functions}} 用 Mellin 变换证明模形式 $L$-函数的解析延拓与函数方程。
+  \item \textbf{§\ref{sec:ch08-bsd}} 说明 Birch--Swinnerton-Dyer 猜想如何把 $L(1,E)$ 的零点阶数与有理点秩连接起来。
+  \item \textbf{§\ref{sec:ch08-exercises}} 通过显式点数、函数方程与挠群计算巩固全章内容。
+\end{itemize}
+
+\input{chapters/ch08/s1-motivation}
+\input{chapters/ch08/s2-reduction-mod-p}
+\input{chapters/ch08/s3-eichler-shimura}
+\input{chapters/ch08/s4-l-functions}
+\input{chapters/ch08/s5-bsd-conjecture}
+\input{chapters/ch08/s6-exercises}
