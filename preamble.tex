@@ -59,22 +59,22 @@
 % 定理环境（amsthm 定义 + tcolorbox 包装，不同类型不同颜色）
 % ============================================================================
 
-% --- 先用 amsthm 定义环境 ---
+% --- 先用 amsthm 定义环境（英文标题） ---
 \theoremstyle{plain}
-\newtheorem{theorem}{定理}[chapter]
-\newtheorem{proposition}[theorem]{命题}
-\newtheorem{lemma}[theorem]{引理}
-\newtheorem{corollary}[theorem]{推论}
-\newtheorem{conjecture}[theorem]{猜想}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
 
 \theoremstyle{definition}
-\newtheorem{definition}[theorem]{定义}
-\newtheorem{example}[theorem]{例}
-\newtheorem{exercise}{习题}[chapter]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}{Exercise}[chapter]
 
 \theoremstyle{remark}
-\newtheorem{remark}[theorem]{注记}
-\newtheorem{notation}[theorem]{记号}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{notation}[theorem]{Notation}
 
 % --- 用 tcolorbox 给每类环境加圆角方框 + 淡底色 ---
 % 定理/命题/引理/推论/猜想：蓝色圆角框
