@@ -2,41 +2,332 @@
 \label{sec:ch1-exercises}
 % ============================================================================
 
+第一章搭起了整本书的舞台：模群 $\SL_2(\Z)$ 的几何、同余子群的定义、模形式的变换律、椭圆曲线的基本性质。
+这些概念表面上彼此独立，但它们其实在回答同一个问题——
+如何用群的对称性来组织上半平面和格的算术。
+下面的习题帮你把这条主线真正走一遍：
+从具体的矩阵计算出发，一步步看清为什么模群的结构、基本域的形状、
+模形式的权、以及椭圆曲线的等价关系，都是同一个对称故事的不同侧面。
+
+做完这九题之后，你应当能够：
+在脑子里快速判断任何两个格点是否 $\SL_2(\Z)$-等价；
+用变换律推导出"奇权模形式只能是零"；
+计算小级别同余子群的指标和尖点数；
+并且理解 $j$-不变量为什么是椭圆曲线同构类的完全不变量。
+
+% -----------------------------------------------------------------------
 \begin{exercise}
-\label{ex:ch1-sl2z-1}
-验证 $S^2 = -I$，$(ST)^3 = -I$。
-由此说明 $\PSL_2(\Z) = \SL_2(\Z)/\{\pm I\}$ 的表现为
-$\langle \bar{S}, \bar{T} \mid \bar{S}^2 = (\bar{S}\bar{T})^3 = 1 \rangle$。
+\label{ex:ch1-sl2z-generators}
+设 $S = \begin{pmatrix}0 & -1 \\ 1 & 0\end{pmatrix}$，$T = \begin{pmatrix}1 & 1 \\ 0 & 1\end{pmatrix}$。
+\begin{enumerate}
+  \item[(1)] 直接验证 $S^2 = -I$ 以及 $(ST)^3 = -I$。
+  \item[(2)] 设 $\bar{S}, \bar{T}$ 是 $S, T$ 在 $\PSL_2(\Z) = \SL_2(\Z)/\{\pm I\}$ 中的像。
+    由 (1) 推导 $\bar{S}^2 = 1$ 以及 $(\bar{S}\bar{T})^3 = 1$。
+  \item[(3)] $\PSL_2(\Z)$ 的表现定理告诉我们这两个关系已经是完整表现，即
+    $\PSL_2(\Z) \cong \Z/2\Z * \Z/3\Z$（自由积）。
+    试举例说明，阶为 $2$ 的元素 $\bar{S}$ 与阶为 $3$ 的元素 $\bar{S}\bar{T}$
+    生成的自由积有多"大"：写出 $\PSL_2(\Z)$ 中 $5$ 个不同的元素。
+\end{enumerate}
 \end{exercise}
 
+\begin{proof}[解答]
+(1) 直接矩阵乘法：
+\[
+  S^2 = \begin{pmatrix}0&-1\\1&0\end{pmatrix}^2
+      = \begin{pmatrix}-1&0\\0&-1\end{pmatrix} = -I.
+\]
+$ST = \begin{pmatrix}0&-1\\1&0\end{pmatrix}\begin{pmatrix}1&1\\0&1\end{pmatrix}
+= \begin{pmatrix}0&-1\\1&1\end{pmatrix}$，于是
+\[
+  (ST)^2 = \begin{pmatrix}0&-1\\1&1\end{pmatrix}^2
+         = \begin{pmatrix}-1&-1\\1&0\end{pmatrix},
+  \quad
+  (ST)^3 = \begin{pmatrix}-1&-1\\1&0\end{pmatrix}\begin{pmatrix}0&-1\\1&1\end{pmatrix}
+         = \begin{pmatrix}-1&0\\0&-1\end{pmatrix} = -I.
+\]
+
+(2) 在 $\PSL_2(\Z)$ 中取模 $\{\pm I\}$：
+$\bar{S}^2 = \overline{S^2} = \overline{-I} = \bar{I}$（单位元），
+$(\bar{S}\bar{T})^3 = \overline{(ST)^3} = \overline{-I} = \bar{I}$。
+
+(3) 五个不同元素（取不同的字长）：
+\[
+  \bar{I},\quad \bar{S},\quad \bar{T},\quad \bar{S}\bar{T},\quad \bar{T}^2.
+\]
+因为 $\Z/2*\Z/3$ 是无限群，事实上 $\PSL_2(\Z)$ 也是无限群——光是 $\bar{T}^n$（$n \in \Z$）
+就给出无穷多个不同元素。
+\end{proof}
+
+% -----------------------------------------------------------------------
 \begin{exercise}
-\label{ex:ch1-fund-domain}
-画出 $\GammaO(2)$ 的基本域。
-（提示：$[\SL_2(\Z) : \GammaO(2)] = 3$，基本域是 $\SL_2(\Z)$ 基本域的
-$3$ 个拷贝的并。）
+\label{ex:ch1-fund-domain-action}
+回忆基本域 $\mathcal{F} = \{\tau \in \HH : |\tau| \geq 1,\; |\mathrm{Re}(\tau)| \leq \tfrac{1}{2}\}$。
+\begin{enumerate}
+  \item[(1)] 证明 $\mathcal{F}$ 中没有两个内点是 $\SL_2(\Z)$-等价的。
+    （提示：若 $\gamma\tau = \tau'$，比较 $\mathrm{Im}(\tau)$ 和 $\mathrm{Im}(\tau')$；
+    利用 $\mathrm{Im}(\gamma\tau) = \mathrm{Im}(\tau)/|c\tau+d|^2 \leq \mathrm{Im}(\tau)$
+    对 $|c\tau+d|\geq 1$ 成立。）
+  \item[(2)] 确定 $\mathcal{F}$ 的边界哪些点被等同：$\tau$ 与 $\tau+1$ 等同（通过 $T$），
+    以及 $\tau$ 与 $-1/\tau$ 等同（通过 $S$）的点各在哪里？
+\end{enumerate}
 \end{exercise}
 
+\begin{proof}[解答]
+(1) 设 $\tau, \tau' \in \mathcal{F}$ 是两个内点，$\gamma = \begin{pmatrix}a&b\\c&d\end{pmatrix}$，
+满足 $\gamma\tau = \tau'$。
+由变换公式 $\mathrm{Im}(\gamma\tau) = \mathrm{Im}(\tau)/|c\tau+d|^2$，
+若 $c \neq 0$，则 $|c\tau+d|^2 \geq (\mathrm{Im}(c\tau))^2 = c^2 \mathrm{Im}(\tau)^2$；
+当 $\mathrm{Im}(\tau) \geq \sqrt{3}/2$（即 $\tau$ 在 $\mathcal{F}$ 内部时）且 $|c| \geq 1$，
+有 $|c\tau+d| > 1$，所以 $\mathrm{Im}(\tau') < \mathrm{Im}(\tau)$。
+对称地，$\mathrm{Im}(\tau) < \mathrm{Im}(\tau')$，矛盾。
+若 $c = 0$，则 $\gamma = \pm\begin{pmatrix}1&n\\0&1\end{pmatrix}$，即 $\tau' = \tau+n$；
+两个内点的实部都在 $(-1/2,1/2)$ 内，只有 $n = 0$ 才能相差整数，故 $\tau = \tau'$。
+
+(2) 左边界 $\mathrm{Re}(\tau) = -1/2$ 与右边界 $\mathrm{Re}(\tau) = 1/2$ 上的点通过 $T$（$\tau \mapsto \tau+1$）等同。
+下圆弧 $|\tau| = 1$，$\mathrm{Re}(\tau) \leq 0$ 上的点 $\tau$ 与 $-1/\tau \in$ 右半弧通过 $S$（$\tau \mapsto -1/\tau$）等同。
+特殊点：$\tau = i$（满足 $S \cdot i = i$，固定点，阶 $2$），$\tau = e^{2\pi i/3}$（满足 $ST \cdot e^{2\pi i/3} = e^{2\pi i/3}$，固定点，阶 $3$）。
+\end{proof}
+
+% -----------------------------------------------------------------------
 \begin{exercise}
-\label{ex:ch1-cusps-gamma0}
-证明 $\GammaO(N)$ 在 $\mathbb{P}^1(\Q)$ 上的作用不再传递（当 $N > 1$）。
-确定 $\GammaO(N)$ 的尖点等价类个数（用 $N$ 的因子表达）。
+\label{ex:ch1-weight-odd}
+设 $f \in \Mk_k(\Gamma)$，其中 $-I \in \Gamma$（例如 $\Gamma = \SL_2(\Z)$）。
+\begin{enumerate}
+  \item[(1)] 利用 $-I \in \Gamma$ 以及模变换律 $f(\gamma\tau) = (c\tau+d)^k f(\tau)$，
+    证明若 $k$ 为奇数，则 $f \equiv 0$。
+  \item[(2)] 这说明对 $\GammaI(N)$（$N \geq 3$），奇权空间 $\Mk_k(\GammaI(N))$ 可以非零。
+    为什么？（提示：$-I \notin \GammaI(N)$ 当 $N \geq 3$。）
+\end{enumerate}
 \end{exercise}
 
+\begin{proof}[解答]
+(1) 取 $\gamma = -I = \begin{pmatrix}-1&0\\0&-1\end{pmatrix} \in \Gamma$。
+则 $(-I)\tau = \tau$（分子分母都乘 $-1$），且 $c\tau+d = -1$，故
+$(c\tau+d)^k = (-1)^k$。
+模变换律给出 $f(\tau) = f((-I)\tau) = (-1)^k f(\tau)$。
+若 $k$ 为奇数，则 $(-1)^k = -1$，所以 $f(\tau) = -f(\tau)$，即 $f \equiv 0$。
+
+(2) 当 $N \geq 3$ 时，$-I \notin \GammaI(N)$（因为 $-I \equiv -I_2 \not\equiv I_2 \pmod{N}$，
+而 $\GammaI(N)$ 要求矩阵模 $N$ 余单位矩阵）。
+因此论证在 (1) 中的第一步就失败了——$-I$ 不是允许的变换，我们无法推出 $f(\tau) = (-1)^k f(\tau)$。
+于是对 $\GammaI(N)$，奇权模形式空间可以非零。
+\end{proof}
+
+% -----------------------------------------------------------------------
 \begin{exercise}
-\label{ex:ch1-weight-k}
-证明：若 $k$ 为奇数，则 $\Mk_k(\SL_2(\Z)) = 0$。
-（提示：用 $-I \in \SL_2(\Z)$ 的变换律。）
+\label{ex:ch1-index-gamma0}
+\begin{enumerate}
+  \item[(1)] 证明 $[\SL_2(\Z) : \GammaO(N)] = N \prod_{p \mid N}(1 + p^{-1})$。
+    （提示：先证 $N = p^m$ 的情形，再用 CRT 拼合。）
+  \item[(2)] 计算 $[\SL_2(\Z):\GammaO(11)]$ 和 $[\SL_2(\Z):\GammaO(12)]$。
+  \item[(3)] 指标公式为何暗示了 $X_0(N)$ 的亏格与 $N$ 的大小有关？
+\end{enumerate}
 \end{exercise}
 
+\begin{proof}[解答]
+(1) 约化同态 $\SL_2(\Z) \to \SL_2(\Z/N\Z)$ 是满射（标准结论），
+其核为 $\Gamma(N)$，故 $[\SL_2(\Z):\Gamma(N)] = |\SL_2(\Z/N\Z)|$。
+而 $\GammaO(N)/\Gamma(N)$ 对应 $\SL_2(\Z/N\Z)$ 中下三角矩阵（$c \equiv 0 \pmod N$），
+即形如 $\begin{pmatrix}a&b\\0&d\end{pmatrix}$ 且 $ad \equiv 1$，个数为 $N\prod_{p\mid N}(1-p^{-2}) \cdot \varphi(N)^{-1} \cdot \varphi(N) = \ldots$
+（标准计算给出 $|\SL_2(\Z/N\Z)| / |\text{上三角子群}| = N\prod_{p\mid N}(1+p^{-1})$，见 Diamond-Shurman 第1章。）
+
+(2) $[\SL_2(\Z):\GammaO(11)] = 11(1+1/11) = 12$。
+$[\SL_2(\Z):\GammaO(12)] = 12(1+1/2)(1+1/3) = 12 \cdot 3/2 \cdot 4/3 = 24$。
+
+(3) 亏格公式（后续章节）表明 $g(X_0(N))$ 大致为 $\mu/12 + O(\sqrt{N})$，
+其中 $\mu = [\SL_2(\Z):\GammaO(N)]$。
+$\mu \sim N \prod_{p\mid N}(1+p^{-1})$ 随 $N$ 增长，故亏格也随 $N$ 增长——
+这正是 $N$ 越大，空间 $S_2(\GammaO(N))$ 越丰富的几何原因。
+\end{proof}
+
+% -----------------------------------------------------------------------
 \begin{exercise}
-\label{ex:ch1-surjection}
-证明约化同态 $\SL_2(\Z) \to \SL_2(\Z/N\Z)$ 是满射。
-（提示：先证 $N = p$ 素数的情形，利用 Hensel 引理或中国剩余定理。）
+\label{ex:ch1-cusps-count}
+设 $N \geq 1$。证明 $\GammaO(N)$ 的尖点（即 $\mathbb{P}^1(\Q)$ 的等价类）个数为
+\[
+  \sum_{d \mid N} \varphi\!\left(\gcd\!\left(d,\,\tfrac{N}{d}\right)\right),
+\]
+其中 $\varphi$ 是 Euler 函数。
+
+对 $N = 1, 2, 3, 4, 6, 11$ 分别计算尖点数，并与下方表格比对：
+
+\begin{center}
+\begin{tabular}{cccccccc}
+\hline
+$N$ & $1$ & $2$ & $3$ & $4$ & $6$ & $11$ \\
+\hline
+尖点数 & $1$ & $2$ & $2$ & $3$ & $4$ & $2$ \\
+\hline
+\end{tabular}
+\end{center}
 \end{exercise}
 
+\begin{proof}[解答]
+$\GammaO(N)$ 在 $\mathbb{P}^1(\Q)$ 上的轨道由以下参数化给出：
+$r/s \in \mathbb{P}^1(\Q)$（$\gcd(r,s)=1$）属于哪个轨道，
+由 $\gcd(s, N)$ 的值（即分母与 $N$ 的公因子）决定——不同的 $d = \gcd(s,N)$ 给出不同的轨道族。
+精细分析（参见 D\&S 定理3.8.3）得出轨道数恰为题目中的公式。
+
+逐一计算：
+\begin{itemize}
+  \item $N=1$：唯一因子 $d=1$，$\varphi(\gcd(1,1))=\varphi(1)=1$。尖点数 $= 1$。
+  \item $N=2$：$d=1$：$\varphi(\gcd(1,2))=\varphi(1)=1$；$d=2$：$\varphi(\gcd(2,1))=\varphi(1)=1$。共 $2$。
+  \item $N=3$：类似 $N=2$，得 $2$。
+  \item $N=4$：$d \in \{1,2,4\}$：$\varphi(\gcd(1,4))=1$，$\varphi(\gcd(2,2))=\varphi(2)=1$，$\varphi(\gcd(4,1))=1$。共 $3$。
+  \item $N=6$：$d \in \{1,2,3,6\}$：$1 + 1 + 1 + 1 = 4$。
+  \item $N=11$（素数）：$d \in \{1,11\}$：$\varphi(1)+\varphi(1)=2$。共 $2$。
+\end{itemize}
+与表格完全一致。\qedhere
+\end{proof}
+
+% -----------------------------------------------------------------------
 \begin{exercise}
-\label{ex:ch1-isogeny-degree}
-设 $\Lambda = \Z\tau + \Z$。证明：$\C/\Lambda$ 到自身的度为 $n$ 的同源
-恰好对应于满足 $\alpha\Lambda \subset \Lambda$、$[\Lambda : \alpha\Lambda] = n$
-的 $\alpha \in \C$。当 $\Lambda$ 没有复乘（CM）时，说明这样的 $\alpha$ 必为整数。
+\label{ex:ch1-surjection-slnz}
+证明约化同态 $\pi_N \colon \SL_2(\Z) \to \SL_2(\Z/N\Z)$ 是满射。
+
+（提示：
+先对 $N = p$ 素数证明。
+取 $\begin{pmatrix}a&b\\c&d\end{pmatrix} \in \SL_2(\Z/p\Z)$，分情形 $p \nmid c$ 和 $p \mid c$，构造原像。
+一般情形用中国剩余定理：$N = p_1^{r_1} \cdots p_s^{r_s}$，
+再用 $\SL_2(\Z/p^r\Z) \cong \SL_2(\Z/p\Z) \times \cdots$ 归约到素数情形。）
 \end{exercise}
+
+\begin{proof}[解答]
+\textbf{素数情形 $N = p$}：
+设 $A = \begin{pmatrix}a&b\\c&d\end{pmatrix} \in \SL_2(\Z/p\Z)$，$\det A = ad-bc \equiv 1 \pmod{p}$。
+
+\textit{情形一：$p \nmid c$。}取整数 $c', d'$ 满足 $c' \equiv c, d' \equiv d \pmod{p}$，$\gcd(c',p) = 1$。
+用 Bezout：存在 $a', b' \in \Z$ 使得 $a'd' - b'c' = 1$（因为 $\gcd(c',d') = 1$，由 $p \nmid c'$ 以及 $\gcd(\det A, p) = 1$）。
+则 $\begin{pmatrix}a'&b'\\c'&d'\end{pmatrix} \in \SL_2(\Z)$ 映射到 $A$。
+
+\textit{情形二：$p \mid c$，则 $p \nmid a$（否则 $\det A \equiv 0$）。}
+$A$ 乘以某个初等矩阵（列变换）可化归到情形一。
+
+\textbf{一般情形}：$N = \prod p_i^{r_i}$，由 CRT，$\Z/N\Z \cong \prod \Z/p_i^{r_i}\Z$，
+故 $\SL_2(\Z/N\Z) \cong \prod \SL_2(\Z/p_i^{r_i}\Z)$。
+对每个 $p^r$，提升定理（Hensel 引理的矩阵版本）给出 $\SL_2(\Z/p\Z) \cong \SL_2(\Z/p^r\Z)$（作为商）。
+因此 $\pi_N$ 是满射。\qedhere
+\end{proof}
+
+% -----------------------------------------------------------------------
+\begin{exercise}
+\label{ex:ch1-j-invariant}
+椭圆曲线 $E \colon y^2 = 4x^3 - g_2 x - g_3$（Weierstrass 形式）的 $j$-不变量定义为
+\[
+  j(E) = 1728 \cdot \frac{g_2^3}{g_2^3 - 27g_3^2}.
+\]
+\begin{enumerate}
+  \item[(1)] 对格 $\Lambda_\tau = \Z\tau + \Z$（$\tau \in \HH$），
+    我们有 $g_2(\Lambda_\tau) = 60 G_4(\tau)$ 和 $g_3(\Lambda_\tau) = 140 G_6(\tau)$，
+    其中 $G_k$ 是 Eisenstein 级数。
+    证明 $j(\tau) := j(\C/\Lambda_\tau)$ 满足模变换律 $j(\gamma\tau) = j(\tau)$ 对所有 $\gamma \in \SL_2(\Z)$。
+  \item[(2)] 证明 $j(\tau) = q^{-1} + 744 + 196884q + \cdots$（$q = e^{2\pi i\tau}$），其中 $q^{-1}$ 项说明 $j$ 在尖点 $i\infty$ 处有一个极点。
+    由此说明 $j \colon \mathcal{H}/\SL_2(\Z) \to \C$ 是双射（全纯同构 $X(1) \cong \mathbb{P}^1(\C)$）。
+  \item[(3)] 验证 $j(i) = 1728$ 和 $j(e^{2\pi i/3}) = 0$。这两个特殊值有什么几何意义？
+\end{enumerate}
+\end{exercise}
+
+\begin{proof}[解答]
+(1) $g_2(\Lambda_\tau)$ 和 $g_3(\Lambda_\tau)$ 分别是 $\Lambda_\tau$ 上的同一函数，而格 $\Lambda_{\gamma\tau} = (c\tau+d)^{-1}\Lambda_\tau$（相差一个非零复数倍）。
+格伸缩 $\Lambda \mapsto \lambda\Lambda$ 给出 $g_2(\lambda\Lambda) = \lambda^{-4}g_2(\Lambda)$，$g_3(\lambda\Lambda) = \lambda^{-6}g_3(\Lambda)$。
+代入 $\lambda = (c\tau+d)^{-1}$：
+\begin{align*}
+  g_2(\Lambda_{\gamma\tau}) &= (c\tau+d)^4 g_2(\Lambda_\tau),\\
+  g_3(\Lambda_{\gamma\tau}) &= (c\tau+d)^6 g_3(\Lambda_\tau).
+\end{align*}
+所以
+\[
+  j(\gamma\tau) = 1728\cdot\frac{g_2(\Lambda_{\gamma\tau})^3}{g_2(\Lambda_{\gamma\tau})^3 - 27g_3(\Lambda_{\gamma\tau})^2}
+  = 1728\cdot\frac{(c\tau+d)^{12}g_2^3}{(c\tau+d)^{12}(g_2^3 - 27g_3^2)}
+  = j(\tau).
+\]
+
+(2) 利用 $G_4(\tau) = \frac{2\zeta(4)}{(2\pi i)^4} + O(q)$ 及类似展开，
+可以验证判别式 $\Delta = g_2^3 - 27g_3^2 = (2\pi)^{12}q\prod(1-q^n)^{24}$（稍后在 Eisenstein 章节详述），
+所以 $\Delta$ 在 $q = 0$ 处有一阶零点，故 $j = 1728 g_2^3/\Delta$ 在 $q=0$ 处有一阶极点，
+展开即得 $j = q^{-1} + 744 + 196884q + \cdots$。
+$j$ 是 $\mathcal{H}/\SL_2(\Z) = X(1)$ 上的亚纯函数，在尖点有唯一极点（一阶），
+由黎曼面上有理函数的次数等于极点个数，$j$ 的次数为 $1$，即 $j \colon X(1) \to \mathbb{P}^1(\C)$ 是双射。
+
+(3) 在 $\tau = i$ 处：$S \cdot i = i$，即 $i$ 是 $S$ 的固定点。
+$g_3(i) = 0$（因为晶格 $\Lambda_i = \Z i + \Z$ 有4重对称性 $i\Lambda_i = \Lambda_i$，而 $g_3$ 是权 $6$ 的量，$(i)^6 g_3 = g_3 \Rightarrow g_3 = 0$）。
+故 $j(i) = 1728 \cdot g_2^3/g_2^3 = 1728$。
+
+在 $\tau = \omega = e^{2\pi i/3}$ 处：$\omega$ 有3重对称性 $\omega\Lambda_\omega = \Lambda_\omega$，
+类似地 $g_2(\omega) = 0$（权4量在 $(\omega)^4 = \omega$ 作用下得 $g_2 = \omega g_2$，故 $g_2=0$），
+$j(\omega) = 0$。
+
+几何意义：$j(i) = 1728$ 是具有额外自同构 $z \mapsto iz$（阶4，等价类中只有 $i$）的椭圆曲线；
+$j(\omega) = 0$ 是具有自同构 $z \mapsto \omega z$（阶6，等价类中只有 $\omega$）的椭圆曲线。
+\end{proof}
+
+% -----------------------------------------------------------------------
+\begin{exercise}
+\label{ex:ch1-modular-form-graded-ring}
+设 $E_4, E_6 \in \Mk_*(\SL_2(\Z))$ 是标准化 Eisenstein 级数（前几章将详细构造，
+此处只用它们的基本性质：$E_4$ 是权 $4$ 模形式，$E_6$ 是权 $6$ 模形式，$\Delta = (E_4^3 - E_6^2)/1728$ 是权 $12$ 的尖点形式）。
+\begin{enumerate}
+  \item[(1)] 利用维数公式 $\dim\Mk_k(\SL_2(\Z)) = \lfloor k/12\rfloor + \epsilon_k$
+    （$\epsilon_k = 0$ 若 $k \equiv 2 \pmod{12}$，否则 $\epsilon_k = 1$），
+    列出 $k = 4, 6, 8, 10, 12, 14$ 时 $\dim\Mk_k$ 的值。
+  \item[(2)] 说明为什么 $E_4^2 \in \Mk_8$ 以及 $E_4 E_6 \in \Mk_{10}$ 是这些空间的基底。
+  \item[(3)] 证明 $\Delta \in \Sk_{12}(\SL_2(\Z))$ 是非零的，
+    并由 $\dim\Sk_{12} = 1$ 推断 $\Sk_{12}$ 由 $\Delta$ 生成。
+\end{enumerate}
+\end{exercise}
+
+\begin{proof}[解答]
+(1)
+\[
+\begin{array}{c|cccccc}
+k & 4 & 6 & 8 & 10 & 12 & 14 \\
+\hline
+\dim\Mk_k & 1 & 1 & 1 & 1 & 2 & 1
+\end{array}
+\]
+（详细推导见第5章维数公式。）
+
+(2) $E_4^2$ 有权 $4+4=8$，全纯，在尖点有界（因为 $E_4$ 在尖点有界），
+所以 $E_4^2 \in \Mk_8$。$\dim\Mk_8 = 1$ 且 $E_4^2 \neq 0$（它的常数项为 $1^2 = 1 \neq 0$），
+故 $E_4^2$ 是 $\Mk_8$ 的基底。类似地，$E_4 E_6 \in \Mk_{10}$，$\dim\Mk_{10}=1$，常数项 $1 \neq 0$，故是 $\Mk_{10}$ 的基底。
+
+(3) $\Delta$ 的 $q$-展开为 $\Delta = q - 24q^2 + 252q^3 - \cdots$（Ramanujan $\tau$ 函数），
+在 $q = 0$ 处消失，故 $\Delta$ 是尖点形式。又 $\Delta \neq 0$（首项系数 $1 \neq 0$）。
+$\dim\Sk_{12} = \dim\Mk_{12} - 1 = 2 - 1 = 1$（减去非尖点的 Eisenstein 部分一维），
+故 $\Sk_{12} = \C \cdot \Delta$。\qedhere
+\end{proof}
+
+% -----------------------------------------------------------------------
+\begin{exercise}
+\label{ex:ch1-isogeny-and-endo}
+设 $\Lambda = \Z\tau + \Z \subset \C$，$E = \C/\Lambda$。
+\begin{enumerate}
+  \item[(1)] 证明：$\C$ 到 $\C$ 的映射 $z \mapsto \alpha z$（$\alpha \in \C^\times$）
+    诱导出椭圆曲线之间的同源 $E \to \C/(\alpha\Lambda)$，当且仅当 $\alpha\Lambda \supset \Lambda$
+    （即 $\alpha^{-1}\Lambda \subset \Lambda$，或等价地 $\alpha^{-1} \in \mathrm{End}(E) \otimes \Q$）。
+  \item[(2)] 证明 $\mathrm{End}(E) = \Z$，当 $\tau$ 不是任何虚二次域中的代数整数时（即 $E$ 没有复乘）。
+    （提示：若 $\alpha\Lambda \subset \Lambda$，写出 $\alpha\tau = a\tau+b$，$\alpha \cdot 1 = c\tau+d$，
+    联立并消去 $\tau$，说明 $\alpha$ 满足整系数二次方程；若 $\tau \notin \overline{\Q}$ 或 $\tau$ 不是虚二次整数，则 $\alpha \in \Z$。）
+  \item[(3)] 计算 $\mathrm{End}(E)$，当 $\tau = i$（即 $\Lambda = \Z i + \Z$，$E$ 是 Gaussian 整数格）。
+    验证 $\alpha = i$ 给出 $E$ 到自身的四阶自同构。
+\end{enumerate}
+\end{exercise}
+
+\begin{proof}[解答]
+(1) $z \mapsto \alpha z$ 在 $\C$ 上是线性映射，它诱导 $E = \C/\Lambda \to \C/(\alpha\Lambda)$ 当且仅当
+将 $\Lambda$ 中的点映到 $\alpha\Lambda$ 中，即 $\alpha\Lambda \subset \alpha\Lambda$（自动成立）。
+但我们要的是群同态 $\C/\Lambda \to \C/\Lambda$（同一个椭圆曲线），
+即需要 $\alpha\Lambda \subset \Lambda$。这正是 $\alpha \in \mathrm{End}(E) \otimes_\Z \Q$ 中整数部分的条件。
+
+(2) 若 $\alpha\Lambda \subset \Lambda$，则 $\alpha\tau = a\tau + b$ 和 $\alpha \cdot 1 = c\tau + d$，
+其中 $a,b,c,d \in \Z$。第二个方程：$\alpha = c\tau + d$。代入第一个：
+$(c\tau+d)\tau = a\tau + b$，即 $c\tau^2 + (d-a)\tau - b = 0$。
+若 $c = 0$，则 $\alpha = d \in \Z$。若 $c \neq 0$，则 $\tau$ 满足整系数二次方程，
+即 $\tau$ 是某虚二次域中的代数整数（CM情形）。在非 CM 情形下 $c = 0$，故 $\alpha \in \Z$，$\mathrm{End}(E) = \Z$。
+
+(3) $\Lambda = \Z i + \Z$。令 $\alpha = i$：$i \cdot (i) = -1 \in \Lambda$，$i \cdot 1 = i \in \Lambda$，
+故 $i\Lambda \subset \Lambda$。映射 $z \mapsto iz$ 是 $E$ 的自同构（因为它是双射同源）。
+它的阶是 $4$（$i^4 = 1$，$i^2 = -1 \neq 1$，$i \neq 1$）。
+因此 $\mathrm{End}(\C/(\Z i+\Z)) \supseteq \Z[i]$（Gaussian 整数）；
+事实上 $\mathrm{End}(E) \cong \Z[i]$（虚二次数域 $\Q(i)$ 的整数环）。\qedhere
+\end{proof}
