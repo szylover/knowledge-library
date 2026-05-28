@@ -3,40 +3,623 @@
 \label{ch:complex-analysis}
 % ============================================================================
 
-本章回顾模形式理论所需的复分析背景。读者若已熟悉这些内容，可跳至
-\cref{ch:elliptic-curves-intro}。
+本章回顾模形式理论所需的复分析背景知识。我们将从全纯函数出发，经过
+Laurent 级数与留数理论，介绍黎曼面的基本概念，最后讨论椭圆函数——它们
+是模形式理论的直接前身。读者若已熟悉这些内容，可跳至\cref{ch:elliptic-curves-intro}。
 
-% ----------------------------------------------------------------------------
+% ============================================================================
 \section{全纯函数与亚纯函数}
-% ----------------------------------------------------------------------------
+\label{sec:holomorphic}
+% ============================================================================
 
 \begin{definition}[全纯函数]
+\label{def:holomorphic}
 设 $U \subset \C$ 为开集，函数 $f\colon U \to \C$ 在 $z_0 \in U$ 处
 \textbf{全纯}（holomorphic），若极限
 \[
   f'(z_0) = \lim_{h \to 0} \frac{f(z_0 + h) - f(z_0)}{h}
 \]
-存在。若 $f$ 在 $U$ 上每一点都全纯，则称 $f$ 在 $U$ 上全纯。
+存在（其中 $h \in \C$，$h \to 0$ 沿任意方向趋近）。
+若 $f$ 在 $U$ 上每一点都全纯，则称 $f$ 在 $U$ 上全纯，
+记全纯函数的集合为 $\mathcal{O}(U)$。
 \end{definition}
 
-% ----------------------------------------------------------------------------
+\begin{remark}
+全纯性比实可微性强得多：实函数的可微性只要求沿实轴方向的极限存在，
+而全纯性要求沿 $\C$ 中\emph{所有}方向的极限都存在且一致。
+这一要求的等价形式就是 Cauchy-Riemann 方程。
+\end{remark}
+
+\begin{theorem}[Cauchy-Riemann 方程]
+\label{thm:cauchy-riemann}
+设 $f = u + iv\colon U \to \C$，其中 $u, v\colon U \to \R$ 是实值函数。
+则 $f$ 在 $z_0 = x_0 + iy_0$ 处全纯，当且仅当 $u, v$ 在 $(x_0, y_0)$
+处实可微，且满足
+\[
+  \frac{\partial u}{\partial x} = \frac{\partial v}{\partial y},
+  \qquad
+  \frac{\partial u}{\partial y} = -\frac{\partial v}{\partial x}.
+\]
+\end{theorem}
+
+\begin{proof}
+设 $f$ 在 $z_0$ 处全纯，即 $f'(z_0)$ 存在。
+令 $h = \Delta x$（纯实方向），则
+\[
+  f'(z_0) = \lim_{\Delta x \to 0}
+  \frac{f(z_0 + \Delta x) - f(z_0)}{\Delta x}
+  = \frac{\partial u}{\partial x}(x_0, y_0)
+  + i\frac{\partial v}{\partial x}(x_0, y_0).
+\]
+令 $h = i\Delta y$（纯虚方向），则
+\[
+  f'(z_0) = \lim_{\Delta y \to 0}
+  \frac{f(z_0 + i\Delta y) - f(z_0)}{i\Delta y}
+  = \frac{1}{i}\left(
+    \frac{\partial u}{\partial y}(x_0, y_0)
+    + i\frac{\partial v}{\partial y}(x_0, y_0)
+  \right)
+  = \frac{\partial v}{\partial y}(x_0, y_0)
+  - i\frac{\partial u}{\partial y}(x_0, y_0).
+\]
+由两式的实部与虚部分别相等，得
+$\frac{\partial u}{\partial x} = \frac{\partial v}{\partial y}$ 和
+$\frac{\partial v}{\partial x} = -\frac{\partial u}{\partial y}$。
+
+反方向：设 $u, v$ 在 $(x_0, y_0)$ 处实可微并满足 Cauchy-Riemann 方程。
+由实可微性，
+\begin{align}
+  u(x_0 + \Delta x, y_0 + \Delta y) &= u(x_0, y_0)
+    + u_x \Delta x + u_y \Delta y + o(|h|), \\
+  v(x_0 + \Delta x, y_0 + \Delta y) &= v(x_0, y_0)
+    + v_x \Delta x + v_y \Delta y + o(|h|),
+\end{align}
+其中 $h = \Delta x + i\Delta y$。因此
+\begin{align}
+  f(z_0 + h) - f(z_0)
+  &= (u_x + iv_x)\Delta x + (u_y + iv_y)\Delta y + o(|h|) \\
+  &= (u_x + iv_x)\Delta x + (-v_x + iu_x)\Delta y + o(|h|)
+    \quad\text{（代入 CR 方程）} \\
+  &= (u_x + iv_x)(\Delta x + i\Delta y) + o(|h|) \\
+  &= (u_x + iv_x) h + o(|h|).
+\end{align}
+故 $f'(z_0) = u_x + iv_x$ 存在。
+\end{proof}
+
+\begin{definition}[亚纯函数]
+\label{def:meromorphic}
+设 $U \subset \C$ 为开集。函数 $f\colon U \to \C \cup \{\infty\}$ 在 $U$ 上
+\textbf{亚纯}（meromorphic），若存在 $U$ 的一个离散子集 $S$，使得
+$f$ 在 $U \setminus S$ 上全纯，且 $f$ 在 $S$ 中每一点处有一个\textbf{极点}
+（pole）。
+\end{definition}
+
+\begin{definition}[极点]
+\label{def:pole}
+$f$ 在 $z_0$ 处有 $m$ 阶\textbf{极点}（$m \geq 1$），若
+\[
+  \lim_{z \to z_0} (z - z_0)^m f(z)
+\]
+存在且非零。等价地，在 $z_0$ 的某去心邻域内 $f$ 可以写成
+\[
+  f(z) = \frac{a_{-m}}{(z - z_0)^m} + \cdots + \frac{a_{-1}}{z - z_0}
+  + g(z),
+\]
+其中 $g$ 在 $z_0$ 处全纯，$a_{-m} \neq 0$。
+\end{definition}
+
+\begin{theorem}[全纯函数的基本性质]
+\label{thm:holomorphic-properties}
+设 $f \in \mathcal{O}(U)$。则：
+\begin{enumerate}
+  \item $f$ 无穷次可微（光滑）；
+  \item $f$ 在 $U$ 中每一点的某邻域内可以展开为收敛的幂级数
+    （即 $f$ 是解析的）；
+  \item （Cauchy 积分公式）若 $\overline{D(z_0, r)} \subset U$，则对
+    $z \in D(z_0, r)$，
+    \[
+      f(z) = \frac{1}{2\pi i} \oint_{|w - z_0| = r}
+      \frac{f(w)}{w - z}\, dw;
+    \]
+  \item （最大模原理）若 $|f|$ 在 $U$ 的连通分支内某点取到最大值，
+    则 $f$ 在该连通分支上为常数；
+  \item （Liouville 定理）若 $f$ 在整个 $\C$ 上全纯且有界，则 $f$ 为常数。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+这些是复分析的标准结果，我们逐一给出证明要点。
+
+\textbf{(1) 和 (2)}：由 Cauchy 积分公式（先假设 (3)），对 $|z - z_0| < r$，
+\[
+  f(z) = \frac{1}{2\pi i} \oint_{|w-z_0|=r} \frac{f(w)}{w - z}\, dw
+  = \frac{1}{2\pi i} \oint_{|w-z_0|=r}
+    \frac{f(w)}{(w - z_0)\bigl(1 - \frac{z - z_0}{w - z_0}\bigr)}\, dw.
+\]
+由 $|z - z_0| < r = |w - z_0|$，几何级数收敛：
+\[
+  \frac{1}{1 - \frac{z-z_0}{w-z_0}}
+  = \sum_{n=0}^{\infty} \frac{(z - z_0)^n}{(w - z_0)^n}.
+\]
+逐项积分（一致收敛保证合法性）得
+\[
+  f(z) = \sum_{n=0}^{\infty} a_n (z - z_0)^n,
+  \quad a_n = \frac{1}{2\pi i} \oint_{|w-z_0|=r}
+  \frac{f(w)}{(w - z_0)^{n+1}}\, dw.
+\]
+幂级数在收敛圆盘内无穷次可微，故 $f$ 光滑，且 $f^{(n)}(z_0) = n!\, a_n$。
+
+\textbf{(3) Cauchy 积分公式}：设 $\gamma$ 为 $|w - z_0| = r$（逆时针）。
+函数 $g(w) = \frac{f(w)}{w - z}$ 在 $\overline{D(z_0, r)} \setminus \{z\}$
+上全纯。取 $z$ 周围半径 $\varepsilon$ 的小圆 $\gamma_\varepsilon$，
+由 Cauchy 定理（在去掉小圆盘的区域上 $g$ 全纯），
+\[
+  \oint_\gamma g(w)\, dw = \oint_{\gamma_\varepsilon} g(w)\, dw.
+\]
+在 $\gamma_\varepsilon$ 上，$w = z + \varepsilon e^{i\theta}$，当 $\varepsilon \to 0$ 时
+\[
+  \oint_{\gamma_\varepsilon} \frac{f(w)}{w - z}\, dw
+  = \int_0^{2\pi} \frac{f(z + \varepsilon e^{i\theta})}{\varepsilon e^{i\theta}}
+    \cdot i\varepsilon e^{i\theta}\, d\theta
+  \to 2\pi i \cdot f(z).
+\]
+
+\textbf{(4) 最大模原理}：设 $|f(z_0)| \geq |f(z)|$ 对所有 $z$ 在 $z_0$ 的
+某连通邻域 $V$ 中成立。由 Cauchy 积分公式，对 $0 < \rho < r$，
+\[
+  f(z_0) = \frac{1}{2\pi} \int_0^{2\pi} f(z_0 + \rho e^{i\theta})\, d\theta.
+\]
+取模，由三角不等式
+\[
+  |f(z_0)| \leq \frac{1}{2\pi} \int_0^{2\pi}
+  |f(z_0 + \rho e^{i\theta})|\, d\theta \leq |f(z_0)|.
+\]
+等号成立要求 $|f(z_0 + \rho e^{i\theta})| = |f(z_0)|$ 对几乎所有 $\theta$ 成立
+（连续函数的均值等于最大值，则函数恒等于最大值）。
+由此 $|f|$ 在 $D(z_0, r)$ 上为常数，进而（开映射定理）$f$ 在 $V$ 上为常数。
+由连通性推广到整个连通分支。
+
+\textbf{(5) Liouville 定理}：由 Cauchy 不等式，若 $|f(z)| \leq M$ 对所有 $z$ 成立，
+则对 $n \geq 1$，
+\[
+  |f^{(n)}(z_0)| = \left|\frac{n!}{2\pi i}
+  \oint_{|w-z_0|=R} \frac{f(w)}{(w-z_0)^{n+1}}\, dw\right|
+  \leq \frac{n!\, M}{R^n}.
+\]
+令 $R \to \infty$，得 $f^{(n)}(z_0) = 0$ 对所有 $n \geq 1$，故 $f$ 为常数。
+\end{proof}
+
+
+% ============================================================================
 \section{Laurent 级数与留数}
-% ----------------------------------------------------------------------------
+\label{sec:laurent}
+% ============================================================================
 
-% TODO: Laurent 展开、留数定理
+\begin{theorem}[Laurent 展开]
+\label{thm:laurent}
+设 $f$ 在环形区域 $A = \{z \in \C \mid r_1 < |z - z_0| < r_2\}$
+（$0 \leq r_1 < r_2 \leq \infty$）上全纯。则 $f$ 可以唯一地展开为
+\textbf{Laurent 级数}：
+\[
+  f(z) = \sum_{n=-\infty}^{\infty} a_n (z - z_0)^n,
+\]
+在 $A$ 内绝对且一致收敛（在紧子集上），其系数为
+\[
+  a_n = \frac{1}{2\pi i} \oint_\gamma
+  \frac{f(w)}{(w - z_0)^{n+1}}\, dw,
+\]
+其中 $\gamma$ 是 $A$ 中任一围绕 $z_0$ 的正向简单闭曲线。
+\end{theorem}
 
-% ----------------------------------------------------------------------------
+\begin{proof}
+设 $z \in A$，选 $\rho_1, \rho_2$ 使得 $r_1 < \rho_1 < |z - z_0| < \rho_2 < r_2$。
+设 $C_1, C_2$ 分别为以 $z_0$ 为圆心、半径 $\rho_1, \rho_2$ 的正向圆。
+由 Cauchy 积分公式在环形区域中的推广，
+\[
+  f(z) = \frac{1}{2\pi i} \oint_{C_2} \frac{f(w)}{w - z}\, dw
+       - \frac{1}{2\pi i} \oint_{C_1} \frac{f(w)}{w - z}\, dw.
+\]
+
+\textbf{外圆 $C_2$ 的贡献}：在 $C_2$ 上 $|w - z_0| = \rho_2 > |z - z_0|$，故
+\[
+  \frac{1}{w - z} = \frac{1}{(w-z_0) - (z-z_0)}
+  = \frac{1}{w-z_0} \sum_{n=0}^{\infty}
+    \left(\frac{z - z_0}{w - z_0}\right)^n.
+\]
+逐项积分得 $\sum_{n=0}^{\infty} a_n (z - z_0)^n$，其中
+$a_n = \frac{1}{2\pi i} \oint_{C_2} \frac{f(w)}{(w-z_0)^{n+1}}\, dw$。
+
+\textbf{内圆 $C_1$ 的贡献}：在 $C_1$ 上 $|w - z_0| = \rho_1 < |z - z_0|$，故
+\[
+  \frac{-1}{w - z} = \frac{1}{(z - z_0) - (w - z_0)}
+  = \frac{1}{z - z_0} \sum_{m=0}^{\infty}
+    \left(\frac{w - z_0}{z - z_0}\right)^m.
+\]
+逐项积分得
+$\sum_{m=0}^{\infty} b_m (z - z_0)^{-m-1}$，其中
+$b_m = \frac{1}{2\pi i} \oint_{C_1} f(w)(w - z_0)^m\, dw$。
+令 $n = -m - 1$（即 $m = -n - 1$），则此部分等于
+$\sum_{n=-\infty}^{-1} a_n (z - z_0)^n$，其中
+$a_n = \frac{1}{2\pi i} \oint_{C_1} \frac{f(w)}{(w-z_0)^{n+1}}\, dw$。
+
+由 Cauchy 定理，积分路径可以在 $A$ 内连续变形而不改变值，故两部分的
+$a_n$ 公式可以统一为在 $A$ 中任意正向简单闭曲线 $\gamma$ 上的积分。
+
+\textbf{唯一性}：设 $f(z) = \sum_{n} b_n (z - z_0)^n$ 是另一个 Laurent 展开。
+对固定的 $m$，将两边乘以 $(z - z_0)^{-m-1}$ 后沿 $\gamma$ 积分，由一致收敛
+性可以逐项积分，只有 $n = m$ 项有非零贡献，得 $b_m = a_m$。
+\end{proof}
+
+\begin{definition}[留数]
+\label{def:residue}
+设 $f$ 在 $z_0$ 的去心邻域内全纯，Laurent 展开为
+$f(z) = \sum_{n=-\infty}^{\infty} a_n(z - z_0)^n$。
+$f$ 在 $z_0$ 处的\textbf{留数}（residue）定义为
+\[
+  \Res_{z = z_0} f(z) = a_{-1}.
+\]
+\end{definition}
+
+\begin{theorem}[留数定理]
+\label{thm:residue}
+设 $U \subset \C$ 为开集，$f$ 在 $U$ 上除有限个孤立奇点
+$z_1, \ldots, z_k$ 外全纯。设 $\gamma$ 为 $U \setminus \{z_1, \ldots, z_k\}$
+中的正向简单闭曲线，且 $z_1, \ldots, z_k$ 都在 $\gamma$ 的内部。则
+\[
+  \frac{1}{2\pi i} \oint_\gamma f(z)\, dz
+  = \sum_{j=1}^{k} \Res_{z = z_j} f(z).
+\]
+\end{theorem}
+
+\begin{proof}
+在每个 $z_j$ 周围取足够小的正向圆 $C_j$（互不相交且都在 $\gamma$ 内部）。
+由 Cauchy 定理，$f$ 在 $\gamma$ 围成的区域去掉 $k$ 个小圆盘后全纯，故
+\[
+  \oint_\gamma f(z)\, dz = \sum_{j=1}^{k} \oint_{C_j} f(z)\, dz.
+\]
+对每个 $C_j$，将 $f$ 在 $z_j$ 处的 Laurent 展开代入并逐项积分。
+对 $n \neq -1$，$(z - z_j)^n$ 在 $C_j$ 上的积分为零
+（因为 $(z - z_j)^n$ 有原函数 $\frac{(z-z_j)^{n+1}}{n+1}$）。
+对 $n = -1$，
+\[
+  \oint_{C_j} \frac{dz}{z - z_j} = 2\pi i.
+\]
+因此 $\oint_{C_j} f(z)\, dz = 2\pi i \cdot a_{-1}^{(j)} = 2\pi i \cdot \Res_{z=z_j} f(z)$。
+\end{proof}
+
+\begin{example}
+\label{ex:residue-computation}
+计算 $f(z) = \frac{e^z}{z^2(z-1)}$ 在 $z = 0$ 和 $z = 1$ 处的留数。
+
+\textbf{在 $z = 0$ 处}（二阶极点）：
+$f(z) = \frac{1}{z^2} \cdot \frac{e^z}{z - 1}$。
+令 $g(z) = \frac{e^z}{z - 1}$，则
+$\Res_{z=0} f(z) = g'(0)$（二阶极点公式）。
+计算 $g(z) = \frac{e^z}{z-1}$，
+\[
+  g'(z) = \frac{e^z(z - 1) - e^z}{(z-1)^2} = \frac{e^z(z - 2)}{(z-1)^2}.
+\]
+故 $g'(0) = \frac{1 \cdot (-2)}{1} = -2$，即 $\Res_{z=0} f = -2$。
+
+\textbf{在 $z = 1$ 处}（一阶极点）：
+$\Res_{z=1} f = \lim_{z \to 1} (z - 1) f(z) = \frac{e^1}{1^2} = e$。
+\end{example}
+
+
+% ============================================================================
 \section{黎曼面初步}
-% ----------------------------------------------------------------------------
+\label{sec:riemann-surfaces}
+% ============================================================================
 
-% TODO: 黎曼面、紧化、亏格
+黎曼面是复分析通向模形式和代数几何的桥梁。后续章节中，模曲线
+$X_0(N)$、$X_1(N)$ 等都是紧黎曼面的例子。
 
-% ----------------------------------------------------------------------------
+\begin{definition}[黎曼面]
+\label{def:riemann-surface}
+一个\textbf{黎曼面}（Riemann surface）是一个连通的 Hausdorff 拓扑空间 $X$，
+配备一个\textbf{复解析图册}（complex analytic atlas）
+$\{(U_\alpha, \varphi_\alpha)\}_{\alpha \in A}$，其中：
+\begin{enumerate}
+  \item $\{U_\alpha\}$ 是 $X$ 的开覆盖；
+  \item 每个 $\varphi_\alpha\colon U_\alpha \to V_\alpha \subset \C$
+    是到 $\C$ 的开子集的同胚；
+  \item \textbf{转换函数}（transition functions）
+    \[
+      \varphi_\beta \circ \varphi_\alpha^{-1}\colon
+      \varphi_\alpha(U_\alpha \cap U_\beta) \to
+      \varphi_\beta(U_\alpha \cap U_\beta)
+    \]
+    对所有 $\alpha, \beta$ 都是全纯映射。
+\end{enumerate}
+\end{definition}
+
+\begin{example}[黎曼面的基本例子]
+\label{ex:riemann-surface-examples}
+\leavevmode
+\begin{enumerate}
+  \item \textbf{$\C$ 本身}：取单个坐标卡 $(\C, \Id)$。
+  \item \textbf{黎曼球面} $\hat{\C} = \C \cup \{\infty\}$：
+    取两个坐标卡 $U_1 = \C$（$\varphi_1 = \Id$）和
+    $U_2 = (\C \setminus \{0\}) \cup \{\infty\}$
+    （$\varphi_2(z) = 1/z$，$\varphi_2(\infty) = 0$）。
+    转换函数 $\varphi_2 \circ \varphi_1^{-1}(z) = 1/z$ 在
+    $\C \setminus \{0\}$ 上全纯。
+  \item \textbf{复环面} $\C / \Lambda$：设 $\Lambda = \Z\omega_1 + \Z\omega_2$
+    为 $\C$ 中的格（$\omega_1/\omega_2 \notin \R$），商空间
+    $\C / \Lambda$ 自然继承黎曼面结构。这正是椭圆曲线的解析模型。
+  \item \textbf{上半平面} $\HH = \{\tau \in \C \mid \im(\tau) > 0\}$：
+    作为 $\C$ 的开子集，自然是黎曼面。
+\end{enumerate}
+\end{example}
+
+\begin{definition}[全纯映射与亏格]
+\label{def:genus}
+\leavevmode
+\begin{enumerate}
+  \item 黎曼面之间的映射 $f\colon X \to Y$ 称为\textbf{全纯}的，若在任意
+    局部坐标卡下 $f$ 表示为全纯函数。
+  \item 紧黎曼面 $X$ 的\textbf{亏格}（genus）$g$ 是其作为拓扑曲面的
+    "洞"的数目。等价地，$g$ 由 Euler 特征数决定：
+    $\chi(X) = 2 - 2g$。
+\end{enumerate}
+\end{definition}
+
+\begin{remark}
+黎曼球面 $\hat{\C}$ 的亏格为 $0$；复环面 $\C/\Lambda$ 的亏格为 $1$。
+后续将看到，模曲线 $X_0(N)$ 的亏格随 $N$ 增长，其精确公式将在
+\cref{ch:modular-curves-riemann} 中用 Riemann-Hurwitz 公式计算。
+\end{remark}
+
+\begin{theorem}[Riemann-Hurwitz 公式]
+\label{thm:riemann-hurwitz}
+设 $f\colon X \to Y$ 是紧黎曼面之间的非常值全纯映射，度为 $d$。则
+\[
+  2g_X - 2 = d(2g_Y - 2) + \sum_{p \in X} (e_p - 1),
+\]
+其中 $g_X, g_Y$ 分别为 $X, Y$ 的亏格，$e_p$ 是 $f$ 在 $p$ 处的
+\textbf{分歧指数}（ramification index）。
+\end{theorem}
+
+\begin{proof}
+选取 $Y$ 的一个三角剖分，使得 $f$ 的所有分歧值（branch points）都是
+三角剖分的顶点。设此三角剖分有 $V$ 个顶点、$E$ 条边、$F$ 个面，
+则 $\chi(Y) = V - E + F = 2 - 2g_Y$。
+
+将此三角剖分通过 $f$ 提升到 $X$：每条边和每个面各有 $d$ 个原像
+（因为在非分歧点附近 $f$ 是局部同胚的 $d$-叶覆盖）。
+因此 $X$ 上有 $E' = dE$ 条边和 $F' = dF$ 个面。
+
+对于顶点的计数则需注意分歧：$f$ 在 $p$ 处的分歧指数 $e_p$ 意味着
+$f$ 在 $p$ 附近形如 $z \mapsto z^{e_p}$（在适当的局部坐标下）。
+对 $Y$ 的顶点 $q$，其原像中的点 $p$ 贡献分歧指数 $e_p$，且
+$\sum_{f(p)=q} e_p = d$。故 $X$ 上的顶点数为
+\[
+  V' = \sum_{q \in \text{顶点}} \#f^{-1}(q)
+  = \sum_q \sum_{f(p)=q} 1
+  = \sum_q \left(d - \sum_{f(p)=q}(e_p - 1)\right)
+  = dV - \sum_{p \in X}(e_p - 1).
+\]
+因此
+\begin{align}
+  2 - 2g_X &= \chi(X) = V' - E' + F' \\
+  &= dV - \sum_p(e_p - 1) - dE + dF \\
+  &= d(V - E + F) - \sum_p(e_p - 1) \\
+  &= d(2 - 2g_Y) - \sum_p(e_p - 1).
+\end{align}
+整理即得。
+\end{proof}
+
+
+% ============================================================================
 \section{椭圆函数}
-% ----------------------------------------------------------------------------
+\label{sec:elliptic-functions}
+% ============================================================================
 
-% TODO: 格、Weierstrass ℘ 函数、椭圆函数的周期性
+椭圆函数是定义在复环面上的亚纯函数，它们与模形式有密切联系。
 
-% ----------------------------------------------------------------------------
+\begin{definition}[格]
+\label{def:lattice}
+$\C$ 中的一个\textbf{格}（lattice）是形如
+\[
+  \Lambda = \Z\omega_1 + \Z\omega_2
+  = \{m\omega_1 + n\omega_2 \mid m, n \in \Z\}
+\]
+的离散子群，其中 $\omega_1, \omega_2 \in \C$ 线性无关于 $\R$
+（即 $\omega_1/\omega_2 \notin \R$）。
+不失一般性，可设 $\im(\omega_1/\omega_2) > 0$，
+令 $\tau = \omega_1/\omega_2 \in \HH$。
+\end{definition}
+
+\begin{definition}[椭圆函数]
+\label{def:elliptic-function}
+关于格 $\Lambda$ 的\textbf{椭圆函数}（elliptic function）是以 $\Lambda$
+为周期的亚纯函数，即 $f\colon \C \to \hat{\C}$ 满足
+\[
+  f(z + \omega) = f(z), \quad \forall\, z \in \C,\; \omega \in \Lambda.
+\]
+椭圆函数等价于复环面 $\C/\Lambda$ 上的亚纯函数。
+\end{definition}
+
+\begin{theorem}[椭圆函数的基本性质]
+\label{thm:elliptic-basic}
+设 $f$ 是关于格 $\Lambda$ 的椭圆函数。则：
+\begin{enumerate}
+  \item 若 $f$ 全纯（无极点），则 $f$ 为常数。
+  \item $f$ 在一个基本平行四边形内的留数之和为零。
+  \item $f$ 在一个基本平行四边形内的零点个数（计重数）等于极点个数（计阶数）。
+    此公共值称为 $f$ 的\textbf{阶}（order）。
+  \item 非常数椭圆函数的阶至少为 $2$。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+设 $P$ 为以 $z_0, z_0 + \omega_1, z_0 + \omega_2, z_0 + \omega_1 + \omega_2$
+为顶点的基本平行四边形（选取 $z_0$ 使得 $f$ 在 $\partial P$ 上无零点和极点）。
+
+\textbf{(1)}：若 $f$ 全纯，则 $f$ 在紧集 $\overline{P}$ 上连续，因此有界。
+由周期性，$f$ 在整个 $\C$ 上有界。由 Liouville 定理（\cref{thm:holomorphic-properties}(5)），
+$f$ 为常数。
+
+\textbf{(2)}：由留数定理，$\sum \Res = \frac{1}{2\pi i} \oint_{\partial P} f(z)\, dz$。
+$\partial P$ 由四条边组成。由周期性，对边上的积分相消：
+\begin{align}
+  \int_{z_0}^{z_0+\omega_1} f(z)\, dz
+  + \int_{z_0+\omega_2}^{z_0+\omega_1+\omega_2} f(z)\, dz &= 0
+\end{align}
+（第二条边上做替换 $z = w + \omega_2$，则 $f(z) = f(w)$，
+积分方向相反）。同理另一对边也相消。
+故 $\oint_{\partial P} f(z)\, dz = 0$。
+
+\textbf{(3)}：对 $f'/f$ 应用上述论证。$f'/f$ 也是椭圆函数，
+其留数之和等于零点个数减去极点个数（计重数），
+由 (2) 得零点个数 $=$ 极点个数。
+
+\textbf{(4)}：由 (2)，若 $f$ 有唯一的一阶极点（阶 $= 1$），则留数非零，
+与留数之和为零矛盾。故阶 $\geq 2$。
+\end{proof}
+
+\begin{definition}[Weierstrass $\wp$ 函数]
+\label{def:weierstrass-p}
+关于格 $\Lambda$ 的 \textbf{Weierstrass $\wp$ 函数}定义为
+\[
+  \wp(z; \Lambda) = \frac{1}{z^2}
+  + \sum_{\substack{\omega \in \Lambda \\ \omega \neq 0}}
+  \left(\frac{1}{(z - \omega)^2} - \frac{1}{\omega^2}\right).
+\]
+\end{definition}
+
+\begin{theorem}[$\wp$ 函数的性质]
+\label{thm:weierstrass-properties}
+\leavevmode
+\begin{enumerate}
+  \item 级数绝对一致收敛（在紧子集上，去掉极点）。
+  \item $\wp$ 是关于 $\Lambda$ 的偶椭圆函数，阶为 $2$。
+  \item $\wp$ 的导函数为
+    \[
+      \wp'(z) = -2 \sum_{\omega \in \Lambda} \frac{1}{(z - \omega)^3},
+    \]
+    是阶为 $3$ 的奇椭圆函数。
+  \item $\wp$ 满足微分方程
+    \[
+      (\wp')^2 = 4\wp^3 - g_2 \wp - g_3,
+    \]
+    其中 $g_2 = 60 G_4$ 和 $g_3 = 140 G_6$ 是\textbf{Eisenstein 级数}
+    \[
+      G_{2k} = \sum_{\substack{\omega \in \Lambda \\ \omega \neq 0}}
+      \frac{1}{\omega^{2k}}, \quad k \geq 2.
+    \]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\textbf{(1) 收敛性}：对 $|z| \leq R$，取 $|\omega| > 2R$ 的格点。
+\[
+  \left|\frac{1}{(z-\omega)^2} - \frac{1}{\omega^2}\right|
+  = \left|\frac{2\omega z - z^2}{\omega^2(z - \omega)^2}\right|
+  \leq \frac{2|\omega| R + R^2}{|\omega|^2 \cdot (|\omega|/2)^2}
+  \leq \frac{C}{|\omega|^3},
+\]
+其中最后一步用了 $|z - \omega| \geq |\omega| - R \geq |\omega|/2$。
+$\C$ 中格点的个数增长为 $O(|\omega|^2)$（即半径 $r$ 内约 $\pi r^2/\vol(P)$ 个格点），
+故 $\sum_{\omega \neq 0} |\omega|^{-3}$ 收敛（与 $\sum_{n \geq 1} n^{-3/2+1} \cdot n^{-3}$
+比较——更精确地说，按 $|\omega| \sim n$ 分层，每层约 $O(n)$ 个格点，
+$\sum_n n \cdot n^{-3} = \sum n^{-2} < \infty$）。
+
+\textbf{(2) 周期性}：对 $\omega_0 \in \Lambda$，考虑
+$h(z) = \wp(z + \omega_0) - \wp(z)$。求导得
+\[
+  h'(z) = \wp'(z + \omega_0) - \wp'(z) = 0,
+\]
+因为 $\wp'(z) = -2\sum_\omega (z-\omega)^{-3}$ 显然以 $\Lambda$ 为周期
+（平移 $\omega_0$ 只是重新排列求和项）。故 $h(z)$ 为常数。
+取 $z = -\omega_0/2$（假设非格点），由 $\wp$ 的偶性：
+\[
+  h(-\omega_0/2) = \wp(\omega_0/2) - \wp(-\omega_0/2) = 0.
+\]
+故 $\wp(z + \omega_0) = \wp(z)$。$\wp$ 为偶函数由定义直接验证
+（$z \mapsto -z$ 只是重排格点）。
+
+\textbf{(3)}：对 $\wp$ 的级数逐项求导即得。$\wp'$ 为奇函数因为
+$\wp$ 为偶函数。$\wp'$ 的阶为 $3$：它在 $z = 0$ 处有三阶极点，
+而 $2$-挠点 $\omega_1/2, \omega_2/2, (\omega_1+\omega_2)/2$ 处
+$\wp'$ 为零（由奇性和周期性）。
+
+\textbf{(4) 微分方程}：令 $F(z) = (\wp')^2 - 4\wp^3 + g_2\wp + g_3$。
+在 $z = 0$ 附近展开：
+\[
+  \wp(z) = \frac{1}{z^2} + \sum_{k=1}^{\infty} (2k+1)G_{2k+2}\, z^{2k}
+  = \frac{1}{z^2} + 3G_4 z^2 + 5G_6 z^4 + \cdots
+\]
+故
+\[
+  \wp'(z) = \frac{-2}{z^3} + 6G_4 z + 20 G_6 z^3 + \cdots
+\]
+\begin{align}
+  (\wp')^2 &= \frac{4}{z^6} - \frac{24 G_4}{z^2} - 80 G_6 + \cdots \\
+  4\wp^3 &= \frac{4}{z^6} + \frac{36 G_4}{z^2} + 60 G_6 + \cdots
+\end{align}
+因此
+\[
+  (\wp')^2 - 4\wp^3 = -\frac{60 G_4}{z^2} - 140 G_6 + \cdots
+  = -\frac{g_2}{z^2} - g_3 + \cdots
+\]
+故 $F(z) = (\wp')^2 - 4\wp^3 + g_2\wp + g_3$ 在 $z = 0$ 附近为
+$O(z^2)$（主项相消）。$F$ 是椭圆函数且全纯（$\wp^3$ 的六阶极点
+被 $(\wp')^2$ 的六阶极点精确抵消），由\cref{thm:elliptic-basic}(1)，$F$ 为常数。
+由 $F(z) \to 0$（$z \to 0$），$F \equiv 0$。
+\end{proof}
+
+\begin{remark}[从椭圆函数到模形式]
+\label{rem:elliptic-to-modular}
+固定 $\omega_2 = 1$，令 $\tau = \omega_1 \in \HH$，则格为
+$\Lambda_\tau = \Z\tau + \Z$。Eisenstein 级数
+\[
+  G_{2k}(\Lambda_\tau) = \sum_{\substack{(m,n) \in \Z^2 \\ (m,n) \neq (0,0)}}
+  \frac{1}{(m\tau + n)^{2k}}
+\]
+成为上半平面 $\HH$ 上 $\tau$ 的函数。我们将在\cref{ch:eisenstein-series}
+中证明 $G_{2k}(\tau)$（$k \geq 2$）是权 $2k$ 的模形式——这就是椭圆函数
+理论通向模形式的桥梁。
+\end{remark}
+
+
+% ============================================================================
 \section{习题}
-% ----------------------------------------------------------------------------
+\label{sec:ch1-exercises}
+% ============================================================================
+
+\begin{exercise}
+\label{ex:ch1-1}
+设 $f$ 在 $\C$ 上全纯，且存在常数 $C > 0$、正整数 $n$ 使得
+$|f(z)| \leq C|z|^n$ 对所有 $|z|$ 充分大成立。
+证明 $f$ 是次数至多为 $n$ 的多项式。
+\end{exercise}
+
+\begin{exercise}
+\label{ex:ch1-2}
+用留数定理计算积分
+\[
+  \int_{-\infty}^{+\infty} \frac{dx}{1 + x^4}.
+\]
+\end{exercise}
+
+\begin{exercise}
+\label{ex:ch1-3}
+设 $\Lambda = \Z + \Z i$（Gauss 整数格）。
+证明 $G_4(\Lambda) \neq 0$ 但 $G_6(\Lambda) = 0$。
+（提示：利用 $i\Lambda = \Lambda$ 带来的对称性。）
+\end{exercise}
+
+\begin{exercise}
+\label{ex:ch1-4}
+设 $f$ 是关于格 $\Lambda$ 的阶为 $2$ 的椭圆函数。
+证明 $f$ 在基本平行四边形内恰有两个零点（计重数），
+并证明任何关于 $\Lambda$ 的椭圆函数都可以用 $\wp$ 和 $\wp'$ 有理表示。
+\end{exercise}
+
+\begin{exercise}
+\label{ex:ch1-5}
+验证 Riemann-Hurwitz 公式（\cref{thm:riemann-hurwitz}）在以下情形中成立：
+$f\colon \hat\C \to \hat\C$，$f(z) = z^n$（$n \geq 2$）。
+明确写出所有分歧点和分歧指数。
+\end{exercise}
