@@ -379,6 +379,22 @@ $(\SL_2(\Z))_\tau = \{\gamma \in \SL_2(\Z) \mid \gamma(\tau) = \tau\}$。
 \label{sec:cusps}
 % ============================================================================
 
+基本域 $\mathcal{F}$ 向上延伸到无穷远——它的"顶部"越来越窄，
+像一个无限高的烟囱。这个"烟囱口"在数学上需要一个名字，
+它就是\textbf{尖点}（cusp）。
+
+\textbf{为什么需要尖点？}
+回忆模形式 $E_4(\tau)$ 的 $q$-展开 $\sum a_n q^n$，其中 $q = e^{2\pi i\tau}$。
+当 $\im(\tau) \to +\infty$ 时，$q \to 0$。
+所以"$\tau$ 趋向无穷远"对应"$q$ 趋向 $0$"，而我们要求模形式在 $q = 0$
+处有良好的行为（全纯或消失）。
+这个"无穷远点"就是最基本的尖点 $\infty$。
+
+\textbf{$\mathbb{P}^1(\Q)$ 是什么？}
+除了 $\infty$ 之外，还有其他"方向"可以趋向实轴上的有理点。
+$\mathbb{P}^1(\Q)$ 就是 $\Q \cup \{\infty\}$——
+所有有理数加上一个无穷远点，可以理解为"有理数的圆周"。
+
 \begin{definition}[扩展上半平面与尖点]
 \label{def:cusps}
 \index{扩展上半平面}\index{尖点 (cusp)}\index{P1Q@$\mathbb{P}^1(\mathbb{Q})$}
@@ -386,23 +402,53 @@ $(\SL_2(\Z))_\tau = \{\gamma \in \SL_2(\Z) \mid \gamma(\tau) = \tau\}$。
 \[
   \HH^* = \HH \cup \Q \cup \{\infty\} = \HH \cup \mathbb{P}^1(\Q).
 \]
-$\SL_2(\Z)$ 的作用自然延拓到 $\mathbb{P}^1(\Q)$ 上：
-$\gamma(\infty) = a/c$，$\gamma(-d/c) = \infty$。
+$\SL_2(\Z)$ 的莫比乌斯变换自然延拓到 $\mathbb{P}^1(\Q)$ 上：
+对 $\gamma = \begin{pmatrix} a & b \\ c & d \end{pmatrix}$，
+\[
+  \gamma(\infty) = \frac{a}{c}, \qquad
+  \gamma\!\left(-\frac{d}{c}\right) = \infty.
+\]
+（就是把 $\frac{a\tau + b}{c\tau + d}$ 中分母为零和分子为零的情况补上。）
 
 $\mathbb{P}^1(\Q)$ 中的点称为\textbf{尖点}（cusps）。
 \end{definition}
 
+\begin{example}[具体的尖点变换]
+\label{ex:cusp-action}
+\leavevmode
+\begin{itemize}
+  \item $T(\infty) = \infty + 1 = \infty$
+    ——平移不影响无穷远点。
+  \item $S(\infty) = -1/\infty = 0$
+    ——反演把 $\infty$ 映到 $0$。
+  \item $S(0) = -1/0 = \infty$
+    ——反演把 $0$ 映回 $\infty$。
+  \item 取 $\gamma = \begin{pmatrix} 3 & 1 \\ 2 & 1 \end{pmatrix}
+    \in \SL_2(\Z)$（$3 \cdot 1 - 1 \cdot 2 = 1$），
+    则 $\gamma(\infty) = 3/2$。
+    所以 $3/2$ 和 $\infty$ 在同一轨道中。
+\end{itemize}
+\end{example}
+
 \begin{proposition}
 \label{prop:cusps-transitive}
 $\SL_2(\Z)$ 在 $\mathbb{P}^1(\Q)$ 上的作用是传递的，即所有尖点都等价。
+换句话说：$\SL_2(\Z) \backslash \mathbb{P}^1(\Q)$ 只有一个点。
 \end{proposition}
 
 \begin{proof}
 任取 $a/c \in \Q$（$\gcd(a,c) = 1$），由 Bézout 恒等式，存在 $b, d \in \Z$
 使得 $ad - bc = 1$。则
 $\gamma = \begin{pmatrix} a & b \\ c & d \end{pmatrix} \in \SL_2(\Z)$
-满足 $\gamma(\infty) = a/c$。
+满足 $\gamma(\infty) = a/c$。所以每个有理数都和 $\infty$ 在同一轨道中。
 \end{proof}
+
+\textbf{同余子群的尖点。}
+对 $\SL_2(\Z)$ 来说只有一个尖点等价类，但对更小的同余子群
+（如 $\GammaO(N)$），尖点会分裂成多个等价类。
+例如 $\GammaO(2)$ 有 $2$ 个不等价的尖点：$\infty$ 和 $0$
+（因为 $S \notin \GammaO(2)$，无法把 $\infty$ 映到 $0$）。
+这将在\cref{sec:congruence-subgroups}中进一步讨论。
 
 
 % ============================================================================
