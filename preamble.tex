@@ -51,9 +51,15 @@
 % --- 颜色 ---
 \usepackage{xcolor}
 
+% --- 彩色定理框 ---
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable, skins}
+
 % ============================================================================
-% 定理环境
+% 定理环境（amsthm 定义 + tcolorbox 包装，不同类型不同颜色）
 % ============================================================================
+
+% --- 先用 amsthm 定义环境 ---
 \theoremstyle{plain}
 \newtheorem{theorem}{定理}[chapter]
 \newtheorem{proposition}[theorem]{命题}
@@ -69,6 +75,71 @@
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{注记}
 \newtheorem{notation}[theorem]{记号}
+
+% --- 用 tcolorbox 给每类环境加彩色边框 ---
+% 定理/命题/引理/推论/猜想：蓝色左边条
+\tcolorboxenvironment{theorem}{
+  blanker, breakable, left=5mm,
+  before skip=10pt, after skip=10pt,
+  borderline west={2pt}{0pt}{blue!60!black},
+  colback=blue!3,
+}
+\tcolorboxenvironment{proposition}{
+  blanker, breakable, left=5mm,
+  before skip=10pt, after skip=10pt,
+  borderline west={2pt}{0pt}{blue!50!black},
+  colback=blue!3,
+}
+\tcolorboxenvironment{lemma}{
+  blanker, breakable, left=5mm,
+  before skip=10pt, after skip=10pt,
+  borderline west={2pt}{0pt}{blue!50!black},
+  colback=blue!3,
+}
+\tcolorboxenvironment{corollary}{
+  blanker, breakable, left=5mm,
+  before skip=10pt, after skip=10pt,
+  borderline west={2pt}{0pt}{blue!50!black},
+  colback=blue!3,
+}
+\tcolorboxenvironment{conjecture}{
+  blanker, breakable, left=5mm,
+  before skip=10pt, after skip=10pt,
+  borderline west={2pt}{0pt}{blue!50!black},
+  colback=blue!3,
+}
+
+% 定义：绿色左边条
+\tcolorboxenvironment{definition}{
+  blanker, breakable, left=5mm,
+  before skip=10pt, after skip=10pt,
+  borderline west={2pt}{0pt}{green!50!black},
+  colback=green!3,
+}
+
+% 例：橙色左边条
+\tcolorboxenvironment{example}{
+  blanker, breakable, left=5mm,
+  before skip=10pt, after skip=10pt,
+  borderline west={2pt}{0pt}{orange!70!black},
+  colback=orange!3,
+}
+
+% 注记：灰色左边条
+\tcolorboxenvironment{remark}{
+  blanker, breakable, left=5mm,
+  before skip=10pt, after skip=10pt,
+  borderline west={2pt}{0pt}{gray!50},
+  colback=gray!5,
+}
+
+% 习题：紫色左边条
+\tcolorboxenvironment{exercise}{
+  blanker, breakable, left=5mm,
+  before skip=10pt, after skip=10pt,
+  borderline west={2pt}{0pt}{violet!60!black},
+  colback=violet!3,
+}
 
 % ============================================================================
 % 常用数学命令
