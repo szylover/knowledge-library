@@ -121,51 +121,6 @@ $(-I)(\tau) = \frac{-\tau}{-1} = \tau$。因此实际上是
 $\PSL_2(\Z) = \SL_2(\Z)/\{\pm I\}$ 在 $\HH$ 上\emph{忠实}地作用。
 \end{remark}
 
-\begin{remark}[群作用的基本概念]
-\label{rem:group-action}
-回顾群作用的定义。群 $G$ \textbf{作用在}（acts on）集合 $X$ 上，
-是指一个映射 $G \times X \to X$（记 $(g, x) \mapsto g \cdot x$），满足：
-\begin{enumerate}
-  \item \textbf{单位元}：$e \cdot x = x$，对所有 $x \in X$；
-  \item \textbf{相容性}：$(g_1 g_2) \cdot x = g_1 \cdot (g_2 \cdot x)$，
-    对所有 $g_1, g_2 \in G$，$x \in X$。
-\end{enumerate}
-相关概念：
-\begin{itemize}
-  \item \textbf{轨道}（orbit）：$G \cdot x = \{g \cdot x \mid g \in G\}$；
-  \item \textbf{稳定子}（stabilizer）：
-    $G_x = \{g \in G \mid g \cdot x = x\}$，是 $G$ 的子群；
-  \item \textbf{商空间}（quotient）：
-    $G \backslash X = \{G \cdot x \mid x \in X\}$，所有轨道的集合。
-\end{itemize}
-轨道-稳定子定理：$\#(G \cdot x) = [G : G_x]$（$G$ 有限时）。
-后续的模曲线 $\SL_2(\Z) \backslash \HH$ 就是这里的商空间。
-\end{remark}
-
-\begin{example}[稳定子的具体例子]
-\label{ex:stabilizer-example}
-$\SL_2(\Z)$ 作用在 $\HH$ 上。
-
-\textbf{一般的点}：对大多数 $\tau \in \HH$，稳定子是最小的，即
-$(\SL_2(\Z))_\tau = \{\pm I\}$（只有 $\pm I$ 固定所有点）。
-
-\textbf{椭圆不动点}：有两个特殊点的稳定子更大：
-\begin{enumerate}
-  \item $\tau = i$：$S(i) = -1/i = i$，故 $S$ 固定 $i$。
-    完整稳定子为 $(\SL_2(\Z))_i = \{I, S, S^2, S^3\} = \{I, S, -I, -S\}$，
-    同构于 $\Z/4\Z$。在 $\PSL_2(\Z)$ 中为 $\Z/2\Z$。
-  \item $\tau = \rho = e^{2\pi i/3} = \frac{-1+i\sqrt{3}}{2}$：
-    $(ST)(\rho) = S(\rho + 1) = S\!\left(\frac{1+i\sqrt{3}}{2}\right)
-    = \frac{-1}{(1+i\sqrt{3})/2} = \frac{-2}{1+i\sqrt{3}}
-    = \frac{-2(1-i\sqrt{3})}{4} = \frac{-1+i\sqrt{3}}{2} = \rho$。
-    完整稳定子为 $(\SL_2(\Z))_\rho = \langle ST \rangle
-    = \{I, ST, (ST)^2, -I, -ST, -(ST)^2\}$，同构于 $\Z/6\Z$。
-    在 $\PSL_2(\Z)$ 中为 $\Z/3\Z$。
-\end{enumerate}
-这两个椭圆不动点导致基本域边界上的"粘合"出现特殊行为，
-也会在\cref{ch:dimension}的维数公式中产生修正项。
-\end{example}
-
 \begin{theorem}[$\SL_2(\Z)$ 的生成元]
 \label{thm:sl2z-generators}
 $\SL_2(\Z)$ 由以下两个矩阵生成：
@@ -238,6 +193,22 @@ $\SL_2(\Z)$ 由以下两个矩阵生成：
 \label{sec:fundamental-domain}
 % ============================================================================
 
+$\SL_2(\Z)$ 包含无穷多个矩阵，每一个都把上半平面映到自身。
+自然的问题是：上半平面中哪些点在 $\SL_2(\Z)$ 看来是"本质上相同的"？
+
+这需要\textbf{群作用}（group action）的语言。群 $G$ \textbf{作用在}集合 $X$ 上，
+是指一个映射 $G \times X \to X$（记 $(g, x) \mapsto g \cdot x$），满足
+$e \cdot x = x$ 和 $(g_1 g_2) \cdot x = g_1 \cdot (g_2 \cdot x)$。
+在我们的情况下，$G = \SL_2(\Z)$，$X = \HH$，作用就是莫比乌斯变换。
+
+两个关键概念：
+\begin{itemize}
+  \item \textbf{轨道}（orbit）：$G \cdot \tau = \{\gamma(\tau) \mid \gamma \in G\}$，
+    即 $\tau$ 能被 $G$ 映到的所有点。同一轨道中的点视为"等价"的。
+  \item \textbf{基本域}：从每个轨道中恰好选一个代表元，
+    这些代表元组成的区域就是基本域——上半平面的一个"最小切片"。
+\end{itemize}
+
 \begin{definition}[基本域]
 \label{def:fundamental-domain}
 群 $G$ 作用在空间 $X$ 上时，一个\textbf{基本域}（fundamental domain）是
@@ -304,11 +275,33 @@ $|\tau| > 1$，矛盾。
 由 $|\Re(\tau)|, |\Re(\tau')| < 1/2$ 得 $b = 0$，$\gamma = \pm I$。
 \end{proof}
 
-\begin{remark}
+\begin{remark}[基本域的形状与特殊点]
 $\overline{\mathcal{F}}$ 形如一个无限高的"拱门"：底部弧线是单位圆
 $|\tau| = 1$ 的一段，两侧是 $\Re(\tau) = \pm 1/2$ 的垂线。
-两个特殊点 $i$ 和 $\rho = e^{2\pi i/3} = (-1+i\sqrt{3})/2$ 是
-$\SL_2(\Z)$ 的\textbf{椭圆不动点}：$S(i) = i$，$(ST)(ρ) = ρ$。
+这个形状正好对应 $S$ 和 $T$ 的分界线：$T$ 把竖直带平移，
+所以左右边界由 $T$ 粘合；$S$ 关于单位圆反演，所以底部弧线由 $S$ 粘合。
+\end{remark}
+
+\begin{remark}[椭圆不动点与稳定子]
+\label{rem:elliptic-fixed-points}
+大多数 $\tau \in \HH$ 只有"平凡"的对称性——只有 $\pm I$
+把它映回自身。但基本域边界上有两个特殊点，它们有额外的对称性。
+
+给定 $\tau$，所有把 $\tau$ 固定不动的矩阵构成一个子群，
+叫做 $\tau$ 的\textbf{稳定子}（stabilizer）：
+$(\SL_2(\Z))_\tau = \{\gamma \in \SL_2(\Z) \mid \gamma(\tau) = \tau\}$。
+
+\begin{enumerate}
+  \item $\tau = i$：$S(i) = -1/i = i$，所以 $S$ 固定 $i$。
+    稳定子为 $\{I, S, -I, -S\}$，同构于 $\Z/4\Z$
+    （在 $\PSL_2(\Z)$ 中为 $\Z/2\Z$）。
+  \item $\tau = \rho = e^{2\pi i/3} = \frac{-1+i\sqrt{3}}{2}$：
+    直接计算 $(ST)(\rho) = S(\rho + 1) = \rho$。
+    稳定子为 $\langle ST \rangle \cong \Z/6\Z$
+    （在 $\PSL_2(\Z)$ 中为 $\Z/3\Z$）。
+\end{enumerate}
+这两个\textbf{椭圆不动点}导致基本域边界上的粘合出现特殊行为，
+在\cref{ch:dimension}的维数公式中会产生修正项。
 \end{remark}
 
 
