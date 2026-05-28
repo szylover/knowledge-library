@@ -4,5 +4,27 @@
 % ============================================================================
 % 对应 Diamond \& Shurman Chapter 9
 
-% TODO: ℓ-进 Galois 表示、模形式附带的表示（Deligne 定理）、
-%       椭圆曲线的表示、Serre 猜想
+前一章已经把 Hecke 特征值与 Frobenius 迹接上；
+本章则把这条联系彻底升级为一份结构性的 Galois 表示理论。
+对椭圆曲线，Tate 模给出二维 $\ell$-进表示；
+对模形式，Deligne 定理给出同样满足 Frobenius 迹公式的表示。
+当这两份表示同构时，
+“模形式对应椭圆曲线”就不再只是 $L$-函数层面的巧合，
+而成为绝对 Galois 群作用的精确一致。
+
+本章结构如下：
+\begin{itemize}
+  \item \textbf{§\ref{sec:ch09-motivation}} 用 Frey 曲线解释为什么费马大定理必须进入 Galois 表示语言。
+  \item \textbf{§\ref{sec:ch09-galois-representations}} 介绍 profinite 群、连续表示、惯性群与 Frobenius 元。
+  \item \textbf{§\ref{sec:ch09-tate-module}} 构造椭圆曲线的 Tate 模，并证明其 Frobenius 特征多项式。
+  \item \textbf{§\ref{sec:ch09-modular-galois}} 叙述 Deligne 定理，解释模形式如何给出二维 $\ell$-进表示。
+  \item \textbf{§\ref{sec:ch09-ribet}} 证明 Ribet 水平下降，并将其应用到费马大定理。
+  \item \textbf{§\ref{sec:ch09-exercises}} 通过分圆特征、Weil 配对与数值例子巩固全章内容。
+\end{itemize}
+
+\input{chapters/ch09/s1-motivation}
+\input{chapters/ch09/s2-galois-representations}
+\input{chapters/ch09/s3-tate-module}
+\input{chapters/ch09/s4-modular-galois-reps}
+\input{chapters/ch09/s5-ribet-theorem}
+\input{chapters/ch09/s6-exercises}

@@ -1,0 +1,281 @@
+\section{Galois 表示基础}
+\label{sec:ch09-galois-representations}
+% ============================================================================
+
+\providecommand{\Zl}{\mathbb{Z}_\ell}
+\providecommand{\Ql}{\mathbb{Q}_\ell}
+\providecommand{\rhobar}{\bar{\rho}}
+
+现在要面对本章真正的主角：
+绝对 Galois 群 $G_\Q$。
+它控制着所有代数数之间的对称，
+但也因此庞大得几乎无法直接把握。
+和有限群不同，
+$G_\Q$ 不是一个能靠“列出元素和关系式”去理解的对象；
+和 Lie 群不同，
+它也不是实流形，不存在方便的微分几何坐标。
+因此第一步必须换视角：
+不直接研究 $G_\Q$ 本身，
+而去研究它在有限维线性空间上的作用。
+
+\textbf{我们遇到了什么问题？}
+如果把 $G_\Q$ 看成“所有代数数的对称群”，
+这个描述虽然准确，却几乎无法计算。
+比如我们想问：
+某个素数 $p$ 在一个扩张里怎样分解？
+某条椭圆曲线在模 $p$ 约化后有多少点？
+Hecke 特征值 $a_p(f)$ 究竟由什么 Galois 数据决定？
+这些问题都在说同一件事：
+我们并不需要知道整个 $G_\Q$ 的所有细节，
+而只需要知道它在某个有限维对象上的影子。
+
+\textbf{核心思想是什么？}
+第一，把 $G_\Q$ 视为所有有限 Galois 群的逆极限，
+于是它天然带有一个拓扑，叫 Krull 拓扑；
+第二，只考虑连续表示
+\[
+  \rho\colon G_\Q\to \GL_n(R),
+\]
+这样有限指数子群、惯性群、Frobenius 元等局部对象才会真正反映到矩阵上；
+第三，用 Chebotarev 密度定理把“几乎所有素数的 Frobenius”当作一组稠密测试元。
+这意味着：
+虽然 $G_\Q$ 大得无法枚举，
+但一个半单表示往往只要知道几乎所有 $\rho(\Frob_p)$ 的共轭类就够了。
+
+\textbf{引入之后能得到什么？}
+本节建立的 profinite 群、惯性、无分歧与 Frobenius 语言，
+将直接变成后面三节的工作台：
+在第\ref{sec:ch09-tate-module}节，
+它们用来描述椭圆曲线 Tate 模上的作用；
+在第\ref{sec:ch09-modular-galois}节，
+它们用来表述 Deligne 的模形式 Galois 表示；
+在第\ref{sec:ch09-ribet}节，
+“在某个素数处无分歧”则正是水平下降能否进行的判断标准。
+
+\input{figures/ch09-profinite}
+
+\begin{definition}[profinite 群]
+一个拓扑群 $G$ 称为\textbf{profinite 群}，
+如果它同构于一族有限群的逆极限
+\[
+  G\cong \varprojlim_i G_i,
+\]
+其中过渡映射都是满同态。
+等价地，$G$ 是紧、全不连通且 Hausdorff 的拓扑群。
+\end{definition}
+
+\begin{proposition}[绝对 Galois 群的 profinite 结构]
+\label{prop:ch09-gq-profinite}
+绝对 Galois 群满足
+\[
+  G_\Q\cong \varprojlim_{K/\Q} \Gal(K/\Q),
+\]
+其中逆极限取遍所有有限 Galois 扩张 $K/\Q$。
+特别地，$G_\Q$ 是 profinite 群。
+\end{proposition}
+
+\begin{proof}
+对每个有限 Galois 扩张 $K/\Q$，
+限制映射给出连续满同态
+\[
+  r_K\colon G_\Q\to \Gal(K/\Q).
+\]
+若 $L\supset K$ 也是有限 Galois 扩张，
+则有相容关系
+\[
+  r_K=\operatorname{res}_{L/K}\circ r_L.
+\]
+因此 $\{r_K\}$ 诱导一个群同态
+\[
+  r\colon G_\Q\to \varprojlim_{K/\Q}\Gal(K/\Q).
+\]
+
+先证单射。
+若 $\sigma\in G_\Q$ 在每个有限 Galois 扩张上都限制为恒等，
+则它固定每个代数数。
+因为任何 $\alpha\in\bar\Q$ 都落在某个有限 Galois 扩张中，
+故 $\sigma(\alpha)=\alpha$ 对所有 $\alpha$ 成立，
+于是 $\sigma=1$。
+
+再证满射。
+设 $(\sigma_K)_K$ 是逆极限中的一个相容族。
+对每个 $\alpha\in\bar\Q$，
+取包含 $\alpha$ 的有限 Galois 扩张 $K$，定义
+\[
+  \sigma(\alpha)=\sigma_K(\alpha).
+\]
+相容性保证这与 $K$ 的选择无关。
+由有限扩张上的域自同构兼容可知，
+$\sigma$ 是 $\bar\Q$ 的域自同构，且固定 $\Q$。
+因此 $\sigma\in G_\Q$，并且 $r(\sigma)=(\sigma_K)_K$。
+故 $r$ 为同构。
+
+把每个有限商赋予离散拓扑，逆极限赋予乘积拓扑的子空间拓扑，
+就得到 $G_\Q$ 的 Krull 拓扑。
+由于有限离散空间紧且全不连通，逆极限仍具这些性质，
+故 $G_\Q$ 是 profinite 群。
+\end{proof}
+
+\begin{definition}[连续表示]
+设 $R$ 是拓扑环。
+一个\textbf{连续 $R$-值表示}是连续群同态
+\[
+  \rho\colon G_\Q\to \GL_n(R).
+\]
+若 $R$ 是离散环，例如 $\F_\ell$，
+连续性等价于 $\ker\rho$ 为开子群，
+也等价于 $\rho$ 通过某个有限 Galois 商因子化。
+\end{definition}
+
+\begin{proof}[说明]
+因为 $\GL_n(\F_\ell)$ 是有限离散群，
+连续映射的原像 $\rho^{-1}(1)$ 必为开集，
+而开子群在 profinite 群中自动有有限指数。
+于是 $\rho$ 通过有限商 $G_\Q/\ker\rho$ 因子化。
+反过来，任何通过有限离散商的映射显然连续。
+\end{proof}
+
+连续性的真正意义在于：
+每一个表示都只“看见”有限层面的算术信息，
+这使得局部分解群和惯性群成为可操作对象。
+
+\begin{definition}[分解群、惯性群与无分歧]
+设 $p$ 是素数，固定 $\bar\Q$ 中一个位于 $p$ 上方的素点。
+与之对应的局部绝对 Galois 群记作
+\[
+  G_{\Q_p}=\Gal(\overline{\Q}_p/\Q_p).
+\]
+它通过嵌入可看成 $G_\Q$ 的一个闭子群，称为 $p$ 处的\textbf{分解群} $D_p$。
+其核
+\[
+  I_p\subset D_p
+\]
+称为\textbf{惯性群}。
+若表示 $\rho$ 满足 $I_p\subset \ker\rho$，
+则称 $\rho$ 在 $p$ 处\textbf{无分歧}。
+\end{definition}
+
+当 $\rho$ 在 $p$ 处无分歧时，
+它在 $D_p$ 上只依赖于商群 $D_p/I_p$。
+而这个商群有一个特别重要的生成元：Frobenius。
+
+\begin{definition}[Frobenius 元]
+设 $\rho$ 在 $p$ 处无分歧。
+因为
+\[
+  D_p/I_p\cong \Gal(\bar\F_p/\F_p)
+\]
+由几何 Frobenius $x\mapsto x^{1/p}$ 或算术 Frobenius $x\mapsto x^p$ 拓扑生成，
+本书统一采用\textbf{算术 Frobenius}，记为 $\Frob_p$。
+它在 $D_p/I_p$ 中是一个定义到共轭为止的元素，
+故 $\rho(\Frob_p)$ 的共轭类有意义。
+\end{definition}
+
+\textbf{注。}
+为什么只有共轭类有意义？
+因为分解群 $D_p$ 依赖于我们在 $\bar\Q$ 中选取的 $p$ 上方素点；
+改变这个选取，只会把 $D_p$ 替换为共轭子群。
+因此任何真正与全局表示有关的对象都必须是共轭不变量，
+最自然的就是迹、行列式与特征多项式。
+
+\begin{theorem}[Chebotarev + Brauer--Nesbitt]
+\label{thm:ch09-chebotarev-determines-representation}
+设
+\[
+  \rho_1,\rho_2\colon G_\Q\to \GL_n(L)
+\]
+是两个连续半单表示，其中 $L$ 是特征零域或有限域。
+若对几乎所有无分歧素数 $p$ 都有
+\[
+  \Tr\rho_1(\Frob_p)=\Tr\rho_2(\Frob_p)
+  \qquad\text{且}\qquad
+  \det\rho_1(\Frob_p)=\det\rho_2(\Frob_p),
+\]
+则 $\rho_1\cong \rho_2$。
+特别地，一个半单表示几乎完全由 $\{\rho(\Frob_p)\}$ 决定。
+\end{theorem}
+
+\begin{proof}
+对每个同时无分歧的素数 $p$，
+假设两表示的迹与行列式相同，
+则二者在 $\Frob_p$ 处的特征多项式相同。
+Chebotarev 密度定理说明：
+所有这样的 Frobenius 共轭类在 $G_\Q$ 中是稠密的，
+更准确地说，
+每个有限 Galois 商中的任一共轭类都由无穷多个素数的 Frobenius 实现。
+因此，两个表示在一个稠密共轭集合上有相同特征多项式。
+
+Brauer--Nesbitt 定理断言：
+对半单表示而言，角色函数（即迹）决定表示的同构类。
+由于迹在稠密集上一致，而连续表示的迹函数连续，
+故两者在整个 $G_\Q$ 上角色相同。
+于是
+\[
+  \rho_1^{\mathrm{ss}}\cong \rho_2^{\mathrm{ss}}.
+\]
+因为两表示已假设半单，结论就是 $\rho_1\cong \rho_2$。
+\end{proof}
+
+最基本、也最重要的例子，是分圆特征。
+它把 Galois 群在所有 $\ell^n$ 次单位根上的作用编码起来，
+后面将成为椭圆曲线表示行列式的答案。
+
+\begin{definition}[$\ell$-进分圆特征]
+设 $\ell$ 是素数。
+对每个 $n\ge 1$，令 $\mu_{\ell^n}\subset \bar\Q$ 为所有 $\ell^n$ 次单位根。
+若 $\sigma\in G_\Q$，则存在唯一的
+\[
+  a_n(\sigma)\in (\Z/\ell^n\Z)^\times
+\]
+使得
+\[
+  \sigma(\zeta)=\zeta^{a_n(\sigma)}
+  \qquad (\zeta\in \mu_{\ell^n}).
+\]
+当 $n$ 变化时，这些 $a_n(\sigma)$ 相容，
+故定义出连续特征
+\[
+  \chi_\ell\colon G_\Q\to \Zl^\times,
+\]
+称为\textbf{$\ell$-进分圆特征}。
+\end{definition}
+
+\begin{proposition}[分圆特征在 Frobenius 上的取值]
+\label{prop:ch09-cyclotomic-frobenius}
+若 $p\neq \ell$，则 $\chi_\ell$ 在 $p$ 处无分歧，且
+\[
+  \chi_\ell(\Frob_p)=p\in \Zl^\times.
+\]
+特别地，模 $\ell$ 约化后有
+\[
+  \chi_\ell(\Frob_p)\equiv p\pmod \ell.
+\]
+\end{proposition}
+
+\begin{proof}
+当 $p\neq \ell$ 时，扩张 $\Q(\mu_{\ell^n})/\Q$ 只在 $\ell$ 处分歧，
+故它在 $p$ 处无分歧。
+因此分圆特征在 $p$ 处无分歧。
+
+在有限域中，算术 Frobenius 的定义就是 $x\mapsto x^p$。
+对任意 $\ell^n$ 次单位根 $\zeta$，
+其在 $p$ 处的 Frobenius 作用满足
+\[
+  \Frob_p(\zeta)=\zeta^p.
+\]
+于是
+\[
+  a_n(\Frob_p)\equiv p\pmod{\ell^n}.
+\]
+让 $n\to \infty$，得到
+\[
+  \chi_\ell(\Frob_p)=p\in \Zl^\times.
+\]
+模 $\ell$ 约化即得最后一个同余式。
+\end{proof}
+
+本节的结论可以压缩成一句话：
+\emph{连续 Galois 表示是在有限维线性空间上观察 $G_\Q$ 的方式，
+而无分歧素数处的 Frobenius 矩阵是这份观察中最可计算的坐标。}
+下一节我们把这个语言立即用到椭圆曲线上，
+从而得到本章第一类真正算术化的二维表示。

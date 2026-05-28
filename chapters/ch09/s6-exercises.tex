@@ -1,0 +1,362 @@
+\section{习题}
+\label{sec:ch09-exercises}
+% ============================================================================
+
+\providecommand{\Zl}{\mathbb{Z}_\ell}
+\providecommand{\Ql}{\mathbb{Q}_\ell}
+\providecommand{\rhobar}{\bar{\rho}}
+
+这一章最重要的收获，
+不是再记住几个缩写，
+而是学会把同一份算术信息在三种语言里来回翻译：
+一会儿它是 Frobenius 共轭类，
+一会儿它是 Tate 模上的矩阵，
+一会儿又是 Fourier 系数与级别下降中的同余。
+下面六题沿着这条主线安排：
+前两题训练 profinite 群与分圆特征，
+中间两题把 Tate 模、无分歧与 Frobenius 共轭类的基本操作做熟，
+最后两题则分别给出一个真正的水平下降数值例子与 Weil 配对的决定性应用。
+
+\input{figures/ch09-exercises-roadmap}
+
+\begin{exercise}
+证明：任意连续有限像特征
+\[
+  \psi\colon G_\Q\to \C^\times
+\]
+都通过某个分圆扩张
+\[
+  \Q(\zeta_m)/\Q
+\]
+因子化。
+特别地，若 $K/\Q$ 是一个有限循环扩张，且 $K$ 不包含在任何分圆域中，
+则不存在连续满同态
+\[
+  G_\Q\to \Gal(K/\Q).
+\]
+由此说明：一维特征只能看见阿贝尔且本质上分圆的信息，
+所以研究 $G_\Q$ 的深层结构必须转向高维表示。
+\end{exercise}
+
+\begin{proof}[解答]
+因为 $\psi$ 连续且像有限，
+其核是 $G_\Q$ 的开正规子群，
+故 $\psi$ 通过某个有限 Galois 商
+\[
+  G_\Q\twoheadrightarrow \Gal(L/\Q)
+\]
+因子化。
+又因为 $\psi$ 的像位于交换群 $\C^\times$ 中，
+它进一步只依赖于 $\Gal(L/\Q)$ 的阿贝尔化。
+等价地，
+$\psi$ 通过 $G_\Q^{\mathrm{ab}}$ 因子化。
+
+Kronecker--Weber 定理断言：
+每个有限阿贝尔扩张都包含在某个分圆域 $\Q(\zeta_m)$ 中。
+因此 $L$ 的阿贝尔部分必包含于某个 $\Q(\zeta_m)$，
+从而 $\psi$ 通过
+\[
+  \Gal(\Q(\zeta_m)/\Q)
+  \cong
+  (\Z/m\Z)^\times
+\]
+因子化。
+
+若存在满同态
+\[
+  G_\Q\to \Gal(K/\Q)
+\]
+且 $\Gal(K/\Q)$ 循环，
+则右边是阿贝尔群，
+故同态仍通过 $G_\Q^{\mathrm{ab}}$ 因子化。
+再由 Kronecker--Weber，
+扩张 $K$ 必包含于某个分圆域，
+这与假设矛盾。
+
+因此一维特征只能检测阿贝尔信息，
+而像椭圆曲线 Tate 模、模形式 residual representation 这类非交换算术结构，
+必须依靠二维甚至更高维表示才能看见。
+\end{proof}
+
+\begin{exercise}
+对 $\ell=5$，描述分圆特征
+\[
+  \chi_5\colon G_\Q\to \Z_5^\times
+\]
+在任意素数 $p\neq 5$ 处的 Frobenius 元上的取值，
+并说明
+\[
+  \chi_5(\Frob_p)\equiv p\pmod 5.
+\]
+\end{exercise}
+
+\begin{proof}[解答]
+由定义，$\chi_5(\sigma)$ 是唯一满足
+\[
+  \sigma(\zeta_{5^n})=\zeta_{5^n}^{\chi_5(\sigma)\bmod 5^n}
+\]
+对所有 $n\ge 1$ 成立的 $5$-进单位。
+
+当 $p\neq 5$ 时，分圆扩张 $\Q(\zeta_{5^n})/\Q$ 在 $p$ 处无分歧，
+故 Frobenius 元 $\Frob_p$ 有意义。
+它在剩余域上的作用是 $x\mapsto x^p$，
+因此对任意 $5^n$ 次单位根都有
+\[
+  \Frob_p(\zeta_{5^n})=\zeta_{5^n}^p.
+\]
+按照分圆特征的定义，
+这意味着
+\[
+  \chi_5(\Frob_p)\equiv p\pmod{5^n}
+\]
+对每个 $n$ 都成立。
+于是作为 $5$-进整数，
+\[
+  \chi_5(\Frob_p)=p\in \Z_5^\times.
+\]
+模 $5$ 约化后立刻得到
+\[
+  \chi_5(\Frob_p)\equiv p\pmod 5.
+\]
+例如：
+\[
+  \chi_5(\Frob_2)=2,
+  \qquad
+  \chi_5(\Frob_3)=3,
+  \qquad
+  \chi_5(\Frob_{11})=11\equiv 1\pmod 5.
+\]
+\end{proof}
+
+\begin{exercise}
+设
+\[
+  E\colon y^2=x^3-x.
+\]
+证明
+\[
+  E[2]=\{O,(0,0),(1,0),(-1,0)\},
+\]
+并描述 $G_\Q$ 在 $E[2]$ 上的作用；
+求出
+\[
+  \rho_{E,2}\colon G_\Q\to \GL_2(\F_2)
+\]
+的像。
+\end{exercise}
+
+\begin{proof}[解答]
+对短 Weierstrass 方程
+\[
+  y^2=(x-e_1)(x-e_2)(x-e_3),
+\]
+二阶挠点正好是无穷远点与满足 $y=0$ 的三个点。
+本题中
+\[
+  y^2=x(x-1)(x+1),
+\]
+故三根为 $0,1,-1$，于是
+\[
+  E[2]=\{O,(0,0),(1,0),(-1,0)\}.
+\]
+
+这三个有限二阶点都定义在 $\Q$ 上，
+所以任意 $\sigma\in G_\Q$ 都固定它们。
+无穷远点 $O$ 也自然固定，
+于是 $G_\Q$ 在整个 $E[2]$ 上的作用平凡。
+若选取基
+\[
+  P=(0,0),
+  \qquad Q=(1,0),
+\]
+则对所有 $\sigma\in G_\Q$ 都有
+\[
+  \rho_{E,2}(\sigma)P=P,
+  \qquad
+  \rho_{E,2}(\sigma)Q=Q.
+\]
+因此
+\[
+  \rho_{E,2}(\sigma)=\Id
+  \qquad (\sigma\in G_\Q).
+\]
+所以其像是平凡子群
+\[
+  \im\rho_{E,2}=\{\Id\}\subset \GL_2(\F_2).
+\]
+\end{proof}
+
+\begin{exercise}
+设
+\[
+  \rho\colon G_\Q\to \GL_2(\F_\ell)
+\]
+在素数 $p$ 处无分歧。
+证明：$\rho(\Frob_p)$ 的共轭类只由 $\rho$ 本身决定，
+与 Frobenius 元的选取无关。
+\end{exercise}
+
+\begin{proof}[解答]
+Frobenius 元的定义依赖于对 $p$ 上方素点的选择。
+若改变这个选择，
+分解群 $D_p$ 会被 $G_\Q$ 中某个元素 $g$ 共轭成
+\[
+  gD_pg^{-1}.
+\]
+对应的惯性群也被共轭成 $gI_pg^{-1}$。
+因此两个可能的 Frobenius 提升在 $G_\Q$ 中只相差共轭：
+若 $\Frob_p'$ 是另一个选择，
+则存在 $g\in G_\Q$ 使得
+\[
+  \Frob_p'=g\Frob_pg^{-1}
+\]
+模去惯性后成立；
+而因为表示在 $p$ 处无分歧，$I_p\subset \ker\rho$，
+任何两个 Frobenius 提升在 $\rho$ 下的像仍只相差共轭。
+
+更具体地说，
+若 $\widetilde\Frob_p$ 与 $\widetilde\Frob_p\tau$ 是两个提升，$\tau\in I_p$，
+则
+\[
+  \rho(\widetilde\Frob_p\tau)=\rho(\widetilde\Frob_p)\rho(\tau)=\rho(\widetilde\Frob_p)
+\]
+因为 $\rho(\tau)=1$。
+若再改变 $p$ 上方素点，只会在 $G_\Q$ 里把提升换成共轭元，
+所以在矩阵群里得到的也是共轭矩阵。
+
+因此，虽然单个 Frobenius 元本身不唯一，
+但
+\[
+  \rho(\Frob_p)
+\]
+的共轭类与特征多项式、迹、行列式等共轭不变量，
+都只由表示 $\rho$ 本身决定。
+\end{proof}
+
+\begin{exercise}
+查阅 LMFDB 或 Cremona 数据，考虑以下两个权 $2$ 新形式：
+\begin{itemize}
+  \item 级别 $11$ 的唯一新形式
+  \[
+    f=q-2q^2-q^3+2q^4+q^5+2q^6-2q^7+\cdots;
+  \]
+  \item 级别 $77$ 的新形式
+  \[
+    g=q+q^2+2q^3-q^4-2q^5+2q^6-q^7+\cdots.
+  \]
+\end{itemize}
+验证对若干素数
+\[
+  q\nmid 77
+\]
+有
+\[
+  a_q(g)\equiv a_q(f)\pmod 3,
+\]
+并说明这给出了一个从级别 $77$ 到级别 $11$ 的水平下降数值例子。
+\end{exercise}
+
+\begin{proof}[解答]
+先列出若干 Hecke 特征值（这些数据可直接从 LMFDB 的新形式页面读取）：
+\[
+\begin{array}{c|cccccc}
+q & 2 & 5 & 13 & 17 & 19 & 23 \\\hline
+a_q(f) & -2 & 1 & 4 & -2 & 0 & -1 \\
+ a_q(g) & 1 & -2 & 4 & 4 & 0 & -4
+\end{array}
+\]
+逐项模 $3$ 比较：
+\[
+  1\equiv -2,
+  \qquad -2\equiv 1,
+  \qquad 4\equiv 4,
+  \qquad 4\equiv -2,
+  \qquad 0\equiv 0,
+  \qquad -4\equiv -1
+  \pmod 3.
+\]
+因此对这些素数都成立
+\[
+  a_q(g)\equiv a_q(f)\pmod 3.
+\]
+
+继续查表可见，
+对所有 $q\nmid 77\cdot 3$ 的小素数都出现同样同余。
+按 Chebotarev 密度定理与 Brauer--Nesbitt 原理，
+这强烈表明
+\[
+  \rhobar_{g,3}\cong \rhobar_{f,3}.
+\]
+换句话说，
+虽然 $g$ 的级别是 $77=7\cdot 11$，
+但它的 mod $3$ residual 表示已经“看不见”素数 $7$，
+因而与级别 $11$ 的新形式 $f$ 给出同一份 residual 表示。
+这正是 Ribet 水平下降的数值样板：
+多出来的级别素数 $7$ 在 residual 世界里消失了。
+\end{proof}
+
+\begin{exercise}
+设 $E/\Q$ 是椭圆曲线，$\ell$ 是素数，
+Weil 配对
+\[
+  e_\ell\colon E[\ell]\times E[\ell]\to \mu_\ell
+\]
+满足双线性、交替与非退化性。
+证明它是 $G_\Q$-等变的：
+\[
+  e_\ell(\sigma P,\sigma Q)=\sigma\bigl(e_\ell(P,Q)\bigr)
+  \qquad (\sigma\in G_\Q),
+\]
+并由此推出
+\[
+  \det\rho_{E,\ell}=\chi_\ell.
+\]
+\end{exercise}
+
+\begin{proof}[解答]
+Weil 配对的定义使用与点 $P,Q$ 相关的有理函数。
+对任意 $\sigma\in G_\Q$，
+把这些有理函数的系数整体施以 $\sigma$，
+便得到与点 $\sigma P,\sigma Q$ 相对应的函数。
+因此配对值满足
+\[
+  e_\ell(\sigma P,\sigma Q)=\sigma\bigl(e_\ell(P,Q)\bigr).
+\]
+这就是 $G_\Q$-等变性。
+
+现在取 $E[\ell]$ 的一组基 $P,Q$，
+并令
+\[
+  e_\ell(P,Q)=\zeta_\ell
+\]
+是本原 $\ell$ 次单位根。
+若
+\[
+  \rho_{E,\ell}(\sigma)=
+  \begin{pmatrix}
+    a&b\\ c&d
+  \end{pmatrix},
+\]
+则
+\begin{align*}
+  e_\ell(\sigma P,\sigma Q)
+  &=e_\ell(aP+cQ,bP+dQ)\\
+  &=e_\ell(P,Q)^{ad-bc}\\
+  &=\zeta_\ell^{\det\rho_{E,\ell}(\sigma)}.
+\end{align*}
+另一方面，由等变性，
+\[
+  e_\ell(\sigma P,\sigma Q)=\sigma(\zeta_\ell)=\zeta_\ell^{\chi_\ell(\sigma)}.
+\]
+比较指数，得到
+\[
+  \det\rho_{E,\ell}(\sigma)\equiv \chi_\ell(\sigma)\pmod \ell.
+\]
+因为左边和右边本来都取值于 $(\Z/\ell\Z)^\times$，
+故实际上
+\[
+  \det\rho_{E,\ell}=\chi_\ell.
+\]
+这说明椭圆曲线 mod $\ell$ 表示的行列式，
+恰好记录了 Galois 群在 $\ell$ 次单位根上的作用。
+\end{proof}
