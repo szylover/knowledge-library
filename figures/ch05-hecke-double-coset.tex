@@ -1,0 +1,50 @@
+% figures/ch05-hecke-double-coset.tex
+% 双陪集分解示意：Γ \ ΓαΓ 的陪集代表元（T_p 的情形）
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth, font=\small, scale=1.0]
+
+% 标题
+\node[font=\normalsize\bfseries] at (0, 4.2)
+  {$T_p$ 的双陪集分解：$\SL_2(\Z) \begin{pmatrix}p&0\\0&1\end{pmatrix} \SL_2(\Z)$};
+
+% 左边：大矩形表示 ΓαΓ（整体）
+\draw[thick, blue!50!black, fill=blue!5, rounded corners=6pt]
+  (-5.5, -0.3) rectangle (5.5, 3.5);
+\node[blue!60!black] at (0, 3.2) {双陪集 $\Gamma\alpha\Gamma$，其中 $\alpha = \begin{pmatrix}p&0\\0&1\end{pmatrix}$};
+
+% p+1 个陪集代表元方块
+% 代表元：\begin{pmatrix}1&j\\0&p\end{pmatrix} for j=0,...,p-1 和 \begin{pmatrix}p&0\\0&1\end{pmatrix}
+
+\foreach \j/\xpos/\lab in {
+  0/-4.5/{$\begin{pmatrix}1&0\\0&p\end{pmatrix}$},
+  1/-2.7/{$\begin{pmatrix}1&1\\0&p\end{pmatrix}$},
+  2/-0.9/{$\begin{pmatrix}1&2\\0&p\end{pmatrix}$},
+  3/0.9/{$\cdots$},
+  4/2.7/{$\begin{pmatrix}1&p{-}1\\0&p\end{pmatrix}$},
+  5/4.5/{$\begin{pmatrix}p&0\\0&1\end{pmatrix}$}
+}{
+  \draw[fill=orange!15, draw=orange!60!black, rounded corners=3pt]
+    (\xpos-0.8, 0.2) rectangle (\xpos+0.8, 2.5);
+  \node[font=\footnotesize, align=center] at (\xpos, 1.35) {\lab};
+}
+
+% 标注个数
+\node[font=\footnotesize, text=gray!70!black] at (0, -0.8)
+  {共 $p+1$ 个陪集代表元（当 $p$ 为素数时）};
+
+% Hecke 算子作用
+\node[font=\footnotesize, align=center, text=purple!70!black] at (0, -1.5) {
+  $T_p f(\tau) = p^{k-1} \displaystyle\sum_{j=0}^{p-1} f\!\left(\frac{\tau+j}{p}\right)
+  + f(p\tau)$
+};
+
+\end{tikzpicture}
+\caption{$T_p$ 的双陪集分解。$\SL_2(\Z)$ 在矩阵 $\alpha_p = \begin{pmatrix}p&0\\0&1\end{pmatrix}$
+的双陪集 $\SL_2(\Z)\,\alpha_p\,\SL_2(\Z)$ 中，
+恰好有 $p+1$ 个右陪集（左陪集代表元），
+分别对应矩阵 $\begin{pmatrix}1&j\\0&p\end{pmatrix}$（$j=0,\ldots,p-1$）
+和 $\begin{pmatrix}p&0\\0&1\end{pmatrix}$。
+权 $k$ 的 Hecke 算子 $T_p$ 就是对这 $p+1$ 个代表元的"平均"。}
+\label{fig:hecke-double-coset}
+\end{figure}

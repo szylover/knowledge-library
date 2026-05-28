@@ -2,7 +2,175 @@
 \chapter{Hecke 算子}
 \label{ch:hecke}
 % ============================================================================
-% 对应 Diamond \& Shurman Chapter 5
+% 对应 Diamond \& Shurman Chapter 5（在本书中为第 3 章）
 
-% TODO: 双陪集算子、Hecke 算子 T_n、Diamond 算子、
-%       Petersson 内积、本征形式、新形式理论
+在第二章，我们构造了 Eisenstein 级数并计算了其 $q$-展开。
+注意到系数 $\sigma_{k-1}(n) = \sum_{d \mid n} d^{k-1}$ 是积性函数：
+$\sigma_{k-1}(mn) = \sigma_{k-1}(m)\sigma_{k-1}(n)$ 当 $\gcd(m,n)=1$。
+
+这不是巧合。背后有一套系统的理论——\textbf{Hecke 算子}（Hecke operators）。
+Hecke 算子是模形式空间上的线性算子，它们彼此交换（生成一个交换代数），
+而 Eisenstein 级数和 $\Delta$ 恰好是这些算子的公共特征向量（特征形式）。
+特征形式的 $q$-展开系数自动满足乘性，这就是 $\sigma_{k-1}(n)$ 和 Ramanujan $\tau(n)$ 乘性的真正原因。
+
+更深远的意义：每个特征形式 $f$ 都对应一个 \textbf{$L$-函数}
+$L(s,f) = \sum a_n n^{-s}$，它有 Euler 乘积分解，
+类比 Riemann $\zeta$ 函数但蕴含更丰富的算术信息。
+这些 $L$-函数是费马大定理证明链的核心。
+
+本章结构：
+\begin{itemize}
+  \item \textbf{§\ref{sec:hecke-motivation}} 从椭圆曲线的同源看 Hecke 算子的几何直觉。
+  \item \textbf{§\ref{sec:double-coset}} 双陪集分解与 Hecke 算子的精确定义。
+  \item \textbf{§\ref{sec:hecke-on-qexp}} Hecke 算子在 $q$-展开上的作用。
+  \item \textbf{§\ref{sec:hecke-eigenforms}} 特征形式与乘性——Euler 乘积。
+  \item \textbf{§\ref{sec:petersson}} Petersson 内积与 Hecke 算子的自伴性。
+  \item \textbf{§\ref{sec:newforms}} 新形式理论（Atkin-Lehner）。
+  \item \textbf{§\ref{sec:hecke-exercises}} 习题。
+\end{itemize}
+
+
+% ============================================================================
+\section{几何直觉：同源的计数}
+\label{sec:hecke-motivation}
+% ============================================================================
+
+在\cref{sec:tori-and-ec}中，我们看到复环面 $\C/\Lambda$ 对应一条椭圆曲线，
+而 $\SL_2(\Z) \backslash \HH$ 参数化所有椭圆曲线的同构类。
+
+现在问：给定一个点 $\tau \in \HH$（对应椭圆曲线 $E_\tau = \C/\Lambda_\tau$），
+有多少条椭圆曲线 $E'$ 使得存在一个次数为 $n$ 的同源 $E_\tau \to E'$？
+
+\textbf{次数 $n$ 的同源 $\C/\Lambda \to \C/\Lambda'$}
+对应 $\alpha \in \C^*$ 使得 $\alpha\Lambda \subset \Lambda'$，
+$[\Lambda' : \alpha\Lambda] = n$。
+用格语言，这等价于：找所有满足 $[\Lambda_\tau : \Lambda'] = n$ 的子格 $\Lambda' \subset \Lambda_\tau$。
+
+\begin{example}[$n=p$（素数）时的子格]
+\label{ex:sublattices-prime}
+取 $\Lambda_\tau = \Z\tau + \Z$，$n = p$（素数）。
+指标为 $p$ 的子格有 $p + 1$ 个：
+\begin{itemize}
+  \item $\Lambda_j = \Z\tau + \Z(j\tau + p)^{-1}\cdot p\Z = \Z\tau + \frac{1}{p}\Z$？
+
+    \textbf{直接描述}：$p+1$ 个指标 $p$ 的子群 $\Lambda' \subset \Lambda_\tau$ 为
+    \begin{align*}
+      \Lambda_j &= \Z(\tau + j) + \Z(p), \quad j = 0, 1, \ldots, p-1, \\
+      \Lambda_p &= \Z(p\tau) + \Z(1).
+    \end{align*}
+    （验证：$[\Lambda_\tau : \Lambda_j] = p$。）
+  \item 对应的 $\tau$ 值（$\Lambda_j = \Lambda_{(τ+j)/p}$ 的第一生成元归一化后）：
+    $\tau_j = (\tau + j)/p$（$j = 0, \ldots, p-1$）和 $\tau_p = p\tau$。
+\end{itemize}
+\end{example}
+
+Hecke 算子 $T_p$ 就是把模形式"在所有这 $p+1$ 个点取平均"：
+\[
+  (T_p f)(\tau) \sim \sum_{\text{子格 } \Lambda'} f(\tau_{\Lambda'}),
+\]
+其中 $\tau_{\Lambda'}$ 是 $\Lambda'$ 对应的 $\tau$ 值（适当归一化）。
+这是一个非常具体的几何操作，把一条椭圆曲线的性质"扩散"到所有 $p$-同源像。
+
+
+% ============================================================================
+\section{双陪集分解与 Hecke 算子的定义}
+\label{sec:double-coset}
+% ============================================================================
+
+我们现在把上面的几何直觉翻译成精确的代数定义。
+
+\textbf{权 $k$ 斜算子（slash operator）。}
+\index{斜算子 (slash operator)}
+对矩阵 $\alpha = \begin{pmatrix} a & b \\ c & d \end{pmatrix}$（$\det\alpha > 0$）
+和函数 $f\colon \HH \to \C$，定义
+\[
+  (f \mid_k \alpha)(\tau) = (\det\alpha)^{k/2}(c\tau + d)^{-k} f(\alpha(\tau)).
+\]
+模形式的变换律 $f(\gamma(\tau)) = (c\tau+d)^k f(\tau)$（$\gamma \in \SL_2(\Z)$）
+等价于 $f \mid_k \gamma = f$（对 $\det\gamma = 1$ 时 $(\det\gamma)^{k/2} = 1$）。
+
+斜算子满足 $f \mid_k (\alpha\beta) = (f \mid_k \alpha) \mid_k \beta$。
+
+\begin{definition}[Hecke 算子 $T_n$（全模群情形）]
+\label{def:hecke-operator-full}
+\index{Hecke 算子 (Hecke operator)}\index{Tn@$T_n$}
+对正整数 $n$，令
+\[
+  \Delta_n = \left\{
+    \begin{pmatrix} a & b \\ 0 & d \end{pmatrix}
+    \;\middle|\; a, d > 0,\; ad = n,\; 0 \leq b < d
+  \right\}.
+\]
+这是一组矩阵，共 $\sum_{d \mid n} 1$ 个，更精确地共 $\sigma_0(n) = \sum_{d \mid n} 1$ 个。
+
+对 $f \in \Mk_k(\SL_2(\Z))$，定义
+\[
+  (T_n f)(\tau) = n^{k-1} \sum_{\alpha \in \Delta_n} (f \mid_k \alpha)(\tau)
+  = n^{k/2-1} \sum_{\substack{ad=n,\, a,d>0 \\ 0 \leq b < d}}
+    d^{-k} f\!\left(\frac{a\tau + b}{d}\right).
+\]
+\end{definition}
+
+\input{figures/ch05-hecke-double-coset}
+
+\textbf{为什么 $\Delta_n$ 是正确的陪集代表元集合？}
+$\SL_2(\Z) \backslash M_n(\Z)$（其中 $M_n(\Z) = \{\alpha \in \Mat_2(\Z) \mid \det\alpha = n\}$）
+的每个左陪集恰好由 $\Delta_n$ 的某个元素代表。这来自对整数矩阵做初等行变换
+（类比于整数矩阵的 Smith 标准型）——对任意行列式为 $n$ 的整数矩阵，
+通过左乘 $\SL_2(\Z)$ 中的元素（初等行变换），可以化成上三角形式
+$\begin{pmatrix} a & b \\ 0 & d \end{pmatrix}$（$ad = n$，$0 \leq b < d$）。
+
+\begin{example}[$T_2$ 的显式公式（$k = 12$，作用在 $\Delta$）]
+\label{ex:T2-on-Delta}
+$n = 2$，$\Delta_2$ 包含三个矩阵：
+\[
+  \begin{pmatrix}1&0\\0&2\end{pmatrix},\quad
+  \begin{pmatrix}1&1\\0&2\end{pmatrix},\quad
+  \begin{pmatrix}2&0\\0&1\end{pmatrix}.
+\]
+故（用 $k = 12$）：
+\[
+  (T_2 f)(\tau)
+  = 2^{11}\left[
+    2^{-12}f\!\left(\frac{\tau}{2}\right)
+    + 2^{-12}f\!\left(\frac{\tau+1}{2}\right)
+    + 1^{-12}f(2\tau)
+  \right]
+  = \frac{1}{2}\left[f\!\left(\frac{\tau}{2}\right)
+    + f\!\left(\frac{\tau+1}{2}\right)\right] + 2^{11} f(2\tau).
+\]
+\end{example}
+
+\begin{example}[$T_p$ 的简洁公式（素数 $p$）]
+\label{ex:Tp-formula}
+当 $n = p$ 素数时，$ad = p$ 只有 $(a,d) = (1,p)$ 或 $(p,1)$，故
+\[
+  (T_p f)(\tau) = p^{k-1} \left[
+    p^{-k} \sum_{j=0}^{p-1} f\!\left(\frac{\tau+j}{p}\right) + f(p\tau)
+  \right]
+  = p^{k/2-1}\sum_{j=0}^{p-1} f\!\left(\frac{\tau+j}{p}\right)
+    + p^{k/2-1} \cdot p \cdot f(p\tau).
+\]
+更常见的写法（归一化后）：
+\[
+  \boxed{(T_p f)(\tau)
+  = p^{k-1} f(p\tau) + \frac{1}{p}\sum_{j=0}^{p-1} f\!\left(\frac{\tau+j}{p}\right).}
+\]
+\end{example}
+
+\begin{definition}[Diamond 算子]
+\label{def:diamond-operator}
+\index{Diamond 算子 (Diamond operator)}\index{diamond@$\langle d \rangle$}
+对同余子群 $\GammaI(N)$，还有另一族算子——\textbf{Diamond 算子}
+$\langle d \rangle$（$d \in (\Z/N\Z)^\times$）：
+
+取任意 $\gamma = \begin{pmatrix} a & b \\ c & \delta \end{pmatrix} \in \SL_2(\Z)$，
+$\delta \equiv d \pmod N$，定义
+\[
+  \langle d \rangle f = f \mid_k \gamma.
+\]
+（选择不同的 $\gamma$ 给出相同的结果，因为它们在 $\GammaI(N)$ 中等价。）
+
+Diamond 算子与 Hecke 算子交换，且 $\langle d \rangle$ 对 $f \in \Mk_k(\GammaI(N), \chi)$
+的作用是乘以 $\chi(d)$。
+\end{definition}
