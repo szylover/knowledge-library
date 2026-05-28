@@ -1,0 +1,71 @@
+% figures/ch02-riemann-surface-charts.tex
+% 黎曼面的坐标卡与转换映射示意图
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[
+  >=Stealth,
+  every node/.style={font=\small},
+]
+
+% --- 黎曼面轮廓（用手工路径模拟椭圆曲面） ---
+\draw[thick, fill=blue!8]
+  plot[smooth cycle, tension=0.6]
+  coordinates {(-2,0.8) (-0.5,1.5) (1.5,1.2) (2.2,0) (1.5,-1.2) (-0.3,-1.4) (-2,-0.5)};
+\node at (0, 1.8) {$X$（黎曼面）};
+
+% --- 坐标卡 U_alpha ---
+\draw[thick, fill=orange!30, opacity=0.7]
+  plot[smooth cycle, tension=0.7]
+  coordinates {(-1.2,0.6) (-0.2,0.9) (0.3,0.2) (-0.2,-0.5) (-1.2,-0.3)};
+\node at (-0.5, 0.2) {$U_\alpha$};
+
+% --- 坐标卡 U_beta ---
+\draw[thick, fill=cyan!30, opacity=0.7]
+  plot[smooth cycle, tension=0.7]
+  coordinates {(0.0,0.7) (1.0,1.0) (1.6,0.3) (1.1,-0.5) (0.1,-0.3)};
+\node at (0.85, 0.25) {$U_\beta$};
+
+% --- 交集标记 ---
+\node[font=\footnotesize, text=gray!70!black] at (0.1, -0.9) {$U_\alpha \cap U_\beta$};
+\draw[->, gray!60, shorten >=2pt] (0.1,-0.75) to[bend left=10] (0.35, 0.1);
+
+% --- 左边 C 平面 (V_alpha) ---
+\draw[fill=orange!10, draw=orange!60!black, thick, rounded corners=4pt]
+  (-4.5,-3.2) rectangle (-2.5,-1.8);
+\node at (-3.5, -2.5) {$V_\alpha \subset \C$};
+\node[font=\footnotesize, text=gray] at (-3.5, -3.0) {$\varphi_\alpha(U_\alpha \cap U_\beta)$};
+\draw[fill=orange!25, draw=orange!80!black, rounded corners=2pt]
+  (-4.2,-2.9) rectangle (-3.3,-2.1);
+
+% --- 右边 C 平面 (V_beta) ---
+\draw[fill=cyan!10, draw=cyan!60!black, thick, rounded corners=4pt]
+  (2.5,-3.2) rectangle (4.5,-1.8);
+\node at (3.5, -2.5) {$V_\beta \subset \C$};
+\node[font=\footnotesize, text=gray] at (3.5, -3.0) {$\varphi_\beta(U_\alpha \cap U_\beta)$};
+\draw[fill=cyan!25, draw=cyan!80!black, rounded corners=2pt]
+  (3.3,-2.9) rectangle (4.2,-2.1);
+
+% --- 箭头：坐标映射 ---
+\draw[->, thick, orange!70!black]
+  (-0.5, -0.5) to[out=-120, in=60]
+  node[left, pos=0.5] {$\varphi_\alpha$}
+  (-3.5, -1.8);
+
+\draw[->, thick, cyan!70!black]
+  (0.85, -0.35) to[out=-60, in=120]
+  node[right, pos=0.5] {$\varphi_\beta$}
+  (3.5, -1.8);
+
+% --- 转换映射箭头 (底部) ---
+\draw[->, thick, purple!60!black, bend right=15]
+  (-2.5, -2.5) to
+  node[below, pos=0.5] {$\varphi_\beta \circ \varphi_\alpha^{-1}$（全纯双射）}
+  (2.5, -2.5);
+
+\end{tikzpicture}
+\caption{黎曼面的坐标卡结构。曲面 $X$ 上的每个坐标卡 $(U_\alpha, \varphi_\alpha)$
+把一小块区域同胚地映到 $\C$ 的开子集。两个坐标卡重叠时，
+转换映射 $\varphi_\beta \circ \varphi_\alpha^{-1}$ 必须是全纯双射，
+这保证了"全纯性"概念不依赖坐标卡的选择。}
+\label{fig:riemann-surface-charts}
+\end{figure}

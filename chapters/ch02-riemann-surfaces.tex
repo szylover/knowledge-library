@@ -4,5 +4,128 @@
 % ============================================================================
 % 对应 Diamond \& Shurman Chapter 2
 
-% TODO: 紧化、复结构、亏格公式（Riemann-Hurwitz）、
-%       模形式与微分形式的对应
+在第一章，我们建立了商空间
+$Y(\Gamma) = \Gamma \backslash \HH$ 和紧化模曲线
+$X(\Gamma) = \Gamma \backslash \HH^*$。
+但我们只说它是一个"商空间"——这个空间究竟有什么额外的数学结构？
+
+答案是：$X(\Gamma)$ 是一个\textbf{紧黎曼面}（compact Riemann surface）。
+黎曼面是最基础的一类复流形——每个点附近看起来像复平面的一小块。
+正是这个复结构使我们能谈论"全纯函数"、"微分形式"和"亏格"，
+从而把模形式解释为曲面上的微分形式，打通复分析与代数几何。
+
+本章的主线如下：
+\begin{itemize}
+  \item \textbf{§\ref{sec:riemann-surface-def}} 介绍黎曼面的严格定义。
+  \item \textbf{§\ref{sec:y-gamma-complex-structure}}
+    把模曲线 $Y(\Gamma)$ 做成黎曼面：普通点与椭圆点各有不同的局部坐标。
+  \item \textbf{§\ref{sec:compactification-X}}
+    在尖点处添加局部坐标，得到紧黎曼面 $X(\Gamma)$。
+  \item \textbf{§\ref{sec:riemann-hurwitz}}
+    用 Riemann-Hurwitz 公式计算 $X(\Gamma)$ 的亏格。
+  \item \textbf{§\ref{sec:modular-forms-differentials}}
+    揭示模形式与全纯微分形式的对应关系。
+\end{itemize}
+
+
+% ============================================================================
+\section{黎曼面：复平面的推广}
+\label{sec:riemann-surface-def}
+% ============================================================================
+
+在复分析中，我们研究复平面 $\C$ 上的全纯函数。
+黎曼面的想法是：把"局部像复平面"的性质变成全局对象的定义，
+允许曲面在整体上有非平凡的拓扑。
+
+先给一个直观图景：把一张纸卷成圆柱，每个点附近仍然"看起来像平面"，
+但整体结构不同于平面。黎曼面就是这样——局部都像 $\C$，
+但全局可以有洞、有亏格。
+
+\begin{definition}[坐标卡与复图册]
+\label{def:coordinate-chart}
+\index{坐标卡 (coordinate chart)}\index{复图册 (complex atlas)}\index{黎曼面 (Riemann surface)}
+设 $X$ 为 Hausdorff 拓扑空间。$X$ 上的一个\textbf{坐标卡}（coordinate chart）
+是一对 $(U_\alpha, \varphi_\alpha)$，其中 $U_\alpha \subset X$ 是开集，
+$\varphi_\alpha\colon U_\alpha \to V_\alpha \subset \C$ 是同胚（$V_\alpha$ 为开集）。
+
+一族坐标卡 $\{(U_\alpha, \varphi_\alpha)\}$ 称为\textbf{复图册}（complex atlas），若：
+\begin{enumerate}
+  \item \textbf{覆盖}：$X = \bigcup_\alpha U_\alpha$；
+  \item \textbf{全纯相容}：对任意两个坐标卡，转换映射
+    \[
+      \varphi_\beta \circ \varphi_\alpha^{-1}\colon
+      \varphi_\alpha(U_\alpha \cap U_\beta) \to \varphi_\beta(U_\alpha \cap U_\beta)
+    \]
+    是\textbf{全纯函数}（biholomorphism）。
+\end{enumerate}
+带有极大复图册的连通 Hausdorff 空间 $X$ 称为\textbf{黎曼面}（Riemann surface）。
+\end{definition}
+
+\input{figures/ch02-riemann-surface-charts}
+
+\textbf{为什么需要"转换映射全纯"？}
+两个坐标卡 $(U_\alpha, \varphi_\alpha)$ 和 $(U_\beta, \varphi_\beta)$
+可以看成同一个点 $p \in U_\alpha \cap U_\beta$ 的两种"坐标系"。
+在 $\varphi_\alpha$ 的坐标中，$p$ 对应 $z_\alpha = \varphi_\alpha(p) \in \C$；
+在 $\varphi_\beta$ 的坐标中，$p$ 对应 $z_\beta = \varphi_\beta(p) \in \C$。
+转换映射 $z_\beta = (\varphi_\beta \circ \varphi_\alpha^{-1})(z_\alpha)$ 全纯，
+意味着"在不同坐标系中写出来的函数，全纯性不随坐标选择变化"。
+这就是黎曼面上"全纯函数"概念有意义的根本原因。
+
+\begin{example}[最简单的黎曼面：$\C$ 和开子集]
+\label{ex:C-is-riemann-surface}
+$\C$ 本身是黎曼面，图册只有一个坐标卡 $(U, \varphi) = (\C, \mathrm{Id})$。
+更一般地，$\C$ 的任何连通开子集（如 $\HH$、单位圆盘 $\mathbb{D}$）也是黎曼面，
+图册也只需一个坐标卡。
+\end{example}
+
+\begin{example}[黎曼球面 $\mathbb{P}^1(\C)$]
+\label{ex:riemann-sphere}
+\index{黎曼球面 (Riemann sphere)}\index{P1C@$\mathbb{P}^1(\mathbb{C})$}
+$\mathbb{P}^1(\C) = \C \cup \{\infty\}$ 是最重要的紧黎曼面，拓扑上是一个球面。
+定义两个坐标卡：
+\begin{itemize}
+  \item $U_0 = \C$，$\varphi_0(z) = z$（标准坐标）；
+  \item $U_\infty = \C \setminus \{0\} \cup \{\infty\}$，
+    $\varphi_\infty(z) = 1/z$（$\varphi_\infty(\infty) = 0$）。
+\end{itemize}
+在 $U_0 \cap U_\infty = \C \setminus \{0\}$ 上，转换映射为
+$\varphi_\infty \circ \varphi_0^{-1}(z) = 1/z$，这是全纯函数。故 $\mathbb{P}^1(\C)$ 是黎曼面。
+
+拓扑直觉：把复平面"卷起来"加上无穷远点，就得到一个球面
+（球极投影，stereographic projection）。
+\end{example}
+
+\begin{example}[复环面是黎曼面]
+\label{ex:torus-riemann-surface}
+复环面 $\C/\Lambda$ 也是黎曼面。对任意 $p \in \C/\Lambda$，
+取一个不包含格点的小邻域 $U$，
+则投影 $\pi\colon \C \to \C/\Lambda$ 在 $\pi^{-1}(U)$ 的某个连通分支上是同胚，
+其逆就给出坐标卡。转换映射是平移 $z \mapsto z + \omega$（$\omega \in \Lambda$），
+显然全纯。
+
+这与\cref{sec:complex-tori}中我们把 $\C/\Lambda$ 作为复 Lie 群的讨论一致。
+\end{example}
+
+\begin{definition}[黎曼面之间的全纯映射]
+\label{def:holomorphic-map-riemann}
+\index{全纯映射 (holomorphic map)}
+设 $f\colon X \to Y$ 是黎曼面之间的连续映射。
+$f$ 称为\textbf{全纯的}，若对 $X$ 和 $Y$ 上任何相容的坐标卡
+$(U_\alpha, \varphi_\alpha)$ 和 $(V_\beta, \psi_\beta)$，
+局部表达式
+\[
+  \psi_\beta \circ f \circ \varphi_\alpha^{-1}\colon
+  \varphi_\alpha(U_\alpha \cap f^{-1}(V_\beta)) \to \C
+\]
+是全纯函数。
+
+双全纯映射（biholomorphic map，即全纯且有全纯逆）也称为\textbf{双全纯同构}。
+\end{definition}
+
+\textbf{紧黎曼面上的全纯函数。}
+若 $X$ 是紧黎曼面，则 $X$ 上没有非常数全纯函数。
+这是因为：全纯函数的模在紧集上取到最大值，
+由最大模原理，它必是常数。
+这一事实说明我们应该研究紧黎曼面上的\emph{亚纯函数}，
+而不是全纯函数——模形式（及其商 $j$-不变量等）正是这类对象。
