@@ -1,0 +1,282 @@
+\chapter{第2章：Eisenstein 级数 习题}
+\difficultykey
+
+% ============================================================================
+\section{基础题 \easy}
+% ============================================================================
+
+\begin{problem}{Bernoulli数的递推}
+\easy
+利用生成函数 $\frac{t}{e^t-1}=\sum_{n=0}^\infty B_n\frac{t^n}{n!}$，
+计算 $B_0,B_1,B_2,B_3,B_4,B_6$，并验证 $B_{2k+1}=0$ 对 $k\ge1$ 成立。
+\end{problem}
+\begin{solution}
+展开 $\frac{t}{e^t-1}$：令 $e^t-1=t+\frac{t^2}{2}+\frac{t^3}{6}+\cdots$，
+做除法得
+\[
+  \frac{t}{e^t-1}=1-\frac{t}{2}+\frac{t^2}{12}-\frac{t^4}{720}+\cdots
+\]
+故 $B_0=1$，$B_1=-\frac{1}{2}$，$B_2=\frac{1}{6}$，$B_3=0$，$B_4=-\frac{1}{30}$，$B_6=\frac{1}{42}$。
+
+对称性：$\frac{t}{e^t-1}+\frac{t}{2}=\frac{t}{2}\coth\frac{t}{2}$
+是偶函数，故除 $B_1$ 外，奇数阶 Bernoulli 数全为零。
+\end{solution}
+
+\begin{problem}{zeta函数特殊值}
+\easy
+利用 Euler 公式 $\zeta(2k)=\frac{(2\pi)^{2k}|B_{2k}|}{2\cdot(2k)!}$，
+计算 $\zeta(2),\zeta(4),\zeta(6)$。
+\end{problem}
+\begin{solution}
+\[
+  \zeta(2)=\frac{(2\pi)^2\cdot\frac{1}{6}}{2\cdot 2}=\frac{\pi^2}{6},\quad
+  \zeta(4)=\frac{(2\pi)^4\cdot\frac{1}{30}}{2\cdot 24}=\frac{\pi^4}{90},\quad
+  \zeta(6)=\frac{(2\pi)^6\cdot\frac{1}{42}}{2\cdot 720}=\frac{\pi^6}{945}.
+\]
+\end{solution}
+
+\begin{problem}{Eisenstein级数的常数项}
+\easy
+设归一化 Eisenstein 级数 $E_k(\tau)=1+\frac{2}{\zeta(1-k)}\sum_{n=1}^\infty\sigma_{k-1}(n)q^n$。
+计算 $E_4$ 的 $q^0$ 和 $q^1$ 系数，并与 $E_4=1+240\sum\sigma_3(n)q^n$ 核对。
+\end{problem}
+\begin{solution}
+常数项为 $1$（归一化使然）。$q^1$ 系数为 $\frac{2}{\zeta(-3)}\sigma_3(1)$。
+
+由 $\zeta(-3)=-\frac{B_4}{4}=-\frac{-1/30}{4}=\frac{1}{120}$，
+故系数 $=2\cdot 120\cdot 1=240$，与 $E_4=1+240q+\cdots$ 吻合。
+\end{solution}
+
+\begin{problem}{sigma函数的计算}
+\easy
+计算 $\sigma_1(12)$，$\sigma_3(6)$，$\sigma_{11}(1)$，
+并写出 $E_2(\tau)=1-24\sum\sigma_1(n)q^n$ 的前三个非常数项。
+\end{problem}
+\begin{solution}
+$\sigma_1(12)=(1+2+4)(1+3)=7\times4=28$，
+$\sigma_3(6)=(1+8)(1+27)=9\times28=252$，
+$\sigma_{11}(1)=1$。
+
+$E_2(\tau)=1-24q-72q^2-96q^3-\cdots$
+（因 $\sigma_1(1)=1$，$\sigma_1(2)=3$，$\sigma_1(3)=4$）。
+\end{solution}
+
+\begin{problem}{Poisson求和与theta函数}
+\easy
+设 $f(x)=e^{-\pi tx^2}$（$t>0$），其 Fourier 变换 $\hat f(\xi)=t^{-1/2}e^{-\pi\xi^2/t}$。
+用 Poisson 求和公式 $\sum_{n\in\Z}f(n)=\sum_{n\in\Z}\hat f(n)$，
+导出 Jacobi theta 函数的函数方程
+\[
+  \theta(t)=t^{-1/2}\theta(1/t),\quad \theta(t)=\sum_{n\in\Z}e^{-\pi n^2 t}.
+\]
+\end{problem}
+\begin{solution}
+直接代入：$\sum_{n\in\Z}e^{-\pi tn^2}=\sum_{n\in\Z}t^{-1/2}e^{-\pi n^2/t}$，
+即 $\theta(t)=t^{-1/2}\theta(1/t)$。这是 theta 函数的核心对称性，
+是推导 Riemann zeta 函数方程的关键工具。
+\end{solution}
+
+\begin{problem}{E4的前五项}
+\easy
+利用 $\sigma_3$ 的乘性和初始值，写出
+$E_4(\tau)=1+240\sum_{n=1}^\infty\sigma_3(n)q^n$ 的前五项（即到 $q^5$）。
+\end{problem}
+\begin{solution}
+$\sigma_3(1)=1$，$\sigma_3(2)=9$，$\sigma_3(3)=28$，$\sigma_3(4)=73$，$\sigma_3(5)=126$。
+\[
+  E_4(\tau)=1+240q+2160q^2+6720q^3+17520q^4+30240q^5+\cdots
+\]
+\end{solution}
+
+\begin{problem}{模变换律的直接验证}
+\easy
+直接验证 $E_k(\tau+1)=E_k(\tau)$，
+不用格求和，只用 $q=e^{2\pi i\tau}$ 的性质。
+\end{problem}
+\begin{solution}
+$q(\tau+1)=e^{2\pi i(\tau+1)}=e^{2\pi i\tau}\cdot e^{2\pi i}=e^{2\pi i\tau}=q(\tau)$。
+故 $E_k(\tau+1)=1+\frac{2}{\zeta(1-k)}\sum_{n=1}^\infty\sigma_{k-1}(n)q(\tau+1)^n
+=1+\frac{2}{\zeta(1-k)}\sum_{n=1}^\infty\sigma_{k-1}(n)q(\tau)^n=E_k(\tau)$。
+\end{solution}
+
+% ============================================================================
+\section{进阶题 \medium}
+% ============================================================================
+
+\begin{problem}{Poisson推导qExpansion}
+\medium
+证明对偶数 $k\ge4$，
+\[
+  \sum_{n\in\Z}(n+\tau)^{-k}=\frac{(-2\pi i)^k}{(k-1)!}\sum_{m=1}^\infty m^{k-1}q^m,
+  \quad q=e^{2\pi i\tau}.
+\]
+\end{problem}
+\begin{solution}
+\textbf{步骤一：Fourier 变换。}
+对 $\tau\in\HH$，$f(x)=(x+\tau)^{-k}$ 的 Fourier 变换为
+$\hat f(\xi)=e^{2\pi i\tau\xi}\int_L u^{-k}e^{-2\pi iu\xi}du$，
+$L$ 是平行于实轴的水平线（虚部为 $\im\tau$）。
+
+\textbf{步骤二：留数计算。}
+对 $\xi>0$，在上半平面没有极点，用留数定理得
+$\hat f(\xi)=\frac{(-2\pi i)^k}{(k-1)!}\xi^{k-1}e^{2\pi i\tau\xi}$。
+对 $\xi\le0$，围道闭合在下半平面，$f$ 无极点，得零。
+
+\textbf{步骤三：Poisson 求和。}
+\[
+\sum_{n\in\Z}(n+\tau)^{-k}=\sum_{m=0}^\infty\hat f(m)
+=\frac{(-2\pi i)^k}{(k-1)!}\sum_{m=1}^\infty m^{k-1}e^{2\pi im\tau}.
+\]
+\end{solution}
+
+\begin{problem}{E2的变换公式}
+\medium
+证明 $E_2(-1/\tau)=\tau^2 E_2(\tau)+\frac{12\tau}{2\pi i}$，
+并解释为何 $E_2$ 不是模形式。
+\end{problem}
+\begin{solution}
+从 $G_2(\tau)=\sum'_{(m,n)}(m\tau+n)^{-2}$（条件收敛，先对 $n$）出发，
+利用 $\sum_{n\in\Z}(m\tau+n)^{-2}=\frac{\pi^2}{\sin^2(\pi m\tau)}$，
+对 $\tau\mapsto-1/\tau$ 做精确变换（Eisenstein 的技术），得
+\[
+  G_2(-1/\tau)=\tau^2 G_2(\tau)-2\pi i\tau.
+\]
+归一化（$E_2=G_2\cdot\frac{3}{\pi^2}$，$G_2=\frac{\pi^2}{3}E_2$）给出
+\[
+  E_2(-1/\tau)=\tau^2 E_2(\tau)+\frac{12\tau}{2\pi i}.
+\]
+额外的线性余项说明 $E_2$ 不满足 $E|_2\gamma=E$，故不是权 $2$ 模形式。
+\end{solution}
+
+\begin{problem}{判别式的分解}
+\medium
+利用 $\dim M_{12}(\SL_2(\Z))=2$ 和 $E_4^3,E_6^2$ 的 $q$-展开，
+证明 $\Delta=\frac{E_4^3-E_6^2}{1728}$ 并验证首项为 $q$。
+\end{problem}
+\begin{solution}
+$E_4^3=(1+240q+\cdots)^3=1+720q+O(q^2)$，
+$E_6^2=(1-504q+\cdots)^2=1-1008q+O(q^2)$。
+故 $E_4^3-E_6^2=1728q+O(q^2)$，常数项为零，
+$h:=\frac{E_4^3-E_6^2}{1728}=q+O(q^2)\in S_{12}$。
+由 $\dim S_{12}=1$，$h$ 和 $\Delta=q\prod(1-q^n)^{24}$ 首项均为 $q$，故 $h=\Delta$。
+\end{solution}
+
+\begin{problem}{Dirichlet特征与EisensteinSeries}
+\medium
+设 $\chi_4:(\Z/4\Z)^\times\to\C^\times$ 为唯一的非主特征（$\chi_4(1)=1,\chi_4(3)=-1$）。
+写出相应的 Eisenstein 级数
+$E_{1,\chi_4}=1+\sum_{n=1}^\infty\left(\sum_{d\mid n}\chi_4(d)\right)q^n$ 的前五项，
+并说明它与 $r_2(n)$（表示成两个整数平方和的方法数）的关系。
+\end{problem}
+\begin{solution}
+$\sum_{d\mid n}\chi_4(d)=\#\{d\mid n:d\equiv1\!\pmod4\}-\#\{d\mid n:d\equiv3\!\pmod4\}$。
+
+$n=1$：$\chi_4(1)=1$，和$=1$。
+$n=2$：$\chi_4(1)+\chi_4(2)=1+0=1$。
+$n=3$：$\chi_4(1)+\chi_4(3)=1-1=0$。
+$n=4$：$1+0+1=2$（因子$1,2,4$，$\chi_4(4)=\chi_4(0)$，4不互质取0）。
+$n=5$：$1+1=2$。
+
+$E_{1,\chi_4}=1+q+q^2+0\cdot q^3+2q^4+2q^5+\cdots$
+
+由 Jacobi 恒等式 $r_2(n)=4\sum_{d\mid n}\chi_4(d)$，故 $E_{1,\chi_4}=\frac{1}{4}\sum_{n\ge0}r_2(n)q^n$。
+\end{solution}
+
+\begin{problem}{Petersson正交性}
+\medium
+证明 $M_k(\SL_2(\Z))=E_k\oplus S_k$ 是正交直和，即对任意 Eisenstein 级数 $E$ 和尖点形式 $f$，
+$\langle E,f\rangle_{\rm Pet}=0$。
+\end{problem}
+\begin{solution}
+用"展开法"（unfolding）。将 Eisenstein 级数写为 Poincaré 级数：
+$E_k(\tau)=\sum_{\gamma\in P\backslash\SL_2(\Z)}(1|_k\gamma)(\tau)$，
+$P=\left\{\begin{pmatrix}1&n\\0&1\end{pmatrix}\right\}$。
+
+内积展开：
+\[
+  \langle E_k,f\rangle=\int_{\SL_2(\Z)\backslash\HH}
+  \!\!\sum_{\gamma\in P\backslash\SL_2(\Z)}(1|_k\gamma)\overline{f}\,y^{k-2}dx\,dy
+  =\int_{P\backslash\HH}\overline{f(\tau)}\,y^{k-2}dx\,dy.
+\]
+$P\backslash\HH$ 是 $0\le x<1$，$y>0$ 的竖带。对 $x$ 积分：
+$\int_0^1\overline{f(\tau)}dx=\overline{a_0(f)}=0$（因 $f\in S_k$，$a_0=0$）。
+故 $\langle E_k,f\rangle=0$。
+\end{solution}
+
+% ============================================================================
+\section{挑战题 \hard}
+% ============================================================================
+
+\begin{problem}{Riemann函数方程}
+\hard
+利用 $\theta(t)=\sum_{n\in\Z}e^{-\pi n^2 t}$ 和 Mellin 变换，
+导出 Riemann $\zeta$ 函数的函数方程 $\xi(s)=\xi(1-s)$，
+其中 $\xi(s)=\frac{1}{2}s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s)$。
+\end{problem}
+\begin{solution}
+\textbf{步骤一：}Mellin 变换给出
+\[
+  2\pi^{-s/2}\Gamma(s/2)\zeta(s)=\int_0^\infty(\theta(t)-1)t^{s/2}\frac{dt}{t}.
+\]
+\textbf{步骤二：}分割 $\int_0^1+\int_1^\infty$，对前一段用 $t\to1/t$ 换元和 $\theta(1/t)=t^{1/2}\theta(t)$，得
+\[
+  \int_0^1(\theta(t)-1)t^{s/2}\frac{dt}{t}
+  =\int_1^\infty(\theta(u)-1)u^{(1-s)/2}\frac{du}{u}+\frac{2}{s}-\frac{2}{1-s}.
+\]
+\textbf{步骤三：}合并两段，
+\[
+  2\pi^{-s/2}\Gamma(s/2)\zeta(s)+\frac{2}{s}+\frac{2}{s-1}
+\]
+关于 $s\leftrightarrow1-s$ 对称，即 $\xi(s)=\xi(1-s)$。
+\end{solution}
+
+\begin{problem}{Eisenstein空间的维数}
+\hard
+对偶数权 $k\ge2$ 和同余子群 $\Gamma$，证明 Eisenstein 子空间 $E_k(\Gamma)$
+的维数等于 $\Gamma$ 的不等价尖点个数（$k\ge3$），
+并计算 $\Gamma_0(p)$（$p$ 素数）的情形。
+\end{problem}
+\begin{solution}
+\textbf{构造：}对每个尖点 $\mathfrak{a}$，令 $\sigma_\mathfrak{a}\in\SL_2(\Z)$ 满足 $\sigma_\mathfrak{a}\infty=\mathfrak{a}$，
+定义
+\[
+  \mathcal{E}_k^\mathfrak{a}(\tau)=\sum_{\gamma\in\Gamma_\mathfrak{a}\backslash\Gamma}
+  j(\sigma_\mathfrak{a}^{-1}\gamma,\tau)^{-k},
+\]
+其中 $\Gamma_\mathfrak{a}$ 是 $\mathfrak{a}$ 的稳定子。
+此级数绝对收敛（$k\ge3$），属于 $M_k(\Gamma)$，
+且在尖点 $\mathfrak{a}$ 的 $q$-展开常数项为 $1$，在其余尖点为 $0$。
+这些 $\mathcal{E}_k^\mathfrak{a}$（$\mathfrak{a}$ 遍历不等价尖点）线性无关，且 $E_k(\Gamma)=\bigoplus_\mathfrak{a}\C\mathcal{E}_k^\mathfrak{a}$。
+
+\textbf{$\Gamma_0(p)$ 的情形：}2 个不等价尖点（$\infty$ 和 $0$），故 $\dim E_k(\Gamma_0(p))=2$（$k\ge3$），
+$E_k(\Gamma_0(p))$ 由 $E_k(\tau)$ 和 $p^{k/2}E_k(p\tau)$（归一化后）张成。
+\end{solution}
+
+\begin{problem}{RankinSelberg方法}
+\hard
+设 $f=\sum a_nq^n\in S_k(\SL_2(\Z))$ 为归一化特征形式，
+$D(s,f)=\sum_{n=1}^\infty|a_n|^2 n^{-s}$。
+利用 Rankin-Selberg 方法：
+\begin{enumerate}
+  \item[(i)] 将 $\pi^{-s}\Gamma(s)D(s-k+1,f)$ 表示为 $\langle f\cdot\bar f\cdot y^k, E_s\rangle$ 的形式。
+  \item[(ii)] 由此推导 $\sum_{n\le X}|a_n|^2\sim c_f X^k$（$X\to\infty$）。
+\end{enumerate}
+\end{problem}
+\begin{solution}
+(i) 令 $E_s(\tau)=\sum_{\gamma\in P\backslash\SL_2(\Z)}\im(\gamma\tau)^s$（非全纯 Eisenstein 级数）。
+展开法：
+\[
+  \int_{\SL_2(\Z)\backslash\HH}|f(\tau)|^2y^k E_s(\tau)\frac{dx\,dy}{y^2}
+  =\int_{P\backslash\HH}|f(\tau)|^2 y^{k+s}\frac{dx\,dy}{y^2}.
+\]
+将 $f$ 做 Fourier 展开，$x$ 积分选出 $\sum_n|a_n|^2e^{-4\pi ny}$，再做 $y$ 积分（Mellin 变换）：
+\[
+  =(4\pi)^{-(k+s-1)}\Gamma(k+s-1)D(k+s-1,f,\bar f).
+\]
+
+(ii) $D(s,f,\bar f)=\sum|a_n|^2 n^{-s}$ 在 $s=k$ 处有单极点
+（来自 $E_s$ 在 $s=1$ 处的极点）。
+由 Perron 公式和极点留数计算，
+$\sum_{n\le X}|a_n|^2\sim c_f X^k$，
+$c_f=\frac{(4\pi)^k}{(k-1)!}\cdot\frac{3}{\pi}\cdot\|f\|^2$。
+\end{solution}

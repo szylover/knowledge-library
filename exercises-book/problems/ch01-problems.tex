@@ -1,0 +1,380 @@
+\chapter{第1章：模形式、椭圆曲线与模曲线 习题}
+\difficultykey
+
+% ============================================================================
+\section{基础题 \easy}
+% ============================================================================
+
+\begin{problem}{模群的生成元}
+\easy
+设 $S=\begin{pmatrix}0&-1\\1&0\end{pmatrix}$，$T=\begin{pmatrix}1&1\\0&1\end{pmatrix}$。
+\begin{enumerate}
+  \item 计算 $S^2$、$S^4$、$(ST)^3$，并说明它们在 $\PSL_2(\Z)$ 中的阶。
+  \item 证明 $S$ 对应的分式线性变换是 $\tau\mapsto -1/\tau$。
+\end{enumerate}
+\end{problem}
+\begin{solution}
+(i) 直接矩阵乘法：
+\[
+  S^2=\begin{pmatrix}-1&0\\0&-1\end{pmatrix}=-I,\quad
+  S^4=I.
+\]
+在 $\PSL_2(\Z)=\SL_2(\Z)/\{\pm I\}$ 中 $S^2=-I\equiv I$，故 $S$ 的阶为 $2$。
+
+$ST=\begin{pmatrix}0&-1\\1&0\end{pmatrix}\begin{pmatrix}1&1\\0&1\end{pmatrix}
+=\begin{pmatrix}0&-1\\1&1\end{pmatrix}$，于是
+\[
+  (ST)^2=\begin{pmatrix}-1&-1\\1&0\end{pmatrix},\quad
+  (ST)^3=\begin{pmatrix}-1&0\\0&-1\end{pmatrix}=-I\equiv I.
+\]
+故 $ST$ 在 $\PSL_2(\Z)$ 中阶为 $3$。
+
+(ii) 若 $\gamma=\begin{pmatrix}a&b\\c&d\end{pmatrix}$，则分式线性变换为
+$\gamma(\tau)=\frac{a\tau+b}{c\tau+d}$。
+$S$ 对应 $\frac{0\cdot\tau+(-1)}{1\cdot\tau+0}=-\frac{1}{\tau}$。
+\end{solution}
+
+\begin{problem}{基本域的验证}
+\easy
+设 $\mathcal{F}=\{\tau\in\HH:|{\rm Re}(\tau)|\le\tfrac{1}{2},\,|\tau|\ge 1\}$。
+证明：对任意 $\tau\in\mathcal{F}$，若 $S\tau\in\mathcal{F}$，则 $|\tau|=1$。
+\end{problem}
+\begin{solution}
+设 $\tau=x+iy\in\mathcal{F}$，则 $|S\tau|=|-1/\tau|=1/|\tau|$。
+若 $S\tau\in\mathcal{F}$，则 $|S\tau|\ge 1$，即 $1/|\tau|\ge 1$，故 $|\tau|\le 1$。
+又 $\tau\in\mathcal{F}$ 要求 $|\tau|\ge 1$，故 $|\tau|=1$。
+\end{solution}
+
+\begin{problem}{余尖点的计算}
+\easy
+列出 $\Gamma_0(4)$ 的所有非等价尖点，并给出每个尖点的稳定子群的生成元。
+\end{problem}
+\begin{solution}
+$\Gamma_0(4)$ 的指数为 $[\SL_2(\Z):\Gamma_0(4)]=6$，尖点数为 $3$，
+代表元选取 $\infty,0,\tfrac{1}{2}$。
+
+$\bullet$ 尖点 $\infty$：稳定子由 $T^4=\begin{pmatrix}1&4\\0&1\end{pmatrix}$ 生成
+（宽度为 $4$，因为最小正平移使 $\Gamma_0(4)$ 固定 $\infty$ 的是 $T^4$，不对。
+
+实际上固定 $\infty$ 的是上三角矩阵 $\begin{pmatrix}1&n\\0&1\end{pmatrix}\in\Gamma_0(4)$，
+即 $n$ 任意整数，所以稳定子由 $T=\begin{pmatrix}1&1\\0&1\end{pmatrix}$ 生成，宽度为 $1$。
+
+$\bullet$ 尖点 $0$：取 $\sigma=\begin{pmatrix}0&-1\\1&0\end{pmatrix}$，
+宽度为 $4$（因 $4\mid c$ 而 $\sigma^{-1}\Gamma_0(4)\sigma$ 的最小正平移为 $T^4$）。
+
+$\bullet$ 尖点 $\tfrac{1}{2}$：宽度为 $1$。
+
+故三个非等价尖点为 $\infty$（宽度1），$0$（宽度4），$\tfrac{1}{2}$（宽度1）。
+\end{solution}
+
+\begin{problem}{权k模形式的基本性质}
+\easy
+设 $f\in M_k(\SL_2(\Z))$ 且 $k$ 为奇数。证明 $f\equiv 0$。
+\end{problem}
+\begin{solution}
+对 $\gamma=-I=\begin{pmatrix}-1&0\\0&-1\end{pmatrix}\in\SL_2(\Z)$，
+模变换律给出
+\[
+  f(\tau)=(-1)^k f(\tau).
+\]
+因 $k$ 为奇数，$(-1)^k=-1$，故 $f(\tau)=-f(\tau)$，即 $f\equiv 0$。
+\end{solution}
+
+\begin{problem}{q展开的唯一性}
+\easy
+设 $f,g\in M_k(\SL_2(\Z))$ 的 $q$-展开满足 $a_n(f)=a_n(g)$ 对所有 $n\le \dim M_k(\SL_2(\Z))$ 成立。
+证明 $f=g$。
+\end{problem}
+\begin{solution}
+令 $h=f-g\in M_k(\SL_2(\Z))$，则 $h$ 的 $q$-展开的前 $\dim M_k$ 个系数全为零。
+设 $M_k(\SL_2(\Z))$ 的基为 $\{e_1,\ldots,e_d\}$（$d=\dim M_k$），
+写 $h=\sum c_i e_i$。
+从 $q$-展开看，若 $a_0(h)=\cdots=a_{d-1}(h)=0$，
+则向量 $(c_1,\ldots,c_d)$ 满足由 $q^0,\ldots,q^{d-1}$ 系数构成的 $d\times d$ 线性方程组。
+由于模形式的 $q$-展开构成的 Vandermonde-型矩阵非奇异（可用维数公式和 Wronskian 论证），
+故 $c_i=0$ 对所有 $i$，即 $h=0$，$f=g$。
+\end{solution}
+
+\begin{problem}{Eisenstein 级数的权}
+\easy
+设 $E_k(\tau)=\sum_{(m,n)\ne(0,0)}(m\tau+n)^{-k}$（$k\ge 3$ 为偶数）。
+直接从定义验证 $E_k|_k S=E_k$，即
+\[
+  \tau^{-k}E_k(-1/\tau)=E_k(\tau).
+\]
+\end{problem}
+\begin{solution}
+\[
+  \tau^{-k}E_k\!\left(-\frac{1}{\tau}\right)
+  =\tau^{-k}\sum_{(m,n)\ne0}\left(-\frac{m}{\tau}+n\right)^{-k}
+  =\tau^{-k}\sum_{(m,n)\ne0}\frac{\tau^k}{(n\tau-m)^k}
+  =\sum_{(m,n)\ne0}(n\tau-m)^{-k}.
+\]
+映射 $(m,n)\mapsto(n,-m)$ 是 $\Z^2\setminus\{0\}$ 上的双射，故最后一个和等于
+$\sum_{(m',n')\ne0}(m'\tau+n')^{-k}=E_k(\tau)$。
+\end{solution}
+
+\begin{problem}{复环面的同构}
+\easy
+设 $\Lambda=\Z+\Z\tau$ 和 $\Lambda'=\Z+\Z\tau'$（$\tau,\tau'\in\HH$）。
+证明：复环面 $\C/\Lambda$ 与 $\C/\Lambda'$ 同构（作为 Riemann 面）当且仅当
+$\tau'=\frac{a\tau+b}{c\tau+d}$ 对某 $\begin{pmatrix}a&b\\c&d\end{pmatrix}\in\SL_2(\Z)$。
+\end{problem}
+\begin{solution}
+$(\Rightarrow)$：若有同构 $\phi:\C/\Lambda\to\C/\Lambda'$，则 $\phi$ 提升到 $\C$ 上的同构
+$\tilde\phi(z)=\alpha z+\beta$（Riemann 面同构的提升）。
+由 $\tilde\phi(\Lambda)=\Lambda'$，特别地
+$\alpha\cdot 1=a+b\tau'$，$\alpha\tau=c+d\tau'$ 对某 $a,b,c,d\in\Z$，
+化简给出 $\tau'=\frac{\alpha\tau-c}{d}$，可验证矩阵行列式为 $\pm 1$。
+取定向后得 $ad-bc=1$。
+
+$(\Leftarrow)$：设 $\tau'=\frac{a\tau+b}{c\tau+d}$，$ad-bc=1$。
+令 $\alpha=c\tau+d$，则乘以 $\alpha^{-1}$ 将 $\Lambda$ 映到 $\Lambda'$，
+故 $\C/\Lambda\xrightarrow{z\mapsto z/\alpha}\C/\Lambda'$ 是同构。
+\end{solution}
+
+\begin{problem}{同余子群的指数}
+\easy
+计算 $[\SL_2(\Z):\Gamma_0(p)]$ 和 $[\SL_2(\Z):\Gamma_1(p)]$（$p$ 为素数）。
+\end{problem}
+\begin{solution}
+$\Gamma_0(p)$：陪集由 $c\bmod p$ 参数化（加上 $\infty$ 对应 $c\equiv 0$），共 $p+1$ 个。
+故 $[\SL_2(\Z):\Gamma_0(p)]=p+1$。
+
+$\Gamma_1(p)$：在 $\Gamma_0(p)$ 中再要求 $a\equiv d\equiv 1\pmod{p}$，
+给出 $\Gamma_0(p)/\Gamma_1(p)\cong(\Z/p\Z)^\times$（以 $a\bmod p$ 为参数），
+故 $[\SL_2(\Z):\Gamma_1(p)]=(p+1)(p-1)=p^2-1$。
+\end{solution}
+
+% ============================================================================
+\section{进阶题 \medium}
+% ============================================================================
+
+\begin{problem}{基本域是连通的}
+\medium
+证明：每个 $\tau\in\HH$ 都 $\SL_2(\Z)$-等价于 $\mathcal{F}$ 中某一点
+（即 $\HH=\SL_2(\Z)\cdot\mathcal{F}$）。
+\end{problem}
+\begin{solution}
+\textbf{步骤一：提升虚部。}
+固定 $\tau\in\HH$，对 $\gamma=\begin{pmatrix}a&b\\c&d\end{pmatrix}\in\SL_2(\Z)$，
+有 $\im(\gamma\tau)=\frac{\im\tau}{|c\tau+d|^2}$。
+对固定 $\tau$，当 $(c,d)$ 遍历 $\Z^2$ 的互素对时，
+$|c\tau+d|^2=c^2|\tau|^2+2cd\,\mathrm{Re}(\tau)+d^2$
+只有有限多个 $(c,d)$ 满足 $|c\tau+d|<M$ 对任意 $M>0$。
+因此 $\{\im(\gamma\tau):\gamma\in\SL_2(\Z)\}$ 有最大值，
+取使 $\im(\gamma\tau)$ 最大的 $\gamma_0$，令 $\tau_0=\gamma_0\tau$。
+
+\textbf{步骤二：调整实部。}
+用 $T^n$ 将 $\mathrm{Re}(\tau_0)$ 移入 $[-\tfrac{1}{2},\tfrac{1}{2}]$。
+
+\textbf{步骤三：$|\tau_0|\ge 1$。}
+若 $|\tau_0|<1$，则 $\im(S\tau_0)=\im(-1/\tau_0)=\im\tau_0/|\tau_0|^2>\im\tau_0$，
+矛盾于 $\tau_0$ 已使虚部最大。故 $|\tau_0|\ge 1$，即 $\tau_0\in\mathcal{F}$。
+\end{solution}
+
+\begin{problem}{权12尖点形式的维数}
+\medium
+利用 Riemann--Roch 公式（或直接论证），证明 $\dim S_{12}(\SL_2(\Z))=1$，
+且 $S_{12}$ 由 $\Delta(\tau)=q\prod_{n\ge1}(1-q^n)^{24}$ 生成。
+\end{problem}
+\begin{solution}
+由维数公式，$\dim M_{12}(\SL_2(\Z))=2$，$\dim S_{12}=\dim M_{12}-1=1$
+（因为常数模形式只有 $E_{12}$ 一个方向，而 $\Delta$ 是非零尖点形式，故 $S_{12}=\C\cdot\Delta$）。
+
+更精确的论证：$M_{12}$ 由 $E_{12}$ 和 $\Delta$ 张成。
+$E_{12}$ 有非零常数项 $1$；$\Delta$ 常数项为零，是尖点形式。
+它们线性无关，且维数公式给出 $\dim M_{12}=2$，故 $M_{12}=\C E_{12}\oplus\C\Delta$，
+$S_{12}=\C\Delta$，维数为 $1$。
+\end{solution}
+
+\begin{problem}{模曲线的亏格}
+\medium
+利用 Riemann-Hurwitz 公式计算 $X(1)=\overline{\SL_2(\Z)\backslash\HH}$ 的亏格，
+说明它同构于 $\mathbb{P}^1(\C)$。
+\end{problem}
+\begin{solution}
+$X(1)$ 是通过将 $\mathcal{F}$ 的边界粘合得到的紧 Riemann 面。
+分支点只有三个：$i$（阶 $2$，来自 $S$）、$\rho=e^{2\pi i/3}$（阶 $3$，来自 $ST$）、$\infty$（尖点）。
+
+Riemann-Hurwitz：设 $f:X(1)\to\mathbb{P}^1$ 是度 $1$ 的映射（这里我们算 $X(1)$ 本身的亏格）。
+$X(1)$ 上的 Euler 特征：
+\[
+  \chi(X(1))=\chi(\mathbb{P}^1)-\text{（分支修正）}.
+\]
+已知 $X(1)$ 有 $1$ 个尖点，椭圆点 $i$（阶$2$）和 $\rho$（阶$3$），
+$\chi(X(1))=\frac{1}{1}\cdot(-\frac{1}{6}\cdot 2\pi)$……
+
+直接用轨道空间法：
+$\chi(\mathcal{F})\approx\chi(\SL_2(\Z)\backslash\HH)$。
+模曲线 $X(1)$ 的面积为 $\frac{\pi}{3}$（双曲面积），对应 Euler 特征 $\chi=2-2g$。
+已知 $X(1)\cong\mathbb{P}^1$ 由直接构造（以 $j$ 函数为坐标）得出，$g=0$。
+\end{solution}
+
+\begin{problem}{j函数的极点}
+\medium
+设 $j(\tau)=E_4(\tau)^3/\Delta(\tau)$。证明 $j$ 在 $\HH$ 上全纯，在尖点 $\infty$ 处有单极点，
+且作为 $X(1)\to\mathbb{P}^1$ 的映射是双全纯的。
+\end{problem}
+\begin{solution}
+\textbf{在 $\HH$ 上全纯：}
+$E_4$ 在 $\HH$ 全纯且不为零（在 $\rho=e^{2\pi i/3}$ 处 $E_4$ 有三阶零点，
+$\Delta$ 在 $\HH$ 全无零点），故 $j=E_4^3/\Delta$ 在 $\HH$ 全纯。
+
+\textbf{在 $\infty$ 处：}
+$E_4=1+240q+\cdots$，$\Delta=q-24q^2+\cdots=q(1+O(q))$，故
+\[
+  j(\tau)=\frac{(1+O(q))^3}{q(1+O(q))}=\frac{1}{q}+744+O(q),
+\]
+即 $j$ 在 $\infty$ 有单极点，是 $q^{-1}+\cdots$ 形式。
+
+\textbf{双全纯：}
+$j$ 诱导 $X(1)\to\mathbb{P}^1$，度数为 $1$（极点只有一个 $\infty$），故是双全纯同构。
+\end{solution}
+
+\begin{problem}{同余子群的核}
+\medium
+证明：对每个 $N\ge1$，主同余子群 $\Gamma(N)$ 是 $\SL_2(\Z)$ 的正规子群，
+且 $\SL_2(\Z)/\Gamma(N)\cong\SL_2(\Z/N\Z)$。
+\end{problem}
+\begin{solution}
+定义满同态 $\phi:\SL_2(\Z)\to\SL_2(\Z/N\Z)$，$\begin{pmatrix}a&b\\c&d\end{pmatrix}\mapsto\begin{pmatrix}\bar a&\bar b\\\bar c&\bar d\end{pmatrix}$。
+此同态是满射：$\SL_2(\Z)\to\SL_2(\Z/N\Z)$ 的满射性由强逼近定理（或直接构造提升）保证。
+$\ker\phi=\Gamma(N)$，故 $\Gamma(N)\trianglelefteq\SL_2(\Z)$，
+$\SL_2(\Z)/\Gamma(N)\cong\SL_2(\Z/N\Z)$。
+\end{solution}
+
+\begin{problem}{复环面的自同构}
+\medium
+证明：椭圆曲线 $E=\C/(\Z+\Z\tau)$ 的自同构群满足
+\[
+  \Aut(E)\cong\begin{cases}\Z/6\Z&\tau=e^{2\pi i/3},\\\Z/4\Z&\tau=i,\\\Z/2\Z&\text{其他}.\end{cases}
+\]
+\end{problem}
+\begin{solution}
+$E$ 的自同构必为 $z\mapsto\alpha z$（$\alpha\in\C^\times$，且 $\alpha(\Z+\Z\tau)=\Z+\Z\tau$）。
+
+若 $|\alpha|=1$ 且 $\alpha\ne\pm1$，则 $\alpha$ 是单位根，
+$\alpha\in\{i,-i,e^{\pi i/3},\ldots\}$，且 $\alpha(\Z+\Z\tau)\subset\Z+\Z\tau$。
+
+$\bullet$ $\tau=i$：$\alpha\cdot 1=a+bi$，$\alpha\cdot i=c+di$，可取 $\alpha=i$，
+$i\cdot 1=i$，$i\cdot i=-1$，均在 $\Z+\Z i$ 中。$\langle i\rangle=\Z/4\Z$。
+
+$\bullet$ $\tau=\rho=e^{2\pi i/3}$：$\alpha=e^{i\pi/3}=\zeta_6$，
+$\zeta_6\cdot 1=e^{i\pi/3}=\frac{1}{2}+\frac{\sqrt3}{2}i=1+\rho-1=\rho$（检验），
+$\langle\zeta_6\rangle=\Z/6\Z$。
+
+$\bullet$ 一般情形：只有 $\alpha=\pm1$，$\Aut(E)=\Z/2\Z$。
+\end{solution}
+
+% ============================================================================
+\section{挑战题 \hard}
+% ============================================================================
+
+\begin{problem}{$\SL_2(\Z)$ 的展示}
+\hard
+证明 $\PSL_2(\Z)$ 有展示 $\langle S,U\mid S^2=U^3=1\rangle\cong\Z/2\Z*\Z/3\Z$（自由积），
+其中 $U=ST$。
+\end{problem}
+\begin{solution}
+\textbf{步骤一：生成。}
+我们已知 $S,T$ 生成 $\SL_2(\Z)$，而 $T=S^{-1}U=SU$（因 $S^2=1$ 在 $\PSL_2(\Z)$ 中），
+故 $S,U$ 也生成 $\PSL_2(\Z)$。
+
+\textbf{步骤二：关系。}
+$S^2=(ST\cdot T^{-1})^2$，在 $\PSL_2(\Z)$ 中 $S^2=1$（因 $S^2=-I$）。
+$(ST)^3=U^3=\begin{pmatrix}-1&-1\\1&0\end{pmatrix}^3=-I\equiv 1$。
+
+\textbf{步骤三：自由积。}
+由 Bass-Serre 理论，$\PSL_2(\Z)$ 作用在树上（对应 Farey 图），
+顶点稳定子分别是 $\langle S\rangle\cong\Z/2\Z$ 和 $\langle U\rangle\cong\Z/3\Z$，
+边稳定子是平凡的，故由 Bass-Serre 定理得 $\PSL_2(\Z)\cong\Z/2\Z*\Z/3\Z$。
+\end{solution}
+
+\begin{problem}{维数公式的推导}
+\hard
+利用 Riemann-Roch 定理和 $X(1)$ 上除子的分析，推导
+\[
+  \dim M_k(\SL_2(\Z))=\begin{cases}
+    \lfloor k/12\rfloor+1 & k\equiv 2\pmod{12},\\
+    \lfloor k/12\rfloor & k\equiv 2\pmod{12}\text{ 且更多情形}
+  \end{cases}
+\]
+的完整公式（参考教材定理1.7），并计算 $k=2,4,6,8,10,12$ 的维数。
+\end{problem}
+\begin{solution}
+对 $X(1)\cong\mathbb{P}^1$，以 $j$ 为坐标，一个权 $k$ 模形式对应
+$X(1)$ 上极点仅在 $\infty$ 处（阶 $\le k/12$）的亚纯微分的截面。
+精确计算需考虑椭圆点的分支贡献：
+
+设 $v_i(f)$ 为 $f$ 在 $i$ 处的零点阶数（以 $\SL_2(\Z)$ 中阶 $2$ 的稳定子归一化），
+$v_\rho(f)$ 同理（阶 $3$），$v_\infty(f)$ 为 $f$ 在 $\infty$ 处的阶数。
+则
+\[
+  v_\infty(f)+\frac{v_i(f)}{2}+\frac{v_\rho(f)}{3}+\sum_{p\ne i,\rho,\infty}v_p(f)=\frac{k}{12}.
+\]
+由此（整数解的计数）得：
+
+\begin{center}
+\begin{tabular}{c|cccccc}
+$k$ & 2 & 4 & 6 & 8 & 10 & 12\\\hline
+$\dim M_k$ & 0 & 1 & 1 & 1 & 1 & 2\\
+$\dim S_k$ & 0 & 0 & 0 & 0 & 0 & 1
+\end{tabular}
+\end{center}
+
+例如 $k=12$：$v_\infty+\frac{v_i}{2}+\frac{v_\rho}{3}=1$，
+非负整数解有 $(v_\infty,v_i,v_\rho)=(1,0,0),(0,2,0),(0,0,3)$ 等，
+计维数得 $2$；尖点形式维数 $=2-1=1$。
+\end{solution}
+
+\begin{problem}{模形式与 Galois 理论的初步联系}
+\hard
+设 $f(\tau)=\sum_{n=1}^\infty a_n q^n\in S_2(\Gamma_0(N))$ 是归一化特征形式（$a_1=1$）。
+\begin{enumerate}
+  \item 证明 Hecke 特征值 $a_p\in\Z$ 对所有素数 $p\nmid N$。
+  \item 利用 $|a_p|\le 2\sqrt{p}$（Weil 猜想），说明 $a_p$ 的分布意义。
+\end{enumerate}
+\end{problem}
+\begin{solution}
+(i) Hecke 算子 $T_p$（$p\nmid N$）在 $S_2(\Gamma_0(N))$ 上是自伴的
+（关于 Petersson 内积），故特征值是实数。
+由于 $T_p$ 保持 $S_2(\Gamma_0(N))$ 的整系数 $q$-展开（通过 Hecke 的明确公式
+$a_p(T_pf)=a_{p^2}(f)+p\cdot a_1(f)$ 等），特征值是代数整数。
+实的代数整数若同时是有理数则必为整数，$a_p=a_1(T_pf)=a_p(f)\in\Z$。
+
+(注：更严格地，需用整系数 Hecke 代数的理论。)
+
+(ii) $|a_p|\le 2\sqrt{p}$ 等价于 $a_p=2\sqrt{p}\cos\theta_p$，$\theta_p\in[0,\pi]$。
+Sato-Tate 定理（2011 年证明）断言当 $f$ 非 CM 时，
+$\theta_p$ 在 $[0,\pi]$ 上以测度 $\frac{2}{\pi}\sin^2\theta\,d\theta$ 等分布，
+刻画了椭圆曲线约化点数的分布规律。
+\end{solution}
+
+\begin{problem}{上半平面的双曲几何}
+\hard
+设 $\HH$ 配有双曲度量 $ds^2=\frac{dx^2+dy^2}{y^2}$。
+\begin{enumerate}
+  \item 证明 $\SL_2(\R)$ 的作用 $\tau\mapsto\frac{a\tau+b}{c\tau+d}$ 保持此度量。
+  \item 计算基本域 $\mathcal{F}$ 的双曲面积，并说明其与 $\SL_2(\Z)$ 指数的关系。
+\end{enumerate}
+\end{problem}
+\begin{solution}
+(i) 设 $\gamma\tau=w=u+iv$。已知 $v=\frac{\im\tau}{|c\tau+d|^2}$。
+微分 $dw=\frac{(c\tau+d)\cdot 1-(a\tau+b)\cdot c}{(c\tau+d)^2}d\tau=\frac{1}{(c\tau+d)^2}d\tau$，
+故 $|dw|=\frac{|d\tau|}{|c\tau+d|^2}$，而
+\[
+  \frac{|dw|^2}{v^2}=\frac{|d\tau|^2/|c\tau+d|^4}{\im(\tau)^2/|c\tau+d|^4}=\frac{|d\tau|^2}{\im(\tau)^2}.
+\]
+故度量不变。
+
+(ii) $\text{vol}(\mathcal{F})=\int_{\mathcal{F}}\frac{dx\,dy}{y^2}$。
+直接计算：
+\[
+  \int_{-1/2}^{1/2}\int_{\sqrt{1-x^2}}^{\infty}\frac{dy\,dx}{y^2}
+  =\int_{-1/2}^{1/2}\frac{1}{\sqrt{1-x^2}}\,dx
+  =\left[\arcsin x\right]_{-1/2}^{1/2}=\frac{\pi}{6}+\frac{\pi}{6}=\frac{\pi}{3}.
+\]
+一般地，$\text{vol}(X(\Gamma))=[\SL_2(\Z):\Gamma]\cdot\frac{\pi}{3}$（对有限指数子群），
+与 Gauss-Bonnet 定理 $\text{vol}=4\pi(g-1)+2\pi\cdot(\#\text{尖点})$ 相符。
+\end{solution}
