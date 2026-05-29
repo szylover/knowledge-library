@@ -3,9 +3,2050 @@
 \label{app:algebra}
 % ============================================================================
 
-% TODO:
-% - 群论：群作用、陪集、正规子群、商群
-% - 环论：理想、商环、局部化
-% - 域论：域扩张、Galois 理论基础
-% - p-进数：Q_p 与 Z_p 的构造、Hensel 引理
-% - 射影极限与 profinite 群
+本附录集中整理正文会频繁调用、但在主线叙述中不宜每次都重讲一遍的代数知识。
+定位是“自学补充”：读者在正文中第一次碰到某个名词时，可以先回到这里，
+用例子建立直觉，再看定义、定理与证明。全附录默认读者已熟悉高中代数与
+基础微积分，但不预设系统学过抽象代数。
+
+% ============================================================================
+\section{线性代数基础}
+\label{sec:app-linear-algebra}
+% ============================================================================
+
+模形式、Hecke 算子、Galois 表示、Tate 模，几乎每一步都在做线性代数：
+我们要讨论向量空间、线性映射、矩阵、特征值、对偶空间与张量积。
+如果把“群作用”看成对称性，那么线性代数就是把这种对称性写成矩阵并计算的语言。
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=1]
+  \coordinate (O) at (0,0);
+  \fill[blue!10] (O) -- (3,0.7) -- (4.2,2.2) -- (1.2,1.5) -- cycle;
+  \fill[green!15] (O) -- (1.2,1.5) -- (0.5,3.2) -- (-0.8,1.8) -- cycle;
+  \draw[thick,->] (-1.2,0) -- (4.8,0) node[right] {$x$};
+  \draw[thick,->] (0,-0.4) -- (0,3.6) node[above] {$y$};
+  \draw[thick,->] (0,0) -- (1.8,-1.1) node[right] {$z$};
+  \draw[thick,blue!60!black] (O) -- (3,0.7);
+  \draw[thick,blue!60!black] (O) -- (1.2,1.5);
+  \draw[thick,green!50!black] (O) -- (1.2,1.5);
+  \draw[thick,green!50!black] (O) -- (-0.8,1.8);
+  \node[blue!60!black] at (3.9,1.6) {$U$};
+  \node[green!50!black] at (-0.4,2.7) {$V$};
+  \node at (1.0,0.9) {$U\cap V$};
+\end{tikzpicture}
+\caption{子空间的几何直观：两个平面的交仍是子空间，而它们的和是更大的子空间。}
+\end{figure}
+
+\subsection{向量空间与子空间}
+
+\begin{example}
+在正式定义前先看三个基本例子。
+\begin{itemize}
+  \item $k^n$：元素是 $n$ 维列向量，按坐标逐项相加，并用标量逐项相乘。
+  \item $k[x]_{\le d}$：次数不超过 $d$ 的多项式全体，维数为 $d+1$。
+  \item $C([0,1],\R)$：区间 $[0,1]$ 上连续实函数全体。它是向量空间，
+  但不是有限维的，因为 $1,x,x^2,\dots$ 已经给出无限个线性无关函数。
+\end{itemize}
+这三个例子分别代表“有限维坐标空间”“有限维函数空间”和“无穷维空间”。
+\end{example}
+
+\begin{definition}[向量空间]
+设 $k$ 是一个域。集合 $V$ 连同两个运算
+\[
+  +\colon V\times V\to V,
+  \qquad
+  k\times V\to V,
+  \quad (a,v)\mapsto av,
+\]
+称为一个 $k$ 上的\textbf{向量空间}，若满足下列八条公理：
+\begin{itemize}
+  \item[(1)] $u+(v+w)=(u+v)+w$；
+  \item[(2)] 存在 $0\in V$ 使得 $v+0=v$；
+  \item[(3)] 对每个 $v\in V$，存在 $-v\in V$ 使得 $v+(-v)=0$；
+  \item[(4)] $u+v=v+u$；
+  \item[(5)] $a(bv)=(ab)v$；
+  \item[(6)] $1v=v$；
+  \item[(7)] $a(u+v)=au+av$；
+  \item[(8)] $(a+b)v=av+bv$。
+\end{itemize}
+\end{definition}
+
+\begin{definition}[子空间]
+设 $V$ 是 $k$ 上向量空间，$W\subseteq V$。若 $W$ 在 $V$ 的加法与数乘下仍是向量空间，
+则称 $W$ 是 $V$ 的\textbf{子空间}。
+等价地，$W$ 是子空间当且仅当：
+\begin{itemize}
+  \item $0\in W$；
+  \item 若 $u,v\in W$，则 $u+v\in W$；
+  \item 若 $a\in k$，$v\in W$，则 $av\in W$。
+\end{itemize}
+\end{definition}
+
+\begin{proposition}
+若 $\{W_i\}_{i\in I}$ 是 $V$ 的子空间族，则交
+\[
+  \bigcap_{i\in I} W_i
+\]
+仍是 $V$ 的子空间。
+若 $U,V\subseteq W$ 是两个子空间，则
+\[
+  U+V\coloneqq \{u+v:u\in U,\ v\in V\}
+\]
+也是子空间，称为 $U$ 与 $V$ 的\textbf{和}。
+\end{proposition}
+
+\begin{proof}
+交的情形最容易：$0$ 属于每个 $W_i$，故属于交；若 $x,y$ 在交中，则它们在每个 $W_i$ 中，
+所以 $x+y$ 与 $ax$ 也在每个 $W_i$ 中，故仍在交中。
+
+对和空间，先注意 $0=0+0\in U+V$。若 $u_1+v_1,u_2+v_2\in U+V$，则
+\[
+  (u_1+v_1)+(u_2+v_2)=(u_1+u_2)+(v_1+v_2)\in U+V,
+\]
+因为 $u_1+u_2\in U$，$v_1+v_2\in V$。再对任意 $a\in k$，
+\[
+  a(u+v)=au+av\in U+V.
+\]
+故 $U+V$ 是子空间。
+\end{proof}
+
+\subsection{线性无关、生成集与基}
+
+\begin{definition}[线性组合、生成集、线性无关]
+设 $S\subseteq V$。
+\begin{itemize}
+  \item 形如 $a_1v_1+\cdots+a_rv_r$ 的向量称为 $S$ 中有限多个向量的\textbf{线性组合}；
+  \item 一切线性组合构成的集合记为 $\mathrm{span}(S)$，称为 $S$ 的\textbf{生成子空间}；
+  \item 若等式
+  \[
+    a_1v_1+\cdots+a_rv_r=0
+  \]
+  只在所有 $a_i=0$ 时成立，则称 $v_1,\dots,v_r$ \textbf{线性无关}；否则称为\textbf{线性相关}。
+\end{itemize}
+\end{definition}
+
+\begin{proposition}
+若 $S$ 线性无关且 $v\notin \mathrm{span}(S)$，则 $S\cup\{v\}$ 仍线性无关。
+\end{proposition}
+
+\begin{proof}
+设
+\[
+  a v + \sum_{i=1}^r b_i s_i = 0,
+  \qquad s_i\in S.
+\]
+我们要证明 $a=b_1=\cdots=b_r=0$。
+若 $a\neq 0$，则
+\[
+  v = -a^{-1}\sum_{i=1}^r b_i s_i \in \mathrm{span}(S),
+\]
+这与假设 $v\notin \mathrm{span}(S)$ 矛盾，因此 $a=0$。于是上式化为
+\[
+  \sum_{i=1}^r b_i s_i=0.
+\]
+由于 $S$ 线性无关，必有 $b_1=\cdots=b_r=0$。
+故 $S\cup\{v\}$ 线性无关。
+\end{proof}
+
+\begin{theorem}[替换定理]
+设 $V$ 是有限维向量空间，$v_1,\dots,v_m$ 线性无关，$u_1,\dots,u_n$ 生成 $V$。
+则 $m\le n$，并且存在指标 $1\le i_1<\cdots<i_m\le n$，使得把
+$u_{i_j}$ 依次替换成 $v_j$ 后，所得 $n$ 个向量仍生成 $V$。
+\end{theorem}
+
+\begin{proof}
+对 $j$ 做归纳。
+
+\textbf{第一步：替换 $v_1$。}
+因为 $u_1,\dots,u_n$ 生成 $V$，所以
+\[
+  v_1 = a_1u_1+\cdots+a_nu_n.
+\]
+若所有 $a_i$ 都为零，则 $v_1=0$，与 $v_1$ 线性无关矛盾，所以某个 $a_r\neq 0$。
+于是
+\[
+  u_r = a_r^{-1}v_1 - \sum_{i\neq r} a_r^{-1}a_i u_i.
+\]
+这说明把 $u_r$ 替换成 $v_1$ 后，新的 $n$ 个向量仍生成 $V$。
+
+\textbf{归纳假设。}
+假设已经找到互异指标 $i_1,\dots,i_{j-1}$，使得集合
+\[
+  G_{j-1} = \{v_1,\dots,v_{j-1}\}\cup \{u_i : i\notin \{i_1,\dots,i_{j-1}\}\}
+\]
+生成 $V$。
+
+\textbf{归纳步：替换 $v_j$。}
+既然 $G_{j-1}$ 生成 $V$，就有表示
+\[
+  v_j = b_1v_1+\cdots+b_{j-1}v_{j-1} + \sum_{i\notin\{i_1,\dots,i_{j-1}\}} c_i u_i.
+\]
+若所有 $c_i=0$，则 $v_j\in \mathrm{span}(v_1,\dots,v_{j-1})$，这与
+$v_1,\dots,v_m$ 线性无关矛盾。因此某个剩余的 $c_r\neq 0$。于是可以解出
+\[
+  u_r = c_r^{-1}v_j - c_r^{-1}\sum_{\ell=1}^{j-1} b_\ell v_\ell
+        - c_r^{-1}\sum_{i\neq r} c_i u_i.
+\]
+故把该 $u_r$ 替换成 $v_j$ 后，新的生成集仍生成 $V$。
+
+如此继续到 $j=m$，得到替换后的 $n$ 个向量仍生成 $V$。由于每一步都要替换掉一个原来的 $u_i$，
+因此至少需要 $m$ 个 $u_i$ 可供替换，故 $m\le n$。
+\end{proof}
+
+\begin{definition}[基与维数]
+向量空间 $V$ 的一个子集 $B$ 称为一组\textbf{基}，若它既线性无关又生成 $V$。
+若 $V$ 有有限基，则所有基的元素个数都相同；这个共同的数记为
+\[
+  \dim_k V,
+\]
+称为 $V$ 在 $k$ 上的\textbf{维数}。
+\end{definition}
+
+\begin{theorem}[有限生成向量空间有基]
+若 $V$ 由有限个向量生成，则 $V$ 有一组基。
+\end{theorem}
+
+\begin{proof}
+设 $V=\mathrm{span}(u_1,\dots,u_n)$。从空集开始，依次考察 $u_1,\dots,u_n$：
+若当前已选向量集合 $S$ 满足 $u_j\notin \mathrm{span}(S)$，就把 $u_j$ 加入 $S$；
+若 $u_j\in \mathrm{span}(S)$，则跳过。
+
+这样得到的 $S$ 线性无关：每次加入新向量时，它都不在前面向量张成的子空间内，
+由上一命题可知线性无关性保持。另一方面，$u_1,\dots,u_n$ 中每个被跳过的向量都属于
+已选向量的张成空间，因此最终所有 $u_j$ 都在 $\mathrm{span}(S)$ 中。
+于是
+\[
+  V=\mathrm{span}(u_1,\dots,u_n)=\mathrm{span}(S).
+\]
+所以 $S$ 是 $V$ 的一组基。
+\end{proof}
+
+\subsection{线性映射}
+
+\begin{definition}[线性映射、核与像]
+设 $V,W$ 是 $k$ 上向量空间。映射 $f\colon V\to W$ 称为\textbf{线性映射}，若
+\[
+  f(u+v)=f(u)+f(v),
+  \qquad
+  f(av)=af(v).
+\]
+其\textbf{核}与\textbf{像}定义为
+\begin{equation}
+  \ker f = \{v\in V : f(v)=0\},
+  \qquad
+  \im f = \{f(v):v\in V\}.
+\end{equation}
+\end{definition}
+
+\begin{theorem}[秩--零化度定理]
+设 $f\colon V\to W$ 是有限维向量空间之间的线性映射，则
+\begin{equation}
+  \dim V = \dim \ker f + \dim \im f.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+设 $\{e_1,\dots,e_r\}$ 是 $\ker f$ 的一组基。把它扩充为 $V$ 的一组基
+\[
+  \{e_1,\dots,e_r,e_{r+1},\dots,e_n\}.
+\]
+我们断言
+\[
+  f(e_{r+1}),\dots,f(e_n)
+\]
+是 $\im f$ 的一组基。
+
+先证生成性。任取 $y\in \im f$，则 $y=f(v)$ 对某个 $v\in V$ 成立。把 $v$ 按上述基展开：
+\[
+  v=\sum_{i=1}^n a_i e_i.
+\]
+于是
+\[
+  y=f(v)=\sum_{i=1}^n a_i f(e_i)=\sum_{i=r+1}^n a_i f(e_i),
+\]
+因为 $e_1,\dots,e_r\in\ker f$。
+
+再证线性无关。若
+\[
+  \sum_{i=r+1}^n b_i f(e_i)=0,
+\]
+则
+\[
+  f\Bigl(\sum_{i=r+1}^n b_i e_i\Bigr)=0,
+\]
+所以 $\sum_{i=r+1}^n b_i e_i\in \ker f=\mathrm{span}(e_1,\dots,e_r)$。于是
+\[
+  \sum_{i=r+1}^n b_i e_i - \sum_{i=1}^r c_i e_i = 0
+\]
+对某些 $c_i$ 成立。由于 $e_1,\dots,e_n$ 是一组基，所有系数都必须为零，
+故 $b_{r+1}=\cdots=b_n=0$。
+
+因此 $\dim\im f = n-r$，从而
+\[
+  \dim V = n = r+(n-r)=\dim\ker f + \dim\im f.
+\]
+\end{proof}
+
+\begin{corollary}
+设 $f\colon V\to W$ 是有限维向量空间之间的线性映射。
+\begin{itemize}
+  \item $f$ 单射当且仅当 $\ker f=0$；
+  \item $f$ 满射当且仅当 $\im f=W$；
+  \item 若 $\dim V=\dim W$，则下列三者等价：$f$ 单射，$f$ 满射，$f$ 是同构。
+\end{itemize}
+\end{corollary}
+
+\begin{proof}
+第一条和第二条直接来自定义。第三条由秩--零化度定理推出：若 $\dim V=\dim W=n$，
+则单射等价于 $\dim\ker f=0$，等价于 $\dim\im f=n$，也就等价于满射。
+单射且满射就是同构。
+\end{proof}
+
+\begin{definition}[同构]
+若线性映射 $f\colon V\to W$ 双射，则称 $f$ 是一个\textbf{同构}，记作 $V\cong W$。
+对有限维向量空间，
+\[
+  V\cong W \iff \dim V = \dim W.
+\]
+\end{definition}
+
+\subsection{矩阵与行列式}
+
+取定 $V,W$ 的基后，任一线性映射 $f\colon V\to W$ 都由一个矩阵唯一表示。
+例如当 $V=k^n$，$W=k^m$ 时，存在唯一矩阵 $A\in \Mat_{m\times n}(k)$ 使得
+\[
+  f(x)=Ax.
+\]
+线性映射的复合对应矩阵乘法，这正是矩阵乘法定义的概念来源。
+
+\begin{definition}[行列式]
+对 $A=(a_{ij})\in \Mat_n(k)$，其\textbf{行列式}定义为
+\begin{equation}
+  \det A = \sum_{\sigma\in S_n} \mathrm{sgn}(\sigma)
+  a_{1\sigma(1)}\cdots a_{n\sigma(n)}.
+\end{equation}
+\end{definition}
+
+\begin{proposition}
+对方阵 $A,B\in \Mat_n(k)$，有：
+\begin{align}
+  \det(AB) &= \det(A)\det(B), \\
+  \det(A)\neq 0 &\iff A\text{ 可逆}.
+\end{align}
+Cramer 法则断言：若 $A$ 可逆，则线性方程组 $Ax=b$ 有唯一解，且每个坐标都可写成
+相应列替换后的行列式与 $\det(A)$ 的比值。
+\end{proposition}
+
+\begin{proof}
+这几条是行列式理论的核心结论。第一条可由排列定义直接展开证明，
+也可由“行列式是交替 $n$ 线性形式”导出。第二条则由伴随矩阵公式
+\[
+  A\,\mathrm{adj}(A)=\det(A)I_n
+\]
+立刻得到：若 $\det(A)\neq 0$，则 $A^{-1}=\det(A)^{-1}\mathrm{adj}(A)$；
+反过来，若 $A$ 可逆，则 $1=\det(I)=\det(A)\det(A^{-1})$，故 $\det(A)\neq 0$。
+\end{proof}
+
+\subsection{特征值与特征多项式}
+
+\begin{definition}[特征值与特征多项式]
+设 $A\in \Mat_n(k)$。
+若存在非零向量 $v\in k^n$ 使得
+\[
+  Av=\lambda v,
+\]
+则称 $\lambda\in k$ 是 $A$ 的\textbf{特征值}，$v$ 是对应的\textbf{特征向量}。
+其\textbf{特征多项式}定义为
+\begin{equation}
+  p_A(X)=\det(XI_n-A).
+\end{equation}
+\end{definition}
+
+\begin{proposition}
+$\lambda$ 是 $A$ 的特征值，当且仅当 $\lambda$ 是 $p_A(X)$ 的根。
+\end{proposition}
+
+\begin{proof}
+若 $\lambda$ 是特征值，则存在非零 $v$ 使 $(A-\lambda I)v=0$，即
+\[
+  (\lambda I-A)v=0.
+\]
+所以线性变换 $\lambda I-A$ 有非零核，不可能可逆，于是
+\[
+  \det(\lambda I-A)=0,
+\]
+也即 $p_A(\lambda)=0$。
+
+反过来，若 $p_A(\lambda)=0$，则 $\det(\lambda I-A)=0$，故矩阵 $\lambda I-A$ 不可逆。
+于是其核非零，存在 $v\neq 0$ 使
+\[
+  (\lambda I-A)v=0.
+\]
+等价地，$Av=\lambda v$，所以 $\lambda$ 是特征值。
+\end{proof}
+
+\begin{theorem}[Cayley--Hamilton 定理]
+任意方阵 $A$ 满足自己的特征多项式：
+\begin{equation}
+  p_A(A)=0.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+一般情形的证明可用伴随矩阵恒等式
+\[
+  (XI-A)\,\mathrm{adj}(XI-A)=p_A(X)I
+\]
+然后把 $X$ 代入矩阵 $A$ 来完成。这里给出 $2\times 2$ 情形的完整计算。
+
+设
+\[
+  A=\begin{pmatrix} a & b \\ c & d \end{pmatrix}.
+\]
+则
+\[
+  p_A(X)=\det\begin{pmatrix} X-a & -b \\ -c & X-d \end{pmatrix}
+  = X^2-(a+d)X+(ad-bc).
+\]
+所以
+\[
+  p_A(A)=A^2-(a+d)A+(ad-bc)I.
+\]
+直接算
+\[
+  A^2=\begin{pmatrix}
+    a^2+bc & ab+bd \\
+    ac+cd & bc+d^2
+  \end{pmatrix}.
+\]
+减去 $(a+d)A$ 并加上 $(ad-bc)I$，得到
+\[
+  \begin{pmatrix}
+    a^2+bc-a^2-ad+ad-bc & ab+bd-ab-bd \\
+    ac+cd-ac-cd & bc+d^2-ad-d^2+ad-bc
+  \end{pmatrix}
+  =0.
+\]
+故 $p_A(A)=0$。
+\end{proof}
+
+\begin{example}[Frobenius（伴随）矩阵]
+给定首一多项式
+\[
+  f(X)=X^n+c_{n-1}X^{n-1}+\cdots+c_1X+c_0,
+\]
+其 Frobenius 矩阵（也称伴随矩阵）定义为
+\[
+  C_f=
+  \begin{pmatrix}
+    0 & 0 & \cdots & 0 & -c_0 \\
+    1 & 0 & \cdots & 0 & -c_1 \\
+    0 & 1 & \cdots & 0 & -c_2 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & \cdots & 1 & -c_{n-1}
+  \end{pmatrix}.
+\]
+沿最后一列展开可验证
+\[
+  p_{C_f}(X)=f(X).
+\]
+这说明“给定一个多项式，构造一个以它为特征多项式的矩阵”总是可能的。
+在正文讨论 Frobenius 元的特征多项式时，这个例子很有用。
+\end{example}
+
+\subsection{双线性型与迹}
+
+\begin{definition}[双线性型]
+设 $V$ 是 $k$ 上向量空间。映射
+\[
+  B\colon V\times V\to k
+\]
+称为\textbf{双线性型}，若对每个变量分别都是线性的。
+若
+\[
+  B(v,w)=B(w,v),
+\]
+则称其\textbf{对称}；若
+\[
+  B(v,v)=0 \quad (\forall v\in V),
+\]
+则称其\textbf{交错}。在特征不为 $2$ 的情形，交错等价于反对称
+$B(v,w)=-B(w,v)$。
+\end{definition}
+
+\begin{definition}[迹]
+对 $A=(a_{ij})\in \Mat_n(k)$，定义
+\begin{equation}
+  \Tr(A)=\sum_{i=1}^n a_{ii}.
+\end{equation}
+\end{definition}
+
+\begin{proposition}
+对适配大小的矩阵 $A,B$，有
+\begin{equation}
+  \Tr(AB)=\Tr(BA).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+直接按定义展开：
+\[
+  \Tr(AB)=\sum_i (AB)_{ii}=\sum_i\sum_j a_{ij}b_{ji}
+  =\sum_j\sum_i b_{ji}a_{ij}=\Tr(BA).
+\]
+\end{proof}
+
+\begin{proposition}
+设 $V$ 是 $2g$ 维向量空间，$B$ 是其上的非退化交错双线性型。
+则存在一组基
+\[
+  e_1,f_1,\dots,e_g,f_g
+\]
+使得 $B$ 的矩阵为
+\begin{equation}
+  J_g =
+  \begin{pmatrix}0&1\\-1&0\end{pmatrix}^{\oplus g}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+证明思路分三步。
+
+\textbf{第一步：选出一对配对不为零的向量。}
+非退化意味着对任意 $0\neq v\in V$，存在 $w$ 使 $B(v,w)\neq 0$。缩放 $w$ 可令
+$B(v,w)=1$。
+
+\textbf{第二步：取正交补。}
+令 $U=\mathrm{span}(v,w)$。因为 $B(v,v)=B(w,w)=0$ 而 $B(v,w)=1$，
+故 $B|_U$ 已有矩阵 $\begin{psmallmatrix}0&1\\-1&0\end{psmallmatrix}$。再取
+\[
+  U^{\perp}=\{x\in V:B(x,u)=0\ \forall u\in U\}.
+\]
+非退化性给出 $V=U\oplus U^{\perp}$。
+
+\textbf{第三步：归纳。}
+$U^{\perp}$ 维数为 $2g-2$，且 $B|_{U^{\perp}}$ 仍非退化交错。对 $g$ 归纳，
+得到 $U^{\perp}$ 上也有这样的基。把两部分基拼起来即可。
+
+这正是 Weil 配对与辛群 $\Sp_{2g}$ 的线性代数模型。
+\end{proof}
+
+\subsection{对偶空间}
+
+\begin{definition}[对偶空间与对偶基]
+设 $V$ 是 $k$ 上向量空间，其\textbf{对偶空间}定义为
+\begin{equation}
+  V^*=\Hom_k(V,k).
+\end{equation}
+若 $e_1,\dots,e_n$ 是 $V$ 的一组基，则存在唯一函数 $e_1^*,\dots,e_n^*\in V^*$，满足
+\[
+  e_i^*(e_j)=\delta_{ij}.
+\]
+它们称为\textbf{对偶基}。
+\end{definition}
+
+\begin{theorem}[有限维情形的自然同构]
+若 $V$ 有限维，则自然映射
+\begin{equation}
+  \iota_V\colon V\to V^{**},
+  \qquad
+  \iota_V(v)(\varphi)=\varphi(v)
+\end{equation}
+是同构。
+\end{theorem}
+
+\begin{proof}
+先证线性性，这是直接的。
+
+再证单射。若 $\iota_V(v)=0$，则对任意 $\varphi\in V^*$ 都有 $\varphi(v)=0$。
+若 $v\neq 0$，取一组基 $e_1,\dots,e_n$ 使 $e_1=v$，则对应对偶基满足
+$e_1^*(v)=1$，矛盾。因此 $v=0$，故 $\iota_V$ 单射。
+
+最后证满射。若 $\dim V=n$，则 $\dim V^*=n$，故 $\dim V^{**}=n$。一个从 $n$ 维空间到
+$n$ 维空间的单射必为满射，因此 $\iota_V$ 是同构。
+\end{proof}
+
+\begin{definition}[对偶映射]
+设 $f\colon V\to W$ 线性，则定义对偶映射
+\begin{equation}
+  f^*\colon W^*\to V^*,
+  \qquad
+  f^*(\lambda)=\lambda\circ f.
+\end{equation}
+\end{definition}
+
+\subsection{张量积简介}
+
+\begin{definition}[张量积]
+设 $V,W$ 是 $k$ 上向量空间。其\textbf{张量积} $V\otimes_k W$ 可以这样构造：
+先取所有符号 $[v,w]$ 生成的自由向量空间，再商去以下关系生成的子空间：
+\begin{align}
+  [v_1+v_2,w]-[v_1,w]-[v_2,w], \qquad
+  [v,w_1+w_2]-[v,w_1]-[v,w_2], \\
+  [av,w]-a[v,w], \qquad [v,aw]-a[v,w].
+\end{align}
+$[v,w]$ 在商空间中的像记作 $v\otimes w$。
+\end{definition}
+
+\begin{proposition}[万有性质]
+任一双线性映射 $B\colon V\times W\to U$ 都唯一分解为
+\begin{equation}
+  B(v,w)=\widetilde{B}(v\otimes w)
+\end{equation}
+的形式，其中 $\widetilde{B}\colon V\otimes_k W\to U$ 线性。
+\end{proposition}
+
+\begin{proof}
+张量积恰是按“双线性关系”取商得到的，因此把 $v\otimes w$ 送到 $B(v,w)$ 时，
+所有被商掉的关系都被满足，于是得到唯一线性映射 $\widetilde{B}$。这就是张量积的定义动机。
+\end{proof}
+
+\begin{proposition}
+若 $V,W$ 有限维，则
+\begin{equation}
+  \dim(V\otimes_k W)=\dim V\cdot \dim W.
+\end{equation}
+特别地，
+\begin{equation}
+  k^m\otimes_k k^n\cong k^{mn}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+设 $e_1,\dots,e_m$ 是 $V$ 的基，$f_1,\dots,f_n$ 是 $W$ 的基。则任意 $v\otimes w$ 都可写成
+\[
+  v\otimes w = \sum_{i,j} a_i b_j (e_i\otimes f_j),
+\]
+故 $e_i\otimes f_j$ 生成 $V\otimes W$。另一方面，若
+\[
+  \sum_{i,j} c_{ij}(e_i\otimes f_j)=0,
+\]
+对任意对偶基元 $e_i^*,f_j^*$ 考虑双线性型
+$(v,w)\mapsto e_i^*(v)f_j^*(w)$，由万有性质得到线性泛函把上式送到 $c_{ij}$，
+故所有 $c_{ij}=0$。于是 $\{e_i\otimes f_j\}$ 是一组基，共 $mn$ 个。
+\end{proof}
+
+\begin{example}
+把 $\Z_\ell$ 看成左 $\Z_\ell$-模，则映射
+\[
+  \Z_\ell\otimes_{\Z_\ell}\Q_\ell \longrightarrow \Q_\ell,
+  \qquad a\otimes x\longmapsto ax
+\]
+是同构。它告诉我们：把系数环从 $\Z_\ell$ 扩张到 $\Q_\ell$，
+本质上就是允许“除以 $\ell$ 的幂”。正文中的 Tate 模张量 $\Q_\ell$ 正是这样得到的。
+\end{example}
+
+% ============================================================================
+\section{群论}
+\label{sec:app-group-theory}
+% ============================================================================
+
+模群 $\SL_2(\Z)$、Galois 群、Hecke 算子背后的双陪集、有限域上的矩阵群，
+都属于群论。群是“可逆对称性”的抽象语言；它之所以强大，是因为很多看似不同的对象
+都能用“一个群如何作用在某个集合上”来统一描述。
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=1]
+  \fill[blue!6] (-3,0) rectangle (3,3);
+  \draw[thick] (-3,0) -- (3,0);
+  \node at (2.6,2.6) {$\HH$};
+  \draw[thick,->,blue!70!black] (-1.8,0.6) to[bend left=15] (1.6,2.0);
+  \draw[thick,->,blue!70!black] (-0.8,1.1) to[bend left=15] (0.8,0.7);
+  \node at (-1.9,0.35) {$z$};
+  \node at (1.75,2.2) {$\gamma z$};
+  \node at (0,3.3) {$\gamma=\begin{pmatrix}a&b\\c&d\end{pmatrix}\in \SL_2(\Z)$};
+  \node at (0,-0.4) {$\gamma\cdot z=\dfrac{az+b}{cz+d}$};
+\end{tikzpicture}
+\caption{$\SL_2(\Z)$ 通过 Möbius 变换作用在上半平面上。}
+\end{figure}
+
+\subsection{群的定义与基本例子}
+
+\begin{definition}[群]
+集合 $G$ 连同一个二元运算 $\cdot\colon G\times G\to G$ 称为一个\textbf{群}，若满足：
+\begin{itemize}
+  \item[(1)] 结合律：$(ab)c=a(bc)$；
+  \item[(2)] 存在单位元 $e\in G$，使得 $ea=ae=a$；
+  \item[(3)] 每个 $a\in G$ 都有逆元 $a^{-1}\in G$，使得 $aa^{-1}=a^{-1}a=e$；
+  \item[(4)] 运算封闭：$ab\in G$。
+\end{itemize}
+若还满足 $ab=ba$，则称 $G$ 为\textbf{交换群}（或 Abel 群）。
+\end{definition}
+
+\begin{example}
+常见例子如下。
+\begin{itemize}
+  \item $(\Z,+)$；
+  \item $(\Q^\times,\cdot)$，即非零有理数在乘法下形成的群；
+  \item $S_n$：$\{1,\dots,n\}$ 的全体置换；
+  \item $\GL_n(k)$：一切可逆 $n\times n$ 矩阵；
+  \item $\SL_n(k)=\{A\in \GL_n(k):\det A=1\}$；
+  \item $\Z/n\Z$：模 $n$ 的剩余类，在加法下形成循环群。
+\end{itemize}
+\end{example}
+
+\begin{proposition}
+群中单位元唯一，逆元唯一，且
+\begin{equation}
+  (ab)^{-1}=b^{-1}a^{-1}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+若 $e,e'$ 都是单位元，则 $e=ee'=e'$，故单位元唯一。
+若 $b,c$ 都是 $a$ 的逆元，则
+\[
+  b=be=b(ac)=(ba)c=ec=c,
+\]
+故逆元唯一。
+
+最后验证逆元公式：
+\[
+  (ab)(b^{-1}a^{-1})=a(bb^{-1})a^{-1}=aea^{-1}=e,
+\]
+同理
+\[
+  (b^{-1}a^{-1})(ab)=b^{-1}(a^{-1}a)b=b^{-1}eb=e.
+\]
+所以 $b^{-1}a^{-1}$ 正是 $ab$ 的逆元。
+\end{proof}
+
+\subsection{子群与陪集}
+
+\begin{definition}[子群判别准则]
+非空子集 $H\subseteq G$ 是子群，当且仅当
+\begin{equation}
+  a,b\in H \Longrightarrow ab^{-1}\in H.
+\end{equation}
+记作 $H\le G$。
+\end{definition}
+
+\begin{proof}
+若 $H$ 是子群，则结论显然。反过来，取 $a=b\in H$，得 $e=ab^{-1}\in H$；再取 $a=e$，
+得 $b^{-1}\in H$；于是对任意 $a,b\in H$，有 $ab=a(b^{-1})^{-1}\in H$。故 $H$ 在群运算下封闭，
+含单位元与逆元，所以是子群。
+\end{proof}
+
+\begin{definition}[左陪集]
+设 $H\le G$，对任意 $a\in G$，定义 $H$ 的\textbf{左陪集}
+\begin{equation}
+  aH=\{ah:h\in H\}.
+\end{equation}
+类似定义右陪集 $Ha$。
+\end{definition}
+
+\begin{theorem}[Lagrange 定理]
+若 $G$ 是有限群，$H\le G$，则
+\begin{equation}
+  |G|=[G:H]\,|H|,
+\end{equation}
+特别地 $|H|$ 整除 $|G|$。
+\end{theorem}
+
+\begin{proof}
+在 $G$ 上定义关系
+\[
+  a\sim b \iff a^{-1}b\in H.
+\]
+容易验证这确实是等价关系，而 $a$ 的等价类恰是左陪集 $aH$。
+因此左陪集把 $G$ 分成互不相交的若干块。
+
+再看每个陪集的大小。映射
+\[
+  H\to aH,
+  \qquad h\mapsto ah
+\]
+是双射，所以 $|aH|=|H|$。设共有 $r=[G:H]$ 个左陪集，则 $G$ 是 $r$ 个大小都等于 $|H|$ 的不交并，
+故
+\[
+  |G|=r|H|=[G:H]|H|.
+\]
+\end{proof}
+
+\begin{corollary}
+设 $G$ 为有限群。
+\begin{itemize}
+  \item 任意元素 $g\in G$ 的阶整除 $|G|$；
+  \item 若 $|G|=p$ 为素数，则 $G$ 为循环群。
+\end{itemize}
+\end{corollary}
+
+\begin{proof}
+元素 $g$ 生成的子群 $\langle g\rangle$ 的大小正是 $g$ 的阶，由 Lagrange 定理整除 $|G|$。
+若 $|G|=p$ 为素数，任取 $g\neq e$，则其阶既整除 $p$ 又大于 $1$，故只能是 $p$，于是
+$G=\langle g\rangle$。
+\end{proof}
+
+\subsection{正规子群与商群}
+
+\begin{definition}[正规子群]
+子群 $N\le G$ 称为\textbf{正规子群}，记作 $N\trianglelefteq G$，若
+\begin{equation}
+  gNg^{-1}=N \qquad (\forall g\in G).
+\end{equation}
+等价地，对每个 $g\in G$ 都有 $gN=Ng$。
+\end{definition}
+
+\begin{definition}[商群]
+若 $N\trianglelefteq G$，则所有左陪集组成的集合记为 $G/N$。
+其运算定义为
+\begin{equation}
+  (aN)(bN)=abN.
+\end{equation}
+\end{definition}
+
+\begin{proposition}
+商群运算良定义当且仅当 $N$ 是正规子群。
+\end{proposition}
+
+\begin{proof}
+先设 $N\trianglelefteq G$。若 $aN=a'N$ 且 $bN=b'N$，则存在 $n_1,n_2\in N$ 使
+$a'=an_1$，$b'=bn_2$。于是
+\[
+  a'b' = an_1bn_2 = ab\bigl(b^{-1}n_1b\bigr)n_2.
+\]
+因 $N$ 正规，$b^{-1}n_1b\in N$，故括号内与 $n_2$ 的乘积仍在 $N$ 中，所以
+$a'b'N=abN$。故乘法与代表元选择无关。
+
+反过来，若乘法良定义，则对任意 $g\in G$ 与 $n\in N$，因为 $gN=g n N$，两边右乘 $g^{-1}N$，
+得
+\[
+  N=(gN)(g^{-1}N)=(gnN)(g^{-1}N)=gng^{-1}N.
+\]
+这说明 $gng^{-1}\in N$。于是 $gNg^{-1}\subseteq N$；把 $g$ 换成 $g^{-1}$ 得反包含，
+故 $gNg^{-1}=N$，即 $N$ 正规。
+\end{proof}
+
+\begin{example}
+\begin{itemize}
+  \item $\Z/n\Z$ 可以视为商群 $\Z/(n)$；
+  \item 行列式映射 $\det\colon \GL_n(k)\to k^\times$ 的核是 $\SL_n(k)$，因此
+  $\SL_n(k)\trianglelefteq \GL_n(k)$；
+  \item 标量矩阵 $k^\times I_n$ 是 $\GL_n(k)$ 的中心，因此正规。商群
+  \[
+    \PGL_n(k)=\GL_n(k)/k^\times
+  \]
+  正是“把矩阵按相差一个标量倍来识别”。
+\end{itemize}
+\end{example}
+
+\subsection{群同态与同构定理}
+
+\begin{definition}[群同态、核与像]
+映射 $\phi\colon G\to H$ 称为\textbf{群同态}，若
+\begin{equation}
+  \phi(ab)=\phi(a)\phi(b).
+\end{equation}
+其核与像定义为
+\[
+  \ker\phi=\{g\in G:\phi(g)=e_H\},
+  \qquad
+  \im\phi=\phi(G).
+\]
+\end{definition}
+
+\begin{theorem}[第一同构定理]
+若 $\phi\colon G\to H$ 是群同态，则
+\begin{equation}
+  G/\ker\phi \cong \im\phi.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+记 $N=\ker\phi$。定义
+\[
+  \overline\phi\colon G/N\to \im\phi,
+  \qquad
+  \overline\phi(gN)=\phi(g).
+\]
+先证良定义：若 $gN=g'N$，则 $g'^{-1}g\in N$，即
+$\phi(g'^{-1}g)=e$，故 $\phi(g)=\phi(g')$。
+
+再证同态性：
+\[
+  \overline\phi((gN)(hN))=\overline\phi(ghN)=\phi(gh)=\phi(g)\phi(h)
+  =\overline\phi(gN)\overline\phi(hN).
+\]
+它显然满射到 $\im\phi$。若 $\overline\phi(gN)=e$，则 $\phi(g)=e$，即 $g\in N$，故 $gN=N$。
+所以核平凡，$\overline\phi$ 单射。于是它是同构。
+\end{proof}
+
+\begin{theorem}[第二同构定理]
+若 $H\le G$ 且 $N\trianglelefteq G$，则 $HN\le G$，$H\cap N\trianglelefteq H$，并且
+\begin{equation}
+  H/(H\cap N)\cong HN/N.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+把包含映射 $H\hookrightarrow HN$ 与商映射 $HN\to HN/N$ 复合，应用第一同构定理即可。
+其核正是 $H\cap N$。
+\end{proof}
+
+\begin{theorem}[第三同构定理]
+若 $N\trianglelefteq M\trianglelefteq G$，则
+\begin{equation}
+  (G/N)/(M/N)\cong G/M.
+\end{equation}
+\end{theorem}
+
+\subsection{群作用}
+
+\begin{definition}[群作用、轨道、稳定子]
+群 $G$ 在集合 $X$ 上的\textbf{作用}是一个映射
+\[
+  G\times X\to X,
+  \qquad (g,x)\mapsto g\cdot x,
+\]
+满足
+\begin{itemize}
+  \item $e\cdot x=x$；
+  \item $(gh)\cdot x=g\cdot(h\cdot x)$。
+\end{itemize}
+对 $x\in X$，其\textbf{轨道}与\textbf{稳定子}定义为
+\[
+  \mathrm{Orb}(x)=\{g\cdot x:g\in G\},
+  \qquad
+  \mathrm{Stab}(x)=\{g\in G:g\cdot x=x\}.
+\]
+\end{definition}
+
+\begin{theorem}[轨道--稳定子定理]
+若有限群 $G$ 作用在集合 $X$ 上，则对任意 $x\in X$，有
+\begin{equation}
+  |\mathrm{Orb}(x)|=[G:\mathrm{Stab}(x)].
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+定义映射
+\[
+  \Psi\colon G/\mathrm{Stab}(x)\to \mathrm{Orb}(x),
+  \qquad
+  g\,\mathrm{Stab}(x)\mapsto g\cdot x.
+\]
+先证良定义：若 $g\,\mathrm{Stab}(x)=h\,\mathrm{Stab}(x)$，则 $h^{-1}g\in\mathrm{Stab}(x)$，
+故 $h^{-1}g\cdot x=x$，从而 $g\cdot x=h\cdot x$。
+
+该映射显然满射，因为轨道中的点本来就写成 $g\cdot x$。
+若 $\Psi(g\,\mathrm{Stab}(x))=\Psi(h\,\mathrm{Stab}(x))$，则 $g\cdot x=h\cdot x$，故
+$h^{-1}g\cdot x=x$，也即 $h^{-1}g\in\mathrm{Stab}(x)$，于是两个陪集相同。
+因此 $\Psi$ 是双射，结论成立。
+\end{proof}
+
+\begin{proposition}[Burnside 引理]
+若有限群 $G$ 作用在有限集合 $X$ 上，记 $X^g=\{x\in X:g\cdot x=x\}$，则轨道数满足
+\begin{equation}
+  |X/G|=\frac{1}{|G|}\sum_{g\in G}|X^g|.
+\end{equation}
+\end{proposition}
+
+\textbf{注。} 这条公式常用于计数“在对称性下本质不同”的对象；正文中虽然不直接使用，
+但它是群作用思想最经典的应用之一。
+
+\subsection{重要群类}
+
+\begin{proposition}[循环群]
+设 $C_n=\Z/n\Z$。
+\begin{itemize}
+  \item 元 $\bar a\in C_n$ 的阶为 $n/\gcd(a,n)$；
+  \item $\bar a$ 是生成元当且仅当 $\gcd(a,n)=1$；
+  \item 若 $d\mid n$ 且 $\gcd(d,n/d)=1$，则
+  \begin{equation}
+    \Z/n\Z \cong \Z/d\Z \times \Z/(n/d)\Z.
+  \end{equation}
+\end{itemize}
+\end{proposition}
+
+\begin{proof}
+前两条由最小正整数 $m$ 使 $ma\equiv 0\pmod n$ 的定义直接得到。
+第三条是中国剩余定理的群论版本。
+\end{proof}
+
+\begin{theorem}[有限 Abel 群分类定理，陈述]
+每个有限 Abel 群都可唯一写成若干循环 $p$-群的直和，等价地可唯一写成
+\begin{equation}
+  \Z/d_1\Z\oplus\cdots\oplus \Z/d_r\Z,
+  \qquad d_1\mid d_2\mid \cdots\mid d_r.
+\end{equation}
+\end{theorem}
+
+\begin{example}[对称群与交错群]
+$S_n$ 的元素可写成不相交轮换之积。置换的奇偶性给出一个同态
+$\mathrm{sgn}\colon S_n\to\{\pm 1\}$，其核记为 $A_n$，称为\textbf{交错群}。
+当 $n\ge 5$ 时，$A_n$ 是单群。这是有限群论的一个里程碑结论。
+\end{example}
+
+\begin{example}[$\PGL_2(\F_p)$ 与 $\PSL_2(\F_p)$]
+在正文的 Langlands--Tunnell 与模 $p$ 表示讨论中，常见群
+\[
+  \PGL_2(\F_p)=\GL_2(\F_p)/\F_p^\times,
+  \qquad
+  \PSL_2(\F_p)=\SL_2(\F_p)/(\{\pm I\}\cap \SL_2(\F_p)).
+\]
+它们都作用在射影直线 $\mathbf{P}^1(\F_p)$ 上；当 $p\ge 5$ 时，$\PSL_2(\F_p)$
+是一个典型的非交换单群。
+\end{example}
+
+% ============================================================================
+\section{环论}
+\label{sec:app-ring-theory}
+% ============================================================================
+
+Hecke 代数是环，整数环是环，多项式环是环，局部化与完备化也从环开始。
+和群相比，环多了一层“可加也可乘”的结构，因此既能谈对称性，也能谈方程、因式分解与理想。
+在数论里，理想比元素本身更稳定，也更适合做局部化与模掉运算。
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2.2cm]
+  \node (R) [draw, rounded corners] {$R$};
+  \node (I) [draw, rounded corners, below left=of R] {$I$};
+  \node (Q) [draw, rounded corners, below right=of R] {$R/I$};
+  \draw[->,thick] (R) -- node[above left] {包含} (I);
+  \draw[->,thick] (R) -- node[above right] {商映射} (Q);
+  \node at (0,-2.5) {理想让“模掉某些元素”成为合法运算。};
+\end{tikzpicture}
+\caption{理想与商环。}
+\end{figure}
+
+\subsection{环的定义}
+
+\begin{definition}[环]
+集合 $R$ 连同加法与乘法称为一个\textbf{环}，若：
+\begin{itemize}
+  \item $(R,+)$ 是交换群；
+  \item 乘法满足结合律；
+  \item 存在乘法单位元 $1_R$；
+  \item 分配律成立：$a(b+c)=ab+ac$，$(a+b)c=ac+bc$。
+\end{itemize}
+若还满足 $ab=ba$，则称为\textbf{交换环}。若交换环中 $1\neq 0$，且 $ab=0$ 蕴含 $a=0$ 或 $b=0$，
+则称为\textbf{整环}。
+\end{definition}
+
+\begin{example}
+\begin{itemize}
+  \item $\Z$ 是最基本的整环；
+  \item $\Z[i]=\{a+bi:a,b\in\Z\}$ 是 Gaussian 整数环；
+  \item $k[x]$ 是系数在域 $k$ 中的一元多项式环；
+  \item $M_n(k)$ 是矩阵环，一般不交换；
+  \item $\Z[\zeta_n]$ 是分圆整数环，在分圆域与类域论中极其重要。
+\end{itemize}
+\end{example}
+
+\subsection{理想与商环}
+
+\begin{definition}[理想]
+设 $R$ 是环。子集 $I\subseteq R$ 称为\textbf{左理想}，若 $(I,+)$ 是加法子群，且
+\[
+  r\in R,\ x\in I \Longrightarrow rx\in I.
+\]
+右理想与双边理想类似定义。对交换环，默认“理想”指双边理想。
+由元素 $a\in R$ 生成的主理想记为
+\begin{equation}
+  (a)=RaR
+\end{equation}
+在非交换情形，交换环里则简化为 $(a)=aR=Ra$。
+\end{definition}
+
+\begin{definition}[商环]
+若 $I$ 是环 $R$ 的双边理想，则 $R/I$ 的元素是陪集 $r+I$。定义
+\begin{align}
+  (r+I)+(s+I)&=(r+s)+I, \\
+  (r+I)(s+I)&=rs+I.
+\end{align}
+\end{definition}
+
+\begin{proof}
+良定义性来自理想条件：若 $r-r'\in I$ 且 $s-s'\in I$，则
+\[
+  rs-r's'=(r-r')s+r'(s-s')\in I.
+\]
+因此乘法与代表元无关。
+\end{proof}
+
+\begin{theorem}[第一同构定理，环版本]
+若 $\phi\colon R\to S$ 是环同态，则
+\begin{equation}
+  R/\ker\phi \cong \im\phi.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+与群的情形完全类似。定义
+\[
+  \overline\phi(r+\ker\phi)=\phi(r).
+\]
+若 $r-r'\in\ker\phi$，则 $\phi(r)=\phi(r')$，故良定义。
+它显然保持加法与乘法，并满射到 $\im\phi$。若
+$\overline\phi(r+\ker\phi)=0$，则 $r\in\ker\phi$，所以 $r+\ker\phi=\ker\phi$，核平凡。
+故 $\overline\phi$ 为同构。
+\end{proof}
+
+\begin{theorem}
+设 $R$ 为交换环，$I\subsetneq R$ 为真理想。则
+\begin{equation}
+  I\text{ 极大 } \iff R/I \text{ 是域}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+先设 $I$ 极大。任取 $r+I\neq 0$，则 $r\notin I$。由极大性，包含 $I$ 与 $r$ 的最小理想
+$(I,r)$ 必等于整个 $R$，所以存在 $a\in R$，$x\in I$ 使
+\[
+  ar+x=1.
+\]
+模掉 $I$ 得
+\[
+  (a+I)(r+I)=1+I.
+\]
+故每个非零元可逆，$R/I$ 是域。
+
+反过来，若 $R/I$ 是域，设 $J$ 是包含 $I$ 的理想。则 $J/I$ 是 $R/I$ 的理想。
+域只有两个理想：$0$ 与整体，所以 $J/I=0$ 或 $R/I$，即 $J=I$ 或 $J=R$。
+故 $I$ 极大。
+\end{proof}
+
+\begin{theorem}
+设 $R$ 为交换环，$I\subsetneq R$ 为真理想。则
+\begin{equation}
+  I\text{ 素 } \iff R/I \text{ 是整环}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+若 $I$ 素，且 $(a+I)(b+I)=0+I$，则 $ab\in I$。由素理想定义，$a\in I$ 或 $b\in I$，
+故 $a+I=0$ 或 $b+I=0$。所以 $R/I$ 没有零因子，是整环。
+
+反过来，若 $R/I$ 是整环而 $ab\in I$，则 $(a+I)(b+I)=0$。因无零因子，
+$a+I=0$ 或 $b+I=0$，即 $a\in I$ 或 $b\in I$。故 $I$ 为素理想。
+\end{proof}
+
+\subsection{特殊环类}
+
+\begin{definition}[Euclid 整环、PID、UFD]
+设 $R$ 是整环。
+\begin{itemize}
+  \item 若存在函数 $\delta\colon R\setminus\{0\}\to\N$，使任意 $a,b\in R$（$b\neq 0$）可写成
+  \[
+    a=bq+r, \qquad r=0\text{ 或 }\delta(r)<\delta(b),
+  \]
+  则称 $R$ 是\textbf{Euclid 整环}；
+  \item 若每个理想都由一个元素生成，则称 $R$ 是\textbf{主理想整环}（PID）；
+  \item 若每个非零非单位元素都能分解为不可约元乘积，且分解在单位与顺序意义下唯一，
+  则称 $R$ 是\textbf{唯一分解整环}（UFD）。
+\end{itemize}
+\end{definition}
+
+\begin{example}
+$\Z$、$k[x]$、$\Z[i]$ 都是 Euclid 整环，因此都是 PID，也因而是 UFD。
+\end{example}
+
+\begin{proposition}
+每个 PID 都是 UFD。
+\end{proposition}
+
+\begin{proof}
+证明思路分三步。
+\begin{itemize}
+  \item 第一步，在 PID 中不可约元必为素元。因为若 $p\mid ab$ 且 $p\nmid a$，则 $(p,a)=R$，故存在
+  $xp+ya=1$；乘以 $b$ 得 $b=xpb+yab$，从而 $p\mid b$。
+  \item 第二步，用“非零非单位且不能写成不可约元乘积”的元素中取主理想极小者，
+  通过分解 $x=ab$ 得矛盾，推出存在性。
+  \item 第三步，唯一性由素元性质立刻得到：若
+  $p_1\cdots p_r=q_1\cdots q_s$，则 $p_1\mid q_1\cdots q_s$，故 $p_1$ 与某个 $q_j$ 关联，
+  约去后归纳。
+\end{itemize}
+\end{proof}
+
+\begin{theorem}[$\Z$ 中的算术基本定理]
+每个整数 $n\ge 2$ 都可唯一写成素数乘积：
+\begin{equation}
+  n=p_1\cdots p_r,
+\end{equation}
+其中素数及其顺序除外是唯一的。
+\end{theorem}
+
+\begin{proof}
+\textbf{存在性。}
+设
+\[
+  S=\{n\ge 2: n\text{ 不能写成素数乘积}\}.
+\]
+若 $S$ 非空，取其中最小元 $n$。它不是素数，否则自己就是素数乘积；因此
+$n=ab$，其中 $1<a<n$，$1<b<n$。由 $n$ 的极小性，$a,b$ 都能分解为素数乘积，
+于是 $n$ 也能，矛盾。故 $S$ 为空，存在性成立。
+
+\textbf{Euclid 引理。}
+若素数 $p\mid ab$ 且 $p\nmid a$，则 $\gcd(p,a)=1$。由 Euclid 算法存在整数 $x,y$ 使
+\[
+  xp+ya=1.
+\]
+乘以 $b$ 得
+\[
+  xpb+yab=b.
+\]
+右边两项都被 $p$ 整除，故 $p\mid b$。
+
+\textbf{唯一性。}
+设
+\[
+  n=p_1\cdots p_r=q_1\cdots q_s
+\]
+是两种素数分解。由于 $p_1\mid q_1\cdots q_s$，由 Euclid 引理，$p_1$ 必整除某个 $q_j$。
+但 $q_j$ 本身是素数，所以 $p_1=q_j$。交换顺序后约去这一因子，得到较短的分解式，
+归纳下去，最终两边素数完全相同，只差排列顺序。
+\end{proof}
+
+\subsection{局部化}
+
+\begin{definition}[局部化]
+设 $R$ 是交换环，$S\subseteq R$ 是乘法闭集（即 $1\in S$，且 $s,t\in S\Rightarrow st\in S$）。
+局部化 $S^{-1}R$ 的元素记作 $a/s$，并规定
+\[
+  \frac{a}{s}=\frac{b}{t}
+  \iff \exists u\in S\text{ 使 }u(at-bs)=0.
+\]
+加法与乘法为
+\begin{align}
+  \frac{a}{s}+\frac{b}{t}&=\frac{at+bs}{st}, \\
+  \frac{a}{s}\cdot \frac{b}{t}&=\frac{ab}{st}.
+\end{align}
+\end{definition}
+
+\begin{example}
+取 $R=\Z$，$S=\Z\setminus p\Z$，则
+\begin{equation}
+  \Z_{(p)}=S^{-1}\Z=\left\{\frac{a}{b}:p\nmid b\right\}
+\end{equation}
+称为 $p$-局部化。它只有一个非零素理想 $(p)$，因此是离散赋值环（DVR）。
+\end{example}
+
+\begin{proposition}
+$\Z_p$ 不是 $\Z_{(p)}$，而是 $\Z$ 关于 $p$-进距离的完备化。换句话说：
+\begin{itemize}
+  \item $\Z_{(p)}$ 只允许分母避开 $p$；
+  \item $\Z_p$ 还允许对 $p$ 的高次幂做无限极限过程。
+\end{itemize}
+\end{proposition}
+
+\subsection{多项式环}
+
+\begin{proposition}[带余除法]
+若 $k$ 是域，$f,g\in k[x]$ 且 $g\neq 0$，则存在唯一多项式 $q,r\in k[x]$ 使
+\begin{equation}
+  f=qg+r,
+  \qquad r=0\text{ 或 }\deg r<\deg g.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+把 $f$ 的首项不断用 $g$ 的首项消去即可。系数能相除的关键在于 $k$ 是域。
+唯一性来自：若 $f=qg+r=q'g+r'$ 且两余式次数都小于 $\deg g$，则
+$(q-q')g=r'-r$。若左边非零，其次数至少为 $\deg g$；右边次数却小于 $\deg g$，矛盾。
+\end{proof}
+
+\begin{proposition}
+若 $k$ 是域，则 $k[x]$ 是 PID。
+\end{proposition}
+
+\begin{proof}
+设 $I\subseteq k[x]$ 是非零理想。从中取次数最小的非零多项式 $f$。我们 claim $I=(f)$。
+任取 $g\in I$，用带余除法写
+\[
+  g=qf+r,
+  \qquad r=0\text{ 或 }\deg r<\deg f.
+\]
+因为 $g,qf\in I$，故 $r=g-qf\in I$。由 $f$ 的极小性，不可能有次数更低的非零 $r$，因此 $r=0$。
+于是 $g\in(f)$，故 $I\subseteq (f)$；反包含显然成立。
+\end{proof}
+
+\textbf{注。} 这就是为什么域上的一元多项式理论和整数算术极其相似：
+都存在“除法算法”，因此都能做 gcd、不可约分解与 Smith 标准形。
+
+% ============================================================================
+\section{域论}
+\label{sec:app-field-theory}
+% ============================================================================
+
+正文从 Eisenstein 级数一路走到 Galois 表示时，域扩张无处不在：
+Fourier 系数落在哪个数域里？Frobenius 的特征多项式在哪个域里分裂？
+一个表示在扩域后会不会变得更简单？这些问题都需要域论来组织。
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.9cm]
+  \node (L) [draw, rounded corners] {$L$};
+  \node (F1) [draw, rounded corners, below left=of L] {$L^H$};
+  \node (F2) [draw, rounded corners, below right=of L] {$L^{H'}$};
+  \node (K) [draw, rounded corners, below=3.8cm of L] {$K$};
+  \draw[thick] (L) -- (F1);
+  \draw[thick] (L) -- (F2);
+  \draw[thick] (F1) -- (K);
+  \draw[thick] (F2) -- (K);
+  \node at (3.5,0) {$\longleftrightarrow$};
+  \node at (6,2.2) [draw, rounded corners] {$\{1\}$};
+  \node at (6,0.3) [draw, rounded corners] {$H, H'$};
+  \node at (6,-1.6) [draw, rounded corners] {$\Gal(L/K)$};
+  \draw[thick] (6,2.0) -- (6,0.6);
+  \draw[thick] (6,0.0) -- (6,-1.3);
+\end{tikzpicture}
+\caption{Galois 对应：中间域与子群方向相反。}
+\end{figure}
+
+\subsection{域扩张}
+
+\begin{definition}[域扩张]
+若 $K\subseteq L$ 且二者都是域，则称 $L/K$ 是一个\textbf{域扩张}。把 $L$ 看成 $K$ 上向量空间后，
+其维数定义为
+\begin{equation}
+  [L:K]=\dim_K L,
+\end{equation}
+称为扩张次数。
+\end{definition}
+
+\begin{theorem}[塔定理]
+若 $K\subseteq F\subseteq L$，且扩张次数有限，则
+\begin{equation}
+  [L:K]=[L:F][F:K].
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+设 $v_1,\dots,v_r$ 是 $L/F$ 的一组基，$u_1,\dots,u_s$ 是 $F/K$ 的一组基。
+我们证明 $\{v_i u_j\}_{1\le i\le r,\ 1\le j\le s}$ 是 $L/K$ 的一组基。
+
+先证生成。任取 $x\in L$，因为 $v_i$ 生成 $L$ 作为 $F$-向量空间，所以
+\[
+  x=\sum_{i=1}^r a_i v_i,
+  \qquad a_i\in F.
+\]
+再把每个 $a_i$ 用 $u_j$ 展开：$a_i=\sum_{j=1}^s b_{ij}u_j$，其中 $b_{ij}\in K$。
+于是
+\[
+  x=\sum_{i=1}^r\sum_{j=1}^s b_{ij}(v_i u_j).
+\]
+故这些 $v_i u_j$ 生成 $L$ 作为 $K$-向量空间。
+
+再证线性无关。若
+\[
+  \sum_{i=1}^r\sum_{j=1}^s c_{ij} v_i u_j=0,
+  \qquad c_{ij}\in K,
+\]
+则可重写为
+\[
+  \sum_{i=1}^r \Bigl(\sum_{j=1}^s c_{ij}u_j\Bigr) v_i=0.
+\]
+由于 $v_i$ 在 $L/F$ 中线性无关，必有每个括号中的系数都为零：
+\[
+  \sum_{j=1}^s c_{ij}u_j=0.
+\]
+而 $u_j$ 在 $F/K$ 中线性无关，所以所有 $c_{ij}=0$。
+因此该族是基，共有 $rs$ 个元素，于是
+$[L:K]=rs=[L:F][F:K]$。
+\end{proof}
+
+\begin{example}
+\[
+  [\Q(\sqrt 2):\Q]=2,
+  \qquad
+  [\C:\R]=2,
+  \qquad
+  [\Q(\zeta_n):\Q]=\varphi(n).
+\]
+最后一个等式来自分圆多项式 $\Phi_n(x)$ 的次数。
+\end{example}
+
+\subsection{代数扩张与极小多项式}
+
+\begin{definition}[代数与超越]
+设 $L/K$ 是域扩张，$\alpha\in L$。
+\begin{itemize}
+  \item 若存在非零多项式 $f\in K[x]$ 使 $f(\alpha)=0$，则称 $\alpha$ 在 $K$ 上\textbf{代数}；
+  \item 否则称 $\alpha$ 在 $K$ 上\textbf{超越}；
+  \item 若 $L$ 中每个元素都在 $K$ 上代数，则称 $L/K$ 是\textbf{代数扩张}。
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[极小多项式的存在唯一性]
+若 $\alpha$ 在 $K$ 上代数，则存在唯一首一不可约多项式 $m_{\alpha,K}(x)\in K[x]$，满足
+\begin{equation}
+  m_{\alpha,K}(\alpha)=0.
+\end{equation}
+它称为 $\alpha$ 在 $K$ 上的\textbf{极小多项式}，且
+\begin{equation}
+  K[x]/(m_{\alpha,K}(x))\cong K(\alpha).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+考虑评价同态
+\[
+  \mathrm{ev}_\alpha\colon K[x]\to L,
+  \qquad f(x)\mapsto f(\alpha).
+\]
+因为 $\alpha$ 代数，所以核非零。又因 $K[x]$ 是 PID，$\ker(\mathrm{ev}_\alpha)$ 必由唯一首一多项式 $m(x)$ 生成。
+显然 $m(\alpha)=0$。
+
+若 $m=gh$ 可分解为两个正次数多项式，则
+\[
+  0=m(\alpha)=g(\alpha)h(\alpha).
+\]
+在域中无零因子，所以 $g(\alpha)=0$ 或 $h(\alpha)=0$，这会给出比 $m$ 次数更低的非零核元，
+与生成元的极小次数矛盾。故 $m$ 不可约。
+
+唯一性来自：核理想的首一生成元唯一。
+由第一同构定理，
+\[
+  K[x]/(m(x))\cong \im(\mathrm{ev}_\alpha)=K[\alpha].
+\]
+因为 $m$ 不可约，商环是域，所以 $K[\alpha]$ 已经是域，等于 $K(\alpha)$。
+\end{proof}
+
+\begin{proposition}
+有限扩张一定是代数扩张。
+\end{proposition}
+
+\begin{proof}
+设 $[L:K]=n<\infty$，任取 $\alpha\in L$。考虑 $n+1$ 个向量
+$1,\alpha,\dots,\alpha^n\in L$。它们在 $n$ 维 $K$-向量空间 $L$ 中必线性相关，故存在不全为零的
+$a_i\in K$ 使
+\[
+  a_0+a_1\alpha+\cdots+a_n\alpha^n=0.
+\]
+因此 $\alpha$ 在 $K$ 上代数。
+\end{proof}
+
+\begin{example}
+\begin{itemize}
+  \item $\Q(\sqrt[3]{2})/\Q$ 的次数为 $3$，极小多项式是 $x^3-2$；
+  \item 若 $p$ 为素数，则 $\Q(\zeta_p)/\Q$ 的次数为 $p-1$，因为极小多项式是
+  \[
+    \Phi_p(x)=1+x+\cdots+x^{p-1}.
+  \]
+\end{itemize}
+\end{example}
+
+\subsection{有限域}
+
+\begin{theorem}
+有限域存在当且仅当其元素个数为 $q=p^n$（$p$ 为素数，$n\ge 1$），并且给定 $q$ 后同构类唯一。
+\end{theorem}
+
+\begin{proof}
+若 $F$ 是有限域，则其特征必为素数 $p$，故包含素域 $\F_p$。于是 $F$ 是有限维 $\F_p$-向量空间，
+设维数为 $n$，则 $|F|=p^n$。
+
+反过来，对任意 $q=p^n$，考虑多项式 $x^q-x\in\F_p[x]$。它在某个分裂域中的根集对加法、乘法与取逆封闭，
+因而构成一个含 $q$ 个元素的域，记为 $\F_q$。
+
+唯一性可这样看：任意 $q$ 元有限域的每个元素都满足 $x^q=x$，因此它正是多项式 $x^q-x$ 的全体根；
+两个这样的域都同构于该多项式的分裂域，所以同构唯一。
+\end{proof}
+
+\begin{theorem}
+有限域的乘法群 $\F_q^\times$ 是 $q-1$ 阶循环群。
+\end{theorem}
+
+\begin{proof}
+设 $G=\F_q^\times$，它是有限 Abel 群，阶为 $q-1$。由有限 Abel 群分类定理，存在整数
+\[
+  n_1\mid n_2\mid \cdots \mid n_r
+\]
+使
+\[
+  G\cong C_{n_1}\times \cdots \times C_{n_r}.
+\]
+于是 $|G|=n_1\cdots n_r=q-1$，并且每个元素的阶都整除 $n_r$，所以对任意 $x\in G$ 都有
+\[
+  x^{n_r}=1.
+\]
+这说明多项式 $X^{n_r}-1\in \F_q[X]$ 在域 $\F_q$ 中至少有 $|G|=q-1$ 个根。
+但一个次数为 $n_r$ 的非零多项式至多只有 $n_r$ 个根，因此
+\[
+  q-1\le n_r.
+\]
+另一方面 $n_r$ 是 $n_1\cdots n_r=q-1$ 的一个因子，故必有 $n_r\le q-1$。于是
+\[
+  n_r=q-1.
+\]
+这迫使 $n_1=\cdots=n_{r-1}=1$，所以 $G\cong C_{q-1}$ 为循环群。
+\end{proof}
+
+\begin{proposition}
+Frobenius 映射
+\begin{equation}
+  \phi_p\colon \F_{p^n}\to \F_{p^n},
+  \qquad x\mapsto x^p
+\end{equation}
+是域自同构，且
+\begin{equation}
+  \Gal(\F_{p^n}/\F_p)\cong \Z/n\Z,
+\end{equation}
+由 $\phi_p$ 生成。
+\end{proposition}
+
+\begin{proof}
+在特征 $p$ 下有 $(x+y)^p=x^p+y^p$，故 $\phi_p$ 保持加法与乘法。有限集上的单射自动满射，
+所以它是自同构。又对任意 $x\in\F_{p^n}$ 都有 $x^{p^n}=x$，所以 $\phi_p^n=\mathrm{Id}$。
+其不动点恰是 $\F_p$，因此生成的循环群大小正好为 $n$。
+\end{proof}
+
+\subsection{Galois 理论}
+
+\begin{definition}[正规、可分、Galois]
+设有限扩张 $L/K$。
+\begin{itemize}
+  \item 若 $K[x]$ 中任一在 $L$ 中有一个根的不可约多项式都在 $L$ 中完全分裂，则称 $L/K$ 为\textbf{正规扩张}；
+  \item 若每个元素的极小多项式没有重根，则称 $L/K$ 为\textbf{可分扩张}；
+  \item 同时正规且可分时，称 $L/K$ 为\textbf{Galois 扩张}；
+  \item 所有保持 $K$ 不动的域自同构组成的群记为
+  \[
+    \Gal(L/K).
+  \]
+\end{itemize}
+\end{definition}
+
+\begin{proposition}
+若 $L/K$ 是有限 Galois 扩张，则
+\begin{equation}
+  |\Gal(L/K)|=[L:K].
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+可分性保证 $L$ 中“不同的 $K$-嵌入”足够多，正规性保证这些嵌入都落回 $L$ 自身，因而全是自同构。
+一般有限扩张中 $K$-嵌入数至多为 $[L:K]$，在 Galois 情形恰好达到上界。
+\end{proof}
+
+\begin{theorem}[Galois 对应]
+设 $L/K$ 为有限 Galois 扩张，记 $G=\Gal(L/K)$。则子群与中间域之间存在反向一一对应：
+\begin{equation}
+  H\le G \longleftrightarrow L^H=\{x\in L: \sigma(x)=x\ \forall \sigma\in H\}.
+\end{equation}
+并满足
+\begin{equation}
+  [L:L^H]=|H|,
+  \qquad
+  [L^H:K]=[G:H].
+\end{equation}
+此外，$H\trianglelefteq G$ 当且仅当 $L^H/K$ 为 Galois，且此时
+\begin{equation}
+  \Gal(L^H/K)\cong G/H.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+完整证明较长，这里给出主线三步。
+
+\textbf{第一步：从子群得到中间域。}
+给定 $H\le G$，固定域 $L^H$ 显然满足 $K\subseteq L^H\subseteq L$。
+线性代数与平均算子技巧可证明 $[L:L^H]\ge |H|$，而通过选取一个“原始元”又可证明
+$[L:L^H]\le |H|$，从而得等号。
+
+\textbf{第二步：从中间域得到子群。}
+给定中间域 $F$，考虑 $\Gal(L/F)$。由上一步
+\[
+  [L:F]=|\Gal(L/F)|.
+\]
+于是 $F=L^{\Gal(L/F)}$。这说明两个构造互为逆过程。
+
+\textbf{第三步：正规性对应商群。}
+若 $H\trianglelefteq G$，则对任意 $\tau\in G$，$\tau(L^H)=L^H$，所以 $L^H/K$ 正规。
+反过来，若 $L^H/K$ 正规，则共轭作用保持 $H$。最后把 $G$ 中元素限制到 $L^H$ 上，
+得到满同态 $G\to \Gal(L^H/K)$，其核正是 $H$，于是得到商群同构。
+\end{proof}
+
+\begin{example}
+扩张 $\Q(\sqrt 2,\sqrt 3)/\Q$ 是 Galois，Galois 群由
+\[
+  \sqrt 2\mapsto \pm \sqrt 2,
+  \qquad
+  \sqrt 3\mapsto \pm \sqrt 3
+\]
+的四种独立选法组成，因此
+\[
+  \Gal(\Q(\sqrt 2,\sqrt 3)/\Q)\cong (\Z/2\Z)^2.
+\]
+其三个指数 $2$ 子群分别对应中间域 $\Q(\sqrt 2)$、$\Q(\sqrt 3)$ 与 $\Q(\sqrt 6)$。
+\end{example}
+
+\begin{example}[分圆域]
+若 $\zeta_n$ 是本原 $n$ 次单位根，则任意 $a\in (\Z/n\Z)^\times$ 给出自同构
+\[
+  \sigma_a(\zeta_n)=\zeta_n^a.
+\]
+于是有同构
+\begin{equation}
+  \Gal(\Q(\zeta_n)/\Q)\cong (\Z/n\Z)^\times.
+\end{equation}
+分圆特征、局部类域论与模形式的 Nebentypus 都与这一事实密切相关。
+\end{example}
+
+% ============================================================================
+\section{模论}
+\label{sec:app-module-theory}
+% ============================================================================
+
+向量空间是“域上的模”；一旦把系数域换成一般环，许多现象会变得更丰富。
+Tate 模是 $\Z_\ell$-模，Hecke 模也是模，有限生成 Abel 群本质上则是 $\Z$-模。
+因此模论既推广线性代数，也为数论中的“整系数结构”提供语言。
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.8cm]
+  \node (M) [draw, rounded corners] {$M$};
+  \node (F) [draw, rounded corners, below left=of M] {$\Z^r$};
+  \node (T) [draw, rounded corners, below right=of M] {$T$};
+  \node (D1) [draw, rounded corners, below=of T, xshift=-1.4cm] {$\Z/d_1\Z$};
+  \node (D2) [draw, rounded corners, below=of T, xshift=1.4cm] {$\Z/d_k\Z$};
+  \draw[thick] (M) -- (F);
+  \draw[thick] (M) -- (T);
+  \draw[thick] (T) -- (D1);
+  \draw[thick] (T) -- (D2);
+\end{tikzpicture}
+\caption{有限生成 Abel 群分解为自由部分与挠部分。}
+\end{figure}
+
+\subsection{模的定义}
+
+\begin{definition}[左模]
+设 $R$ 是环。一个\textbf{左 $R$-模}是一个 Abel 群 $(M,+)$，再配以标量作用
+\[
+  R\times M\to M,
+  \qquad (r,m)\mapsto rm,
+\]
+满足
+\begin{itemize}
+  \item $(r+s)m=rm+sm$；
+  \item r$(m+n)=rm+rn$；
+  \item $(rs)m=r(sm)$；
+  \item $1_Rm=m$。
+\end{itemize}
+子模、模同态与向量空间中的子空间、线性映射完全类比定义。
+\end{definition}
+
+\begin{example}
+\begin{itemize}
+  \item Abel 群就是 $\Z$-模；
+  \item 域 $k$ 上的向量空间就是 $k$-模；
+  \item 环 $R$ 的任一理想都是一个 $R$-模。
+\end{itemize}
+\end{example}
+
+\begin{definition}[商模]
+若 $N\subseteq M$ 是子模，则商群 $M/N$ 在
+\[
+  r\cdot (m+N)=rm+N
+\]
+下成为一个左 $R$-模。
+\end{definition}
+
+\begin{theorem}[第一同构定理]
+若 $f\colon M\to N$ 是 $R$-模同态，则
+\begin{equation}
+  M/\ker f\cong \im f.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+与群、环的同构定理完全同样：定义 $m+\ker f\mapsto f(m)$ 即可。
+\end{proof}
+
+\subsection{自由模}
+
+\begin{definition}[自由模]
+若 $R$-模 $M$ 有一组基 $e_i$，使每个元素都唯一写成有限和
+\[
+  m=\sum_i a_i e_i,
+  \qquad a_i\in R,
+\]
+则称 $M$ 是\textbf{自由模}。有限基个数为 $n$ 时，$M\cong R^n$。
+\end{definition}
+
+\textbf{注。} 自由模和向量空间很像，但并不完全一样。对一般环，基的大小未必唯一，
+子模也未必仍自由；不过在 PID 上，有限生成无挠模一定自由，理论会变得非常整洁。
+
+\subsection{有限生成 Abel 群的分类}
+
+\begin{theorem}[PID 上有限生成模的结构定理，陈述]
+设 $R$ 是 PID，$M$ 是有限生成 $R$-模。则存在整数 $r\ge 0$ 及非零非单位元
+$d_1,\dots,d_k\in R$，满足
+\begin{equation}
+  d_1\mid d_2\mid \cdots \mid d_k,
+\end{equation}
+并且
+\begin{equation}
+  M\cong R^r\oplus R/(d_1)\oplus\cdots\oplus R/(d_k).
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[有限生成 Abel 群分类定理]
+每个有限生成 Abel 群都同构于
+\begin{equation}
+  \Z^r\oplus \Z/d_1\Z \oplus \cdots \oplus \Z/d_k\Z,
+  \qquad d_1\mid d_2\mid \cdots \mid d_k.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+把 Abel 群看成 $\Z$-模，再应用上一个定理即可。
+
+完整证明的关键步骤如下。
+\begin{itemize}
+  \item 第一步，取有限生成元，得到一个满同态 $\Z^n\twoheadrightarrow M$，于是
+  \[
+    M\cong \Z^n/N
+  \]
+  对某个子模 $N\subseteq \Z^n$。
+  \item 第二步，对描述 $N$ 的整数矩阵做行列变换与列变换，把它化到 Smith 标准形
+  \[
+    \mathrm{diag}(d_1,\dots,d_k,0,\dots,0),
+  \]
+  且 $d_1\mid d_2\mid \cdots \mid d_k$。
+  \item 第三步，从对角形立刻读出商模分解：每个非零对角元贡献一个循环挠因子 $\Z/d_i\Z$，
+  零对角元贡献一个自由因子 $\Z$。
+\end{itemize}
+这一定理解释了为什么椭圆曲线的有限挠点群通常长得像两个循环群的直和，也解释了
+Tate 模为何应该是秩 $2$ 的自由 $\Z_\ell$-模。
+\end{proof}
+
+% ============================================================================
+\section{$p$-进数与 profinite 群}
+\label{sec:app-padic-profinite}
+% ============================================================================
+
+Galois 表示不是取值于实数或复数，而常常取值于 $\GL_2(\Z_\ell)$ 或 $\GL_2(\Q_\ell)$。
+这迫使我们离开熟悉的欧几里得距离，转向 $p$-进距离；同时，绝对 Galois 群不是普通离散群，
+而是 profinite 群。这里的核心思想是：不是用“越来越大”的极限，而是用“越来越细”的模 $p^n$ 信息来逼近对象。
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.8cm]
+  \node (A1) [draw, rounded corners] {$\Z/p\Z$};
+  \node (A2) [draw, rounded corners, right=of A1] {$\Z/p^2\Z$};
+  \node (A3) [draw, rounded corners, right=of A2] {$\Z/p^3\Z$};
+  \node (A4) [draw, rounded corners, right=of A3] {$\cdots$};
+  \draw[<- ,thick] (A1) -- node[above] {} (A2);
+  \draw[<- ,thick] (A2) -- (A3);
+  \draw[<- ,thick] (A3) -- (A4);
+  \node at (3,-1.1) {$\Z_p=\varprojlim \Z/p^n\Z$};
+\end{tikzpicture}
+\caption{$\Z_p$ 是模 $p^n$ 余类系统的射影极限。}
+\end{figure}
+
+\subsection{$p$-进赋值}
+
+\begin{definition}[$p$-进赋值]
+设 $p$ 为素数。对非零整数 $n$，定义 $v_p(n)$ 为满足
+\[
+  p^{v_p(n)}\mid n, \qquad p^{v_p(n)+1}\nmid n
+\]
+的最大整数；并约定 $v_p(0)=\infty$。对有理数 $x=a/b\neq 0$，定义
+\begin{equation}
+  v_p(x)=v_p(a)-v_p(b).
+\end{equation}
+进而定义 $p$-进绝对值
+\begin{equation}
+  |x|_p=p^{-v_p(x)},
+  \qquad |0|_p=0.
+\end{equation}
+\end{definition}
+
+\begin{theorem}[强三角不等式]
+对任意 $x,y\in\Q$，有
+\begin{equation}
+  |x+y|_p\le \max\{|x|_p,|y|_p\}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+设 $m=v_p(x)$，$n=v_p(y)$。不妨设 $m\le n$。则可写
+\[
+  x=p^m u,
+  \qquad
+  y=p^m v,
+\]
+其中 $u,v\in\Z_{(p)}$，且若 $x\neq 0$ 则 $u$ 不是 $p$ 的倍数。于是
+\[
+  x+y=p^m(u+v).
+\]
+因此
+\[
+  v_p(x+y)\ge m=\min\{v_p(x),v_p(y)\}.
+\]
+把它改写成绝对值就是
+\[
+  |x+y|_p = p^{-v_p(x+y)} \le p^{-\min(v_p(x),v_p(y))}
+  =\max\{|x|_p,|y|_p\}.
+\]
+这称为\textbf{非阿基米德性}。
+
+若 $v_p(x)\neq v_p(y)$，实际上有更强结论
+\[
+  v_p(x+y)=\min\{v_p(x),v_p(y)\},
+\]
+因为此时 $u+v$ 不会被 $p$ 整除。
+\end{proof}
+
+\subsection{$p$-进整数与 $p$-进数域}
+
+\begin{definition}[三种构造]
+$p$-进整数环 $\Z_p$ 可以用三种等价方式定义。
+\begin{itemize}
+  \item[(1)] \textbf{级数构造：}
+  \begin{equation}
+    \Z_p=\left\{\sum_{n=0}^{\infty} a_n p^n : a_n\in\{0,1,\dots,p-1\}\right\}.
+  \end{equation}
+  \item[(2)] \textbf{逆极限构造：}
+  \begin{equation}
+    \Z_p=\varprojlim_n \Z/p^n\Z.
+  \end{equation}
+  其元素是一列相容剩余类 $(x_n)_{n\ge 1}$，满足 $x_{n+1}\equiv x_n\pmod{p^n}$。
+  \item[(3)] \textbf{完备化构造：} 用 $|\cdot|_p$ 度量把 $\Q$ 完备化得到 $\Q_p$，
+  再取其中满足 $|x|_p\le 1$ 的元素，得到 $\Z_p$。
+\end{itemize}
+\end{definition}
+
+\begin{proposition}
+以上三种构造彼此等价。
+\end{proposition}
+
+\begin{proof}
+证明思路分三步。
+\begin{itemize}
+  \item 第一步，级数构造与逆极限等价：有限部分和
+  $a_0+a_1p+\cdots+a_{n-1}p^{n-1}$ 给出模 $p^n$ 的相容剩余类；反之，相容余类可逐位读出数字 $a_n$。
+  \item 第二步，逆极限中的相容列天然形成一个 Cauchy 过程：模 $p^n$ 稳定意味着两个近似的差能被很高次的 $p$ 整除。
+  \item 第三步，完备化中的整元素恰对应那些 $p$-进绝对值不超过 $1$ 的极限，因此与上述 Cauchy 列完全一致。
+\end{itemize}
+\end{proof}
+
+\begin{proposition}
+$\Z_p$ 是一个完备赋值环，极大理想为 $(p)$，剩余域为
+\begin{equation}
+  \Z_p/(p)\cong \F_p.
+\end{equation}
+其分式域记为
+\begin{equation}
+  \Q_p=\mathrm{Frac}(\Z_p)=\Z_p[1/p],
+\end{equation}
+称为局部域。
+\end{proposition}
+
+\subsection{Hensel 引理}
+
+\begin{theorem}[Hensel 引理]
+设 $f(x)\in \Z_p[x]$。若存在 $a\in \Z/p\Z$ 使
+\begin{equation}
+  f(a)\equiv 0\pmod p,
+  \qquad
+  f'(a)\not\equiv 0\pmod p,
+\end{equation}
+则存在唯一 $\hat a\in \Z_p$，满足
+\begin{equation}
+  f(\hat a)=0,
+  \qquad
+  \hat a\equiv a\pmod p.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+取 $a_1\in\Z$ 为 $a$ 的一个提升。我们用 Newton 提升法定义
+\begin{equation}
+  a_{n+1}=a_n-\frac{f(a_n)}{f'(a_n)}.
+\end{equation}
+因为 $a_n\equiv a\pmod p$ 将由归纳证明保持，所以 $f'(a_n)\equiv f'(a)\not\equiv 0\pmod p$，
+故 $f'(a_n)$ 在 $\Z_p$ 中是单位，上式有意义。
+
+我们归纳证明三件事：
+\begin{itemize}
+  \item[(i)] $a_n\in \Z_p$；
+  \item[(ii)] $a_{n+1}\equiv a_n\pmod{p^n}$；
+  \item[(iii)] $f(a_n)\equiv 0\pmod{p^n}$。
+\end{itemize}
+
+$n=1$ 时，(i) 显然成立；(iii) 正是初始假设。因为 $f(a_1)$ 可被 $p$ 整除而 $f'(a_1)$ 是单位，
+所以
+\[
+  a_2-a_1=-\frac{f(a_1)}{f'(a_1)}
+\]
+可被 $p$ 整除，故 (ii) 对 $n=1$ 成立。
+
+假设对某个 $n\ge 1$ 已成立。由 Taylor 展开可写
+\[
+  f(a_{n+1})=f(a_n)+f'(a_n)(a_{n+1}-a_n)+(a_{n+1}-a_n)^2 g_n
+\]
+对某个 $g_n\in \Z_p$。但按照定义，前两项正好相消，所以
+\[
+  f(a_{n+1})=(a_{n+1}-a_n)^2 g_n.
+\]
+而由归纳假设 (iii)，$f(a_n)$ 可被 $p^n$ 整除，因此 $a_{n+1}-a_n=-f(a_n)/f'(a_n)$ 也可被 $p^n$ 整除。
+于是右边可被 $p^{2n}$ 整除，特别可被 $p^{n+1}$ 整除。故 (iii) 对 $n+1$ 成立；
+而 (ii) 已在上一句中得到，(i) 也随之成立。
+
+因此 $(a_n)$ 是 $p$-进 Cauchy 列，因为
+\[
+  a_{n+1}-a_n\in p^n\Z_p.
+\]
+$\Z_p$ 完备，故存在极限 $\hat a=\lim a_n\in \Z_p$。由多项式函数对 $p$-进拓扑连续，
+有
+\[
+  f(\hat a)=\lim f(a_n)=0.
+\]
+又因每个 $a_n\equiv a_1\equiv a\pmod p$，故 $\hat a\equiv a\pmod p$。
+
+最后证唯一性。若 $b\in\Z_p$ 也满足 $f(b)=0$ 且 $b\equiv a\pmod p$，则
+\[
+  0=f(b)-f(\hat a)=(b-\hat a)h(b,\hat a)
+\]
+其中 $h(X,Y)$ 是由多项式恒等式 $f(X)-f(Y)=(X-Y)h(X,Y)$ 给出的二元多项式。
+模 $p$ 后，$h(b,\hat a)\equiv f'(a)\not\equiv 0$，故 $h(b,\hat a)$ 是单位，只能有 $b-\hat a=0$。
+因此解唯一。
+\end{proof}
+
+\begin{example}
+多项式 $f(x)=x^2+1$ 在 $\Z_5$ 中有根。因为
+\[
+  f(2)=5\equiv 0\pmod 5,
+  \qquad f'(2)=4\not\equiv 0\pmod 5.
+\]
+由 Hensel 引理可得唯一的 $\hat a\in\Z_5$ 满足 $\hat a\equiv 2\pmod 5$ 且 $\hat a^2+1=0$。
+\end{example}
+
+\subsection{射影极限}
+
+\begin{definition}[射影系与射影极限]
+给定偏序集 $I$ 上的一族群（或环、集合）$\{G_i\}_{i\in I}$，以及满足
+\[
+  \phi_{ij}\colon G_j\to G_i \qquad (i\le j)
+\]
+的过渡映射，若
+\[
+  \phi_{ii}=\mathrm{Id},
+  \qquad
+  \phi_{ik}=\phi_{ij}\circ \phi_{jk},
+\]
+则称为一个\textbf{射影系}。其\textbf{射影极限}定义为
+\begin{equation}
+  \varprojlim_i G_i
+  =\Bigl\{(g_i)\in \prod_i G_i : \phi_{ij}(g_j)=g_i\ \forall i\le j\Bigr\}.
+\end{equation}
+\end{definition}
+
+\begin{proposition}[泛性质]
+若对象 $H$ 带有映射 $\psi_i\colon H\to G_i$，且对所有 $i\le j$ 都有
+$\phi_{ij}\circ \psi_j=\psi_i$，则存在唯一映射
+\begin{equation}
+  \psi\colon H\to \varprojlim_i G_i
+\end{equation}
+使得各坐标投影与 $\psi_i$ 相容。
+\end{proposition}
+
+\begin{proof}
+唯一可能的定义就是
+\[
+  \psi(h)=(\psi_i(h))_i.
+\]
+相容条件正保证它确实落在极限中，唯一性也显然。
+\end{proof}
+
+\begin{proposition}
+有自然同构
+\begin{equation}
+  \widehat{\Z}=\varprojlim_n \Z/n\Z \cong \prod_p \Z_p.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+这是中国剩余定理的极限版本。对每个 $n$ 把它分解为素数幂乘积
+\[
+  n=\prod_p p^{v_p(n)},
+\]
+再用
+\[
+  \Z/n\Z\cong \prod_p \Z/p^{v_p(n)}\Z
+\]
+并对 $n$ 取射影极限即可得到结论。
+\end{proof}
+
+\subsection{Profinite 群}
+
+\begin{definition}[profinite 群]
+\textbf{Profinite 群}是有限群的射影极限。等价地，它是一个紧致、Hausdorff、全不连通的拓扑群。
+其基本开邻域可以取为有限指数正规子群的陪集；这称为\textbf{Krull 拓扑}。
+\end{definition}
+
+\begin{example}
+\begin{itemize}
+  \item $\Z_p=\varprojlim \Z/p^n\Z$；
+  \item $\widehat{\Z}=\varprojlim \Z/n\Z$；
+  \item 对域 $K$ 的绝对 Galois 群
+  \[
+    G_K=\Gal(K^{\mathrm{sep}}/K)
+  \]
+  赋予 Krull 拓扑后是 profinite 群。
+\end{itemize}
+\end{example}
+
+\begin{proposition}[Galois 群是 profinite 群]
+若 $L/K$ 是无限 Galois 扩张，则赋予 Krull 拓扑后有
+\begin{equation}
+  \Gal(L/K)\cong \varprojlim_{F/K\text{ 有限 Galois}} \Gal(F/K),
+\end{equation}
+因此 $\Gal(L/K)$ 是 profinite 群。
+\end{proposition}
+
+\begin{proof}
+对每个有限 Galois 中间域 $F$，有限 Galois 群 $\Gal(F/K)$ 之间有自然限制映射
+\[
+  \mathrm{res}_{F'/F}\colon \Gal(F'/K)\to \Gal(F/K)
+\]
+当 $F\subseteq F'$ 时。于是这些有限群构成一个射影系。
+
+定义映射
+\[
+  \Theta\colon \Gal(L/K)\to \varprojlim_F \Gal(F/K),
+  \qquad
+  \sigma\mapsto (\sigma|_F)_F.
+\]
+它显然是群同态。
+
+\textbf{单射：} 若 $\sigma$ 在每个有限 Galois 子扩张上都恒等，则对任意 $x\in L$，由于 $x$ 落在某个有限 Galois
+子扩张 $F$ 中，故 $\sigma(x)=x$。于是 $\sigma=\mathrm{Id}$。
+
+\textbf{满射：} 设给定一个相容族 $(\sigma_F)_F$。对每个 $x\in L$，选取包含 $x$ 的有限 Galois 子扩张 $F$，定义
+\[
+  \sigma(x)=\sigma_F(x).
+\]
+由于相容性，这与 $F$ 的选取无关。逐点检查可知 $\sigma$ 是一个 $K$-自同构，且其限制正是给定的 $\sigma_F$。
+故 $\Theta$ 满射。
+
+因此 $\Theta$ 为同构，右侧是有限群射影极限，所以是 profinite 群。
+\end{proof}
+
+\begin{proposition}[全不连通性]
+profinite 群的每个连通分支都是单点集。
+\end{proposition}
+
+\begin{proof}
+设 $G=\varprojlim_i G_i$ 为 profinite 群，取不同两点 $x\neq y\in G$。由于坐标投影把 $G$ 嵌入有限群直积，
+必存在某个指标 $i$ 使得投影 $\pi_i(x)\neq \pi_i(y)$。有限群 $G_i$ 上单点集既开又闭，故
+\[
+  U=\pi_i^{-1}(\{\pi_i(x)\}),
+  \qquad
+  V=\pi_i^{-1}(\{\pi_i(y)\})
+\]
+是 $G$ 中不交的开闭集，分别包含 $x$ 与 $y$。这说明任意两点都能被开闭集分离。
+
+于是若某个连通子集同时包含两点 $x\neq y$，它就会被上述开闭分离写成两个不交非空开闭子集的并，
+与连通性矛盾。因此连通子集只能是单点，连通分支也只能是单点。
+\end{proof}
+
+\textbf{注。} 绝对 Galois 群之所以“看起来像一个巨大而神秘的对象”，正因为它并不是离散群，
+而是把一切有限 Galois 信息都同时打包起来的 profinite 极限。正文中的连续表示
+\[
+  \rho\colon G_K\to \GL_2(\Z_\ell)
+\]
+必须按这个拓扑来理解：连续性确保有限层信息与极限对象彼此兼容。
