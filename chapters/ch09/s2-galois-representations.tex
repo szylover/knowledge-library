@@ -116,6 +116,50 @@ $\sigma$ 是 $\bar\Q$ 的域自同构，且固定 $\Q$。
 故 $G_\Q$ 是 profinite 群。
 \end{proof}
 
+\begin{lemma}[Krull 拓扑的全不连通性]
+\label{lem:ch09-krull-totally-disconnected}
+作为 profinite 群，$G_\Q$ 的每个连通分支都是单点集。
+\end{lemma}
+
+\begin{proof}
+关键是：在逆极限拓扑里，每个开正规子群都把 $G_\Q$ 切成有限多个既开又闭的陪集。
+固定 $g\in G_\Q$，记包含 $g$ 的连通分支为 $C(g)$。
+任取开正规子群 $N\triangleleft G_\Q$，商映射
+\[
+  \pi_N\colon G_\Q\to G_\Q/N
+\]
+的每个纤维都是某个陪集 $hN$。
+因为 $G_\Q/N$ 是有限离散空间，这些陪集把 $G_\Q$ 分成有限多个开闭子集。
+连通集不可能同时落在两个不同的开闭部分里，
+所以 $C(g)$ 既然含有 $g$，就只能完全落在 $gN$ 中。
+因此对每个开正规子群 $N$ 都有
+\[
+  C(g)\subset gN.
+\]
+对所有 $N$ 取交，便得
+\[
+  C(g)\subset \bigcap_{N\triangleleft_o G_\Q} gN
+  =g\Bigl(\bigcap_{N\triangleleft_o G_\Q}N\Bigr).
+\]
+下面说明括号里的交只有单位元。
+若 $x\neq 1$，则存在某个代数数 $\alpha\in \bar\Q$ 使 $x(\alpha)\neq \alpha$。
+取包含 $\alpha$ 的有限 Galois 扩张 $K/\Q$，便有 $r_K(x)\neq 1$，
+故
+\[
+  x\notin \ker r_K.
+\]
+而 $\ker r_K$ 是一个开正规子群。
+这说明任何非平凡元素都会被某个开正规子群排除，
+于是
+\[
+  \bigcap_{N\triangleleft_o G_\Q}N=\{1\}.
+\]
+故 $C(g)\subset \{g\}$。
+反过来，单点集本身总是连通的，
+所以 $C(g)=\{g\}$。
+于是 $G_\Q$ 的每个连通分支都是单点集，也就是说 Krull 拓扑是全不连通的。 \qedhere
+\end{proof}
+
 \begin{definition}[连续表示]
 设 $R$ 是拓扑环。
 一个\textbf{连续 $R$-值表示}是连续群同态
@@ -178,6 +222,117 @@ $\sigma$ 是 $\bar\Q$ 的域自同构，且固定 $\Q$。
 因此任何真正与全局表示有关的对象都必须是共轭不变量，
 最自然的就是迹、行列式与特征多项式。
 
+\begin{theorem}[Chebotarev 密度定理]
+\label{thm:ch09-chebotarev-density}
+设 $L/\Q$ 是有限 Galois 扩张，$G=\Gal(L/\Q)$，并令 $C=[\sigma]\subset G$ 为元素 $\sigma$ 的共轭类。
+若素数 $p$ 在 $L$ 中无分歧，取一个位于 $p$ 上方的素理想 $\mathfrak p$，
+则存在唯一元素 $\Frob_{\mathfrak p}\in D_{\mathfrak p}\subset G$ 使得
+\[
+  \Frob_{\mathfrak p}(x)\equiv x^p\pmod{\mathfrak p}
+\]
+对所有 $x\in \mathcal O_L$ 都成立。
+若把 $\mathfrak p$ 换成另一个位于 $p$ 上方的素理想，得到的元素只会变成共轭元，
+因此得到良定义的 Frobenius 共轭类 $\Frob_p=[\Frob_{\mathfrak p}]$。
+记
+\[
+  S_C=\{p:\text{$p$ 在 $L$ 中无分歧，且 }\Frob_p=C\}.
+\]
+则 $S_C$ 的 Dirichlet 密度存在，且
+\[
+  \delta(S_C)=\frac{|C|}{|G|}.
+\]
+\end{theorem}
+
+\begin{proof}[证明草图]
+关键是把“某个共轭类出现多少次”翻译成若干 $L$-函数在 $s=1$ 附近的对数奇性。下面分四步说明。
+
+\textit{第一步：把密度写成素数级数的主项。}
+对素数集合 $S$，Dirichlet 密度定义为
+\[
+  \delta(S)=\lim_{s\to 1^+}\frac{\sum_{p\in S}p^{-s}}{\log \frac{1}{s-1}},
+\]
+只要这个极限存在。这里用到经典事实
+\[
+  \sum_p p^{-s}=\log \frac{1}{s-1}+O(1)
+  \qquad (s\to 1^+).
+\]
+因此我们只需找出 $\sum_{p\in S_C}p^{-s}$ 的主项系数。
+
+\textit{第二步：把 Frobenius 共轭类与 Dedekind zeta 函数联系起来。}
+对 $G$ 的每个不可约特征 $\chi$，记对应的 Artin $L$-函数为 $L(s,\chi)$。
+去掉有限多个分歧 Euler 因子后，
+其对数展开为
+\[
+  \log L(s,\chi)
+  =
+  \sum_{p\text{ 无分歧}}\sum_{m\ge 1}\frac{\chi(\Frob_p^m)}{m\,p^{ms}}+O(1).
+\]
+因此一次项已经控制了和
+\[
+  \sum_{p\text{ 无分歧}}\chi(\Frob_p)p^{-s}.
+\]
+另一方面，Dedekind zeta 函数分解为
+\[
+  \zeta_L(s)=\prod_{\chi}L(s,\chi)^{\chi(1)},
+\]
+所以 $\zeta_L(s)$ 在 $s=1$ 的极点信息，正是所有 Artin $L$-函数极点信息的总和。
+
+\textit{第三步：分析 $s=1$ 处到底谁会产生极点。}
+解析类数公式告诉我们，$\zeta_L(s)$ 在 $s=1$ 只有一个一级极点。
+其中平凡特征对应的 $L$-函数满足
+\[
+  L(s,1)=\zeta(s)\prod_{p\in R}(1-p^{-s}),
+\]
+这里 $R$ 是有限个分歧素数的集合，
+所以它与 Riemann zeta 函数有同样的对数发散。
+而 Artin 的非平凡特征 $L$-函数在 $s=1$ 全都全纯且非零，因而
+\[
+  \log L(s,\chi)=O(1)
+  \qquad (\chi\neq 1,\ s\to 1^+).
+\]
+于是得到
+\[
+  \sum_{p\text{ 无分歧}}\chi(\Frob_p)p^{-s}
+  =
+  \begin{cases}
+    \log \dfrac{1}{s-1}+O(1), & \chi=1,\\[1ex]
+    O(1), & \chi\neq 1.
+  \end{cases}
+\]
+
+\textit{第四步：用角色正交把单个共轭类挑出来。}
+设 $\mathbf 1_C$ 是共轭类 $C$ 的示性函数。
+因为它是类函数，故可按不可约特征展开：
+\[
+  \mathbf 1_C(g)=\sum_{\chi}\langle \mathbf 1_C,\chi\rangle\chi(g),
+\]
+其中
+\[
+  \langle \mathbf 1_C,\chi\rangle
+  =\frac{1}{|G|}\sum_{h\in G}\mathbf 1_C(h)\overline{\chi(h)}
+  =\frac{|C|}{|G|}\overline{\chi(\sigma)}.
+\]
+故
+\[
+  \sum_{p\in S_C}p^{-s}
+  =\sum_{p\text{ 无分歧}}\mathbf 1_C(\Frob_p)p^{-s}
+  =\frac{|C|}{|G|}\sum_{\chi}\overline{\chi(\sigma)}
+  \sum_{p\text{ 无分歧}}\chi(\Frob_p)p^{-s}.
+\]
+代入第三步的估计，只有平凡特征贡献主项；
+因为 $\overline{1(\sigma)}=1$，便得到
+\[
+  \sum_{p\in S_C}p^{-s}
+  =
+  \frac{|C|}{|G|}\log \frac{1}{s-1}+O(1).
+\]
+与第一步中的密度定义比较，便有
+\[
+  \delta(S_C)=\frac{|C|}{|G|}.
+\]
+这就完成了证明草图。 \qedhere
+\end{proof}
+
 \begin{theorem}[Chebotarev + Brauer--Nesbitt]
 \label{thm:ch09-chebotarev-determines-representation}
 设
@@ -214,6 +369,59 @@ Brauer--Nesbitt 定理断言：
   \rho_1^{\mathrm{ss}}\cong \rho_2^{\mathrm{ss}}.
 \]
 因为两表示已假设半单，结论就是 $\rho_1\cong \rho_2$。
+\end{proof}
+
+\begin{proposition}[绝对不可约表示的中心化子]
+\label{prop:ch09-schur-absolute-irreducible}
+设 $k$ 是域，
+\[
+  \rho\colon G_\Q\to \GL_n(k)
+\]
+是绝对不可约表示。
+则
+\[
+  \End_{G_\Q}(k^n)=k,
+\]
+也就是说，任何与 $\rho(G_\Q)$ 中所有矩阵都可交换的自同态都只能是标量矩阵。
+\end{proposition}
+
+\begin{proof}
+关键是先把问题放到代数闭包上；在那里 Schur 引理会把中心化子压缩到最小。
+记 $\bar k$ 为 $k$ 的代数闭包，并把表示延拓为
+\[
+  \rho_{\bar k}\colon G_\Q\to \GL_n(\bar k).
+\]
+因为 $\rho$ 绝对不可约，$\rho_{\bar k}$ 仍然不可约。
+于是 Schur 引理告诉我们，
+\[
+  A:=\End_{G_\Q}(\bar k^n)
+\]
+是一个除代数。
+另一方面，$A$ 是 $\End_{\bar k}(\bar k^n)\cong M_n(\bar k)$ 的子空间，
+所以它是有限维 $\bar k$-向量空间。
+现在说明：代数闭域上的有限维除代数只能等于该域本身。
+事实上，若 $u\in A$，把它看成 $\bar k$-线性变换，
+其特征多项式在 $\bar k$ 上分裂，故存在特征值 $\lambda\in \bar k$。
+于是 $u-\lambda$ 有非零核，因而不是可逆元。
+但 $A$ 是除代数，非零元都必须可逆，
+所以只能有 $u-\lambda=0$，即 $u=\lambda$。
+这说明
+\[
+  A=\bar k.
+\]
+现在取任意 $T\in \End_{G_\Q}(k^n)$。
+把标量扩张到 $\bar k$，得到
+\[
+  T_{\bar k}\in \End_{G_\Q}(\bar k^n)=\bar k.
+\]
+因此存在 $\lambda\in \bar k$ 使 $T_{\bar k}=\lambda I_n$。
+但 $T_{\bar k}$ 的矩阵条目与 $T$ 相同，本来都在 $k$ 中，
+所以这一个标量 $\lambda$ 也必须属于 $k$。
+于是 $T=\lambda I_n$，故
+\[
+  \End_{G_\Q}(k^n)=k.
+\]
+也就是说，中心化子只有标量。 \qedhere
 \end{proof}
 
 最基本、也最重要的例子，是分圆特征。

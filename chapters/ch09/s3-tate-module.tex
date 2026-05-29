@@ -195,6 +195,99 @@ Weil 配对的构造可由除子与有理函数给出，
 \]
 \end{proof}
 
+\begin{lemma}[椭圆曲线的 local zeta 函数]
+\label{lem:ch09-local-zeta-elliptic}
+设 $\widetilde E/\F_p$ 是好约化椭圆曲线，记
+\[
+  N_r=\#\widetilde E(\F_{p^r}),
+  \qquad
+  Z(\widetilde E/\F_p,T)=\exp\Bigl(\sum_{r=1}^\infty N_r\frac{T^r}{r}\Bigr).
+\]
+若 $t=p+1-N_1=a_p(E)$，则
+\[
+  Z(\widetilde E/\F_p,T)=\frac{1-tT+pT^2}{(1-T)(1-pT)}.
+\]
+\end{lemma}
+
+\begin{proof}
+关键是把 $N_r$ 改写成 Frobenius 的迹，再把指数母函数逐项拆开。
+
+\textit{第一步：引入 Frobenius 的两个特征值。}
+固定一个素数 $\ell\neq p$。
+令 $\phi_p$ 表示算术 Frobenius 在 $V_\ell(E)$ 上的作用，
+记它的两个特征值为 $\alpha,\beta$。
+
+\textit{第二步：先确定乘积，再把和留到后面从点数读出。}
+由 \cref{thm:ch09-weil-pairing-det}，
+\[
+  \alpha\beta=\det(\phi_p)=\chi_\ell(\Frob_p)=p.
+\]
+再记
+\[
+  t:=\alpha+\beta.
+\]
+稍后在 $r=1$ 时就会看出，这个 $t$ 正是 $p+1-N_1$。
+
+\textit{第三步：把有限域点数写成 Frobenius 的迹。}
+$\widetilde E(\F_{p^r})$ 恰好是 $\phi_p^r$ 的不动点集合。
+对光滑射影曲线应用 Lefschetz 迹公式，得到
+\[
+  N_r
+  =
+  \Tr(\phi_p^r\mid H^0_{\text{\'et}})
+  -\Tr(\phi_p^r\mid H^1_{\text{\'et}})
+  +\Tr(\phi_p^r\mid H^2_{\text{\'et}}).
+\]
+对椭圆曲线而言，$H^0_{\text{\'et}}$ 上的迹是 $1$，
+$H^2_{\text{\'et}}$ 上的迹是 $p^r$，
+而 $H^1_{\text{\'et}}$ 上的两个特征值是 $\alpha^r,\beta^r$。
+因此
+\[
+  N_r=p^r+1-\alpha^r-\beta^r.
+\]
+
+\textit{第四步：代入 zeta 函数定义并展开指数。}
+于是
+\begin{align*}
+  Z(\widetilde E/\F_p,T)
+  &=
+  \exp\Bigl(\sum_{r\ge 1}(p^r+1-\alpha^r-\beta^r)\frac{T^r}{r}\Bigr)\\
+  &=
+  \exp\Bigl(\sum_{r\ge 1}\frac{T^r}{r}\Bigr)
+  \exp\Bigl(\sum_{r\ge 1}\frac{p^rT^r}{r}\Bigr)
+  \exp\Bigl(-\sum_{r\ge 1}\frac{\alpha^rT^r}{r}\Bigr)
+  \exp\Bigl(-\sum_{r\ge 1}\frac{\beta^rT^r}{r}\Bigr).
+\end{align*}
+利用恒等式
+\[
+  -\log(1-xT)=\sum_{r\ge 1}\frac{x^rT^r}{r}
+\]
+分别处理这四项，便得
+\[
+  Z(\widetilde E/\F_p,T)=\frac{(1-\alpha T)(1-\beta T)}{(1-T)(1-pT)}.
+\]
+
+\textit{第五步：把分子写成 $t$ 的形式。}
+在第三步的点数公式中取 $r=1$，得到
+\[
+  N_1=p+1-\alpha-\beta,
+\]
+所以
+\[
+  t=\alpha+\beta=p+1-N_1=a_p(E).
+\]
+再展开分子，便有
+\[
+  (1-\alpha T)(1-\beta T)
+  =1-(\alpha+\beta)T+\alpha\beta T^2
+  =1-tT+pT^2.
+\]
+因此
+\[
+  Z(\widetilde E/\F_p,T)=\frac{1-tT+pT^2}{(1-T)(1-pT)}. \qedhere
+\]
+\end{proof}
+
 椭圆曲线表示最强的算术信息出现在好素数处的 Frobenius 矩阵上。
 
 \begin{theorem}[好约化处的 Frobenius 特征多项式]
@@ -215,35 +308,41 @@ Weil 配对的构造可由除子与有理函数给出，
 \end{theorem}
 
 \begin{proof}
+关键点是：一旦把 local zeta 函数的分子写成 $(1-\alpha T)(1-\beta T)$，
+Frobenius 的迹与行列式就直接变成这个二次式的系数。
+
 因为 $p\nmid N_E$，曲线在 $p$ 处好约化。
 由 N\'eron--Ogg--Shafarevich 判别准则，
-对任意 $\ell\neq p$，
-$T_\ell(E)$ 上的表示在 $p$ 处无分歧。
-
-令 $\widetilde E/\F_p$ 为约化曲线。
-Frobenius 在 $V_\ell(E)$ 上的作用与在 $H^1_{\text{\'et}}(\widetilde E_{\bar\F_p},\Q_\ell)$ 上的作用对偶，
-其特征多项式可写成
+对任意 $\ell\neq p$，$T_\ell(E)$ 上的表示在 $p$ 处无分歧。
+记 $\alpha,\beta$ 为 $\rho_{E,\ell}(\Frob_p)$ 在 $V_\ell(E)$ 上的两个特征值。
+由 \cref{lem:ch09-local-zeta-elliptic}，
+约化曲线 $\widetilde E/\F_p$ 的 zeta 函数满足
 \[
-  X^2-tX+p
+  Z(\widetilde E/\F_p,T)=\frac{1-a_p(E)T+pT^2}{(1-T)(1-pT)}.
 \]
-其中 $t$ 是 Frobenius 迹。
-另一方面，椭圆曲线的局部 zeta 函数具有形状
+而该引理的推导同时告诉我们
 \[
-  Z(\widetilde E/\F_p,T)=\frac{1-tT+pT^2}{(1-T)(1-pT)}.
+  Z(\widetilde E/\F_p,T)=\frac{(1-\alpha T)(1-\beta T)}{(1-T)(1-pT)}.
 \]
-比较对数导数，或直接取 $T=p^{-s}$ 与第\ref{ch:eichler-shimura}章的局部因子公式对照，
-得到
+比较分子便得
 \[
-  t=p+1-\#\widetilde E(\F_p)=a_p(E).
+  (1-\alpha T)(1-\beta T)=1-a_p(E)T+pT^2.
 \]
-
-行列式部分则由 \cref{thm:ch09-weil-pairing-det} 立刻给出：
+展开后得到
 \[
-  \det\rho_{E,\ell}(\Frob_p)=\chi_\ell(\Frob_p)=p.
+  \alpha+\beta=a_p(E),
+  \qquad
+  \alpha\beta=p.
 \]
-因此 Frobenius 的特征多项式正是
+因此
 \[
-  X^2-a_p(E)X+p.
+  \Tr\rho_{E,\ell}(\Frob_p)=a_p(E),
+  \qquad
+  \det\rho_{E,\ell}(\Frob_p)=p.
+\]
+故其特征多项式为
+\[
+  X^2-a_p(E)X+p. \qedhere
 \]
 \end{proof}
 
@@ -284,6 +383,94 @@ Ribet 水平下降用的就是这份 mod $\ell$ 表示；
 某些本来存在于 $\ell$-进世界里的分歧信息会在约化后消失，
 这正是级别可以下降的根本原因。
 
+\begin{lemma}[Hasse 定理的初等证明]
+\label{lem:ch09-hasse-elementary}
+对椭圆曲线 $\widetilde E/\F_p$，记
+\[
+  a_p=p+1-\#\widetilde E(\F_p).
+\]
+则
+\[
+  |a_p|\le 2\sqrt p.
+\]
+\end{lemma}
+
+\begin{proof}
+关键是把点数公式改写成一个次数恒非负的二次式。
+
+\textit{第一步：构造同源 $[m]-\phi_p$。}
+对任意整数 $m$，定义
+\[
+  \psi_m=[m]-\phi_p\colon \widetilde E\to \widetilde E,
+\]
+其中 $\phi_p$ 是 Frobenius 同源。
+
+\textit{第二步：次数永远非负。}
+任何非零同源的次数都非负，且只有零同态的次数才等于 $0$。
+因此对每个整数 $m$ 都有
+\[
+  \deg(\psi_m)\ge 0.
+\]
+
+\textit{第三步：把这个次数算成显式二次式。}
+因为对偶同源满足
+\[
+  \phi_p\hat\phi_p=\hat\phi_p\phi_p=[p],
+\]
+所以 $\deg(\phi_p)=p$。
+另一方面，$\widetilde E(\F_p)$ 恰好是 $[1]-\phi_p$ 的核，
+而 $d\phi_p=0$，故 $d([1]-\phi_p)=1$，
+这说明 $[1]-\phi_p$ 是可分同源，于是
+\[
+  \deg([1]-\phi_p)=\#\ker([1]-\phi_p)=\#\widetilde E(\F_p)=p+1-a_p.
+\]
+再看
+\[
+  [\deg([1]-\phi_p)]
+  =([1]-\phi_p)([1]-\hat\phi_p)
+  =[1]-\phi_p-\hat\phi_p+[p]
+  =[p+1]-(\phi_p+\hat\phi_p).
+\]
+由于上面已经算出 $\deg([1]-\phi_p)=p+1-a_p$，
+便得到
+\[
+  [p+1-a_p]=[p+1]-(\phi_p+\hat\phi_p),
+\]
+从而
+\[
+  \phi_p+\hat\phi_p=[a_p].
+\]
+现在对任意 $m$ 计算
+\begin{align*}
+  [\deg([m]-\phi_p)]
+  &=([m]-\phi_p)([m]-\hat\phi_p)\\
+  &=[m^2]-m(\phi_p+\hat\phi_p)+[p]\\
+  &=[m^2-ma_p+p].
+\end{align*}
+比较乘法映射的整数系数，便有
+\[
+  \deg([m]-\phi_p)=m^2-ma_p+p.
+\]
+
+\textit{第四步：利用非负性。}
+由第二步，得到对所有整数 $m$ 都有
+\[
+  m^2-ma_p+p\ge 0.
+\]
+
+\textit{第五步：看判别式。}
+这个首项系数为 $1$ 的实二次式在所有整数上都非负，
+于是它的最小值也非负；等价地，其判别式不能为正。
+故
+\[
+  a_p^2-4p\le 0.
+\]
+因此
+\[
+  |a_p|\le 2\sqrt p. \qedhere
+\]
+\end{proof}
+
 最后用 Frobenius 特征值的几何大小来重述 Hasse 定理。
 
 \begin{theorem}[Hasse 界]
@@ -301,25 +488,45 @@ Ribet 水平下降用的就是这份 mod $\ell$ 表示；
 \end{theorem}
 
 \begin{proof}
-由 \cref{thm:ch09-frob-charpoly-elliptic}，
+由 \cref{lem:ch09-hasse-elementary}，已经得到
+\[
+  |a_p(E)|\le 2\sqrt p.
+\]
+再由 \cref{thm:ch09-frob-charpoly-elliptic}，
 $\alpha_p,\beta_p$ 是方程
 \[
   X^2-a_p(E)X+p=0
 \]
-的两个根，故
+的两个根，因此
 \[
   \alpha_p+\beta_p=a_p(E),
   \qquad
   \alpha_p\beta_p=p.
 \]
-Weil 对曲线的 Riemann 假设告诉我们，
-椭圆曲线情形中每个 Frobenius 特征值都是绝对值 $\sqrt p$ 的代数整数。
-因此
+因为 $a_p(E)^2-4p\le 0$，该二次方程的判别式非正，
+所以在任一固定的复嵌入下，$\alpha_p,\beta_p$ 互为复共轭。
+于是
+\[
+  |\alpha_p|^2=\alpha_p\overline{\alpha_p}=\alpha_p\beta_p=p,
+\]
+同理 $|\beta_p|^2=p$，故
+\[
+  |\alpha_p|=|\beta_p|=\sqrt p.
+\]
+现在取任意复嵌入 $\iota$。
+由于 $\alpha_p,\beta_p$ 都满足同一个有理系数多项式 $X^2-a_p(E)X+p$，
+$\iota(\alpha_p),\iota(\beta_p)$ 仍是这同一多项式的两个根，
+所以只不过把 $\alpha_p,\beta_p$ 交换一下。
+因此在每个复嵌入下仍有
+\[
+  |\iota(\alpha_p)|=|\iota(\beta_p)|=\sqrt p.
+\]
+反过来，若两个特征值在每个复嵌入下都满足绝对值 $\sqrt p$，
+则
 \[
   |a_p(E)|=|\alpha_p+\beta_p|\le |\alpha_p|+|\beta_p|=2\sqrt p.
 \]
-反过来，若两根都满足绝对值 $\sqrt p$，
-同样立刻推出 Hasse 界。
+故两种表述完全等价。 \qedhere
 \end{proof}
 
 本节把椭圆曲线压缩成了一份二维 $\ell$-进表示，
