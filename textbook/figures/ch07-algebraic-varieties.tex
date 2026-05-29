@@ -1,0 +1,19 @@
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth, font=\small]
+  \draw[thick] (-3.2,-2.1) -- (-1.1,-2.9) -- (-0.1,-0.8) -- cycle;
+  \node at (-2.2,-3.2) {$\mathbb P^2$};
+  \draw[thick, blue!70!black] plot[smooth cycle] coordinates {(-2.7,-1.9) (-2.0,-1.0) (-1.2,-1.4) (-1.0,-2.2) (-2.0,-2.5)};
+  \node[blue!70!black] at (-2.1,-0.5) {$C$};
+
+  \draw[thick] (1.1,-2.1) -- (3.2,-2.9) -- (4.2,-0.8) -- cycle;
+  \node at (2.1,-3.2) {$\mathbb P^2$};
+  \draw[thick, green!50!black] plot[smooth cycle] coordinates {(1.5,-1.8) (2.3,-1.0) (3.2,-1.2) (3.4,-2.2) (2.4,-2.6)};
+  \node[green!50!black] at (2.6,-0.5) {$D$};
+
+  \draw[->, very thick] (-0.1,-1.8) -- node[above] {$\varphi$} (1.1,-1.8);
+  \node at (0.5,-2.4) {有限有理映射};
+\end{tikzpicture}
+\caption{本节只保留最小必需的代数几何语言：把曲线看成射影空间中的方程，再研究曲线之间的有理映射、函数域与除子。}
+\label{fig:ch07-algebraic-varieties}
+\end{figure}

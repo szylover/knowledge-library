@@ -1,0 +1,288 @@
+\section{形变理论：Taylor--Wiles 方法的技术核心}
+\label{sec:ch10-deformation}
+% ============================================================================
+
+\providecommand{\rhobar}{\bar{\rho}}
+
+如果说上一节回答的是“Wiles 想证明什么”，
+那么这一节回答的就是“他究竟拿什么来证明”。
+形变理论之所以成为整个证明的技术心脏，
+是因为它把一个本来非常刚性的 mod $\ell$ 表示问题
+转换成了一个可以做维数计数、切空间比较与极限构造的局部代数问题。
+这一步看似抽象，
+实际上极富直觉：
+我们先把一个 residual 表示钉住，
+然后系统地问——它能以多少种方式被提升到 $\ell$-进世界里？
+
+\textbf{我们遇到了什么问题？}
+假设我们已经知道某个 residual 表示
+\[
+  \rhobar\colon G_\Q\to \GL_2(\F_\ell)
+\]
+是模的。
+接下来要证明某一条具体的 $\ell$-进提升 $\rho$ 也是模的。
+若只盯着这条单独的提升，
+几乎无从下手；
+因为它混杂着在每个素数处的局部条件，
+还带着行列式、半稳定性、有限平坦性等结构。
+Wiles 的关键观察是：
+与其直接抓住这一个点，
+不如把所有满足同样局部条件的提升一起收集成一个“空间”，
+再把这个空间与模形式一侧的 Hecke 空间比较。
+
+\textbf{核心思想是什么？}
+把完备 Noether 局部 $\Lambda$-代数范畴记为 $\mathrm{CNL}_\Lambda$。
+对每个对象 $A$，
+考虑所有满足规定局部条件的提升
+\[
+  \rho_A\colon G_\Q\to \GL_2(A)
+\]
+的严格同构类。
+这给出一个形变函子
+\[
+  \mathcal F\colon \mathrm{CNL}_\Lambda\to \mathrm{Sets}.
+\]
+若它可表，则存在一个完备局部环 $R$ 使得
+\[
+  \mathcal F(A)\cong \Hom_{\mathrm{CNL}_\Lambda}(R,A).
+\]
+也就是说，$R$ 真正把“全部允许提升”参数化了。
+模形式一侧的 Hecke 环 $T$ 则参数化“全部允许的模提升”。
+因此 $R=T$ 的意义非常直白：
+允许的提升与模的提升一样多，而且一一对应。
+
+\textbf{引入之后能得到什么？}
+一旦把问题压缩到局部环同构，
+证明策略就从“构造模形式”转变为“比较两个局部环的大小”。
+环的大小可以通过切空间、关系数、长度、Fitting ideal 与 congruence ideal 来测量。
+Selmer 群控制 $R$ 的切空间，
+模形式之间的同余控制 $T$ 的 congruence ideal；
+Taylor--Wiles 再用辅助素数把这两边同时扩展到一个更容易比较的无限层。
+这就是为什么 Wiles 证明虽然写在 Galois 表示语言里，
+却处处伴随着交换代数与同调代数。
+
+\input{figures/ch10-deformation-space}
+
+先把基本对象写清楚。
+
+\begin{definition}[形变问题]
+设 $\rhobar\colon G_\Q\to \GL_2(k)$，其中 $k$ 是有限域。
+若 $A$ 是带剩余域 $k$ 的完备 Noether 局部环，
+则一个 \textbf{$A$-值提升} 是连续表示
+\[
+  \rho\colon G_\Q\to \GL_2(A)
+\]
+使得模去极大理想后恢复 $\rhobar$。
+两个提升若相差一个同余于单位阵的共轭，称为严格同构。
+给定行列式与局部条件后，
+所有这样的严格同构类构成形变函子 $\mathcal F(A)$。
+\end{definition}
+
+\begin{theorem}[Mazur 的可表性定理]
+\label{thm:ch10-mazur}
+若 $\rhobar$ 满足通常的不可约性与奇性条件，
+则带有给定局部条件的形变函子 $\mathcal F$ 可由某个完备 Noether 局部环 $R$ 表示。
+等价地，存在一个泛形变
+\[
+  \rho^{\mathrm{univ}}\colon G_\Q\to \GL_2(R)
+\]
+使得任意允许的提升都唯一地由 $R\to A$ 拉回得到。
+\end{theorem}
+
+\begin{proof}[证明思路]
+Schlessinger 判据把可表性化为几个关于小扩张的粘合条件。
+对二维 Galois 表示，
+这些条件在绝对不可约的 residual 假设下可以通过群上同调验证。
+本质上，
+\[
+  H^1(G_\Q,\mathrm{ad}^0\rhobar)
+\]
+控制无穷小提升，
+而
+\[
+  H^2(G_\Q,\mathrm{ad}^0\rhobar)
+\]
+控制阻碍。
+当局部条件选取得当时，
+这些数据恰好足以构造一个泛对象 $R$。
+\end{proof}
+
+\subsection*{补充：Schlessinger 判据与 de Smit--Lenstra 的显式构造}
+CSS 第 V 篇 de Smit--Lenstra 的贡献，
+在于把“存在某个泛形变环”这句话从抽象可表性，
+推进到可以写出生成元和关系的交换代数框架中。
+
+\begin{theorem}[Schlessinger 判据，粗略表述]
+\label{thm:ch10-schlessinger}
+设 $\mathcal F\colon \mathrm{CNL}_\Lambda\to \mathrm{Sets}$ 是保剩余域的函子。
+若它满足对小扩张的纤维积满射性、切空间有限维、以及自同构受控等条件，
+则 $\mathcal F$ 至少有一个 hull；
+若进一步满足相应的精确粘合条件，
+则 $\mathcal F$ 由某个完备 Noether 局部环可表。
+\end{theorem}
+
+\begin{proof}[说明]
+Schlessinger 的思想是：
+无穷小提升问题只需在 Artinian 小扩张之间检查是否能兼容粘合。
+对 Galois 形变函子，
+绝对不可约性使严格同构类的自动同构群足够小，
+于是这些抽象条件可以借助 $H^1$ 与 $H^2$ 的维数有限性来验证。
+这正是 Mazur 定理背后的范畴论骨架。
+\end{proof}
+
+\begin{proposition}[de Smit--Lenstra 的显式形状]
+\label{prop:ch10-desmit-lenstra}
+若形变函子可表，且其切空间维数为 $d$，阻碍空间最小生成元数为 $r$，
+则相应的泛形变环可以写成
+\[
+  R\cong \Lambda[[x_1,\dots,x_d]]/(f_1,\dots,f_r).
+\]
+换言之，泛形变环就是“变量数减去关系数”的一个显式完备交候选；
+Taylor--Wiles 方法的任务，正是证明在模性情形里这些关系数恰好与 Hecke 环匹配。
+\end{proposition}
+
+\begin{proof}[说明]
+切空间维数给出需要多少个无穷小参数 $x_i$ 才能生成所有一阶形变。
+从幂级数环到 $R$ 的满射随后总能构造出来；
+其核由若干关系式生成，而这些关系的最少个数受到阻碍空间控制。
+de Smit--Lenstra 的文章把这一过程写得极为具体，
+使“泛环存在”不再只是抽象的 Yoneda 结论。
+\end{proof}
+
+\begin{proposition}[切空间与 Selmer 群]
+\label{prop:ch10-tangent-selmer}
+设 $R$ 是满足局部条件 $\mathcal L$ 的泛形变环，极大理想为 $\mathfrak m_R$。
+则有自然同构
+\[
+  \Hom_k\bigl(\mathfrak m_R/(\mathfrak m_R^2,\ell),k\bigr)
+  \cong
+  H^1_{\mathcal L}(G_\Q,\mathrm{ad}^0\rhobar),
+\]
+右边正是带局部条件的 Selmer 群。
+\end{proposition}
+
+\begin{proof}[说明]
+把 $R$ 映到双数环 $k[\varepsilon]/(\varepsilon^2)$ 的同态，
+正好描述 $\rhobar$ 的一阶形变。
+而一阶形变由 $1$-cocycle 给出，模去严格同构后便得到 $H^1$。
+各个局部条件要求这些 cocycle 在 $G_{\Q_v}$ 上落入指定子空间，
+因此全局允许的一阶形变恰是 Selmer 群。
+\end{proof}
+
+从切空间的角度看，
+形变环并不是一个神秘盒子。
+若 $\mathfrak m_R$ 是其极大理想，
+则
+\[
+  \Hom_k\bigl(\mathfrak m_R/(\mathfrak m_R^2,\ell),k\bigr)
+\]
+可以识别为某个带局部条件的 Selmer 群。
+这意味着：
+$R$ 有多少个“独立方向”，
+其实是一个 Galois 上同调问题。
+
+模形式一边也有对应对象。
+在与 $\rhobar$ 对应的极大理想 $\mathfrak m$ 处局部化后，
+Hecke 环 $T$ 作用在模形式空间或其同调上。
+由 universal modular deformation 的构造，
+存在自然满射
+\[
+  R\twoheadrightarrow T.
+\]
+之所以是满射，
+是因为 Hecke 特征值已经决定了模形式侧的 Galois 表示，
+所以每个模提升都给出 $R$ 的一个点。
+问题只剩下：
+$R$ 会不会比 $T$ 更大？
+
+\begin{theorem}[Wiles 的 $R=T$ 定理，简化表述]
+\label{thm:ch10-rt}
+设 $\rhobar$ 是奇、绝对不可约的 residual 表示，
+并固定最小局部形变条件。
+则在 Wiles--Taylor--Wiles 的情形下，
+自然满射
+\[
+  R\twoheadrightarrow T
+\]
+实际上是同构。
+因此每个满足这些局部条件的 $\ell$-进提升都来自模形式。
+\end{theorem}
+
+\begin{proof}[证明框架]
+证明分成三层。
+
+\textbf{第一层：数值判据。}
+Wiles 的数值判据说明，
+若能把 $R$ 的切空间大小与 $T$ 的 congruence ideal 大小配平，
+则满射 $R\twoheadrightarrow T$ 已经足够强，可以推出同构。
+其本质是一个交换代数命题：
+对某类 Cohen--Macaulay 环与 complete intersection 环，
+关系数与生成元数一旦恰好匹配，
+满射就只能是同构。
+
+\textbf{第二层：Selmer 群估计。}
+切空间由 Selmer 群
+\[
+  H^1_{\mathcal L}(G_\Q,\mathrm{ad}^0\rhobar)
+\]
+控制。
+Poitou--Tate 对偶把其维数与对偶 Selmer 群联系起来，
+从而把 $R$ 的生成元数压缩成一个可计算的同调不变量。
+
+\textbf{第三层：Taylor--Wiles 打补丁。}
+真正困难处在于最小情形里，
+直接比较 $R$ 与 $T$ 往往缺少自由度。
+Taylor 与 Wiles 于是选择一族辅助素数 $Q_n$，满足
+\[
+  q\equiv 1\pmod{\ell^n},
+\]
+使得在这些素数添加级别结构后，
+新的形变问题拥有额外变量，
+而模形式侧也同步多出几乎同样数量的自由方向。
+在极限上得到的大环 $R_\infty$ 与 $T_\infty$ 变成更接近幂级数环的对象，
+从而可以先证明
+\[
+  R_\infty\cong T_\infty.
+\]
+最后再通过 patching 把极限层的同构下降回原始最小层，
+得到 $R\cong T$。
+\end{proof}
+
+\textbf{注。}
+文献常把这一节写成大量符号：
+$R_Q$、$T_Q$、$\Delta_Q$、patched module、complete intersection、numerical criterion。
+第一次读时最重要的不是记号，
+而是记住整体图像：
+\emph{辅助素数的作用不是改变问题的本质，
+而是暂时把问题放到一个更有自由度的空间里，
+让两边更容易比较；
+比较完成后，再把多余自由度剥掉。}
+
+\begin{proposition}[Taylor--Wiles 打补丁的更细图像]
+\label{prop:ch10-patching-details}
+取一族 Taylor--Wiles 辅助素数集 $Q_n$，并令 $\Delta_{Q_n}$ 表示相应的有限 $\ell$-群。
+则带级别结构的形变环与 Hecke 环满足：
+\begin{itemize}
+  \item $R_{Q_n}$ 比最小形变环多出大约 $\#Q_n$ 个局部变量；
+  \item 模形式侧存在一个 patched module $M_\infty$，它同时是 $R_\infty$ 与 $S_\infty=\Lambda[[\Delta_\infty]]$-模；
+  \item 通过控制 $M_\infty$ 在 $S_\infty$ 上的自由性，可推出 $R_\infty$ 是 complete intersection，且 $R_\infty\cong T_\infty$。
+\end{itemize}
+把额外变量再模掉，就回到最小层的 $R\cong T$。
+\end{proposition}
+
+\begin{proof}[说明]
+辅助素数的选择保证局部形变环在这些新素数处几乎是平滑的，
+所以它们只增加可控的自由变量，而不会带来新的难以处理关系。
+另一方面，模形式空间在增加级别后会携带与 $\Delta_{Q_n}$ 相容的群代数作用，
+这使 patched module 能同时看到 Galois 与 Hecke 两边的结构。
+当极限对象 $M_\infty$ 足够自由时，
+环的关系数便被压缩到最小，最终得到 complete intersection 与同构结论。
+\end{proof}
+
+把这件事想象成“打补丁”是非常贴切的：
+我们并不是一次看清整个形变空间，
+而是先在许多带额外级别的近似层上工作，
+再把它们拼成一个大而光滑的对象，
+最后回到原来的最小层。
+正是这一步，
+让 $R=T$ 从一句勇敢猜测变成了可操作定理。

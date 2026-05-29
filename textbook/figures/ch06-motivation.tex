@@ -1,0 +1,29 @@
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth, font=\small, node distance=1.6cm]
+  \node[draw, rounded corners, fill=blue!8, minimum width=4.8cm, minimum height=0.9cm] (f)
+    {$f\in \Sk_2(\GammaO(N))$};
+  \node[draw, rounded corners, fill=green!8, below of=f, minimum width=4.8cm, minimum height=0.9cm] (t)
+    {Hecke 代数 $\mathbb T$};
+  \node[draw, rounded corners, fill=orange!10, below of=t, minimum width=4.8cm, minimum height=0.9cm] (j)
+    {$J_0(N)=J(X_0(N))$};
+  \node[draw, rounded corners, fill=purple!10, below of=j, minimum width=4.8cm, minimum height=0.9cm] (a)
+    {$A_f=J_0(N)/I_fJ_0(N)$};
+  \node[draw, rounded corners, fill=red!8, below of=a, minimum width=4.8cm, minimum height=0.9cm] (e)
+    {当 $[K_f:\Q]=1$ 时得到椭圆曲线 $E/\Q$};
+
+  \draw[->, thick] (f) -- node[right] {特征值系统} (t);
+  \draw[->, thick] (t) -- node[right] {对应诱导自同态} (j);
+  \draw[->, thick] (j) -- node[right] {对 Hecke 理想取商} (a);
+  \draw[->, thick] (a) -- node[right] {权 $2$ 且 $K_f=\Q$} (e);
+
+  \draw[decorate, decoration={brace, mirror, amplitude=6pt}, thick]
+    ($(f.west)+(-0.35,0.35)$) -- ($(j.west)+(-0.35,-0.35)$)
+    node[midway, left=8pt] {解析对象与 Hecke 作用};
+  \draw[decorate, decoration={brace, mirror, amplitude=6pt}, thick]
+    ($(a.east)+(0.35,0.35)$) -- ($(e.east)+(0.35,-0.35)$)
+    node[midway, right=8pt] {几何对象与算术应用};
+\end{tikzpicture}
+\caption{本章主线：从权 $2$ 模形式与 Hecke 代数出发，经由 Jacobian $J_0(N)$ 构造出与单个新形式对应的模 Abel 簇 $A_f$；在有理系数情形下，$A_f$ 就是一条椭圆曲线。}
+\label{fig:ch06-motivation-bridge}
+\end{figure}

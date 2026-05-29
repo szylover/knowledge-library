@@ -1,0 +1,19 @@
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth, font=\small, node distance=1.8cm]
+  \node[draw, rounded corners, fill=blue!8, minimum width=4.4cm, minimum height=0.95cm] (moduli)
+    {模数据 $(E,C_N)$};
+  \node[draw, rounded corners, fill=green!8, below=of moduli, minimum width=5.2cm, minimum height=0.95cm] (point)
+    {点 $[(E,C_N)]\in Y_0(N)$};
+  \node[draw, rounded corners, fill=orange!10, below=of point, minimum width=6.0cm, minimum height=0.95cm] (poly)
+    {$(j(E),j(E/C_N))\in \Phi_N(X,Y)=0$};
+  \node[draw, rounded corners, fill=purple!10, below=of poly, minimum width=5.2cm, minimum height=0.95cm] (model)
+    {$X_0(11)$ 的 Weierstrass 模型};
+
+  \draw[->, thick] (moduli) -- node[right] {模解释} (point);
+  \draw[->, thick] (point) -- node[right] {$j$ 与 $j_N$} (poly);
+  \draw[->, thick] (poly) -- node[right] {紧化与光滑化} (model);
+\end{tikzpicture}
+\caption{模曲线的两种代数化方式：上面一条路由模解释产生 $\Q$-模型，下面一条路由模多项式给出显式方程。两条路最后指向同一条代数曲线。}
+\label{fig:ch07-modular-curves-over-q}
+\end{figure}

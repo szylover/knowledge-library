@@ -1,0 +1,98 @@
+% ============================================================================
+% exercises-book/main.tex — 《模形式与费马大定理习题集》
+% 配套《模形式与费马大定理》主教材使用
+% ============================================================================
+\documentclass[12pt, a4paper, openany]{book}
+
+\input{preamble}
+
+\begin{document}
+
+\raggedbottom
+
+% --- 封面 ---
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[violet!50!black] (current page.north west) rectangle
+      ([yshift=-0.6cm]current page.north east);
+    \fill[blue!30!black] ([yshift=-2.5cm]current page.north west) rectangle
+      ([yshift=-7.5cm]current page.north east);
+    \fill[violet!50!black] ([yshift=1.8cm]current page.south west) rectangle
+      ([yshift=2.2cm]current page.south east);
+  \end{tikzpicture}
+
+  \centering
+  \vspace*{2.2cm}
+
+  {\color{white}\fontsize{36}{44}\selectfont\bfseries 模形式与费马大定理\par}
+  \vspace{0.4cm}
+  {\color{white!90}\LARGE 习题集\par}
+  \vspace{0.6cm}
+  {\color{white!80}\large 配套《模形式与费马大定理》主教材\par}
+
+  \vspace{2.5cm}
+
+  {\large\itshape 每题均含完整解答\par}
+  \vspace{0.3cm}
+  {\normalsize 300+ 道习题，三级难度，覆盖全书\par}
+
+  \vfill
+
+  {\Large\bfseries\color{white} SZY\par}
+  \vspace{0.3cm}
+  {\normalsize\color{white!80} \today\par}
+  \vspace{2.5cm}
+\end{titlepage}
+
+% --- 前言 ---
+\chapter*{前言}
+\addcontentsline{toc}{chapter}{前言}
+
+本习题集是《模形式与费马大定理》主教材的配套练习册。
+主教材每章侧重定理的完整证明与直觉建立；
+本册则把重心放在**动手计算**和**证明演练**上。
+
+\medskip
+\textbf{如何使用本书。}
+每章习题分为三个梯度：
+\begin{itemize}
+  \item \easy\ \textbf{基础题}：直接应用定义和基本公式，做完后应能独立重述相应定义
+  \item \medium\ \textbf{进阶题}：需要组合本章多个结果，或与前一章的内容交叉
+  \item \hard\ \textbf{挑战题}：需要创造性想法，部分题目接近研究水平
+\end{itemize}
+
+建议先独立做题，写出完整论证，再翻看解答。
+每章末尾给出所有题目的完整解答。
+
+\medskip
+\textbf{符号约定。}
+与主教材一致：$\HH$ 表示上半平面，$\SL_2(\Z)$ 是模群，
+$\Mk(\Gamma)$/$\Sk(\Gamma)$ 分别是权 $k$ 模形式/尖点形式空间，
+$\chi_\ell$ 是 $\ell$-进分圆特征，$\Frob_p$ 是算术 Frobenius。
+
+\tableofcontents
+\newpage
+
+% ============================================================================
+% 正文：每章习题
+% ============================================================================
+
+\include{problems/ch01-problems}
+\include{problems/ch02-problems}
+\include{problems/ch03-problems}
+\include{problems/ch04-problems}
+\include{problems/ch05-problems}
+\include{problems/ch06-problems}
+\include{problems/ch07-problems}
+\include{problems/ch08-problems}
+\include{problems/ch09-problems}
+\include{problems/ch10-problems}
+
+% ============================================================================
+% 附录：代数基础习题
+% ============================================================================
+
+\appendix
+\include{problems/app-a-problems}
+
+\end{document}

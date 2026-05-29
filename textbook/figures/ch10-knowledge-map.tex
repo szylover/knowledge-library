@@ -1,0 +1,23 @@
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth, font=\small, node distance=1.4cm]
+  \node[draw, rounded corners, fill=blue!8, minimum width=3.3cm, minimum height=0.9cm] (c13) {第1--3章：模形式与 Hecke};
+  \node[draw, rounded corners, fill=green!10, right=2.0cm of c13, minimum width=3.3cm, minimum height=0.9cm] (c45) {第4--5章：模曲线与亏格};
+  \node[draw, rounded corners, fill=yellow!16, below=1.5cm of c13, minimum width=3.3cm, minimum height=0.9cm] (c67) {第6--7章：Jacobian 与 $\Q$-模型};
+  \node[draw, rounded corners, fill=orange!14, right=2.0cm of c67, minimum width=3.3cm, minimum height=0.9cm] (c8) {第8章：Eichler--Shimura 与 $L$-函数};
+  \node[draw, rounded corners, fill=purple!12, below=1.5cm of $(c67)!0.5!(c8)$, minimum width=3.6cm, minimum height=0.9cm] (c9) {第9章：Galois 表示与 Ribet};
+  \node[draw, rounded corners, fill=red!10, below=1.6cm of c9, minimum width=4.4cm, minimum height=1.0cm] (c10) {第10章：模性定理与费马大定理};
+
+  \draw[->, very thick] (c13) -- node[above] {Fourier 系数} (c45);
+  \draw[->, very thick] (c13) -- node[left] {Hecke 特征值} (c67);
+  \draw[->, very thick] (c45) -- node[right] {微分与亏格} (c8);
+  \draw[->, very thick] (c67) -- node[above] {$A_f$ 与 $J_0(N)$} (c8);
+  \draw[->, very thick] (c8) -- node[right] {$L$-函数与 Frobenius} (c9);
+  \draw[->, very thick] (c9) -- node[right] {模性与水平下降} (c10);
+  \draw[->, thick, dashed] (c67) -- (c9);
+  \draw[->, thick, dashed] (c13) to[bend right=18] node[left] {新形式} (c10);
+  \draw[->, thick, dashed] (c45) to[bend left=18] node[right] {维数公式} (c10);
+\end{tikzpicture}
+\caption{全书知识图谱：前九章分别准备了模形式、几何与 Galois 三条主线；终章把它们压缩进同一条证明费马大定理的逻辑链。}
+\label{fig:ch10-knowledge-map}
+\end{figure}

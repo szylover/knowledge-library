@@ -1,0 +1,19 @@
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth, font=\small, node distance=1.25cm]
+  \node[draw, rounded corners, fill=red!8, minimum width=5.2cm, minimum height=0.95cm] (flt) {假设 $a^p+b^p=c^p$ 有原始解，$p\ge 5$};
+  \node[draw, rounded corners, fill=orange!14, below=of flt, minimum width=5.4cm, minimum height=0.95cm] (frey) {构造 $E_{a,b,c}: y^2=x(x-a^p)(x+b^p)$};
+  \node[draw, rounded corners, fill=yellow!16, below=of frey, minimum width=5.8cm, minimum height=0.95cm] (disc) {判别式奇部分是 $p$ 次幂，导子只记住平方自由部分};
+  \node[draw, rounded corners, fill=green!10, below=of disc, minimum width=5.4cm, minimum height=0.95cm] (rep) {得到 $\rhobar_{E,p}$，且在每个 $q\mid abc$ 处无分歧};
+  \node[draw, rounded corners, fill=blue!8, below=of rep, minimum width=5.2cm, minimum height=0.95cm] (lvl) {若曲线模，则可反复水平下降到级别 $2$};
+  \node[draw, rounded corners, fill=gray!14, below=of lvl, minimum width=3.8cm, minimum height=0.95cm] (zero) {$\Sk_2(\GammaO(2))=0$};
+
+  \draw[->, very thick] (flt) -- node[right] {Frey} (frey);
+  \draw[->, very thick] (frey) -- node[right] {算术性质} (disc);
+  \draw[->, very thick] (disc) -- node[right] {Tate 模} (rep);
+  \draw[->, very thick] (rep) -- node[right] {Ribet} (lvl);
+  \draw[->, very thick] (lvl) -- node[right] {维数公式} (zero);
+\end{tikzpicture}
+\caption{Frey 构造的核心逻辑：假想费马解先制造一条半稳定椭圆曲线，再制造一份在坏素数处异常“安静”的 residual 表示。}
+\label{fig:ch10-frey-construction}
+\end{figure}

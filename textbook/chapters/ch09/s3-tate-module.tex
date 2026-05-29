@@ -1,0 +1,538 @@
+\section{椭圆曲线的 Tate 模与 $\ell$-进表示}
+\label{sec:ch09-tate-module}
+% ============================================================================
+
+\providecommand{\Zl}{\mathbb{Z}_\ell}
+\providecommand{\Ql}{\mathbb{Q}_\ell}
+\providecommand{\rhobar}{\bar{\rho}}
+
+到目前为止，我们已经知道研究 $G_\Q$ 应该看它在线性空间上的作用。
+但对一条具体椭圆曲线 $E/\Q$ 来说，
+到底什么线性空间最自然？
+最直接的想法是看 $E(\Q)$ 本身，
+可惜它往往过于复杂：
+Mordell 定理只告诉我们它是有限生成 Abel 群，
+却并不方便直接读出局部算术信息。
+相反，挠点群 $E[N]$ 既有限又带有天然的 Galois 作用，
+因此它是构造表示的最佳入口。
+
+\textbf{我们遇到了什么问题？}
+若只看有限域点数 $\#E(\F_p)$，
+我们每次只能得到一个整数 $a_p(E)=p+1-\#E(\F_p)$；
+这说明某种线性代数对象在背后起作用，
+但那个对象尚未真正出现。
+另一方面，单独看每个 $E[N]$ 又太零散：
+不同的 $N$ 之间没有统一的坐标，
+也很难表达“对所有 $\ell^n$ 同时成立”的信息。
+因此我们需要把所有 $\ell^n$-挠点打包成一个稳定对象，
+它既保留了有限层上的算术，
+又足够线性化，能让 Frobenius 以矩阵形式出现。
+
+\textbf{核心思想是什么？}
+固定一个素数 $\ell$，
+考虑乘法映射
+\[
+  [\ell]\colon E[\ell^{n+1}]\to E[\ell^n].
+\]
+这些群组成逆系统，
+其逆极限
+\[
+  T_\ell(E)=\varprojlim E[\ell^n]
+\]
+就是椭圆曲线的 $\ell$-进 Tate 模。
+它是一个秩 $2$ 的 $\Zl$-模，
+所以 $G_\Q$ 在其上的作用自动给出二维 $\ell$-进表示
+\[
+  \rho_{E,\ell}\colon G_\Q\to \GL_2(\Zl).
+\]
+换句话说，
+原先散落在所有 $E[\ell^n]$ 上的 Galois 作用，
+现在被浓缩成一份单一的二维矩阵表示。
+
+\textbf{引入之后能得到什么？}
+一旦有了 $T_\ell(E)$，
+第一个收获是行列式：
+Weil 配对会告诉我们
+\[
+  \det \rho_{E,\ell}=\chi_\ell.
+\]
+第二个收获是局部 Euler 因子：
+在好素数 $p\nmid N_E\ell$ 处，
+$\rho_{E,\ell}$ 无分歧，且
+\[
+  \Tr\rho_{E,\ell}(\Frob_p)=a_p(E),
+  \qquad
+  \det\rho_{E,\ell}(\Frob_p)=p.
+\]
+于是椭圆曲线的点数、局部 $L$-因子与 Galois 表示完全对接起来。
+这正是本章要搭的第一座桥。
+
+\input{figures/ch09-tate-tower}
+
+\begin{definition}[$\ell$-进 Tate 模]
+设 $E/\Q$ 是椭圆曲线，$\ell$ 是素数。
+定义
+\[
+  T_\ell(E)=\varprojlim_n E[\ell^n],
+\]
+其中过渡映射为乘法映射 $[\ell]\colon E[\ell^{n+1}]\to E[\ell^n]$。
+再定义
+\[
+  V_\ell(E)=T_\ell(E)\otimes_{\Zl}\Ql.
+\]
+Galois 群在每个 $E[\ell^n]$ 上的作用彼此相容，
+故诱导连续表示
+\[
+  \rho_{E,\ell}\colon G_\Q\to \Aut_{\Zl}(T_\ell(E))\cong \GL_2(\Zl).
+\]
+将它模 $\ell$ 约化得到
+\[
+  \rhobar_{E,\ell}\colon G_\Q\to \GL_2(\F_\ell).
+\]
+\end{definition}
+
+\begin{proposition}[Tate 模的秩]
+\label{prop:ch09-tate-rank-two}
+若 $\ell\neq \operatorname{char}(\Q)$，则对每个 $n\ge 1$ 有
+\[
+  E[\ell^n]\cong (\Z/\ell^n\Z)^2,
+\]
+从而
+\[
+  T_\ell(E)\cong \Zl^2.
+\]
+\end{proposition}
+
+\begin{proof}
+这是第\ref{ch:forms-curves}章关于椭圆曲线挠点结构的直接应用。
+因为 $\ell\neq \operatorname{char}(\Q)$，
+乘法映射 $[\ell^n]$ 是次数 $\ell^{2n}$ 的可分同源，
+故其核有恰好 $\ell^{2n}$ 个点。
+作为有限 Abel 群，
+$E[\ell^n]$ 的指数整除 $\ell^n$，
+而元素个数为 $\ell^{2n}$，
+因此只能同构于
+\[
+  (\Z/\ell^n\Z)^2.
+\]
+
+逆系统中的映射
+\[
+  [\ell]\colon E[\ell^{n+1}]\twoheadrightarrow E[\ell^n]
+\]
+在上述坐标下就是自然约化映射
+\[
+  (\Z/\ell^{n+1}\Z)^2\to (\Z/\ell^n\Z)^2.
+\]
+取逆极限便得到
+\[
+  T_\ell(E)\cong \varprojlim_n (\Z/\ell^n\Z)^2\cong \Zl^2.
+\]
+\end{proof}
+
+现在来解释为什么行列式应该是分圆特征。
+答案来自 Weil 配对。
+
+\begin{theorem}[Weil 配对与行列式]
+\label{thm:ch09-weil-pairing-det}
+对每个 $n\ge 1$，椭圆曲线上存在双线性、交替且非退化的 Weil 配对
+\[
+  e_{\ell^n}\colon E[\ell^n]\times E[\ell^n]\to \mu_{\ell^n},
+\]
+并且它对 $G_\Q$ 等变：
+\[
+  e_{\ell^n}(\sigma P,\sigma Q)=\sigma\bigl(e_{\ell^n}(P,Q)\bigr)
+  \qquad (\sigma\in G_\Q).
+\]
+因此
+\[
+  \det\rho_{E,\ell}=\chi_\ell.
+\]
+\end{theorem}
+
+\begin{proof}
+Weil 配对的构造可由除子与有理函数给出，
+其基本性质是函子性的：
+若同源或域自同构作用在点上，
+则配对值相应地按同样规则变化。
+对域自同构 $\sigma\in G_\Q$，
+把定义配对的有理函数整体施以 $\sigma$，
+便得到
+\[
+  e_{\ell^n}(\sigma P,\sigma Q)=\sigma\bigl(e_{\ell^n}(P,Q)\bigr).
+\]
+这就是 $G_\Q$-等变性。
+
+固定 $\Z/\ell^n\Z$-基 $P_n,Q_n$，
+使得 $e_{\ell^n}(P_n,Q_n)=\zeta_{\ell^n}$ 是本原 $\ell^n$ 次单位根。
+设
+\[
+  \rho_{E,\ell^n}(\sigma)=
+  \begin{pmatrix}
+    a&b\\ c&d
+  \end{pmatrix}
+\]
+在该基下表示 $\sigma$ 对 $E[\ell^n]$ 的作用，
+则由配对的双线性与交替性，
+\begin{align*}
+  e_{\ell^n}(\sigma P_n,\sigma Q_n)
+  &=e_{\ell^n}(aP_n+cQ_n,bP_n+dQ_n)\\
+  &=e_{\ell^n}(P_n,Q_n)^{ad-bc}\\
+  &=\zeta_{\ell^n}^{\det \rho_{E,\ell^n}(\sigma)}.
+\end{align*}
+另一方面，等变性给出
+\[
+  e_{\ell^n}(\sigma P_n,\sigma Q_n)=\sigma(\zeta_{\ell^n})
+  =\zeta_{\ell^n}^{\chi_\ell(\sigma)\bmod \ell^n}.
+\]
+比较指数可得
+\[
+  \det \rho_{E,\ell^n}(\sigma)\equiv \chi_\ell(\sigma)\pmod{\ell^n}.
+\]
+对所有 $n$ 同时成立，取逆极限即得
+\[
+  \det\rho_{E,\ell}(\sigma)=\chi_\ell(\sigma).
+\]
+\end{proof}
+
+\begin{lemma}[椭圆曲线的 local zeta 函数]
+\label{lem:ch09-local-zeta-elliptic}
+设 $\widetilde E/\F_p$ 是好约化椭圆曲线，记
+\[
+  N_r=\#\widetilde E(\F_{p^r}),
+  \qquad
+  Z(\widetilde E/\F_p,T)=\exp\Bigl(\sum_{r=1}^\infty N_r\frac{T^r}{r}\Bigr).
+\]
+若 $t=p+1-N_1=a_p(E)$，则
+\[
+  Z(\widetilde E/\F_p,T)=\frac{1-tT+pT^2}{(1-T)(1-pT)}.
+\]
+\end{lemma}
+
+\begin{proof}
+关键是把 $N_r$ 改写成 Frobenius 的迹，再把指数母函数逐项拆开。
+
+\textit{第一步：引入 Frobenius 的两个特征值。}
+固定一个素数 $\ell\neq p$。
+令 $\phi_p$ 表示算术 Frobenius 在 $V_\ell(E)$ 上的作用，
+记它的两个特征值为 $\alpha,\beta$。
+
+\textit{第二步：先确定乘积，再把和留到后面从点数读出。}
+由 \cref{thm:ch09-weil-pairing-det}，
+\[
+  \alpha\beta=\det(\phi_p)=\chi_\ell(\Frob_p)=p.
+\]
+再记
+\[
+  t:=\alpha+\beta.
+\]
+稍后在 $r=1$ 时就会看出，这个 $t$ 正是 $p+1-N_1$。
+
+\textit{第三步：把有限域点数写成 Frobenius 的迹。}
+$\widetilde E(\F_{p^r})$ 恰好是 $\phi_p^r$ 的不动点集合。
+对光滑射影曲线应用 Lefschetz 迹公式，得到
+\[
+  N_r
+  =
+  \Tr(\phi_p^r\mid H^0_{\text{\'et}})
+  -\Tr(\phi_p^r\mid H^1_{\text{\'et}})
+  +\Tr(\phi_p^r\mid H^2_{\text{\'et}}).
+\]
+对椭圆曲线而言，$H^0_{\text{\'et}}$ 上的迹是 $1$，
+$H^2_{\text{\'et}}$ 上的迹是 $p^r$，
+而 $H^1_{\text{\'et}}$ 上的两个特征值是 $\alpha^r,\beta^r$。
+因此
+\[
+  N_r=p^r+1-\alpha^r-\beta^r.
+\]
+
+\textit{第四步：代入 zeta 函数定义并展开指数。}
+于是
+\begin{align*}
+  Z(\widetilde E/\F_p,T)
+  &=
+  \exp\Bigl(\sum_{r\ge 1}(p^r+1-\alpha^r-\beta^r)\frac{T^r}{r}\Bigr)\\
+  &=
+  \exp\Bigl(\sum_{r\ge 1}\frac{T^r}{r}\Bigr)
+  \exp\Bigl(\sum_{r\ge 1}\frac{p^rT^r}{r}\Bigr)
+  \exp\Bigl(-\sum_{r\ge 1}\frac{\alpha^rT^r}{r}\Bigr)
+  \exp\Bigl(-\sum_{r\ge 1}\frac{\beta^rT^r}{r}\Bigr).
+\end{align*}
+利用恒等式
+\[
+  -\log(1-xT)=\sum_{r\ge 1}\frac{x^rT^r}{r}
+\]
+分别处理这四项，便得
+\[
+  Z(\widetilde E/\F_p,T)=\frac{(1-\alpha T)(1-\beta T)}{(1-T)(1-pT)}.
+\]
+
+\textit{第五步：把分子写成 $t$ 的形式。}
+在第三步的点数公式中取 $r=1$，得到
+\[
+  N_1=p+1-\alpha-\beta,
+\]
+所以
+\[
+  t=\alpha+\beta=p+1-N_1=a_p(E).
+\]
+再展开分子，便有
+\[
+  (1-\alpha T)(1-\beta T)
+  =1-(\alpha+\beta)T+\alpha\beta T^2
+  =1-tT+pT^2.
+\]
+因此
+\[
+  Z(\widetilde E/\F_p,T)=\frac{1-tT+pT^2}{(1-T)(1-pT)}. \qedhere
+\]
+\end{proof}
+
+椭圆曲线表示最强的算术信息出现在好素数处的 Frobenius 矩阵上。
+
+\begin{theorem}[好约化处的 Frobenius 特征多项式]
+\label{thm:ch09-frob-charpoly-elliptic}
+设 $E/\Q$ 的导子为 $N_E$，且 $p\nmid N_E\ell$。
+则 $\rho_{E,\ell}$ 在 $p$ 处无分歧，且
+\[
+  \Tr\rho_{E,\ell}(\Frob_p)=a_p(E)=p+1-\#E(\F_p),
+\]
+并且
+\[
+  \det\rho_{E,\ell}(\Frob_p)=p,
+\]
+故特征多项式为
+\[
+  X^2-a_p(E)X+p.
+\]
+\end{theorem}
+
+\begin{proof}
+关键点是：一旦把 local zeta 函数的分子写成 $(1-\alpha T)(1-\beta T)$，
+Frobenius 的迹与行列式就直接变成这个二次式的系数。
+
+因为 $p\nmid N_E$，曲线在 $p$ 处好约化。
+由 N\'eron--Ogg--Shafarevich 判别准则，
+对任意 $\ell\neq p$，$T_\ell(E)$ 上的表示在 $p$ 处无分歧。
+记 $\alpha,\beta$ 为 $\rho_{E,\ell}(\Frob_p)$ 在 $V_\ell(E)$ 上的两个特征值。
+由 \cref{lem:ch09-local-zeta-elliptic}，
+约化曲线 $\widetilde E/\F_p$ 的 zeta 函数满足
+\[
+  Z(\widetilde E/\F_p,T)=\frac{1-a_p(E)T+pT^2}{(1-T)(1-pT)}.
+\]
+而该引理的推导同时告诉我们
+\[
+  Z(\widetilde E/\F_p,T)=\frac{(1-\alpha T)(1-\beta T)}{(1-T)(1-pT)}.
+\]
+比较分子便得
+\[
+  (1-\alpha T)(1-\beta T)=1-a_p(E)T+pT^2.
+\]
+展开后得到
+\[
+  \alpha+\beta=a_p(E),
+  \qquad
+  \alpha\beta=p.
+\]
+因此
+\[
+  \Tr\rho_{E,\ell}(\Frob_p)=a_p(E),
+  \qquad
+  \det\rho_{E,\ell}(\Frob_p)=p.
+\]
+故其特征多项式为
+\[
+  X^2-a_p(E)X+p. \qedhere
+\]
+\end{proof}
+
+\begin{example}[曲线 $E:y^2=x^3-x$]
+\label{ex:ch09-curve-x3-minus-x}
+考虑椭圆曲线
+\[
+  E\colon y^2=x^3-x.
+\]
+第\ref{ch:eichler-shimura}章已经算出
+\[
+  a_2(E)=0,
+  \qquad a_3(E)=0,
+  \qquad a_5(E)=-2.
+\]
+因此对任意 $\ell\neq 2,3,5$，
+Frobenius 在 $T_\ell(E)$ 上的前三个特征多项式分别是
+\[
+  X^2+2,
+  \qquad X^2+3,
+  \qquad X^2+2X+5.
+\]
+例如在 $p=5$ 处，
+Frobenius 特征值 $\alpha_5,\beta_5$ 满足
+\[
+  \alpha_5+\beta_5=-2,
+  \qquad \alpha_5\beta_5=5.
+\]
+这说明 $\#E(\F_5)=8$ 与二维线性代数中的迹、行列式完全一致。
+\end{example}
+
+\textbf{注。}
+在很多计算里，
+真正起作用的不是整份 $\ell$-进表示，
+而只是它模 $\ell$ 的约化 $\rhobar_{E,\ell}$。
+Ribet 水平下降用的就是这份 mod $\ell$ 表示；
+因为它只记录了“Frobenius 矩阵模 $\ell$ 的样子”，
+某些本来存在于 $\ell$-进世界里的分歧信息会在约化后消失，
+这正是级别可以下降的根本原因。
+
+\begin{lemma}[Hasse 定理的初等证明]
+\label{lem:ch09-hasse-elementary}
+对椭圆曲线 $\widetilde E/\F_p$，记
+\[
+  a_p=p+1-\#\widetilde E(\F_p).
+\]
+则
+\[
+  |a_p|\le 2\sqrt p.
+\]
+\end{lemma}
+
+\begin{proof}
+关键是把点数公式改写成一个次数恒非负的二次式。
+
+\textit{第一步：构造同源 $[m]-\phi_p$。}
+对任意整数 $m$，定义
+\[
+  \psi_m=[m]-\phi_p\colon \widetilde E\to \widetilde E,
+\]
+其中 $\phi_p$ 是 Frobenius 同源。
+
+\textit{第二步：次数永远非负。}
+任何非零同源的次数都非负，且只有零同态的次数才等于 $0$。
+因此对每个整数 $m$ 都有
+\[
+  \deg(\psi_m)\ge 0.
+\]
+
+\textit{第三步：把这个次数算成显式二次式。}
+因为对偶同源满足
+\[
+  \phi_p\hat\phi_p=\hat\phi_p\phi_p=[p],
+\]
+所以 $\deg(\phi_p)=p$。
+另一方面，$\widetilde E(\F_p)$ 恰好是 $[1]-\phi_p$ 的核，
+而 $d\phi_p=0$，故 $d([1]-\phi_p)=1$，
+这说明 $[1]-\phi_p$ 是可分同源，于是
+\[
+  \deg([1]-\phi_p)=\#\ker([1]-\phi_p)=\#\widetilde E(\F_p)=p+1-a_p.
+\]
+再看
+\[
+  [\deg([1]-\phi_p)]
+  =([1]-\phi_p)([1]-\hat\phi_p)
+  =[1]-\phi_p-\hat\phi_p+[p]
+  =[p+1]-(\phi_p+\hat\phi_p).
+\]
+由于上面已经算出 $\deg([1]-\phi_p)=p+1-a_p$，
+便得到
+\[
+  [p+1-a_p]=[p+1]-(\phi_p+\hat\phi_p),
+\]
+从而
+\[
+  \phi_p+\hat\phi_p=[a_p].
+\]
+现在对任意 $m$ 计算
+\begin{align*}
+  [\deg([m]-\phi_p)]
+  &=([m]-\phi_p)([m]-\hat\phi_p)\\
+  &=[m^2]-m(\phi_p+\hat\phi_p)+[p]\\
+  &=[m^2-ma_p+p].
+\end{align*}
+比较乘法映射的整数系数，便有
+\[
+  \deg([m]-\phi_p)=m^2-ma_p+p.
+\]
+
+\textit{第四步：利用非负性。}
+由第二步，得到对所有整数 $m$ 都有
+\[
+  m^2-ma_p+p\ge 0.
+\]
+
+\textit{第五步：看判别式。}
+这个首项系数为 $1$ 的实二次式在所有整数上都非负，
+于是它的最小值也非负；等价地，其判别式不能为正。
+故
+\[
+  a_p^2-4p\le 0.
+\]
+因此
+\[
+  |a_p|\le 2\sqrt p. \qedhere
+\]
+\end{proof}
+
+最后用 Frobenius 特征值的几何大小来重述 Hasse 定理。
+
+\begin{theorem}[Hasse 界]
+\label{thm:ch09-hasse-bound}
+对任意好素数 $p$，有
+\[
+  |a_p(E)|\le 2\sqrt p.
+\]
+等价地，若 $\alpha_p,\beta_p$ 是 Frobenius 的两个特征值，
+则
+\[
+  |\alpha_p|=|\beta_p|=\sqrt p
+\]
+对每个复嵌入都成立。
+\end{theorem}
+
+\begin{proof}
+由 \cref{lem:ch09-hasse-elementary}，已经得到
+\[
+  |a_p(E)|\le 2\sqrt p.
+\]
+再由 \cref{thm:ch09-frob-charpoly-elliptic}，
+$\alpha_p,\beta_p$ 是方程
+\[
+  X^2-a_p(E)X+p=0
+\]
+的两个根，因此
+\[
+  \alpha_p+\beta_p=a_p(E),
+  \qquad
+  \alpha_p\beta_p=p.
+\]
+因为 $a_p(E)^2-4p\le 0$，该二次方程的判别式非正，
+所以在任一固定的复嵌入下，$\alpha_p,\beta_p$ 互为复共轭。
+于是
+\[
+  |\alpha_p|^2=\alpha_p\overline{\alpha_p}=\alpha_p\beta_p=p,
+\]
+同理 $|\beta_p|^2=p$，故
+\[
+  |\alpha_p|=|\beta_p|=\sqrt p.
+\]
+现在取任意复嵌入 $\iota$。
+由于 $\alpha_p,\beta_p$ 都满足同一个有理系数多项式 $X^2-a_p(E)X+p$，
+$\iota(\alpha_p),\iota(\beta_p)$ 仍是这同一多项式的两个根，
+所以只不过把 $\alpha_p,\beta_p$ 交换一下。
+因此在每个复嵌入下仍有
+\[
+  |\iota(\alpha_p)|=|\iota(\beta_p)|=\sqrt p.
+\]
+反过来，若两个特征值在每个复嵌入下都满足绝对值 $\sqrt p$，
+则
+\[
+  |a_p(E)|=|\alpha_p+\beta_p|\le |\alpha_p|+|\beta_p|=2\sqrt p.
+\]
+故两种表述完全等价。 \qedhere
+\end{proof}
+
+本节把椭圆曲线压缩成了一份二维 $\ell$-进表示，
+其迹给出点数，行列式给出分圆特征，
+而好素数处的特征多项式正是局部 $L$-因子。
+下一节我们将看到，
+模形式也产生一份满足同样 Frobenius 公式的二维表示；
+这时“模性”就不再只是 $L$-函数层面的巧合，
+而会成为两份 Galois 表示的同构。 

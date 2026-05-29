@@ -1,0 +1,20 @@
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth, font=\small, node distance=1.25cm]
+  \node[draw, rounded corners, fill=blue!8, minimum width=4.0cm, minimum height=0.9cm] (r0) {固定残余表示 $\rhobar$};
+  \node[draw, rounded corners, fill=green!10, below left=1.4cm and 1.8cm of r0, minimum width=3.6cm, minimum height=0.9cm] (d1) {所有允许提升组成形变函子};
+  \node[draw, rounded corners, fill=yellow!16, below right=1.4cm and 1.8cm of r0, minimum width=3.6cm, minimum height=0.9cm] (d2) {模形式侧产生局部 Hecke 环};
+  \node[draw, rounded corners, fill=orange!14, below=2.3cm of r0, minimum width=3.8cm, minimum height=0.9cm] (r) {泛形变环 $R$ 与 Hecke 环 $T$};
+  \node[draw, rounded corners, fill=purple!10, below=of r, minimum width=4.0cm, minimum height=0.9cm] (sel) {Selmer 群控制切空间大小};
+  \node[draw, rounded corners, fill=red!8, below=of sel, minimum width=4.2cm, minimum height=0.9cm] (patch) {Taylor--Wiles 打补丁得到 $R=T$};
+
+  \draw[->, very thick] (r0) -- (d1);
+  \draw[->, very thick] (r0) -- (d2);
+  \draw[->, very thick] (d1) -- (r);
+  \draw[->, very thick] (d2) -- (r);
+  \draw[->, very thick] (r) -- (sel);
+  \draw[->, very thick] (sel) -- (patch);
+\end{tikzpicture}
+\caption{形变理论的图像：同一份 residual 表示在一边长成形变环，在另一边长成 Hecke 环；Taylor--Wiles 的任务是证明两边其实是同一个局部空间。}
+\label{fig:ch10-deformation-space}
+\end{figure}

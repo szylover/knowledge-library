@@ -1,0 +1,794 @@
+\chapter{第9章：Galois 表示 习题}
+\difficultykey
+
+\section{基础题 \easy}
+
+\begin{problem}{Krull拓扑}
+证明 $G_\Q=\Gal(\bar\Q/\Q)$ 的 Krull 拓扑是紧、Hausdorff、全不连通的拓扑群。提示：把 $G_\Q$ 写成有限 Galois 商群的逆极限。
+\end{problem}
+\begin{solution}
+取所有有限 Galois 扩张 $L/\Q$，则限制映射给出
+\[
+G_\Q\cong \varprojlim_{L/\Q\text{ finite Galois}} \Gal(L/\Q).
+\]
+每个有限群都赋予离散拓扑，于是也是紧 Hausdorff 空间。它们的直积
+\[
+\prod_L \Gal(L/\Q)
+\]
+由 Tychonoff 定理是紧 Hausdorff 的，而逆极限是其中由相容条件切出的闭子集，所以 $G_\Q$ 紧且 Hausdorff。
+
+另一方面，Krull 拓扑的一个基由开正规子群
+\[
+U_L=\Gal(\bar\Q/L)
+\]
+的陪集组成。因为 $G_\Q/U_L\cong \Gal(L/\Q)$ 有限离散，故 $U_L$ 既开又闭，于是每个点都有由开闭集组成的邻域基，所以空间全不连通。群运算和取逆在每个有限商上都连续，逆极限上的群运算也连续，因此它是 profinite 拓扑群。
+
+\textbf{注。} profinite 群的“紧 + Hausdorff + 全不连通”三性质正是后面连续 $\ell$-进表示的拓扑基础。
+\end{solution}
+
+\begin{problem}{Tate模实例}
+设 $E:y^2=x^3-x$，取 $\ell=2$。
+\begin{enumerate}[label=(\arabic*)]
+  \item 写出 $E[2]$ 的所有点；
+  \item 用 4-分点多项式描述 $E[4]$；
+  \item 说明 $E[8]$ 的点如何由 8-分点多项式给出；
+  \item 描述 $T_2(E)=\varprojlim E[2^n]$ 的元素是什么样的相容序列。
+\end{enumerate}
+\end{problem}
+\begin{solution}
+因为
+\[
+E:y^2=x(x-1)(x+1),
+\]
+所以 2-挠点就是三个位于 $y=0$ 的根点再加无穷远点：
+\[
+E[2]=\{\mathcal O,(0,0),(1,0),(-1,0)\}.
+\]
+
+对 4-挠点，非零 4-挠点的 $x$ 坐标是 4-分点多项式
+\[
+\psi_4(x)=4y(x^6-5x^4-5x^2+1)
+\]
+中次数 $6$ 的因子
+\[
+x^6-5x^4-5x^2+1=0
+\]
+的根。于是
+\[
+E[4]=E[2]\cup\{(x,\pm\sqrt{x^3-x}):x^6-5x^4-5x^2+1=0\},
+\]
+共 $16$ 个点。
+
+同理，$E[8]$ 由 8-分点多项式 $\psi_8$ 给出：其非零点恰为满足 $\psi_8(x,y)=0$ 的点，等价地说，$x$ 坐标是某个 8-分点多项式的根，而每个这样的 $x$ 给出两个点 $(x,\pm y)$。因此 $E[8]$ 共有 $64$ 个点，且正是所有满足 $8P=\mathcal O$ 的代数点。
+
+最后，
+\[
+T_2(E)=\varprojlim E[2^n]
+\]
+的元素是相容序列 $(P_n)_{n\ge1}$，其中 $P_n\in E[2^n]$ 且满足 $2P_{n+1}=P_n$。可以把它理解为“不断选择 2 的前像”的无限链。
+
+\textbf{注。} 这里不必把 $E[8]$ 的 $64$ 个坐标逐个写出；分点多项式已经精确刻画了全部点。
+\end{solution}
+
+\begin{problem}{Tate模的秩}
+证明任意特征 $0$ 域上的椭圆曲线 $E$ 都满足
+\[
+T_\ell(E)\cong \Z_\ell^2
+\]
+作为 $\Z_\ell$-模；特别地，$T_\ell(E)$ 是自由秩 $2$ 的 $\Z_\ell$-模。
+\end{problem}
+\begin{solution}
+先证有限层。对任意 $n\ge1$，乘法映射 $[\ell^n]:E\to E$ 的次数是 $\ell^{2n}$。在特征 $0$ 下它是可分的，因此核群
+\[
+E[\ell^n]
+\]
+有恰好 $\ell^{2n}$ 个元素。有限 Abel 群分类说明
+\[
+E[\ell^n]\cong \Z/\ell^{a_n}\Z\oplus \Z/\ell^{b_n}\Z,
+\qquad a_n\ge b_n,
+\]
+且总阶为 $\ell^{a_n+b_n}=\ell^{2n}$。
+
+再看乘以 $\ell$ 的映射
+\[
+E[\ell^{n+1}]\twoheadrightarrow E[\ell^n].
+\]
+核正好是 $E[\ell]\cong (\Z/\ell\Z)^2$，故每层都必须有两个独立方向同时增长一阶，于是只能有
+\[
+E[\ell^n]\cong (\Z/\ell^n\Z)^2.
+\]
+
+于是
+\[
+T_\ell(E)=\varprojlim_n E[\ell^n]\cong \varprojlim_n (\Z/\ell^n\Z)^2\cong \Z_\ell^2.
+\]
+逆极限按坐标进行，所以是自由秩 $2$ 的 $\Z_\ell$-模。
+\end{solution}
+
+\begin{problem}{Frobenius的定义}
+设 $p$ 是椭圆曲线的好素数且 $\ell\neq p$。解释 $\Frob_p\in G_\Q$ 是如何通过条件
+\[
+x\longmapsto x^p \pmod{\mathfrak p}
+\]
+来确定的，并说明它只在惯性群 $I_p$ 商掉后才是良定义的。
+\end{problem}
+\begin{solution}
+取 $\bar\Q$ 中位于 $p$ 上的一个素理想 $\mathfrak p$。定义分解群
+\[
+D_p=\{\sigma\in G_\Q:\sigma(\mathfrak p)=\mathfrak p\}.
+\]
+它作用在剩余域 $\overline{\F}_p$ 上，于是有满射
+\[
+D_p\twoheadrightarrow \Gal(\overline{\F}_p/\F_p).
+\]
+其核定义为惯性群 $I_p$。而
+\[
+\Gal(\overline{\F}_p/\F_p)\cong \hat\Z
+\]
+由算术 Frobenius $x\mapsto x^p$ 拓扑生成。因此我们定义 $\Frob_p$ 为 $D_p/I_p$ 中对应于 $x\mapsto x^p$ 的元素。
+
+若换一个 lift 到 $D_p$，它们只相差一个惯性元，所以“$\Frob_p$ 在 $G_\Q$ 中”只到模 $I_p$ 的意义才唯一。再换另一个上方素理想，则得到共轭元素，所以在全局表示里通常只谈它的共轭类。对于未分歧表示，迹和行列式对共轭不变，因此这是足够的。
+\end{solution}
+
+\begin{problem}{计算 $a_2(E_{11})$}
+取导子 $11$ 的椭圆曲线
+\[
+E_{11}: y^2+y=x^3-x^2-10x-20.
+\]
+验证
+\[
+a_2(E_{11})=2+1-\#E_{11}(\F_2)=-2.
+\]
+并写出 $E_{11}(\F_2)$ 的所有点。
+\end{problem}
+\begin{solution}
+模 $2$ 化后方程变成
+\[
+y^2+y=x^3+x^2.
+\]
+在 $\F_2$ 中逐个代入 $x$：
+\begin{itemize}
+  \item 若 $x=0$，右边为 $0$，而 $y^2+y=0$ 对 $y=0,1$ 都成立，得 $(0,0),(0,1)$；
+  \item 若 $x=1$，右边为 $1+1=0$，同样得 $(1,0),(1,1)$。
+\end{itemize}
+再加无穷远点 $\mathcal O$，所以
+\[
+E_{11}(\F_2)=\{\mathcal O,(0,0),(0,1),(1,0),(1,1)\},
+\qquad \#E_{11}(\F_2)=5.
+\]
+因此
+\[
+a_2(E_{11})=2+1-5=-2.
+\]
+这正是主教材中的 Fourier 系数值。
+\end{solution}
+
+\begin{problem}{Weil配对的反对称性}
+设 $E:y^2=(x-e_1)(x-e_2)(x-e_3)$，$P_1=(e_1,0)$，$P_2=(e_2,0)$ 是两个不同的 $2$-挠点。利用 $2$-挠点上的显式公式验证
+\[
+e_2(P_1,P_2)=e_2(P_2,P_1)^{-1}=-e_2(P_2,P_1),
+\]
+并说明 $e_2(P,P)=1$。
+\end{problem}
+\begin{solution}
+对 Weierstrass 形式上两个不同非零 $2$-挠点，有显式公式
+\[
+e_2((e_i,0),(e_j,0))=\frac{e_i-e_j}{e_j-e_i}=-1\in \mu_2.
+\]
+因此
+\[
+e_2(P_1,P_2)=-1=e_2(P_2,P_1)^{-1}.
+\]
+但在 $\mu_2=\{\pm1\}$ 中，逆元等于自身，所以也可写成
+\[
+e_2(P_1,P_2)=-e_2(P_2,P_1).
+\]
+
+另一方面，Weil 配对一般满足交替性
+\[
+e_\ell(P,P)=1.
+\]
+在 $\ell=2$ 时仍成立，所以 $e_2(P_i,P_i)=1$。这正是“反对称性”的特殊情形：交换两个变量会取逆。
+\end{solution}
+
+\begin{problem}{行列式与分圆特征}
+证明对好素数 $p\neq \ell$，
+\[
+\det\rho_{E,\ell}(\Frob_p)=\chi_\ell(\Frob_p)=p.
+\]
+并对 $E_{11}$、$\ell=3$、$p=2$ 验证行列式等于 $2$。
+\end{problem}
+\begin{solution}
+Weil 配对给出
+\[
+e_\ell:T_\ell(E)\times T_\ell(E)\to \Z_\ell(1).
+\]
+Galois 对此相容，即
+\[
+e_\ell(\sigma P,\sigma Q)=\chi_\ell(\sigma)e_\ell(P,Q).
+\]
+若在 $T_\ell(E)$ 上取一组基，则左边也等于
+\[
+\det(\rho_{E,\ell}(\sigma))\,e_\ell(P,Q),
+\]
+故
+\[
+\det\rho_{E,\ell}=\chi_\ell.
+\]
+
+对未分歧的好素数 $p\neq \ell$，分圆特征满足
+\[
+\chi_\ell(\Frob_p)=p.
+\]
+于是
+\[
+\det\rho_{E_{11},3}(\Frob_2)=2\in \Z_3^\times.
+\]
+这里 $2$ 当然是 $\Z_3$ 中的单位。
+\end{solution}
+
+\begin{problem}{Chebotarev与迹}
+设 $\rho:G_\Q\to \GL_2(\F_\ell)$ 是连续半单表示，记
+\[
+a_p=\Tr(\rho(\Frob_p))
+\]
+对几乎所有未分歧素数 $p$ 定义。陈述 Chebotarev 密度定理和 Brauer--Nesbitt 定理如何说明这些 $a_p$ 决定 $\rho$ 的同构类，并解释其含义。
+\end{problem}
+\begin{solution}
+Chebotarev 定理说：给定有限 Galois 扩张，其 Galois 群中的每个共轭类都由密度等于该共轭类大小除以群阶的素数 Frobenius 实现。换言之，几乎所有素数的 Frobenius 共轭类在像群中是“稠密出现”的。
+
+Brauer--Nesbitt 定理说：两个半单表示若在一组稠密元素上具有相同特征多项式，则它们同构。对二维表示，只要对几乎所有 $p$ 有相同迹和相同行列式，就得到同构。
+
+因此，若两连续半单表示 $\rho_1,\rho_2$ 满足对几乎所有未分歧 $p$ 都有
+\[
+\Tr(\rho_1(\Frob_p))=\Tr(\rho_2(\Frob_p)),
+\qquad
+\det(\rho_1(\Frob_p))=\det(\rho_2(\Frob_p)),
+\]
+则 $\rho_1\cong \rho_2$。这意味着 Galois 表示可由“几乎所有素数处的局部数据”重建；模形式的 Fourier 系数恰好提供了这些迹。
+\end{solution}
+
+\begin{problem}{一个常见误解：$E_{11}$ 的 mod $5$ 表示}
+有人说：``$\bar\rho_{E_{11},5}$ 绝对不可约，因为若可约就会有有理 $5$-isogeny，而 $E_{11}$ 没有。'' 请辨析这句话，并说明正确结论是什么。
+\end{problem}
+\begin{solution}
+这句话是错误的。对椭圆曲线的 mod $\ell$ 表示，若
+\[
+\bar\rho_{E,\ell}:G_\Q\to \GL_2(\F_\ell)
+\]
+可约，则存在一个 $G_\Q$-稳定的一维子空间，也就是一个稳定的阶 $\ell$ 子群 $C\subset E[\ell]$。由 Vélu 构造可得一个定义在 $\Q$ 上的 $\ell$-isogeny
+\[
+E\to E/C.
+\]
+反过来，有理 $\ell$-isogeny 的核也是这样的稳定子群，因此这两个条件等价。
+
+而 $E_{11}$ 恰恰有有理 $5$-isogeny；事实上导子 $11$ 的同一 isogeny 类中有 5-同源曲线。因此 $\bar\rho_{E_{11},5}$ 不是绝对不可约，而是可约的。真正不可约的是例如 $\bar\rho_{E_{11},3}$：若它可约，就会有有理 $3$-isogeny，但 Mazur 的有理同源分类和导子 $11$ 的具体 isogeny 图都排除了这一点。
+
+\textbf{注。} 写习题时最重要的是分清“有理 $\ell$-挠点”和“有理 $\ell$-isogeny 的核”在本题里其实是一回事：一个有理点生成的循环子群当然是稳定核。
+\end{solution}
+
+\begin{problem}{Fontaine条件简介}
+说明什么叫 $p$-进表示的 ``crystalline'' 与 ``semistable''，并解释为什么椭圆曲线在好素数 $p$ 处的 $p$-进表示是 crystalline 的。
+\end{problem}
+\begin{solution}
+设 $V$ 是 $G_{\Q_p}$ 上有限维 $\Q_p$-向量空间。Fontaine 构造了若干周期环 $B_{\mathrm{cris}}\subset B_{\mathrm{st}}$，并定义
+\[
+D_{\mathrm{cris}}(V)=(V\otimes B_{\mathrm{cris}})^{G_{\Q_p}},
+\qquad
+D_{\mathrm{st}}(V)=(V\otimes B_{\mathrm{st}})^{G_{\Q_p}}.
+\]
+若
+\[
+\dim_{\Q_p}D_{\mathrm{cris}}(V)=\dim_{\Q_p}V,
+\]
+则称 $V$ 为 crystalline；若
+\[
+\dim_{\Q_p}D_{\mathrm{st}}(V)=\dim_{\Q_p}V,
+\]
+则称 $V$ 为 semistable。显然 crystalline $\Rightarrow$ semistable。
+
+对椭圆曲线 $E/\Q_p$，其 $p$-进 Tate 模
+\[
+V_p(E)=T_p(E)\otimes \Q_p
+\]
+在好约化时来自一个良好模型的相对 de Rham/晶体上同调。比较同构说明
+\[
+D_{\mathrm{cris}}(V_p(E))\cong H^1_{\mathrm{dR}}(E/\Q_p),
+\]
+维数恰为 $2$，故 $V_p(E)$ 是 crystalline。若 $E$ 仅半稳定，则 $V_p(E)$ 一般只保证是 semistable。
+\end{solution}
+
+\section{进阶题 \medium}
+
+\begin{problem}{迹公式的五步推导}
+设 $E/\Q$ 在素数 $p\neq \ell$ 处好约化。完整推导
+\[
+\Tr(\rho_{E,\ell}(\Frob_p))=a_p(E).
+\]
+提示：从局部 zeta 函数
+\[
+Z(E/\F_p,T)=\exp\Bigl(\sum_{n\ge1}\#E(\F_{p^n})\frac{T^n}{n}\Bigr)
+\]
+出发。
+\end{problem}
+\begin{solution}
+分五步进行。
+
+\textbf{第1步：} Weil 的有理性定理给出
+\[
+Z(E/\F_p,T)=\frac{1-a_pT+pT^2}{(1-T)(1-pT)}.
+\]
+其中 $a_p=p+1-\#E(\F_p)$。
+
+\textbf{第2步：} 对光滑射影曲线的 $\ell$-进上同调有 Lefschetz 迹公式
+\[
+Z(E/\F_p,T)=\prod_{i=0}^2 \det(1-T\Frob_p\mid H^i_{\mathrm{et}}(E_{\bar\F_p},\Q_\ell))^{(-1)^{i+1}}.
+\]
+而 $H^0\cong \Q_\ell$ 上 Frobenius 为 $1$，$H^2\cong \Q_\ell(-1)$ 上 Frobenius 为 $p$，故
+\[
+Z(E/\F_p,T)=\frac{\det(1-T\Frob_p\mid H^1_{\mathrm{et}})^{-1}}{(1-T)(1-pT)}.
+\]
+
+\textbf{第3步：} 比较两式，得到
+\[
+\det(1-T\Frob_p\mid H^1_{\mathrm{et}})=1-a_pT+pT^2.
+\]
+
+\textbf{第4步：} 对椭圆曲线有标准对偶同构
+\[
+V_\ell(E)^\vee\cong H^1_{\mathrm{et}}(E_{\bar\Q},\Q_\ell),
+\]
+所以 $\Frob_p$ 在 $V_\ell(E)$ 与在 $H^1_{\mathrm{et}}$ 上有相同的特征多项式。
+
+\textbf{第5步：} 因而
+\[
+\det(1-T\rho_{E,\ell}(\Frob_p))=1-a_pT+pT^2.
+\]
+展开可知二维表示的迹就是 $a_p$，行列式就是 $p$。于是
+\[
+\Tr(\rho_{E,\ell}(\Frob_p))=a_p(E).
+\]
+\end{solution}
+
+\begin{problem}{Hasse界的初等证明}
+设 $\pi=\Frob_p$ 是定义在 $\F_p$ 上的椭圆曲线的 Frobenius 自同态，满足
+\[
+\deg(m-\pi)=m^2-ma_p+p\ge0
+\]
+对所有整数 $m$。用这一不等式证明
+\[
+|a_p|\le 2\sqrt p.
+\]
+\end{problem}
+\begin{solution}
+考虑二次多项式
+\[
+q(m)=m^2-a_pm+p.
+\]
+由题设，对每个整数 $m$ 都有 $q(m)\ge0$。若其判别式
+\[
+\Delta=a_p^2-4p
+\]
+为正，则 $q(m)$ 有两个实根，且在两根之间取负值。取一个位于两根之间的整数即可矛盾；更直接地说，首项系数为正的二次函数若判别式正，就必在顶点附近取得负值。
+
+因此必须有
+\[
+a_p^2-4p\le0,
+\]
+即
+\[
+|a_p|\le2\sqrt p.
+\]
+
+更细一点：顶点值为
+\[
+q(a_p/2)=p-a_p^2/4\ge0,
+\]
+同样推出结论。这就是 Hasse 界。
+\end{solution}
+
+\begin{problem}{Deligne表示的迹公式}
+设 $f\in S_2(\Gamma_0(N))$ 是归一化新形式，$A_f$ 是对应的 Abel 簇。通过 Eichler--Shimura 关系推导：对 $p\nmid N\ell$，
+\[
+\Tr(\rho_{f,\lambda}(\Frob_p))=a_p(f),\qquad \det(\rho_{f,\lambda}(\Frob_p))=p.
+\]
+\end{problem}
+\begin{solution}
+Eichler--Shimura 理论把 Hecke 代数作用嵌入到模曲线的上同调中：
+\[
+H^1_{\mathrm{et}}(X_0(N)_{\bar\Q},\Q_\ell)
+\]
+在 Hecke 算子和 Galois 作用下分解为若干新形式对应的二维部分。对给定新形式 $f$，在 $\lambda$-进系数域中取 $f$ 的特征子空间，就得到二维表示 $\rho_{f,\lambda}$。
+
+对 $p\nmid N\ell$，Eichler--Shimura 关系给出
+\[
+\Frob_p^2-T_p\Frob_p+p\langle p\rangle=0
+\]
+在相应上同调上的作用。权 $2$、平凡 Nebentypus 时，钻石算子 $\langle p\rangle$ 作用为 $1$，而 $T_p$ 在 $f$-特征子空间上的特征值正是 $a_p(f)$。因此
+\[
+\Frob_p^2-a_p(f)\Frob_p+p=0.
+\]
+
+这说明 $\rho_{f,\lambda}(\Frob_p)$ 的特征多项式为
+\[
+X^2-a_p(f)X+p.
+\]
+于是迹等于 $a_p(f)$，行列式等于 $p$。这就是 Deligne 表示在权 $2$ 的迹公式。
+\end{solution}
+
+\begin{problem}{绝对不可约与Schur引理}
+设 $\rho:G_\Q\to \GL_2(\Q_\ell)$。证明
+\[
+\rho\text{ 绝对不可约}
+\iff
+\End_{G_\Q}(\bar\Q_\ell^2)=\bar\Q_\ell.
+\]
+\end{problem}
+\begin{solution}
+若 $\rho$ 绝对不可约，则把系数扩张到代数闭包后仍不可约。Schur 引理立即给出：任何与群作用交换的线性自同态都只能是标量，因此
+\[
+\End_{G_\Q}(\bar\Q_\ell^2)=\bar\Q_\ell.
+\]
+
+反过来，若 $\rho\otimes\bar\Q_\ell$ 可约，则存在非平凡稳定子空间 $W\subsetneq \bar\Q_\ell^2$。取投影
+\[
+\pi:\bar\Q_\ell^2\to W
+\]
+沿某个补空间定义，则 $\pi$ 与 Galois 作用交换，且既不是 $0$ 也不是恒等，更不是标量。这与假设
+\[
+\End_{G_\Q}(\bar\Q_\ell^2)=\bar\Q_\ell
+\]
+矛盾。
+
+故两条件等价。
+\end{solution}
+
+\begin{problem}{Steinberg型局部表示}
+设 $p\parallel N$，说明新形式对应的 $\ell$-进表示在分解群 $D_p$ 上是 Steinberg 型，即可取基使得
+\[
+\rho_{f,\lambda}|_{D_p}\sim
+\begin{pmatrix}
+\chi_\ell & *\\
+0&1
+\end{pmatrix},
+\qquad *=\text{非平凡}.
+\]
+并对 $E_{11}$ 的 $p=11$ 解释这一矩阵形式。
+\end{problem}
+\begin{solution}
+当 $p\parallel N$ 时，局部分量 $\pi_p$ 是 Steinberg 表示；在局部 Langlands 对应下，这等价于二维 Weil--Deligne 表示具有单 Jordan 块，即有一个非零的单调算子 $N\neq0$。转成 $\ell$-进 Galois 表示，就得到一条不分裂短正合列
+\[
+0\to \Q_\ell(1)\to V\to \Q_\ell\to0.
+\]
+因此在适当基下
+\[
+\rho|_{D_p}\sim
+\begin{pmatrix}
+\chi_\ell & *\\0&1
+\end{pmatrix},
+\]
+且若 $*=0$ 就是未分裂被破坏、导子下降，不再是 Steinberg，因此必须非零。
+
+对 $E_{11}$，素数 $11$ 处是乘法约化且恰好一次出现于导子，所以 $\rho_{E_{11},\ell}|_{D_{11}}$ 正是这种形式：惯性作用为一个非平凡幺幺矩阵，半单化后对角元为 $\chi_\ell$ 与 $1$。这反映了乘法约化的 Tate 曲线结构。
+\end{solution}
+
+\begin{problem}{Ihara引理的应用}
+设 $\mathfrak m$ 是非 Eisenstein 极大理想，且 $\ell\nmid N$。说明 Ihara 引理如何阻止自然退化映射
+\[
+J_0(N)^2[\mathfrak m]\longrightarrow J_0(N\ell)[\mathfrak m]
+\]
+有非平凡核。写出完整三步论证。
+\end{problem}
+\begin{solution}
+\textbf{第1步：} 由两个退化映射 $X_0(N\ell)\to X_0(N)$ 诱导 Jacobi 簇上的映射
+\[
+\alpha:J_0(N)^2\to J_0(N\ell).
+\]
+Ihara 引理断言：其核在某种意义上完全由“旧部分”中的 Eisenstein 贡献控制。
+
+\textbf{第2步：} 取 $\mathfrak m$-挠后，若
+\[
+\ker(\alpha)[\mathfrak m]\neq0,
+\]
+则该核给出一个同时被 Hecke 算子控制的 Galois 子模。Ihara 引理说明这种核只能来自 Eisenstein 成分，也就是说对应的残余表示必须是可约的，形如 $1\oplus\chi_\ell$。
+
+\textbf{第3步：} 但题设 $\mathfrak m$ 非 Eisenstein，意味着其残余表示绝对不可约，不可能来自上述可约情形。因此
+\[
+\ker(\alpha)[\mathfrak m]=0,
+\]
+即
+\[
+J_0(N)^2[\mathfrak m]\to J_0(N\ell)[\mathfrak m]
+\]
+没有非平凡核。
+
+这正是水平下降中排除“旧形式坏核”的关键技术点。
+\end{solution}
+
+\begin{problem}{Ribet定理的第一步}
+设 $E/\Q$ 半稳定，$\bar\rho_{E,\ell}$ 来自某个 $f\in S_2(\Gamma_0(N))$。若 $q\parallel N$ 且 $\bar\rho_{E,\ell}$ 在 $q$ 处无分歧，说明为什么可以把级别中的 $q$ 删掉一步。
+\end{problem}
+\begin{solution}
+因为 $q\parallel N$，局部表示在 $q$ 处是 Steinberg 型，所以其导子指数本应为 $1$。然而假设残余表示 $\bar\rho_{E,\ell}$ 在 $q$ 处无分歧，说明模 $\ell$ 后局部单调部分“消失”了：局部导子从 $1$ 降到了 $0$。
+
+Ribet 的水平下降定理正是把这种导子下降从局部传到整体：若 $\bar\rho$ 来自级别 $N$ 的新形式，并且在某个恰好一次整除 $N$ 的素数 $q$ 处无分歧，那么 $\bar\rho$ 也来自级别 $N/q$ 的新形式。
+
+其机制是：利用 Ihara 引理控制旧部分，把对应极大理想从级别 $N$ 的 Hecke 代数搬到级别 $N/q$。因此 $q$ 可以被删去一步。FLT 中对每个 $q\mid abc$ 反复应用这一结论，最终把级别一路降到 $2$。
+\end{solution}
+
+\begin{problem}{Frey曲线在 $q\mid abc$ 处的无分歧性}
+设存在假想解 $a^p+b^p=c^p$，其中 $p\ge5$ 为素数，取 Frey 曲线 $E_{a,b,c}$。设 $q$ 为奇素数且 $q\mid abc$。证明 $\bar\rho_{E,p}|_{I_q}$ 平凡。
+\end{problem}
+\begin{solution}
+Frey 曲线在这样的 $q$ 处是乘法约化，因此 $p$-进 Tate 模在 $I_q$ 上具有形如
+\[
+\begin{pmatrix}
+\chi_p & *\\0&1
+\end{pmatrix}
+\]
+的作用。这里上右角由 Tate 参数 $q_E$ 的 Kummer 类控制，其像的阶与最小判别式指数有关。
+
+对 Frey 曲线，主教材给出
+\[
+\ord_q(\Delta_{\min})\equiv0\pmod p.
+\]
+这意味着相应的 Tate 参数在模 $p$ 意义下是 $p$ 次幂，从而上右角的 Kummer 类在 $\F_p$ 中消失。又因为 $q\neq p$，惯性经分圆特征到 $\F_p^\times$ 的像也是平凡的，于是模 $p$ 后得到
+\[
+\bar\rho_{E,p}|_{I_q}\sim
+\begin{pmatrix}
+1&0\\0&1
+\end{pmatrix}.
+\]
+即在 $q$ 处无分歧。
+
+\textbf{注。} 这正是 FLT 里最神奇的一步：Frey 曲线本身在 $q$ 处并不好，但它的 mod $p$ 表示却在该处变成无分歧。
+\end{solution}
+
+\begin{problem}{non-Eisenstein与不可约性}
+设
+\[
+\bar\rho\sim \begin{pmatrix}\chi_1&*\\0&\chi_2\end{pmatrix}
+\]
+是一个二维残余表示。解释为什么这会与 ``non-Eisenstein'' 假设冲突。
+\end{problem}
+\begin{solution}
+若 $\bar\rho$ 可约，则其半单化为
+\[
+\bar\rho^{\mathrm{ss}}\cong \chi_1\oplus\chi_2.
+\]
+于是对几乎所有未分歧素数 $p$，Hecke 特征值满足同余
+\[
+a_p\equiv \chi_1(\Frob_p)+\chi_2(\Frob_p)\pmod\ell.
+\]
+这种形式正是 Eisenstein 系列在 Hecke 代数中的特征值模式：由两个一维特征之和给出，而不是来自真正不可约的尖点表示。
+
+因此与 $\bar\rho$ 对应的极大理想 $\mathfrak m$ 会包含 Eisenstein 理想，换言之 $\mathfrak m$ 是 Eisenstein 的。其逆否命题就是：若 $\mathfrak m$ 非 Eisenstein，则对应残余表示必须绝对不可约。
+\end{solution}
+
+\begin{problem}{Chebotarev证明草图}
+给出 Chebotarev 密度定理的四步证明草图，并说明它如何保证“几乎所有 $\Frob_p$ 的迹确定了表示”。
+\end{problem}
+\begin{solution}
+\textbf{第1步：} 先把问题降到有限 Galois 扩张 $L/\Q$，其 Galois 群记为 $G$。我们要研究每个共轭类 $C\subset G$ 出现为某个未分歧素数的 Frobenius 的频率。
+
+\textbf{第2步：} 用 Artin $L$-函数或类函数的角色和，把“$\Frob_p\in C$”转写为对 $G$ 上特征标的线性组合。
+
+\textbf{第3步：} 利用这些 $L$-函数在 $\Re(s)=1$ 附近的解析性质，得到对应素数计数函数的主项，从而求出密度
+\[
+\delta(C)=\frac{|C|}{|G|}.
+\]
+
+\textbf{第4步：} 因而 Frobenius 共轭类在 $G$ 中按正确密度遍历全部共轭类。若两个半单表示在几乎所有 $\Frob_p$ 上有相同迹与行列式，那么它们在像群的每个共轭类上都同样如此，再由 Brauer--Nesbitt 得到同构。
+\end{solution}
+
+\begin{problem}{Frobenius特征多项式}
+完整推导：对好素数 $p\neq \ell$，
+\[
+\det\bigl(X-\rho_{E,\ell}(\Frob_p)\bigr)=X^2-a_pX+p.
+\]
+提示：可沿用局部 zeta 函数的思路，但要明确指出从 $\det(1-T\Frob_p)$ 到特征多项式的换元。
+\end{problem}
+\begin{solution}
+由前面 zeta 函数比较可知
+\[
+\det(1-T\rho_{E,\ell}(\Frob_p))=1-a_pT+pT^2.
+\]
+设 $\alpha,\beta$ 是 $\rho_{E,\ell}(\Frob_p)$ 的特征值，则左边等于
+\[
+(1-\alpha T)(1-\beta T)=1-(\alpha+\beta)T+\alpha\beta T^2.
+\]
+与右边比较得
+\[
+\alpha+\beta=a_p,
+\qquad
+\alpha\beta=p.
+\]
+于是 usual 特征多项式就是
+\[
+(X-\alpha)(X-\beta)=X^2-a_pX+p.
+\]
+
+若要直接从前式换元，也可令 $T=X^{-1}$，再乘以 $X^2$：
+\[
+X^2\det(1-X^{-1}\rho)=\det(X-\rho)=X^2-a_pX+p.
+\]
+故结论成立。
+\end{solution}
+
+\begin{problem}{Serre猜想如何蕴含FLT}
+陈述 Khare--Wintenberger 证明的 Serre 猜想，并说明它如何直接蕴含 FLT，而不必经过 Wiles 的模性提升路线。
+\end{problem}
+\begin{solution}
+Serre 猜想说：任意奇的、连续的、绝对不可约表示
+\[
+\bar\rho:G_\Q\to \GL_2(\F_\ell)
+\]
+都来自某个模形式；更精确地，它还预测最小权和最小级别。Khare--Wintenberger 在 2009 年证明了这一猜想。
+
+若存在 Fermat 方程非平凡解，可构造 Frey 曲线 $E_{a,b,c}$，从而得到奇的绝对不可约表示
+\[
+\bar\rho_{E,p}:G_\Q\to \GL_2(\F_p).
+\]
+对这表示，局部计算给出其 Serre 权为 $2$，Serre 级别为 $2$。于是按 Serre 猜想，它应来自 $S_2(\Gamma_0(2))$ 中某个新形式。
+
+但
+\[
+S_2(\Gamma_0(2))=0.
+\]
+故不存在这样的模形式，矛盾。于是 FLT 成立。
+\end{solution}
+
+\begin{problem}{Galois表示的L函数}
+证明在所有好素数处，
+\[
+L(\rho_{E,\ell},s)=L(E,s)
+\]
+的 Euler 因子相等。
+\end{problem}
+\begin{solution}
+对好素数 $p\neq \ell$，椭圆曲线的 Euler 因子是
+\[
+L_p(E,s)^{-1}=1-a_pp^{-s}+p^{1-2s}.
+\]
+而由 Galois 表示的定义，二维表示 $\rho_{E,\ell}$ 在未分歧素数处的 Euler 因子为
+\[
+L_p(\rho_{E,\ell},s)^{-1}=\det\bigl(1-p^{-s}\rho_{E,\ell}(\Frob_p)\bigr).
+\]
+利用上一题的特征多项式，得
+\[
+\det\bigl(1-p^{-s}\rho_{E,\ell}(\Frob_p)\bigr)=1-a_pp^{-s}+pp^{-2s}=1-a_pp^{-s}+p^{1-2s}.
+\]
+故两者在所有好素数处相同。于是 Euler 乘积逐项一致，得到
+\[
+L(\rho_{E,\ell},s)=L(E,s)
+\]
+至少在好素数部分完全相等；坏素数处再用局部 Weil--Deligne 描述补上即可。
+\end{solution}
+
+\begin{problem}{用Galois表示解释CM}
+设 $E:y^2=x^3-x$，其复乘环为 $\Z[i]$。说明为什么当 $\ell$ 在 $\Q(i)$ 中分解时，
+\[
+\rho_{E,\ell}|_{G_{\Q(i)}}
+\]
+分解为两个一维特征，并解释其与 Hecke Grössencharacter 的关系。
+\end{problem}
+\begin{solution}
+对有 CM 的椭圆曲线 $E$，其自同态环
+\[
+\End(E)\otimes\Q=K
+\]
+嵌入到 $\End_{\Q_\ell}(V_\ell(E))$。因此把表示限制到 $G_K$ 后，$V_\ell(E)$ 成为一个一维的 $K\otimes\Q_\ell$-模。若 $\ell$ 在 $K$ 中分解，则
+\[
+K\otimes\Q_\ell\cong \Q_\ell\times \Q_\ell,
+\]
+从而
+\[
+V_\ell(E)|_{G_K}\cong \psi_\ell\oplus \psi_\ell^c
+\]
+分解成两个一维表示。
+
+对 $E:y^2=x^3-x$，有 $K=\Q(i)$。CM 理论说明这些一维表示来自 $K$ 上的 Hecke Grössencharacter $\psi$；更准确地说，
+\[
+L(E,s)=L(\psi,s)=L(\psi_\ell,s)L(\psi_\ell^c,s).
+\]
+所以 CM 曲线的二维 Galois 表示本质上由一个一维 Hecke 特征诱导而来。
+\end{solution}
+
+\begin{problem}{Ribet定理的四步链条}
+概述 Ribet 水平下降定理在 FLT 中的完整四步论证：从“$\bar\rho_{E,p}$ 模且在所有 $q\mid N/2$ 处无分歧”推出“$\bar\rho_{E,p}$ 来自 $S_2(\Gamma_0(2))$”。
+\end{problem}
+\begin{solution}
+\textbf{第1步：模性来源。} 先由椭圆曲线的模性，知道 Frey 曲线的残余表示 $\bar\rho_{E,p}$ 来自某个权 $2$、级别 $N$ 的新形式。
+
+\textbf{第2步：局部无分歧。} 对每个奇素数 $q\mid abc$，Frey 曲线在 $q$ 处是乘法约化，但前面已证模 $p$ 表示在 $q$ 处无分歧，因此满足 Ribet 定理的局部假设。
+
+\textbf{第3步：逐个删去素数。} 因为这些 $q$ 都只一次出现于导子中，Ribet 水平下降可逐个把它们从级别中删去：
+\[
+N\rightsquigarrow N/q_1\rightsquigarrow N/(q_1q_2)\rightsquigarrow\cdots.
+\]
+
+\textbf{第4步：剩下级别 $2$。} 所有奇素数删完后，只剩 $2$ 的贡献，因此 $\bar\rho_{E,p}$ 来自级别 $2$ 的权 $2$ 新形式，即来自 $S_2(\Gamma_0(2))$。这就是 FLT 最后矛盾的入口。
+\end{solution}
+
+\section{挑战题 \hard}
+
+\begin{problem}{Tate同源定理}
+陈述并解释 Tate 对椭圆曲线的同源定理：
+\[
+\Hom_{G_\Q}(V_\ell(E_1),V_\ell(E_2))\cong \Hom(E_1,E_2)\otimes\Q_\ell.
+\]
+说明证明的关键步骤。
+\end{problem}
+\begin{solution}
+定理断言：对数域上的两条椭圆曲线 $E_1,E_2$，自然映射
+\[
+\Hom(E_1,E_2)\otimes\Q_\ell \longrightarrow \Hom_{G_\Q}(V_\ell(E_1),V_\ell(E_2))
+\]
+是同构。也就是说，所有与 Galois 作用相容的 $\ell$-进线性映射都来自实际的代数同态。
+
+关键思想有三点。其一，任何代数同态都会在 Tate 模上诱导 Galois 等变映射，所以自然映射良定义。其二，利用有限域情形的 Tate 定理：有限域上 Frobenius 的交换子环恰好控制自同态环。其三，经由 Faltings/Tate 的 isogeny 方法，把全局数域问题降到许多好约化素数处，再用 Čebotarev 把局部信息拼回全局。
+
+结果的直接推论是：若 $V_\ell(E_1)\cong V_\ell(E_2)$ 作为 Galois 表示，则 $E_1$ 与 $E_2$ 必同源。这也是现代“由 Galois 表示识别 Abel 簇”的原型。
+\end{solution}
+
+\begin{problem}{模曲线的 $\ell$-进上同调}
+解释 $H^1_{\mathrm{et}}(X_0(N)_{\bar\Q},\Z_\ell)$ 的构造，并说明它为什么容纳了全部特征新形式的 Galois 表示。
+\end{problem}
+\begin{solution}
+Grothendieck 的 etale 上同调把代数簇的有限 étale 覆盖组织成一个上同调理论；对光滑射影曲线 $X_0(N)$，可定义
+\[
+H^1_{\mathrm{et}}(X_0(N)_{\bar\Q},\Z_\ell)=\varprojlim_r H^1_{\mathrm{et}}(X_0(N)_{\bar\Q},\Z/\ell^r\Z).
+\]
+它是有限生成的 $\Z_\ell$-模，并带有 $G_\Q$ 作用。
+
+另一方面，Hecke 对应给出 Hecke 代数在此上同调上的作用，而且 Hecke 作用与 Galois 作用交换。把系数扩张到 $\bar\Q_\ell$ 后，可按 Hecke 特征值分解为各个新形式的等价子空间。对归一化新形式 $f$，其对应的 $f$-等价子空间恰是二维的，给出 Deligne 表示 $\rho_{f,\lambda}$。
+
+因此，整块 $H^1_{\mathrm{et}}$ 可以看作“所有权 $2$ 模形式 Galois 表示的总容器”。
+\end{solution}
+
+\begin{problem}{一维Fontaine--Mazur}
+证明 Fontaine--Mazur 猜想在一维情形等价于 Kronecker--Weber 定理，并解释其 Galois 表示版本。
+\end{problem}
+\begin{solution}
+一维 $p$-进表示就是连续特征
+\[
+\chi:G_\Q\to \Ql^\times.
+\]
+Fontaine--Mazur 猜想在一维时断言：若 $\chi$ 几乎处处无分歧，且在 $p$ 处 de Rham（例如几何），则它应来自代数 Hecke 特征。对 $\Q$ 来说，这样的特征正是有限阶 Dirichlet 特征乘上分圆特征的整数次幂。
+
+Kronecker--Weber 定理说：每个有限 Abel 扩张都包含在某个分圆域 $\Q(\zeta_m)$ 中。把它翻译成 Galois 表示语言，就是任何有限阶一维表示都通过
+\[
+G_\Q^{\mathrm{ab}}\twoheadrightarrow (\Z/m\Z)^\times
+\]
+因子化；再乘上 $\chi_\ell^n$ 就得到所有几何的一维 $\ell$-进表示。
+
+所以一维 Fontaine--Mazur 并不神秘，它正是 Kronecker--Weber 的现代表示论重述。
+\end{solution}
+
+\begin{problem}{局部Langlands与Weil--Deligne}
+陈述 $\GL_2(\Q_p)$ 的局部 Langlands 对应，并说明 Weil--Deligne 表示如何在 Eichler--Shimura/Deligne 构造中出现。
+\end{problem}
+\begin{solution}
+局部 Langlands 对应在 $\GL_2(\Q_p)$ 情形下建立了双射：
+\[
+\left\{\text{不可约 admissible 光滑表示 }\pi\text{ of }\GL_2(\Q_p)\right\}
+\longleftrightarrow
+\left\{\text{二维 Frobenius 半单 Weil--Deligne 表示 }(r,N)\right\}.
+\]
+这里 $r:W_{\Q_p}\to \GL_2(\C)$ 是 Weil 群表示，$N$ 是满足兼容关系的幂零算子。
+
+对模形式 $f$，其全局自守表示在每个 $p$ 处有局部分量 $\pi_p$。Deligne 构造的 $\ell$-进 Galois 表示限制到 $G_{\Q_p}$ 后，经过 Fontaine 的 $D_{\mathrm{st}}$ 函子得到一个 Weil--Deligne 表示；局部 Langlands 断言这正对应于 $\pi_p$。Steinberg 情形中 $N\neq0$，未分歧主系列情形中 $N=0$ 且 Frobenius 可对角化。
+
+\textbf{注。} 这就是“模形式的 Hecke 数据”和“Galois 表示的局部数据”逐素数匹配的精确语言。
+\end{solution}
+
+\begin{problem}{Carayol定理}
+陈述 Carayol 定理：新形式的导子等于对应 Galois 表示的 Artin 导子，并说明证明思路。
+\end{problem}
+\begin{solution}
+Carayol 定理断言：设 $f$ 是权 $2$ 新形式，对应 $\ell$-进表示 $\rho_{f,\lambda}$。则对每个 $p\neq \ell$，$\rho_{f,\lambda}|_{G_{\Q_p}}$ 的 Artin 导子指数恰等于 $f$ 的局部导子指数；把各素数相乘，就得到全局导子正是新形式的级别。
+
+证明思路是局部--整体兼容。先由 Deligne 把全局表示嵌入模曲线上同调，得到每个 $p$ 的局部 Weil--Deligne 表示。然后借助局部 Langlands 对应，把它和 $f$ 的局部分量 $\pi_p$ 比较。由于 $\pi_p$ 的导子指数可由 Casselman 新向量理论精确计算，而 Weil--Deligne 一侧的导子就是 Artin 导子，二者必须相等。
+
+在 FLT 相关论证中，这一定理保证“级别”与“残余表示的局部导子”确实是同一个量，因此水平下降有精确目标可追踪。
+\end{solution}

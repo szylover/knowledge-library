@@ -1,0 +1,268 @@
+\section{$L$-函数的解析性质}
+\label{sec:ch08-l-functions}
+% ============================================================================
+
+Eichler--Shimura 定理已经把模 Abel 簇 $A_f$ 的局部 Euler 因子写成了 Fourier 系数 $a_p(f)$。
+这一步非常关键，
+但它还没有触及 $L$-函数最深刻的性质：
+解析延拓、函数方程，以及中心点 $s=1$ 的特殊值。
+对椭圆曲线来说，
+这些性质若直接从 Hasse--Weil 定义出发几乎无从下手；
+而在模形式一侧，它们却是 Mellin 变换与模变换律的直接产物。
+
+\textbf{我们遇到了什么问题？}
+Euler 乘积只在右半平面绝对收敛，
+但 BSD 猜想讨论的是 $s=1$ 的零点阶数，
+这正落在临界线上。
+如果不知道 $L(s,E)$ 能解析延拓到整个复平面，
+“$\ord_{s=1}L(s,E)$”甚至连定义都不稳固。
+因此要让第\ref{sec:ch08-bsd}节的猜想有意义，
+我们必须先证明：
+模形式的 $L$-函数不只是一串 Dirichlet 级数，
+而是一个带函数方程的整函数。
+
+\textbf{核心思想是什么？}
+核心思想是把 Fourier 级数做 Mellin 变换。
+当 $f(iy)=\sum a_ne^{-2\pi ny}$ 时，
+把它与 $y^s\,dy/y$ 相乘并积分，
+就会自动产出 Gamma 因子与 Dirichlet 级数
+\[
+  (2\pi)^{-s}\Gamma(s)L(s,f).
+\]
+接着利用模变换 $y\leftrightarrow 1/(Ny)$，
+把积分区间的下半段反射到上半段，
+便得到函数方程。
+这和第\ref{ch:eisenstein}章用 theta 函数处理 $\zeta(s)$ 的办法完全同型：
+真正起作用的，仍是“一个积分核 + 一个模变换”。
+
+\textbf{引入之后能得到什么？}
+一旦证明
+\[
+  \Lambda(s,f)=N^{s/2}(2\pi)^{-s}\Gamma(s)L(s,f)
+\]
+满足
+\[
+  \Lambda(s,f)=\varepsilon\Lambda(2-s,f),
+\]
+那么 $L(s,f)$ 就能延拓到整个 $\C$，
+其中心点是 $s=1$。
+再由上一节的 Eichler--Shimura 定理，
+这些解析性质会原封不动地传给椭圆曲线的 Hasse--Weil $L$-函数。
+于是“解析秩”才真正成为一个有内容的算术量。
+
+\input{figures/ch08-functional-equation}
+
+下面进入标准的 Mellin 变换计算。
+
+\begin{definition}[完成的 $L$-函数]
+\label{def:ch08-completed-l}
+设 $f=\sum_{n\ge1}a_nq^n\in \Sk_2(\GammaO(N))$。
+定义
+\[
+  L(s,f)=\sum_{n=1}^{\infty}\frac{a_n}{n^s},
+\]
+以及完成的 $L$-函数
+\[
+  \Lambda(s,f)=N^{s/2}(2\pi)^{-s}\Gamma(s)L(s,f).
+\]
+\end{definition}
+
+\begin{proposition}[Mellin 积分表示]
+\label{prop:ch08-mellin}
+当 $\Re(s)\gg0$ 时，
+\[
+  \Lambda(s,f)=N^{s/2}\int_0^{\infty} f(iy)y^s\,\frac{dy}{y}.
+\]
+\end{proposition}
+
+\begin{proof}
+对 $y>0$，有
+\[
+  f(iy)=\sum_{n=1}^{\infty}a_ne^{-2\pi ny}.
+\]
+当 $\Re(s)\gg0$ 时可逐项积分，得到
+\begin{align*}
+  \int_0^{\infty} f(iy)y^s\,\frac{dy}{y}
+  &=\sum_{n=1}^{\infty}a_n\int_0^{\infty}e^{-2\pi ny}y^s\,\frac{dy}{y}\\
+  &=\sum_{n=1}^{\infty}a_n(2\pi n)^{-s}\int_0^{\infty}e^{-u}u^s\,\frac{du}{u}\\
+  &=(2\pi)^{-s}\Gamma(s)L(s,f).
+\end{align*}
+两边再乘上 $N^{s/2}$，即得所求公式。
+\end{proof}
+
+\begin{theorem}[Hecke 的函数方程]
+\label{thm:ch08-functional-equation}
+设 $f\in \Sk_2(\GammaO(N))$ 是归一化新形式，且满足 Fricke 对称性
+\[
+  f\!\left(\frac{i}{Ny}\right)=\varepsilon Ny^2 f(iy)
+  \qquad (y>0),
+\]
+其中 $\varepsilon=\pm1$。
+则 $\Lambda(s,f)$ 解析延拓为整个函数，并满足
+\[
+  \Lambda(s,f)=\varepsilon\Lambda(2-s,f).
+\]
+若把非实系数也纳入，右端应写成 $\varepsilon\Lambda(2-s,\bar f)$；
+对本章的平凡角色情形，上式已经足够。
+\end{theorem}
+
+\begin{proof}
+由 \cref{prop:ch08-mellin}，
+\[
+  \Lambda(s,f)=N^{s/2}\int_0^{\infty}f(iy)y^s\,\frac{dy}{y}.
+\]
+把积分在 $y=1/\sqrt N$ 处分开：
+\[
+  \Lambda(s,f)=N^{s/2}\int_0^{1/\sqrt N}f(iy)y^s\,\frac{dy}{y}
+  +N^{s/2}\int_{1/\sqrt N}^{\infty}f(iy)y^s\,\frac{dy}{y}.
+\]
+对第一项作变量代换 $y=1/(Nt)$，则 $dy/y=-dt/t$，积分限变为
+$t:\infty\to 1/\sqrt N$，故
+\begin{align*}
+  N^{s/2}\int_0^{1/\sqrt N}f(iy)y^s\,\frac{dy}{y}
+  &=N^{s/2}\int_{1/\sqrt N}^{\infty}f\!\left(\frac{i}{Nt}\right)N^{-s}t^{-s}\,\frac{dt}{t}\\
+  &=N^{-s/2}\int_{1/\sqrt N}^{\infty}\varepsilon Nt^2f(it)t^{-s}\,\frac{dt}{t}\\
+  &=\varepsilon N^{1-s/2}\int_{1/\sqrt N}^{\infty}f(it)t^{2-s}\,\frac{dt}{t}.
+\end{align*}
+而第二项保持不变，所以
+\[
+  \Lambda(s,f)=\varepsilon N^{1-s/2}\int_{1/\sqrt N}^{\infty}f(it)t^{2-s}\,\frac{dt}{t}
+  +N^{s/2}\int_{1/\sqrt N}^{\infty}f(it)t^s\,\frac{dt}{t}.
+\]
+把 $s$ 换成 $2-s$ 后，由同一公式可得
+\[
+  \Lambda(2-s,f)=N^{1-s/2}\int_0^{\infty}f(it)t^{2-s}\,\frac{dt}{t}.
+\]
+再按同样方式把它在 $1/\sqrt N$ 处分开，
+恰好得到上式右边去掉因子 $\varepsilon$ 的表达。
+因此
+\[
+  \Lambda(s,f)=\varepsilon\Lambda(2-s,f).
+\]
+
+还需说明解析延拓。
+由于 $f$ 是 cusp form，$f(iy)$ 当 $y\to\infty$ 时指数衰减；
+而由 Fricke 对称性，$f(i/(Ny))$ 也同样指数衰减，
+故上式中从 $1/\sqrt N$ 到 $\infty$ 的两个积分对所有 $s\in\C$ 都绝对收敛且定义整函数。
+所以 $\Lambda(s,f)$ 延拓为整个函数，函数方程也对全平面成立。
+\end{proof}
+
+\begin{corollary}[椭圆曲线 $L$-函数的解析延拓]
+\label{cor:ch08-elliptic-analytic-continuation}
+若椭圆曲线 $E/\Q$ 由某个权 $2$ 新形式 $f$ 模化，
+则 $L(s,E)$ 可解析延拓到整个 $\C$，并满足与 $f$ 相同的函数方程。
+\end{corollary}
+
+\begin{proof}
+由 \cref{thm:ch08-eichler-shimura}，
+$L(s,E)=L(s,f)$（或更一般地，$L(s,A_f)$ 是所有共轭形式 $L$-函数之积）。
+于是 \cref{thm:ch08-functional-equation} 的解析延拓与函数方程立刻传给 $L(s,E)$。
+\end{proof}
+
+\subsection*{补充：Weil 猜想与 Hasse--Weil 视角}
+上面的 Mellin 变换证明给出了模形式一侧的解析延拓；
+而 CSS 中关于 Galois 表示的叙述提醒我们：
+椭圆曲线 $L$-函数的局部因子同时也来自代数簇在有限域上的 zeta 函数。
+换句话说，解析延拓的一端来自模形式，
+局部 Euler 因子的几何形状则来自 Weil 猜想。
+
+\begin{theorem}[Weil 猜想在曲线情形的结论]
+\label{thm:ch08-weil-conjectures-curves}
+设 $X/\F_p$ 是一条光滑射影几何不可约曲线，亏格为 $g$。
+则其 zeta 函数
+\[
+  \zeta(X/\F_p,s)
+  =\exp\!\left(\sum_{n\ge1}\frac{\#X(\F_{p^n})}{n}p^{-ns}\right)
+\]
+可写成
+\[
+  \zeta(X/\F_p,s)=\frac{P_X(p^{-s})}{(1-p^{-s})(1-p^{1-s})},
+\]
+其中 $P_X(T)\in 1+T\Z[T]$ 的次数为 $2g$。
+此外它满足函数方程
+\[
+  \zeta(X/\F_p,s)=\pm p^{(1-g)(1-2s)}\zeta(X/\F_p,1-s),
+\]
+并且 $P_X(T)$ 的根全都满足绝对值 $p^{-1/2}$。
+最后一句就是 Deligne 证明的 Weil 猜想中的“黎曼假设”部分在曲线上的表现。
+\end{theorem}
+
+\begin{proof}[说明]
+对曲线而言，Dwork--Grothendieck 的理论先给出有理性，
+而 \'{e}tale 上同调把 $P_X(T)$ 识别为
+\[
+  \det(1-\Frob_pT\mid H^1_{\text{\'{e}t}}(X_{\bar\F_p},\Q_\ell)).
+\]
+Poincar\'{e} 对偶给出函数方程，
+Deligne 对 Frobenius 特征值绝对值的估计给出黎曼假设。
+对椭圆曲线 $E/\F_p$，此时 $g=1$，
+所以 $P_E(T)=1-a_pT+pT^2$。
+\end{proof}
+
+\begin{proposition}[椭圆曲线的局部 Euler 因子]
+\label{prop:ch08-local-factors-elliptic}
+设 $E/\Q$ 是导子 $N_E$ 的椭圆曲线。
+则其 Hasse--Weil $L$-函数满足
+\[
+  L(s,E)=\prod_p L_p(s,E),
+\]
+其中局部因子分三种情形：
+\begin{itemize}
+  \item 若 $p\nmid N_E$，即 $E$ 在 $p$ 处好约化，则
+  \[
+    L_p(s,E)=\frac{1}{1-a_p(E)p^{-s}+p^{1-2s}},
+  \]
+  这里 $a_p(E)=p+1-\#E(\F_p)$；
+  \item 若 $E$ 在 $p$ 处乘法约化，则对应局部分量是 Steinberg 型，且
+  \[
+    L_p(s,E)=\frac{1}{1-a_p(E)p^{-s}},
+    \qquad a_p(E)=\pm 1;
+  \]
+  分裂乘法约化时 $a_p(E)=1$，非分裂时 $a_p(E)=-1$；
+  \item 若 $E$ 在 $p$ 处加法约化，则惯性不变量退化得更厉害，
+  此时常取
+  \[
+    L_p(s,E)=1,
+  \]
+  也就是局部因子是平凡的。
+\end{itemize}
+\end{proposition}
+
+\begin{proof}[说明]
+好约化情形直接来自有限域曲线的 zeta 函数，
+因为
+\[
+  Z(E/\F_p,T)=\frac{1-a_p(E)T+pT^2}{(1-T)(1-pT)}
+\]
+的分子正好由 $H^1$ 控制。
+坏约化时，$\ell$-进表示在惯性不变量上的维数下降到 $1$ 或 $0$；
+乘法约化对应 Steinberg 型，故留下一个一次因子，
+加法约化在最粗略的 Hasse--Weil Euler 乘积里则不给出非平凡分母。
+这与第\ref{sec:eichler-shimura-relation}节里权 $2$ 新形式坏素数处的 $U_p$ 因子完全平行。
+\end{proof}
+
+\textbf{注。}
+因此，Hasse--Weil $L$-函数可以从两个方向理解：
+从模形式出发，它靠 Mellin 变换得到解析延拓与函数方程；
+从代数几何出发，它把各个素数上的 zeta 函数分子拼成 Euler 乘积。
+模性定理的力量正在于：
+这两个原本独立的构造，最终给出同一个 $L$-函数。
+
+\begin{definition}[解析秩]
+\label{def:ch08-analytic-rank}
+设 $E/\Q$ 是模椭圆曲线。
+定义
+\[
+  r_{\mathrm{an}}(E)=\ord_{s=1}L(s,E),
+\]
+称为 $E$ 的\textbf{解析秩}。
+\end{definition}
+
+\textbf{注。}
+函数方程把 $s$ 与 $2-s$ 对称起来，
+所以权 $2$ 情形的中心点正好是 $s=1$。
+若根数 $\varepsilon=-1$，函数方程立即迫使 $L(1,E)=0$；
+若 $\varepsilon=1$，则中心值未必为零。
+这正是下一节 BSD 猜想的入口：
+它宣称中心点处的零点阶数，
+应该等于有理点群 $E(\Q)$ 的秩。

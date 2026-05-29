@@ -1,0 +1,363 @@
+\section{模曲线的 $\Q$-代数模型}
+\label{sec:ch07-modular-curves-over-q}
+% ============================================================================
+
+现在真正的核心问题来了：
+前两节只是在说“如果一条曲线有 $\Q$-模型，那么我们可以怎样谈它”，
+但对模曲线本身，这个模型到底从哪里来，仍然没有回答。
+我们已经熟悉 $X_0(N)$ 的复解析定义
+\[
+  X_0(N)=\GammaO(N)\backslash \HH^*,
+\]
+也已经知道它是一条紧黎曼面；
+然而这个定义里处处都是复数、商空间与解析坐标，
+完全看不出方程应该写成什么样，更看不出系数为何会落在 $\Q$ 中。
+
+\textbf{我们遇到了什么问题？}
+如果只知道 $X_0(N)$ 是一条紧黎曼面，
+我们至多能说“它在 $\C$ 上是一条代数曲线”；
+但要进入数论，
+我们必须回答两个更尖锐的问题：
+第一，能否把它写成某个显式多项式方程；
+第二，为什么这个方程的系数居然不需要用到任意复数，而只需用到有理数甚至整数。
+第一个问题关乎可计算性，
+第二个问题关乎算术性。
+
+\textbf{核心思想是什么？}
+有两条互相补充的思路。
+第一条路最直接：
+利用 $j$-函数把 $X(1)$ 识别为 $\mathbb P^1$，
+再把 $Y_0(N)$ 映到 $Y(1)\times Y(1)$，
+具体写成
+\[
+  \tau\longmapsto \bigl(j(\tau),j(N\tau)\bigr).
+\]
+因为这个像是一条代数曲线，
+它必满足某个多项式关系 $\Phi_N(X,Y)=0$；
+这就是模多项式。
+第二条路更深刻：
+$Y_0(N)$ 本身参数化一对数据 $(E,C)$，
+其中 $E$ 是椭圆曲线，$C\subset E$ 是阶 $N$ 的循环子群。
+这个分类问题本身就带有代数意义，
+因此天然应该定义在 $\Q$ 上。
+
+\textbf{引入之后能得到什么？}
+一旦这两条路都建立起来，
+我们便同时得到“可计算的方程”和“正确的定义域”。
+前者让我们能写出像 $\Phi_2(X,Y)=0$ 或 $X_0(11)$ 的 Weierstrass 方程这样的显式模型；
+后者则解释了为什么这些方程应当与 Galois 作用、Hecke 对应和后面的模 $p$ 约化完全相容。
+换句话说，模曲线从这一刻起不再只是复分析里的商空间，
+而是一条真正可以拿来做算术的代数曲线。
+
+\input{figures/ch07-modular-curves-over-q}
+
+先从级别 $1$ 开始。
+
+\begin{proposition}[$X(1)$ 由 $j$ 参数化]
+\label{prop:ch07-x1-j}
+$j$-函数诱导一个双全纯同构
+\[
+  j:X(1)\xrightarrow{\ \sim\ } \mathbb P^1(\C),
+\]
+并且尖点 $\infty$ 对应于射影点 $\infty=[1:0]$。
+因此 $X(1)$ 的自然 $\Q$-模型就是 $\mathbb P^1_{\Q}$。
+\end{proposition}
+
+\begin{proof}
+$j(\tau)$ 在第\ref{ch:eisenstein}章已经构造出来，
+它对 $\SL_2(\Z)$ 不变，且有 Fourier 展开
+\[
+  j(\tau)=q^{-1}+744+196884q+\cdots.
+\]
+因此 $j$ 在 $Y(1)=\SL_2(\Z)\backslash\HH$ 上定义为全纯函数，
+并在唯一尖点处有一阶极点。
+由 \cref{thm:x-gamma-compact-riemann,ex:genus-small-levels}，
+$X(1)$ 是亏格 $0$ 的紧黎曼面。
+
+现在把 $j$ 看成 $X(1)$ 上的亚纯函数。
+它只有一个极点，而且该极点是一阶的。
+在亏格 $0$ 的紧曲线上，
+任何只有一个一阶极点的亚纯函数都给出到 $\mathbb P^1$ 的次数为 $1$ 的映射：
+这是因为其极点除子次数为 $1$，
+故由 \cref{prop:ch07-principal-degree-zero} 可知零点总数也按重数计为 $1$，
+于是对应的映射次数为 $1$。
+次数为 $1$ 的非常值态射必为双全纯同构。
+故 $j$ 识别了 $X(1)$ 与 $\mathbb P^1(\C)$。
+
+最后，$j$ 的 $q$-展开系数都在 $\Z$ 中，
+因此这个参数实际上由有理系数给出。
+所以 $X(1)$ 的自然代数模型就是 $\mathbb P^1_{\Q}$。
+\end{proof}
+
+接下来把级别 $N$ 的信息压进一个多项式。
+
+\begin{definition}[模多项式]
+\label{def:ch07-modular-polynomial}
+对正整数 $N$，取一组陪集代表 $R\subset \SL_2(\Z)$，使得
+\[
+  \GammaO(N)\backslash \SL_2(\Z)=\{\GammaO(N)\gamma:\gamma\in R\}.
+\]
+定义关于变量 $X$ 的多项式
+\[
+  \Phi_N(X,j(\tau))=\prod_{\gamma\in R}\bigl(X-j(N\gamma\tau)\bigr).
+\]
+把其系数写成 $j(\tau)$ 的多项式后所得的二维多项式
+\[
+  \Phi_N(X,Y)\in \Z[X,Y]
+\]
+称为\textbf{模多项式}\index{模多项式!modular polynomial}。
+\end{definition}
+
+\begin{theorem}[模多项式的存在与整系数性]
+\label{thm:ch07-modular-polynomial}
+对每个正整数 $N$，存在唯一的首一多项式
+\[
+  \Phi_N(X,Y)\in \Z[X,Y]
+\]
+满足
+\[
+  \Phi_N\bigl(j(\tau),j(N\tau)\bigr)=0
+  \qquad (\tau\in\HH).
+\]
+它关于 $X,Y$ 对称，且在 $X$ 的次数等于
+\[
+  \mu=[\SL_2(\Z):\GammaO(N)].
+\]
+\end{theorem}
+
+\begin{proof}
+先说明为什么上面的乘积与陪集代表的选择无关。
+若 $\gamma' = \gamma_0\gamma$，其中 $\gamma_0\in\GammaO(N)$，
+写
+\[
+  \gamma_0=\begin{pmatrix} a&b\\ c&d\end{pmatrix},
+  \qquad c\equiv 0\pmod N.
+\]
+则
+\[
+  N\gamma_0\tau=\frac{aN\tau+bN}{(c/N)N\tau+d}.
+\]
+右边正是把 $N\tau$ 施以某个 $\SL_2(\Z)$ 变换，
+所以由 $j$ 对 $\SL_2(\Z)$ 不变可知
+\[
+  j(N\gamma_0\gamma\tau)=j(N\gamma\tau).
+\]
+故各因子只依赖于左陪集 $\GammaO(N)\gamma$。
+
+因此
+\[
+  F_\tau(X)=\prod_{\gamma\in R}(X-j(N\gamma\tau))
+\]
+的系数是 $\Gamma(1)$-不变的亚纯函数。
+进一步，若把 $\tau$ 用任意 $\delta\in\SL_2(\Z)$ 替换，
+则集合 $\{\GammaO(N)\gamma\delta:\gamma\in R\}$ 仍是一组全部左陪集，
+于是 $F_{\delta\tau}(X)=F_\tau(X)$。
+故其系数都是 $X(1)$ 上的亚纯函数。
+由 \cref{prop:ch07-x1-j}，
+$X(1)$ 上每个亚纯函数都是 $j$ 的有理函数，
+所以这些系数都属于 $\C(j)$。
+
+接着说明它们其实是 $j$ 的多项式。
+每个 $j(N\gamma\tau)$ 在 $\HH$ 上全纯，
+其可能的极点只会出现在尖点处；
+于是 $F_\tau(X)$ 的系数作为 $X(1)$ 上的亚纯函数，也只有在尖点处可能有极点。
+而在 $X(1)\cong \mathbb P^1$ 上，
+只有在 $\infty$ 处可能有极点的亚纯函数正好是 $\C[j]$。
+因此系数都属于 $\C[j]$，即
+\[
+  F_\tau(X)=\Phi_N(X,j(\tau))
+\]
+其中 $\Phi_N(X,Y)\in \C[X,Y]$ 且关于 $X$ 首一，次数为陪集个数 $\mu$。
+
+再说明整系数性。
+$j$ 的 $q$-展开系数都在 $\Z$ 中，
+所以每个 $j(N\gamma\tau)$ 都有整系数的 Puiseux 型 $q$-展开。
+把这些展开作初等对称多项式，得到的仍是整系数 $q$-级数。
+而刚才已经知道这些系数其实是 $j$ 的多项式；
+由 $j=q^{-1}+744+\cdots$ 可知，把一个整系数 $q$-级数写成 $j$ 的多项式时，系数必在 $\Z$ 中。
+故 $\Phi_N(X,Y)\in \Z[X,Y]$。
+
+最后证对称性。
+若 $(E,E')$ 之间存在次数 $N$ 的循环同源，
+则对偶同源给出从 $E'$ 到 $E$ 的另一条次数 $N$ 的循环同源。
+于是当 $X=j(E)$、$Y=j(E')$ 时，
+关系“存在次数 $N$ 的循环同源把 $E$ 连到 $E'$”对交换 $X,Y$ 不变。
+因此定义这一关系的首一多项式也必满足
+\[
+  \Phi_N(X,Y)=\Phi_N(Y,X).
+\]
+定理得证。
+\end{proof}
+
+\begin{example}[$\Phi_2$ 的显式方程]
+\label{ex:ch07-phi2}
+最常用的模多项式之一是
+\[
+\begin{aligned}
+\Phi_2(X,Y)=&\ X^3+Y^3-X^2Y^2+1488(X^2Y+XY^2)\\
+&-162000(X^2+Y^2)+40773375XY\\
+&+8748000000(X+Y)-157464000000000.
+\end{aligned}
+\]
+因此对任意 $\tau\in\HH$，
+只要记 $j=j(\tau)$、$j_2=j(2\tau)$，就有
+\[
+  \Phi_2(j,j_2)=0.
+\]
+这说明“存在一条 $2$-同源把 $\C/(\Z+\tau\Z)$ 连到 $\C/(\Z+2\tau\Z)$”
+可以完全由 $j$-不变量之间的一条整系数代数关系来表达。
+\end{example}
+
+有了模多项式之后，$Y_0(N)$ 的仿射代数模型几乎已经写出来了。
+
+\begin{proposition}[模多项式给出 $Y_0(N)$ 的仿射模型]
+\label{prop:ch07-affine-model-y0n}
+映射
+\[
+  \iota_N:Y_0(N)\longrightarrow \mathbb A^2(\C),
+  \qquad
+  [\tau]\longmapsto \bigl(j(\tau),j(N\tau)\bigr)
+\]
+的像包含在仿射平面曲线 $\Phi_N(X,Y)=0$ 中；
+其函数域由 $j(\tau)$ 与 $j(N\tau)$ 生成。
+因此 $\Phi_N(X,Y)=0$ 的光滑射影模型就是 $X_0(N)$ 的一个 $\Q$-模型。
+\end{proposition}
+
+\begin{proof}
+由 \cref{thm:ch07-modular-polynomial}，
+对每个 $\tau$ 都有
+\[
+  \Phi_N\bigl(j(\tau),j(N\tau)\bigr)=0,
+\]
+故像确实落在该平面曲线上。
+
+再看函数域。
+$Y_0(N)$ 到 $Y(1)$ 的遗忘映射把 $[\tau]$ 送到 $j(\tau)$，
+其次数正是陪集指数 $\mu=[\SL_2(\Z):\GammaO(N)]$。
+另一方面，$j(N\tau)$ 满足次数为 $\mu$ 的首一方程
+\[
+  \Phi_N(j(\tau),T)=0,
+\]
+因此它代数地生成了一个至多次数为 $\mu$ 的扩张
+$\C(j(\tau))\subset \C(j(\tau),j(N\tau))$。
+这个扩张又包含在 $\C(Y_0(N))$ 中。
+由于两边都位于同一个次数为 $\mu$ 的扩张上，
+只可能相等，即
+\[
+  \C(Y_0(N))=\C\bigl(j(\tau),j(N\tau)\bigr).
+\]
+于是 $\iota_N$ 在函数域层面给出同构，
+故 $\Phi_N(X,Y)=0$ 的不可约分支的光滑射影模型与 $X_0(N)$ 双有理。
+对光滑射影曲线，双有理即同构，
+因此该光滑射影模型就是 $X_0(N)$。
+因为 $\Phi_N$ 的系数在 $\Z$ 中，故这一定义在 $\Q$ 上。
+\end{proof}
+
+上面这条路给了我们显式方程；
+但它还没有解释一个更深的问题：
+为什么这条曲线恰好应该参数化带循环子群的椭圆曲线？
+这就引出第二条路——模解释。
+
+\begin{definition}[级别 $\Gamma_0(N)$ 的模问题]
+\label{def:ch07-modular-problem}
+对特征 $0$ 的域 $K$，定义集合函子
+\[
+  \mathcal F_0(N)(K)
+\]
+为所有同构类 $[(E,C)]$ 的集合，
+其中 $E/K$ 是椭圆曲线，$C\subset E(\bar K)$ 是一个阶为 $N$ 的循环子群，
+并且 $C$ 对 $\Gal(\bar K/K)$ 的作用稳定。
+称之为\textbf{级别 $\Gamma_0(N)$ 的模解释}\index{模解释!$\Gamma_0(N)$}。
+\end{definition}
+
+\begin{proposition}[模解释与 Galois 相容]
+\label{prop:ch07-moduli-galois}
+设 $(E,C)$ 表示 $\mathcal F_0(N)(\bar\Q)$ 中的一点，
+$\sigma\in\Gal(\bar\Q/\Q)$。
+则
+\[
+  \sigma(E,C)=({}^{\sigma}E,{}^{\sigma}C)
+\]
+仍定义 $\mathcal F_0(N)(\bar\Q)$ 中的一点，
+并且
+\[
+  j({}^{\sigma}E)=\sigma(j(E)).
+\]
+因此模问题天然带有从 $\Q$ 出发的下降数据。
+\end{proposition}
+
+\begin{proof}
+对椭圆曲线的 Weierstrass 方程逐个对系数施以 $\sigma$，
+就得到共轭椭圆曲线 ${}^{\sigma}E$；
+对子群中各点坐标施以 $\sigma$，便得到 ${}^{\sigma}C$。
+因为 $C$ 是阶 $N$ 的循环子群，
+对坐标做域自同构不会改变群运算关系与点的阶，
+所以 ${}^{\sigma}C$ 仍是 ${}^{\sigma}E$ 上阶 $N$ 的循环子群。
+故 $({}^{\sigma}E,{}^{\sigma}C)$ 仍落在同一模问题里。
+
+$j$-不变量是 Weierstrass 系数的有理函数，
+因此对系数施以 $\sigma$ 时有
+\[
+  j({}^{\sigma}E)=\sigma(j(E)).
+\]
+这表明模问题中的 Galois 作用与 $j$-坐标上的共轭完全一致，
+所以它天然来自 $\Q$ 上的代数数据。
+\end{proof}
+
+\textbf{注。}
+更深的结果是 Shimura 与 Deligne--Rapoport 的理论：
+上面的模问题确实由一个定义在 $\Q$ 上的粗模空间表示，
+而这个粗模空间正是我们已经通过模多项式得到的 $Y_0(N)$。
+本章不证明这一深结果，
+但它解释了为什么“显式方程”和“参数化问题”两条路最终会落在同一条曲线上。
+
+\textbf{模堆栈视角（轻量版）。}
+这里“粗模空间”四个字并不是技术细节，
+而是在提醒我们：$Y_0(N)$ 记录了对象的同构类，
+却没有把对象的自同构完整地保存在空间本身里。
+具体地说，
+\begin{itemize}
+  \item 对 $\Gamma_0(N)$ 的模问题，一个点代表的是一对 $(E,C)$；
+        即使固定了循环子群 $C$，椭圆曲线通常仍至少有自同构 $\pm 1$。
+        这会阻止“普遍椭圆曲线”在整个 $Y_0(N)$ 上真正下降下来。
+  \item 因此 $Y_0(N)$ 只是\textbf{粗模空间（coarse moduli space）}：
+        它正确参数化同构类，但不自动携带万能对象。
+  \item 若想把对象连同其自同构一起统一编码，
+        就需要引入\textbf{模堆栈（moduli stack）} $\mathcal Y_0(N)$。
+        本书不展开堆栈语言，只记住它是“把自同构也记账”的精细版本。
+  \item 相比之下，对 $\Gamma_1(N)$ 且 $N\ge 4$，给定一个精确阶为 $N$ 的点 $P$ 后，
+        额外自同构被消除，故 $Y_1(N)$ 成为\textbf{精细模空间（fine moduli space）}，
+        并携带真正的普遍椭圆曲线。
+\end{itemize}
+这也解释了为什么在更现代的表述中，
+模曲线往往先作为堆栈出现，
+再把其粗模空间取出来做经典几何与算术运算。
+
+\begin{example}[两个基本例子]
+\label{ex:ch07-basic-models}
+\begin{itemize}
+  \item[(i)] 当 $N=1$ 时，没有额外级别结构，模问题只参数化椭圆曲线本身。
+  因而由 \cref{prop:ch07-x1-j}，
+  \[
+    X(1)\cong \mathbb P^1_{\Q},
+  \]
+  参数就是 $j$-不变量。
+
+  \item[(ii)] 当 $N=11$ 时，\cref{ex:genus-small-levels,cor:dim-s2-genus,prop:j0n-from-s2} 告诉我们
+  $X_0(11)$ 是一条亏格 $1$ 曲线，且其 Jacobian 也是一维。
+  因此它本身就是一条椭圆曲线。
+  一个经典的 $\Q$-模型是
+  \[
+    X_0(11): y^2+y=x^3-x^2-10x-20.
+  \]
+  这条曲线带有有理尖点作为零元，
+  因而既是模曲线，又是一条定义在 $\Q$ 上的椭圆曲线。
+\end{itemize}
+\end{example}
+
+从现在开始，我们可以把 $X_0(N)$ 同时记住成两幅互补的图像：
+一幅是复解析图像 $\Gamma_0(N)\backslash\HH^*$，
+它最适合做微分与模形式；
+另一幅是代数图像——或者由 $\Phi_N(X,Y)=0$ 给出的平面模型，
+或者由模解释给出的 $\Q$-模空间——它最适合做 Galois、Hecke 对应与模 $p$ 约化。
+下一节就把第\ref{ch:hecke}章里的 Hecke 算子完全翻译到这幅代数图像中去。

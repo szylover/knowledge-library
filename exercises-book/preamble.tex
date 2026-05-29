@@ -1,0 +1,136 @@
+% ============================================================================
+% exercises-book/preamble.tex — 《模形式与费马大定理习题集》
+% ============================================================================
+
+\usepackage{ctex}
+\usepackage{fontspec}
+
+\usepackage[
+  a4paper,
+  top=2.5cm, bottom=2.5cm,
+  left=2.8cm, right=2.8cm
+]{geometry}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{bm}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{enumitem}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning, calc, arrows.meta, decorations.pathreplacing}
+\usepackage{tikz-cd}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=green!40!black,
+  urlcolor=cyan!50!black,
+}
+\usepackage[nameinlink]{cleveref}
+
+% --- tcolorbox ---
+\usepackage[most]{tcolorbox}
+
+% 题目框（紫色）
+\tcbset{
+  problemstyle/.style={
+    enhanced, breakable,
+    colback=violet!5!white,
+    colframe=violet!60!black,
+    fonttitle=\bfseries,
+    attach boxed title to top left={yshift=-2mm, xshift=4mm},
+    boxed title style={colback=violet!70!black, colframe=violet!70!black},
+    top=6pt, bottom=6pt,
+  }
+}
+\newtcolorbox[auto counter, number within=chapter]{problem}[2][]{
+  problemstyle,
+  title={题 \thetcbcounter\quad #2},
+  label={prob:#2},
+  #1
+}
+
+% 解答框（绿色）
+\tcbset{
+  solutionstyle/.style={
+    enhanced, breakable,
+    colback=green!3!white,
+    colframe=green!50!black,
+    fonttitle=\bfseries,
+    attach boxed title to top left={yshift=-2mm, xshift=4mm},
+    boxed title style={colback=green!55!black, colframe=green!55!black},
+    top=6pt, bottom=6pt,
+  }
+}
+\newtcolorbox{solution}[1][]{
+  solutionstyle,
+  title={解答},
+  #1
+}
+
+% 难度标记
+\newcommand{\easy}{{\color{green!60!black}$\bigstar$}}
+\newcommand{\medium}{{\color{orange!80!black}$\bigstar\bigstar$}}
+\newcommand{\hard}{{\color{red!70!black}$\bigstar\bigstar\bigstar$}}
+
+% --- 数学宏（与主书保持一致）---
+\newcommand{\HH}{\mathbb{H}}
+\newcommand{\SL}{\mathrm{SL}}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\PSL}{\mathrm{PSL}}
+\newcommand{\PGL}{\mathrm{PGL}}
+\newcommand{\GammaO}{\Gamma_0}
+\newcommand{\GammaI}{\Gamma_1}
+\newcommand{\Mk}{M_k}
+\newcommand{\Sk}{S_k}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Gal}{\mathrm{Gal}}
+\newcommand{\Aut}{\mathrm{Aut}}
+\newcommand{\Hom}{\mathrm{Hom}}
+\newcommand{\End}{\mathrm{End}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\ord}{\mathrm{ord}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\im}{\mathrm{im}}
+\providecommand{\Zl}{\mathbb{Z}_\ell}
+\providecommand{\Ql}{\mathbb{Q}_\ell}
+\providecommand{\rhobar}{\bar{\rho}}
+\providecommand{\Sel}{\operatorname{Sel}}
+\providecommand{\Ann}{\mathrm{Ann}}
+\providecommand{\Frob}{\mathrm{Frob}}
+\providecommand{\Nm}{\mathrm{Nm}}
+
+% --- 章节标题样式 ---
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{blue!70!black}}
+  {\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{blue!50!black}}
+  {\thesection}{1em}{}
+
+% --- 页眉页脚 ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[LO]{\nouppercase{\rightmark}}
+\fancyhead[RE]{\nouppercase{\leftmark}}
+
+% 难度说明命令
+\newcommand{\difficultykey}{%
+  \noindent\textbf{难度说明：}
+  \easy\ 基础（直接用定义）\quad
+  \medium\ 进阶（需要组合多个概念）\quad
+  \hard\ 挑战（接近研究水平）
+}

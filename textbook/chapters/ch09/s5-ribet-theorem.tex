@@ -1,0 +1,435 @@
+\section{Ribet 定理：水平下降}
+\label{sec:ch09-ribet}
+% ============================================================================
+
+\providecommand{\Zl}{\mathbb{Z}_\ell}
+\providecommand{\Ql}{\mathbb{Q}_\ell}
+\providecommand{\rhobar}{\bar{\rho}}
+
+前两节已经把两类表示都放到了桌面上：
+椭圆曲线给出 $\rho_{E,\ell}$，模形式给出 $\rho_{f,\lambda}$。
+如果目标只是说明“模椭圆曲线确实对应某个新形式”，
+那么到这里其实已经够了。
+但费马大定理要得更多：
+我们不仅要知道 Frey 曲线是模的，
+还要知道它的 residual 表示会不会迫使级别继续下降。
+这正是 Ribet 定理的内容。
+
+\textbf{我们遇到了什么问题？}
+一条来自级别 $Np$ 的新形式，
+通常理应在素数 $p$ 处记住某种局部分歧。
+可是在 mod $\ell$ 之后，
+这份局部信息有时会消失：
+表示虽然来自级别 $Np$，
+但 residual 表示在 $p$ 处已经无分歧，
+仿佛“看不见”这个素数。
+如果真是这样，
+那么把 $p$ 留在级别里就像是给表示附上了一个多余标签。
+Ribet 定理断言：
+这种多余标签确实可以删去。
+
+\textbf{核心思想是什么？}
+级别 $Np$ 与级别 $N$ 的模曲线之间有两条退化映射
+\[
+  \alpha,\beta\colon X_0(Np)\rightrightarrows X_0(N),
+\]
+它们在 Jacobian 上产生所谓 $p$-old 部分。
+另一方面，真正“新”的信息住在 $p$-new 部分里。
+Ribet 的观察是：
+若 residual 表示在 $p$ 处已经无分歧，
+那么它在 $J_0(Np)[\mathfrak m]$ 中留下的痕迹无法纯粹待在 $p$-new 部分，
+最终会被 Ihara 引理逼回到 $p$-old 部分。
+而 $p$-old 部分本来就来自级别 $N$，
+于是同一份 residual 表示一定也来自某个级别 $N$ 的新形式。
+
+\textbf{引入之后能得到什么？}
+这一步一旦完成，
+Frey 曲线的每个奇坏素数都可以从级别中一个个删掉。
+于是原本看似复杂的导子
+\[
+  2\prod_{q\mid abc}q
+\]
+最后被压缩到 $2$。
+但第5章已经算过，
+\[
+  \Sk_2(\GammaO(2))=0.
+\]
+所以根本不存在这样一个终点新形式；
+这就是费马大定理证明里的致命矛盾。
+
+\input{figures/ch09-level-lowering}
+
+\begin{definition}[$p$-old 与 $p$-new]
+设 $p\nmid N$。
+模曲线之间有两条退化映射
+\[
+  \alpha,\beta\colon X_0(Np)\to X_0(N),
+\]
+其中在模解释下
+\[
+  \alpha(E,C)=(E,C[N]),
+  \qquad
+  \beta(E,C)=\bigl(E/C[p],\,C/C[p]\bigr).
+\]
+它们在 Jacobian 上诱导映射
+\[
+  \alpha^*,\beta^*\colon J_0(N)\to J_0(Np).
+\]
+由这两个像生成的 Abel 子簇称为 $p$-\textbf{old} 部分；
+其补因子称为 $p$-\textbf{new} 部分。
+\end{definition}
+
+\begin{theorem}[Ihara 引理，Ribet 所需的形式]
+\label{thm:ch09-ihara-lemma}
+设 $p\nmid N$，$\ell\neq p$，$\mathfrak m\subset \mathbb T(Np)$ 是非 Eisenstein 极大理想。
+把退化映射诱导的同态记为
+\[
+  \delta=\alpha^*+\beta^*\colon J_0(N)^2\to J_0(Np).
+\]
+则在 $\mathfrak m$-扭点上，$\ker \delta$ 不含新的非平凡 $\mathfrak m$-部分；
+等价地，$J_0(N)[\mathfrak n]^2\to J_0(Np)[\mathfrak m]$ 在与 $\mathfrak m$ 相容的极大理想处是单射。
+\end{theorem}
+
+\begin{proof}
+记
+\[
+\delta=\alpha^*+\beta^* \colon J_0(N)^2 \longrightarrow J_0(Np)
+\]
+为两条退化映射诱导的和映射，并记 $A_{\mathrm{old}}=\mathrm{im}(\delta)$ 为 $p$-old 子簇。证明分四步进行。
+
+\textbf{第 $1$ 步：退化映射的代数结构。}
+两条退化映射 $\alpha,\beta\colon X_0(Np)\to X_0(N)$ 在 Jacobian 上诱导出 pullback 映射 $\alpha^*,\beta^*$。由定义，$A_{\mathrm{old}}$ 恰由这两份来自级别 $N$ 的拷贝张成，而 $p$-new 商则是 $J_0(Np)/A_{\mathrm{old}}$。因为 $\alpha,\beta$ 都是有限态射，$\delta$ 是一个像为 $A_{\mathrm{old}}$ 的 isogeny，其核是一个有限群方案；所以要证明命题中的单射，只需证明这个有限核在非 Eisenstein 极大理想局部化后消失。
+
+\textbf{第 $2$ 步：$\mathfrak{m}$-扭点的控制。}
+设 $\bar\rho_{\mathfrak{m}}$ 为与 $\mathfrak{m}$ 对应的残余表示。因为 $\mathfrak{m}$ 非 Eisenstein，$\bar\rho_{\mathfrak{m}}$ 绝对不可约，于是 Hecke 代数在 $J_0(Np)[\mathfrak{m}]$ 上的作用是忠实的，且这个扭点群由若干份 $\bar\rho_{\mathfrak{m}}$ 组成。换句话说，若 $\ker(\delta)[\mathfrak{n}]$ 非零，那么它会在 old 部分里制造出一个新的 Hecke 稳定残余子表示；这正是 old/new 之间出现额外交叉关系的情形，而 Ihara 引理的目标就是排除这种非 Eisenstein 交叉。
+
+\textbf{第 $3$ 步：若存在非平凡核，则必然是 Eisenstein。}
+设 $x=(x_1,x_2)\in J_0(N)^2[\mathfrak{n}]$ 满足 $\delta(x)=0$，即
+\[
+\alpha^*x_1=-\beta^*x_2.
+\]
+由于核是 Hecke 稳定的，它特别对 $U_p$ 稳定。另一方面，在由 $\alpha^*,\beta^*$ 张成的 $p$-old 部分上，$U_p$ 的标准矩阵（取基 $\alpha^*,\beta^*$）为
+\[
+U_p=
+\begin{pmatrix}
+T_p & 1\\
+-p & 0
+\end{pmatrix}.
+\]
+把它限制到 $\mathfrak{n}$-局部部分，其中 $T_p$ 按标量 $a_p$ 作用，就得到特征多项式
+\[
+X^2-a_pX+p,
+\]
+这与前一节由 Frobenius 关系得到的多项式完全一致。若 $\alpha^*x_1=-\beta^*x_2$ 提供了一个非零核向量，那么在上述二维 old 空间里就得到与 $(1,-1)$ 同方向的不变量；直接计算
+\[
+U_p(1,-1)=(a_p-1,-p)
+\]
+可知这只有在 $a_p\equiv p+1$ 时才可能再次落在同一直线上。于是
+\[
+X^2-a_pX+p=(X-1)(X-p),
+\]
+这正是 Eisenstein 情形的特征多项式。换言之，任何非平凡核都迫使该极大理想是 Eisenstein 的。
+
+\textbf{第 $4$ 步：结论。}
+现在 $\mathfrak{m}$ 按假设是非 Eisenstein 的，所以第 $3$ 步的情形不可能发生。因此
+\[
+\ker(\delta)[\mathfrak{n}]=0,
+\]
+从而诱导映射
+\[
+J_0(N)^2[\mathfrak{n}] \hookrightarrow J_0(Np)[\mathfrak{m}]
+\]
+必为单射。这就是所需的 Ihara 引理。
+\end{proof}
+
+\begin{proposition}[Carayol 的导子--级别对应]
+\label{prop:ch09-carayol-conductor}
+设 $f$ 是权 $2$ 新形式，$\rho_{f,\lambda}$ 为其 $\ell$-进表示。
+则对每个 $p\neq \ell$，
+局部表示 $\rho_{f,\lambda}|_{G_{\Q_p}}$ 的 Artin 导子指数，
+与 $f$ 级别中 $p$ 的指数精确一致。
+特别地，若 residual 表示在 $p$ 处无分歧，
+则 Serre 级别不应再含有该素数的贡献；
+这正说明 Ribet 定理不是偶然降级，而是导子公式的必然反映。
+\end{proposition}
+
+\begin{proof}[说明]
+Carayol 把第\ref{sec:ch09-modular-galois}节中由模形式得到的 Galois 表示，
+与新形式理论中的级别结构逐素数对照。
+因此级别上的每一位素数，
+都能在局部惯性作用与导子指数中被读出来；
+而 level lowering 所做的，正是当这些导子指数在 mod $\ell$ 世界里变小后，
+把模形式级别同步降下来。
+\end{proof}
+
+\begin{proposition}[Steinberg 情形的局部特征]
+\label{prop:ch09-steinberg-local}
+设 $f\in \Sk_2(\GammaO(Np))$ 是 $p$-new 归一化特征新形式，$p\nmid N$。
+则在 $p$ 处，$f$ 的局部分量是 Steinberg 型，
+并且
+\[
+  a_p(f)=\pm 1.
+\]
+相应的 $\ell$-进表示在分解群上可写成上三角形
+\[
+  \rho_{f,\lambda}|_{D_p}\sim
+  \begin{pmatrix}
+    \chi_\ell & *\\ 0 & 1
+  \end{pmatrix}
+\]
+（至多扭一条非分歧特征）。
+若其 mod $\ell$ 约化在 $p$ 处无分歧，
+则这条扩张在模 $\ell$ 后变为裂开，
+也就是 $p$ 在 residual 表示里“消失”。
+\end{proposition}
+
+\begin{proof}
+对权 $2$、平凡角色的新形式，
+Atkin--Lehner 理论说明：
+若 $p$ 只以一次出现于级别且 $f$ 是 $p$-new，
+则 $U_p$ 的特征值必为 $\pm1$，
+这就是 $a_p(f)=\pm1$。
+局部 Langlands 对应把这种情形识别为 Steinberg 表示。
+翻译到 Galois 表示语言，
+便得到一个一维非平凡扩张
+\[
+  0\to K_{f,\lambda}(1)\to V_\lambda(f)\to K_{f,\lambda}\to 0,
+\]
+也就是上面的上三角形形式。
+
+若模 $\ell$ 约化后在 $p$ 处无分歧，
+就说明惯性群在 residual 表示上的作用平凡。
+而上三角扩张的全部分歧正是由惯性上的非平凡上右角决定的，
+故该上右角在模 $\ell$ 后必须消失，
+表示变为裂开且无分歧。
+这正是“Steinberg 局部型在 residual 世界里看不见 $p$”的精确意义。
+\end{proof}
+
+\begin{lemma}[Steinberg 局部条件与无分歧性的冲突]
+\label{lem:ch09-steinberg-unramified-conflict}
+设 $f$ 是 $p$-new 新形式，$\ell \nmid p$。若 $\bar\rho_{f,\ell}|_{D_p}$ 在 $p$ 处无分歧，则
+$\bar\rho_{f,\ell}|_{D_p}$ 必为两个无分歧特征之直和；换言之，Steinberg 型扩张在模 $\ell$ 后只能裂开。
+\end{lemma}
+
+\begin{proof}
+证明分三步进行。
+
+\textbf{第 $1$ 步：$p$-new 迫使局部表示是 Steinberg 扩张。}
+由 \cref{prop:ch09-steinberg-local}，存在两个 $D_p$ 上的一维特征 $\chi,\psi$，使得
+\[
+0\to K_{f,\lambda}(\chi)\to V_\lambda(f)\to K_{f,\lambda}(\psi)\to 0
+\]
+是一个非裂开的扩张，并且
+\[
+\chi\psi^{-1}=\chi_\ell,
+\]
+其中 $\chi_\ell$ 是 $\ell$-进分圆特征。因为这里 $p\neq \ell$，分圆特征在惯性群 $I_p$ 上本来就是平凡的，所以惯性作用表现为一个上三角幺幂矩阵；非裂开意味着对应的扩张类在 $H^1(D_p,K_{f,\lambda}(1))$ 中非零，这正是 Steinberg 型局部单调不平凡的具体表达。
+
+\textbf{第 $2$ 步：模 $\ell$ 以后得到残余扩张。}
+对上式模 $\lambda$ 约化，得到短正合列
+\[
+0\to \bar\chi\to \bar\rho_{f,\ell}|_{D_p}\to \bar\psi\to 0.
+\]
+因此对任意 $\sigma\in I_p$，在某个合适基下可写成
+\[
+\bar\rho_{f,\ell}(\sigma)=
+\begin{pmatrix}
+1 & c(\sigma)\\
+0 & 1
+\end{pmatrix},
+\]
+其中 $c\colon I_p\to \F_\ell$ 是扩张类在惯性上的像。若假设 $\bar\rho_{f,\ell}|_{D_p}$ 无分歧，那么惯性必须平凡作用，于是 $c(\sigma)=0$ 对所有 $\sigma\in I_p$ 成立，故该扩张在惯性上看起来已经裂开；特别地，$\bar\chi$ 与 $\bar\psi$ 都是无分歧特征。
+
+\textbf{第 $3$ 步：比较 Frobenius，推出扩张只能裂开。}
+由 $\chi\psi^{-1}=\chi_\ell$ 模 $\lambda$ 后得到
+\[
+\bar\chi\,\bar\psi^{-1}=\bar\chi_\ell.
+\]
+把它取值在 Frobenius 元上，可得
+\[
+\bar\chi(\Frob_p)\bar\psi(\Frob_p)^{-1}\equiv p \pmod{\ell}.
+\]
+若 $\ell\nmid p-1$，则 $p\not\equiv 1\pmod{\ell}$，所以 $\bar\chi\neq \bar\psi$；这时一个无分歧的上三角表示自动半单，因而只能是两个不同无分歧特征的直和，不可能保留非平凡 Steinberg 扩张类。若 $\ell\mid p-1$，则 $\bar\chi_\ell=1$，于是 $\bar\chi=\bar\psi$；但是此时任何仍然非裂开的自扩张都会在惯性上给出一个非零类 $I_p\to \F_\ell$，与上一步的“无分歧即惯性平凡”矛盾。故在这两种情形下，残余扩张都只能裂开，于是
+\[
+\bar\rho_{f,\ell}|_{D_p}\cong \bar\chi\oplus \bar\psi,
+\]
+其中 $\bar\chi,\bar\psi$ 都无分歧。
+\end{proof}
+
+接下来给出本章所需的 Ribet 定理版本。
+
+\begin{theorem}[Ribet 水平下降]
+\label{thm:ch09-ribet-level-lowering}
+设 $p\nmid N$，
+$f\in \Sk_2(\GammaO(Np))$ 是归一化 $p$-new 特征新形式，
+$\ell\neq p$，
+且 residual 表示
+\[
+  \rhobar_{f,\ell}\colon G_\Q\to \GL_2(\F_\ell)
+\]
+绝对不可约。
+若 $\rhobar_{f,\ell}$ 在 $p$ 处无分歧，
+则存在归一化特征新形式
+\[
+  g\in \Sk_2(\GammaO(N))
+\]
+使得
+\[
+  \rhobar_{g,\ell}\cong \rhobar_{f,\ell}.
+\]
+\end{theorem}
+
+\begin{proof}
+证明分四步进行。
+
+\textbf{第 $1$ 步：把 residual 表示变成 Hecke 极大理想。}
+由第\ref{sec:ch09-modular-galois}节，
+$f$ 给出一个 Hecke 特征值系统
+\[
+  T_q\mapsto a_q(f)
+  \qquad (q\nmid Np)
+\]
+以及相应的 residual 表示 $\rhobar_{f,\ell}$。
+把所有满足
+\[
+  T_q-a_q(f),\qquad U_p-a_p(f),\qquad \ell
+\]
+的 Hecke 元生成的理想记为 $\mathfrak m\subset \mathbb T(Np)$。
+绝对不可约性保证 $\mathfrak m$ 是非 Eisenstein 极大理想，
+因此 $J_0(Np)[\mathfrak m]$ 真正携带一份二维非平凡 residual 表示。
+
+\textbf{第 $2$ 步：利用无分歧性把 $\mathfrak m$ 推离 $p$-new 部分。}
+反设 $\mathfrak m$ 只出现在 $p$-new 部分。则该局部化必由某个 $p$-new 新形式的 Galois 表示提供。对这类表示，\cref{prop:ch09-steinberg-local} 说明其 $D_p$-限制是 Steinberg 型，也就是说它来自一个非裂开的上三角扩张，局部单调非平凡。现在应用 \cref{lem:ch09-steinberg-unramified-conflict}：若其残余表示在 $p$ 处无分歧，则这个 Steinberg 扩张在模 $\ell$ 后只能裂开，而且裂开后得到的只是两个无分歧特征之和。这样的局部表示已经不再携带 $p$-new 部分特有的非平凡单调数据，因此不能单独支撑一个绝对不可约的非 Eisenstein 极大理想。故 $\mathfrak m$ 不可能纯粹来自 $p$-new 部分；它必定也在 $p$-old 部分出现。
+
+\textbf{第 $3$ 步：用 Ihara 引理控制 old/new 交叉。}
+现在看两条退化映射
+\[
+  \alpha,\beta\colon X_0(Np)\to X_0(N),
+\]
+它们在 Jacobian 上给出
+\[
+  \delta=\alpha^*+\beta^*\colon J_0(N)^2\to J_0(Np).
+\]
+其像就是 $p$-old 部分。若 old/new 之间还存在额外交叉，那么就会在 $\ker(\delta)$ 中出现非零的 $\mathfrak n$-扭点。\cref{thm:ch09-ihara-lemma} 的证明说明：这种核一旦存在，$U_p$ 在 old 部分上的矩阵关系就迫使特征多项式退化成 $(X-1)(X-p)$，从而对应 Eisenstein 极大理想。由于当前的 $\mathfrak m$ 非 Eisenstein，这种核不可能存在。所以 $\mathfrak m$ 在 old 部分的出现必然来自级别 $N$ 中某个真正的 Hecke 极大理想 $\mathfrak n$，而不是 old/new 交叉制造出的伪解。
+
+\textbf{第 $4$ 步：从 Jacobian 回到新形式。}
+于是 $J_0(N)[\mathfrak n]$ 非零，故级别 $N$ 的 Hecke 代数中存在与 $\mathfrak m$ 相容的特征系统。取与之对应的归一化特征模形式 $g$，则对所有 $r\nmid Np\ell$，都有
+\[
+  a_r(g)\equiv a_r(f)\pmod{\ell}.
+\]
+Čebotarev 密度定理遂给出
+\[
+  \rhobar_{g,\ell}\cong \rhobar_{f,\ell}.
+\]
+这就把级别从 $Np$ 降到了 $N$。
+\end{proof}
+
+\textbf{注。}
+Ribet 原始证明真正困难的地方，
+并不是“把 $p$ 从公式里删掉”，
+而是要精确控制 $J_0(Np)[\mathfrak m]$ 在 old/new 分解中的位置。
+Ihara 引理正是这里的技术心脏：
+它保证 old 部分不会因为某种隐蔽的交叉而丢失 residual 信息。
+
+下面把定理重新插回 Frey 曲线的情形。
+
+\begin{theorem}[Frey 曲线的级别下降]
+\label{thm:ch09-frey-level-lowering}
+设 $p\ge 5$，并假设存在费马方程的非平凡原始解
+\[
+  a^p+b^p=c^p.
+\]
+令 $E=E_{a,b,c}$ 为 Frey 曲线。
+则 residual 表示
+\[
+  \rhobar_{E,p}\colon G_\Q\to \GL_2(\F_p)
+\]
+若来自某个级别
+\[
+  2\prod_{q\mid abc}q
+\]
+的权 $2$ 新形式，
+则反复应用 \cref{thm:ch09-ribet-level-lowering} 后，
+它实际上来自级别 $2$ 的权 $2$ 新形式。
+\end{theorem}
+
+\begin{proof}
+由 \cref{prop:ch09-frey-discriminant}，
+Frey 曲线在每个奇素数 $q\mid abc$ 处都是乘法约化，
+并且
+\[
+  v_q(\Delta(E))=2p\,v_q(abc)
+\]
+被 $p$ 整除。
+Tate 曲线理论说明：
+在乘法约化处，惯性作用模 $p$ 后恰由这个判别式指数控制；
+当该指数被 $p$ 整除时，
+$\rhobar_{E,p}$ 在 $q$ 处无分歧。
+
+另一方面，半稳定性保证这些奇素数在导子里都只以一次出现，
+所以局部型恰是 \cref{prop:ch09-steinberg-local} 中的 Steinberg 情形。
+再结合 \cref{prop:ch09-carayol-conductor}，
+可知级别中出现的每一个奇素数 $q\mid abc$，
+都正对应 residual 表示导子里的一次局部分歧贡献；
+而既然这份贡献在 mod $p$ 后已经消失，
+Ribet 水平下降就允许把该素数从级别中删去。
+
+因此，只要 $\rhobar_{E,p}$ 来自某个级别含有 $q$ 的新形式，
+就满足 Ribet 定理的局部假设，
+可以把 $q$ 从级别中去掉。
+对每个 $q\mid abc$ 重复这一过程，
+所有奇素数都会被删去，
+最后只剩下素数 $2$。
+于是 $\rhobar_{E,p}$ 来自级别 $2$ 的权 $2$ 新形式。
+\end{proof}
+
+\begin{theorem}[费马大定理]
+\label{thm:ch09-flt-final}
+对任意整数 $n\ge 3$，方程
+\[
+  x^n+y^n=z^n
+\]
+没有非平凡整数解。
+\end{theorem}
+
+\begin{proof}
+标准降幂法说明，只需证明指数为奇素数 $p\ge 5$ 的情形。
+反设存在非平凡原始解
+\[
+  a^p+b^p=c^p.
+\]
+构造 Frey 曲线 $E=E_{a,b,c}$。
+由模性定理，$E$ 是模的，
+所以 $\rhobar_{E,p}$ 来自某个权 $2$ 新形式。
+由 \cref{thm:ch09-frey-level-lowering}，
+该 residual 表示进一步来自级别 $2$ 的权 $2$ 新形式。
+
+但第5章的维数公式给出
+\[
+  \dim \Sk_2(\GammaO(2))=0.
+\]
+也就是说，根本不存在级别 $2$ 的权 $2$ 新形式。
+这与上一步矛盾。
+故反设不成立，
+费马方程没有非平凡原始解。
+因此费马大定理成立。
+\end{proof}
+
+\textbf{注。}
+有些简略叙述会把终点写成“降到级别 $1$”。
+对 Frey 曲线的标准 semistable 论证，
+真正稳定留下来的素数是 $2$，
+所以正确的终点应是级别 $2$，
+而不是级别 $1$。
+矛盾来自
+\[
+  \Sk_2(\GammaO(2))=0,
+\]
+这一点与 Wiles 证明链完全一致。
+
+本节说明：
+Ribet 定理并不是模性定理的附属品，
+而是费马大定理证明中把“模”与“不可能”真正接上的那道铰链。
+模性负责把 Frey 曲线送进模形式世界，
+而水平下降负责把它一步步压进一个空空间里。
+这便是第9章的终点，也是第10章进一步讨论 $R=T$ 方法之前最关键的结构结论。

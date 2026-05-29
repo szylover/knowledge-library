@@ -1,0 +1,259 @@
+\section{模解释与整数模型}
+\label{sec:ch07-modular-interpretation}
+% ============================================================================
+
+上一节把 $X_0(N)$ 放回了 $\Q$ 上的代数几何世界，
+这已经足够讨论有理点、Galois 作用与 Hecke 对应。
+但如果我们的目标是第\ref{ch:eichler-shimura-l}章的 Eichler--Shimura 关系，
+那么只停留在 $\Q$ 上仍然不够。
+原因很简单：
+Frobenius 元住在有限域里，
+而有限域来自把整数模掉一个素数 $p$；
+所以若想把复解析 Hecke 算子和算术 Frobenius 放到一起，
+中间必须先有一座“从 $\Q$ 到 $\F_p$”的桥。
+这座桥就是整模型。
+
+\textbf{我们遇到了什么问题？}
+一条定义在 $\Q$ 上的曲线，只告诉我们“有一组有理系数方程”。
+可一旦把分母清掉并模掉一个素数，
+得到的平面曲线很可能冒出奇点，
+而群结构、同源乃至 Hecke 对应也可能在特殊纤维上失控。
+因此真正要问的，不是“能不能写成整数方程”，
+而是“能不能写成在各个素数处行为良好的整数方程”。
+这就是好约化与半稳定约化要解决的问题。
+
+\textbf{核心思想是什么？}
+核心思想分两层。
+对单条椭圆曲线而言，
+我们希望找到一个尽量好的整数模型，
+使得模 $p$ 后的纤维要么仍然光滑，
+要么只出现最温和的节点奇点；
+前者称为好约化，后者称为半稳定约化。
+对模曲线而言，
+我们则希望整个模问题在整数上也有意义。
+这迫使我们把“椭圆曲线”稍微放宽成“广义椭圆曲线”，
+从而把尖点也纳入统一的几何框架里。
+
+\textbf{引入之后能得到什么？}
+一旦整模型建立起来，
+我们就能把 $X_0(N)$ 与 Hecke 对应一起约化到 $\F_p$ 上，
+在特殊纤维里真正看见 Frobenius 的几何作用。
+对 $p\nmid N$，深刻的 Deligne--Rapoport 与 Igusa 理论说明：
+$X_0(N)$ 在 $p$ 处具有好约化；
+对 $p\mid N$，特殊纤维虽然会退化，但仍保持半稳定。
+这正是下一章把 Hecke 特征值改写成点数公式的根基。
+
+\input{figures/ch07-modular-interpretation}
+
+先从单条椭圆曲线的判别准则开始。
+
+\begin{definition}[好约化与半稳定约化]
+\label{def:ch07-good-semistable-reduction}
+设 $E/\Q$ 是椭圆曲线，$p$ 为素数。
+若存在 $\Z_p$ 上的模型，其特殊纤维是一条光滑三次曲线，
+则称 $E$ 在 $p$ 处有\textbf{好约化}\index{好约化!good reduction}。
+若特殊纤维虽不光滑，但只含普通双点（节点）而无尖点，
+则称 $E$ 在 $p$ 处有\textbf{半稳定约化}\index{半稳定约化!semistable reduction}。
+\end{definition}
+
+\begin{proposition}[判别式判定好约化]
+\label{prop:ch07-discriminant-good-reduction}
+设
+\[
+  E: y^2+a_1xy+a_3y=x^3+a_2x^2+a_4x+a_6
+\]
+是 $\Z_p$ 上的 Weierstrass 方程，判别式为 $\Delta(E)$。
+若 $\Delta(E)$ 在 $\Z_p$ 中是单位，
+则模 $p$ 的特殊纤维光滑，
+因而 $E$ 在 $p$ 处有好约化。
+反过来，若模 $p$ 的特殊纤维有奇点，
+则 $p\mid \Delta(E)$。
+\end{proposition}
+
+\begin{proof}
+Weierstrass 方程给出一条平面三次曲线
+\[
+  F(x,y)=y^2+a_1xy+a_3y-x^3-a_2x^2-a_4x-a_6=0.
+\]
+模 $p$ 后出现奇点，当且仅当存在点 $(x,y)$ 同时满足
+\[
+  F(x,y)=0,
+  \qquad \frac{\partial F}{\partial x}(x,y)=0,
+  \qquad \frac{\partial F}{\partial y}(x,y)=0
+\]
+于剩余域中成立。
+而对 Weierstrass 三次来说，
+“方程与两偏导有公共零点”恰好等价于其判别式为零；
+这正是判别式的定义性性质：
+它刻画多项式出现重根、从而曲线出现奇点的条件。
+
+因此，若 $\Delta(E)$ 在 $\Z_p$ 中为单位，
+则其模 $p$ 像非零，特殊纤维不可能有奇点，所以光滑。
+反过来，若特殊纤维有奇点，
+则模 $p$ 判别式必为零，也就是 $p\mid \Delta(E)$。
+证毕。
+\end{proof}
+
+\textbf{注。}
+对椭圆曲线来说，
+真正精确的说法是：
+取最小 Weierstrass 模型后，$p\nmid \Delta_{\min}$ 当且仅当好约化；
+若 $p\mid \Delta_{\min}$ 但特殊纤维只是节点而不是尖点，
+则是乘法型坏约化，也就是半稳定约化。
+本章只用到这个判别思想，不展开 Tate 算法。
+
+模曲线的整模型比单条椭圆曲线更微妙，
+因为尖点对应的不是光滑椭圆曲线，
+而是退化极限。
+Deligne--Rapoport 的做法是：
+在整数环上不只参数化椭圆曲线，
+还允许参数化\textbf{广义椭圆曲线}\index{广义椭圆曲线!generalized elliptic curve}，
+也就是在坏纤维里允许出现 N\'eron $n$-gon 那样的节点型退化。
+于是尖点不再是“额外补上去的解析边界”，
+而是整模型中的真实几何点。
+
+\begin{definition}[整模型与 N\'eron 模型的动机]
+\label{def:ch07-integral-neron}
+对模曲线 $X_0(N)$，
+一个\textbf{整模型}\index{整模型!integral model} 指的是定义在某个整数环（通常是 $\Z$ 或 $\Z[1/N]$）上的曲线
+$\mathcal X_0(N)$，
+其 generic fiber 为前面得到的 $X_0(N)/\Q$。
+对椭圆曲线或 Abel 簇，
+若进一步要求群结构在所有光滑测试对象上满足映射延拓的泛性质，
+就得到\textbf{N\'eron 模型}\index{N\'eron模型!N\'eron model}。
+\end{definition}
+
+本章不证明 Deligne--Rapoport 与 N\'eron 模型的一般存在定理，
+只记住它们解决的障碍：
+它们让“群结构”“同源”“Hecke 对应”这些本来只在 generic fiber 上可见的对象，
+能够一路延伸到整数环与特殊纤维中去。
+
+\begin{example}[$X_0(11)$ 在小素数处的约化]
+\label{ex:ch07-x011-reduction}
+对 $X_0(11)$，取经典最小模型
+\[
+  E: y^2+y=x^3-x^2-10x-20.
+\]
+其判别式为
+\[
+  \Delta(E)=-11^5.
+\]
+因此对 $p=2,3,5$，判别式在 $\Z_p$ 中都是单位，
+故 $E$ 在这些素数处有好约化。
+相反，在 $p=11$ 处判别式被 $11$ 整除，
+所以此处必是坏约化；
+事实上这里出现的是一个节点，因而属于半稳定约化。
+\end{example}
+
+\begin{proof}
+对给定方程，按 Weierstrass 不变量公式计算得
+\[
+  \Delta(E)=-11^5.
+\]
+于是当 $p=2,3,5$ 时，$p\nmid\Delta(E)$，
+由 \cref{prop:ch07-discriminant-good-reduction} 立得好约化。
+
+当 $p=11$ 时，把方程模 $11$ 化简为
+\[
+  y^2+y=x^3-x^2+x+2.
+\]
+记
+\[
+  F(x,y)=y^2+y-x^3+x^2-x-2.
+\]
+则
+\[
+  \frac{\partial F}{\partial x}=-3x^2+2x-1,
+  \qquad
+  \frac{\partial F}{\partial y}=2y+1.
+\]
+在 $\F_{11}$ 中取 $x=5,y=5$，有
+\[
+  F(5,5)=0,
+  \qquad
+  \frac{\partial F}{\partial x}(5,5)=0,
+  \qquad
+  \frac{\partial F}{\partial y}(5,5)=0.
+\]
+所以特殊纤维确有奇点。
+另一方面，该最小模型对应的导子正是 $11$，
+坏约化是乘法型而非加法型，
+因此这里出现的是节点而不是尖点，
+也就是半稳定约化。
+\end{proof}
+
+\textbf{注。}
+上例已经把第\ref{ch:jacobians}章的“模椭圆曲线”推进到了整数层面：
+同一条曲线在复数域上给出模形式的 Jacobian 因子，
+在 $\Q$ 上给出椭圆曲线，
+在模 $11$ 后则出现一个节点纤维。
+这三幅图像不是彼此分离的，
+而是同一个整模型在不同底域上的投影。
+
+对一般模曲线，最重要的深结果可以概括成下面一句话：
+Deligne--Rapoport 构造了 $X_0(N)$ 的整模型，
+它参数化带 $\Gamma_0(N)$-结构的广义椭圆曲线；
+Igusa 进一步证明，当 $p\nmid N$ 时，
+该整模型在 $p$ 处的特殊纤维是光滑的。
+因此 $X_0(N)$ 在所有不整除级别的素数处都有好约化。
+而在 $p\mid N$ 时，特殊纤维则分裂成若干光滑分支并以节点相交，
+这就是半稳定约化的几何来源。
+
+这正是下一章最关键的起点：
+当 $p\nmid N$ 时，
+既然 $X_0(N)$ 在 $\F_p$ 上仍然是一条光滑曲线，
+那么 Frobenius 自同态就成为一个真正的代数几何对象；
+而上一节的 Hecke 对应也同样可以约化到 $\F_p$ 上。
+Eichler--Shimura 关系要做的，
+就是比较这两种看似来自不同世界的自同态。
+
+\begin{definition}[广义椭圆曲线与 N\'eron $n$-gon]
+\label{def:generalized-elliptic-curve}
+所谓\textbf{广义椭圆曲线}，是指一条 proper、flat 的 genus $1$ 曲线，
+其光滑部分带有群结构，且几何纤维要么是光滑椭圆曲线，
+要么是一个 \textbf{N\'eron $n$-gon}：
+也就是 $n$ 个 $\mathbb P^1$ 首尾相接围成的多边形型节点曲线。
+这种对象恰好把尖点处出现的退化纤维纳入模问题内部。
+\end{definition}
+
+\begin{theorem}[Katz--Mazur，Deligne--Rapoport]
+\label{thm:katz-mazur-x0n}
+对每个正整数 $N$，$X_0(N)$ 在 $\Z[1/N]$ 上的紧化整模型可以通过广义椭圆曲线及其 $\Gamma_0(N)$-级别结构来描述。
+更准确地说，带一个阶 $N$ 循环子群的广义椭圆曲线所组成的模问题，
+由一个 proper、flat 的代数曲线表示，
+其 generic fiber 正是 $X_0(N)/\Q$。
+\end{theorem}
+
+\begin{proof}[说明]
+Katz--Mazur 的核心思想是：
+不要把尖点视作“解析上补进来的边界”，
+而是把它们解释成广义椭圆曲线的真实退化纤维。
+这样一来，级别结构、同源与 Hecke 对应都能在整数底上继续定义。
+Deligne--Rapoport 最早给出了这一整模型的构造；
+Katz--Mazur 则把它整理成系统的模理论语言。
+\end{proof}
+
+\begin{proposition}[Tate 曲线是尖点处的局部模型]
+\label{prop:tate-curve-generalized-elliptic}
+第4章出现的 Tate 曲线 $E_q$ 在形式圆盘 $\operatorname{Spec}\Z[[q]]$ 上可延拓为一条广义椭圆曲线。
+其 generic fiber 是通常的椭圆曲线，
+而特殊纤维 $q=0$ 是一个 N\'eron $1$-gon，
+也就是尖点处最基本的节点纤维。
+\end{proposition}
+
+\begin{proof}[说明]
+当 $q\neq 0$ 时，Tate 曲线由乘法型统一化 $\mathbb G_m/q^\Z$ 给出，
+是光滑椭圆曲线。
+把它放到形式邻域里以后，$q=0$ 处的极限不再光滑，
+而是恰好退化成一个单环的节点曲线；
+这正是广义椭圆曲线定义里允许的最简单坏纤维。
+因此尖点附近的 $q$-参数与整模型里的退化几何完全一致。
+\end{proof}
+
+\textbf{Deligne--Rapoport 定理的最简表述。}
+模堆栈 $\overline{\mathcal M}_{1,1}$ 的紧化可以由广义椭圆曲线来实现：
+内部点参数化真正的椭圆曲线，
+边界点参数化节点型退化纤维。
+对本书而言，最重要的结论并不是堆栈技术本身，
+而是：一旦采用广义椭圆曲线的语言，
+尖点、整模型、Hecke 对应与模 $p$ 约化就全都变成同一个模问题的不同纤维。

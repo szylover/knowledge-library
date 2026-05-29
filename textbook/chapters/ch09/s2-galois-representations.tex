@@ -1,0 +1,555 @@
+\section{Galois 表示基础}
+\label{sec:ch09-galois-representations}
+% ============================================================================
+
+\providecommand{\Zl}{\mathbb{Z}_\ell}
+\providecommand{\Ql}{\mathbb{Q}_\ell}
+\providecommand{\rhobar}{\bar{\rho}}
+
+现在要面对本章真正的主角：
+绝对 Galois 群 $G_\Q$。
+它控制着所有代数数之间的对称，
+但也因此庞大得几乎无法直接把握。
+和有限群不同，
+$G_\Q$ 不是一个能靠“列出元素和关系式”去理解的对象；
+和 Lie 群不同，
+它也不是实流形，不存在方便的微分几何坐标。
+因此第一步必须换视角：
+不直接研究 $G_\Q$ 本身，
+而去研究它在有限维线性空间上的作用。
+
+\textbf{我们遇到了什么问题？}
+如果把 $G_\Q$ 看成“所有代数数的对称群”，
+这个描述虽然准确，却几乎无法计算。
+比如我们想问：
+某个素数 $p$ 在一个扩张里怎样分解？
+某条椭圆曲线在模 $p$ 约化后有多少点？
+Hecke 特征值 $a_p(f)$ 究竟由什么 Galois 数据决定？
+这些问题都在说同一件事：
+我们并不需要知道整个 $G_\Q$ 的所有细节，
+而只需要知道它在某个有限维对象上的影子。
+
+\textbf{核心思想是什么？}
+第一，把 $G_\Q$ 视为所有有限 Galois 群的逆极限，
+于是它天然带有一个拓扑，叫 Krull 拓扑；
+第二，只考虑连续表示
+\[
+  \rho\colon G_\Q\to \GL_n(R),
+\]
+这样有限指数子群、惯性群、Frobenius 元等局部对象才会真正反映到矩阵上；
+第三，用 Chebotarev 密度定理把“几乎所有素数的 Frobenius”当作一组稠密测试元。
+这意味着：
+虽然 $G_\Q$ 大得无法枚举，
+但一个半单表示往往只要知道几乎所有 $\rho(\Frob_p)$ 的共轭类就够了。
+
+\textbf{引入之后能得到什么？}
+本节建立的 profinite 群、惯性、无分歧与 Frobenius 语言，
+将直接变成后面三节的工作台：
+在第\ref{sec:ch09-tate-module}节，
+它们用来描述椭圆曲线 Tate 模上的作用；
+在第\ref{sec:ch09-modular-galois}节，
+它们用来表述 Deligne 的模形式 Galois 表示；
+在第\ref{sec:ch09-ribet}节，
+“在某个素数处无分歧”则正是水平下降能否进行的判断标准。
+
+\input{figures/ch09-profinite}
+
+\begin{definition}[profinite 群]
+一个拓扑群 $G$ 称为\textbf{profinite 群}，
+如果它同构于一族有限群的逆极限
+\[
+  G\cong \varprojlim_i G_i,
+\]
+其中过渡映射都是满同态。
+等价地，$G$ 是紧、全不连通且 Hausdorff 的拓扑群。
+\end{definition}
+
+\begin{proposition}[绝对 Galois 群的 profinite 结构]
+\label{prop:ch09-gq-profinite}
+绝对 Galois 群满足
+\[
+  G_\Q\cong \varprojlim_{K/\Q} \Gal(K/\Q),
+\]
+其中逆极限取遍所有有限 Galois 扩张 $K/\Q$。
+特别地，$G_\Q$ 是 profinite 群。
+\end{proposition}
+
+\begin{proof}
+对每个有限 Galois 扩张 $K/\Q$，
+限制映射给出连续满同态
+\[
+  r_K\colon G_\Q\to \Gal(K/\Q).
+\]
+若 $L\supset K$ 也是有限 Galois 扩张，
+则有相容关系
+\[
+  r_K=\operatorname{res}_{L/K}\circ r_L.
+\]
+因此 $\{r_K\}$ 诱导一个群同态
+\[
+  r\colon G_\Q\to \varprojlim_{K/\Q}\Gal(K/\Q).
+\]
+
+先证单射。
+若 $\sigma\in G_\Q$ 在每个有限 Galois 扩张上都限制为恒等，
+则它固定每个代数数。
+因为任何 $\alpha\in\bar\Q$ 都落在某个有限 Galois 扩张中，
+故 $\sigma(\alpha)=\alpha$ 对所有 $\alpha$ 成立，
+于是 $\sigma=1$。
+
+再证满射。
+设 $(\sigma_K)_K$ 是逆极限中的一个相容族。
+对每个 $\alpha\in\bar\Q$，
+取包含 $\alpha$ 的有限 Galois 扩张 $K$，定义
+\[
+  \sigma(\alpha)=\sigma_K(\alpha).
+\]
+相容性保证这与 $K$ 的选择无关。
+由有限扩张上的域自同构兼容可知，
+$\sigma$ 是 $\bar\Q$ 的域自同构，且固定 $\Q$。
+因此 $\sigma\in G_\Q$，并且 $r(\sigma)=(\sigma_K)_K$。
+故 $r$ 为同构。
+
+把每个有限商赋予离散拓扑，逆极限赋予乘积拓扑的子空间拓扑，
+就得到 $G_\Q$ 的 Krull 拓扑。
+由于有限离散空间紧且全不连通，逆极限仍具这些性质，
+故 $G_\Q$ 是 profinite 群。
+\end{proof}
+
+\begin{lemma}[Krull 拓扑的全不连通性]
+\label{lem:ch09-krull-totally-disconnected}
+作为 profinite 群，$G_\Q$ 的每个连通分支都是单点集。
+\end{lemma}
+
+\begin{proof}
+关键是：在逆极限拓扑里，每个开正规子群都把 $G_\Q$ 切成有限多个既开又闭的陪集。
+固定 $g\in G_\Q$，记包含 $g$ 的连通分支为 $C(g)$。
+任取开正规子群 $N\triangleleft G_\Q$，商映射
+\[
+  \pi_N\colon G_\Q\to G_\Q/N
+\]
+的每个纤维都是某个陪集 $hN$。
+因为 $G_\Q/N$ 是有限离散空间，这些陪集把 $G_\Q$ 分成有限多个开闭子集。
+连通集不可能同时落在两个不同的开闭部分里，
+所以 $C(g)$ 既然含有 $g$，就只能完全落在 $gN$ 中。
+因此对每个开正规子群 $N$ 都有
+\[
+  C(g)\subset gN.
+\]
+对所有 $N$ 取交，便得
+\[
+  C(g)\subset \bigcap_{N\triangleleft_o G_\Q} gN
+  =g\Bigl(\bigcap_{N\triangleleft_o G_\Q}N\Bigr).
+\]
+下面说明括号里的交只有单位元。
+若 $x\neq 1$，则存在某个代数数 $\alpha\in \bar\Q$ 使 $x(\alpha)\neq \alpha$。
+取包含 $\alpha$ 的有限 Galois 扩张 $K/\Q$，便有 $r_K(x)\neq 1$，
+故
+\[
+  x\notin \ker r_K.
+\]
+而 $\ker r_K$ 是一个开正规子群。
+这说明任何非平凡元素都会被某个开正规子群排除，
+于是
+\[
+  \bigcap_{N\triangleleft_o G_\Q}N=\{1\}.
+\]
+故 $C(g)\subset \{g\}$。
+反过来，单点集本身总是连通的，
+所以 $C(g)=\{g\}$。
+于是 $G_\Q$ 的每个连通分支都是单点集，也就是说 Krull 拓扑是全不连通的。 \qedhere
+\end{proof}
+
+\begin{definition}[连续表示]
+设 $R$ 是拓扑环。
+一个\textbf{连续 $R$-值表示}是连续群同态
+\[
+  \rho\colon G_\Q\to \GL_n(R).
+\]
+若 $R$ 是离散环，例如 $\F_\ell$，
+连续性等价于 $\ker\rho$ 为开子群，
+也等价于 $\rho$ 通过某个有限 Galois 商因子化。
+\end{definition}
+
+\begin{proof}[说明]
+因为 $\GL_n(\F_\ell)$ 是有限离散群，
+连续映射的原像 $\rho^{-1}(1)$ 必为开集，
+而开子群在 profinite 群中自动有有限指数。
+于是 $\rho$ 通过有限商 $G_\Q/\ker\rho$ 因子化。
+反过来，任何通过有限离散商的映射显然连续。
+\end{proof}
+
+连续性的真正意义在于：
+每一个表示都只“看见”有限层面的算术信息，
+这使得局部分解群和惯性群成为可操作对象。
+
+\begin{definition}[分解群、惯性群与无分歧]
+设 $p$ 是素数，固定 $\bar\Q$ 中一个位于 $p$ 上方的素点。
+与之对应的局部绝对 Galois 群记作
+\[
+  G_{\Q_p}=\Gal(\overline{\Q}_p/\Q_p).
+\]
+它通过嵌入可看成 $G_\Q$ 的一个闭子群，称为 $p$ 处的\textbf{分解群} $D_p$。
+其核
+\[
+  I_p\subset D_p
+\]
+称为\textbf{惯性群}。
+若表示 $\rho$ 满足 $I_p\subset \ker\rho$，
+则称 $\rho$ 在 $p$ 处\textbf{无分歧}。
+\end{definition}
+
+当 $\rho$ 在 $p$ 处无分歧时，
+它在 $D_p$ 上只依赖于商群 $D_p/I_p$。
+而这个商群有一个特别重要的生成元：Frobenius。
+
+\begin{definition}[Frobenius 元]
+设 $\rho$ 在 $p$ 处无分歧。
+因为
+\[
+  D_p/I_p\cong \Gal(\bar\F_p/\F_p)
+\]
+由几何 Frobenius $x\mapsto x^{1/p}$ 或算术 Frobenius $x\mapsto x^p$ 拓扑生成，
+本书统一采用\textbf{算术 Frobenius}，记为 $\Frob_p$。
+它在 $D_p/I_p$ 中是一个定义到共轭为止的元素，
+故 $\rho(\Frob_p)$ 的共轭类有意义。
+\end{definition}
+
+\textbf{注。}
+为什么只有共轭类有意义？
+因为分解群 $D_p$ 依赖于我们在 $\bar\Q$ 中选取的 $p$ 上方素点；
+改变这个选取，只会把 $D_p$ 替换为共轭子群。
+因此任何真正与全局表示有关的对象都必须是共轭不变量，
+最自然的就是迹、行列式与特征多项式。
+
+\begin{theorem}[Chebotarev 密度定理]
+\label{thm:ch09-chebotarev-density}
+设 $L/\Q$ 是有限 Galois 扩张，$G=\Gal(L/\Q)$，并令 $C=[\sigma]\subset G$ 为元素 $\sigma$ 的共轭类。
+若素数 $p$ 在 $L$ 中无分歧，取一个位于 $p$ 上方的素理想 $\mathfrak p$，
+则存在唯一元素 $\Frob_{\mathfrak p}\in D_{\mathfrak p}\subset G$ 使得
+\[
+  \Frob_{\mathfrak p}(x)\equiv x^p\pmod{\mathfrak p}
+\]
+对所有 $x\in \mathcal O_L$ 都成立。
+若把 $\mathfrak p$ 换成另一个位于 $p$ 上方的素理想，得到的元素只会变成共轭元，
+因此得到良定义的 Frobenius 共轭类 $\Frob_p=[\Frob_{\mathfrak p}]$。
+记
+\[
+  S_C=\{p:\text{$p$ 在 $L$ 中无分歧，且 }\Frob_p=C\}.
+\]
+则 $S_C$ 的 Dirichlet 密度存在，且
+\[
+  \delta(S_C)=\frac{|C|}{|G|}.
+\]
+\end{theorem}
+
+\begin{proof}[证明草图]
+关键是把“某个共轭类出现多少次”翻译成若干 $L$-函数在 $s=1$ 附近的对数奇性。下面分四步说明。
+
+\textit{第一步：把密度写成素数级数的主项。}
+对素数集合 $S$，Dirichlet 密度定义为
+\[
+  \delta(S)=\lim_{s\to 1^+}\frac{\sum_{p\in S}p^{-s}}{\log \frac{1}{s-1}},
+\]
+只要这个极限存在。这里用到经典事实
+\[
+  \sum_p p^{-s}=\log \frac{1}{s-1}+O(1)
+  \qquad (s\to 1^+).
+\]
+因此我们只需找出 $\sum_{p\in S_C}p^{-s}$ 的主项系数。
+
+\textit{第二步：把 Frobenius 共轭类与 Dedekind zeta 函数联系起来。}
+对 $G$ 的每个不可约特征 $\chi$，记对应的 Artin $L$-函数为 $L(s,\chi)$。
+去掉有限多个分歧 Euler 因子后，
+其对数展开为
+\[
+  \log L(s,\chi)
+  =
+  \sum_{p\text{ 无分歧}}\sum_{m\ge 1}\frac{\chi(\Frob_p^m)}{m\,p^{ms}}+O(1).
+\]
+因此一次项已经控制了和
+\[
+  \sum_{p\text{ 无分歧}}\chi(\Frob_p)p^{-s}.
+\]
+另一方面，Dedekind zeta 函数分解为
+\[
+  \zeta_L(s)=\prod_{\chi}L(s,\chi)^{\chi(1)},
+\]
+所以 $\zeta_L(s)$ 在 $s=1$ 的极点信息，正是所有 Artin $L$-函数极点信息的总和。
+
+\textit{第三步：分析 $s=1$ 处到底谁会产生极点。}
+解析类数公式告诉我们，$\zeta_L(s)$ 在 $s=1$ 只有一个一级极点。
+其中平凡特征对应的 $L$-函数满足
+\[
+  L(s,1)=\zeta(s)\prod_{p\in R}(1-p^{-s}),
+\]
+这里 $R$ 是有限个分歧素数的集合，
+所以它与 Riemann zeta 函数有同样的对数发散。
+而 Artin 的非平凡特征 $L$-函数在 $s=1$ 全都全纯且非零，因而
+\[
+  \log L(s,\chi)=O(1)
+  \qquad (\chi\neq 1,\ s\to 1^+).
+\]
+于是得到
+\[
+  \sum_{p\text{ 无分歧}}\chi(\Frob_p)p^{-s}
+  =
+  \begin{cases}
+    \log \dfrac{1}{s-1}+O(1), & \chi=1,\\[1ex]
+    O(1), & \chi\neq 1.
+  \end{cases}
+\]
+
+\textit{第四步：用角色正交把单个共轭类挑出来。}
+设 $\mathbf 1_C$ 是共轭类 $C$ 的示性函数。
+因为它是类函数，故可按不可约特征展开：
+\[
+  \mathbf 1_C(g)=\sum_{\chi}\langle \mathbf 1_C,\chi\rangle\chi(g),
+\]
+其中
+\[
+  \langle \mathbf 1_C,\chi\rangle
+  =\frac{1}{|G|}\sum_{h\in G}\mathbf 1_C(h)\overline{\chi(h)}
+  =\frac{|C|}{|G|}\overline{\chi(\sigma)}.
+\]
+故
+\[
+  \sum_{p\in S_C}p^{-s}
+  =\sum_{p\text{ 无分歧}}\mathbf 1_C(\Frob_p)p^{-s}
+  =\frac{|C|}{|G|}\sum_{\chi}\overline{\chi(\sigma)}
+  \sum_{p\text{ 无分歧}}\chi(\Frob_p)p^{-s}.
+\]
+代入第三步的估计，只有平凡特征贡献主项；
+因为 $\overline{1(\sigma)}=1$，便得到
+\[
+  \sum_{p\in S_C}p^{-s}
+  =
+  \frac{|C|}{|G|}\log \frac{1}{s-1}+O(1).
+\]
+与第一步中的密度定义比较，便有
+\[
+  \delta(S_C)=\frac{|C|}{|G|}.
+\]
+这就完成了证明草图。 \qedhere
+\end{proof}
+
+\begin{theorem}[Chebotarev + Brauer--Nesbitt]
+\label{thm:ch09-chebotarev-determines-representation}
+设
+\[
+  \rho_1,\rho_2\colon G_\Q\to \GL_n(L)
+\]
+是两个连续半单表示，其中 $L$ 是特征零域或有限域。
+若对几乎所有无分歧素数 $p$ 都有
+\[
+  \Tr\rho_1(\Frob_p)=\Tr\rho_2(\Frob_p)
+  \qquad\text{且}\qquad
+  \det\rho_1(\Frob_p)=\det\rho_2(\Frob_p),
+\]
+则 $\rho_1\cong \rho_2$。
+特别地，一个半单表示几乎完全由 $\{\rho(\Frob_p)\}$ 决定。
+\end{theorem}
+
+\begin{proof}
+对每个同时无分歧的素数 $p$，
+假设两表示的迹与行列式相同，
+则二者在 $\Frob_p$ 处的特征多项式相同。
+Chebotarev 密度定理说明：
+所有这样的 Frobenius 共轭类在 $G_\Q$ 中是稠密的，
+更准确地说，
+每个有限 Galois 商中的任一共轭类都由无穷多个素数的 Frobenius 实现。
+因此，两个表示在一个稠密共轭集合上有相同特征多项式。
+
+Brauer--Nesbitt 定理断言：
+对半单表示而言，角色函数（即迹）决定表示的同构类。
+由于迹在稠密集上一致，而连续表示的迹函数连续，
+故两者在整个 $G_\Q$ 上角色相同。
+于是
+\[
+  \rho_1^{\mathrm{ss}}\cong \rho_2^{\mathrm{ss}}.
+\]
+因为两表示已假设半单，结论就是 $\rho_1\cong \rho_2$。
+\end{proof}
+
+\begin{proposition}[绝对不可约表示的中心化子]
+\label{prop:ch09-schur-absolute-irreducible}
+设 $k$ 是域，
+\[
+  \rho\colon G_\Q\to \GL_n(k)
+\]
+是绝对不可约表示。
+则
+\[
+  \End_{G_\Q}(k^n)=k,
+\]
+也就是说，任何与 $\rho(G_\Q)$ 中所有矩阵都可交换的自同态都只能是标量矩阵。
+\end{proposition}
+
+\begin{proof}
+关键是先把问题放到代数闭包上；在那里 Schur 引理会把中心化子压缩到最小。
+记 $\bar k$ 为 $k$ 的代数闭包，并把表示延拓为
+\[
+  \rho_{\bar k}\colon G_\Q\to \GL_n(\bar k).
+\]
+因为 $\rho$ 绝对不可约，$\rho_{\bar k}$ 仍然不可约。
+于是 Schur 引理告诉我们，
+\[
+  A:=\End_{G_\Q}(\bar k^n)
+\]
+是一个除代数。
+另一方面，$A$ 是 $\End_{\bar k}(\bar k^n)\cong M_n(\bar k)$ 的子空间，
+所以它是有限维 $\bar k$-向量空间。
+现在说明：代数闭域上的有限维除代数只能等于该域本身。
+事实上，若 $u\in A$，把它看成 $\bar k$-线性变换，
+其特征多项式在 $\bar k$ 上分裂，故存在特征值 $\lambda\in \bar k$。
+于是 $u-\lambda$ 有非零核，因而不是可逆元。
+但 $A$ 是除代数，非零元都必须可逆，
+所以只能有 $u-\lambda=0$，即 $u=\lambda$。
+这说明
+\[
+  A=\bar k.
+\]
+现在取任意 $T\in \End_{G_\Q}(k^n)$。
+把标量扩张到 $\bar k$，得到
+\[
+  T_{\bar k}\in \End_{G_\Q}(\bar k^n)=\bar k.
+\]
+因此存在 $\lambda\in \bar k$ 使 $T_{\bar k}=\lambda I_n$。
+但 $T_{\bar k}$ 的矩阵条目与 $T$ 相同，本来都在 $k$ 中，
+所以这一个标量 $\lambda$ 也必须属于 $k$。
+于是 $T=\lambda I_n$，故
+\[
+  \End_{G_\Q}(k^n)=k.
+\]
+也就是说，中心化子只有标量。 \qedhere
+\end{proof}
+
+最基本、也最重要的例子，是分圆特征。
+它把 Galois 群在所有 $\ell^n$ 次单位根上的作用编码起来，
+后面将成为椭圆曲线表示行列式的答案。
+
+\begin{definition}[$\ell$-进分圆特征]
+设 $\ell$ 是素数。
+对每个 $n\ge 1$，令 $\mu_{\ell^n}\subset \bar\Q$ 为所有 $\ell^n$ 次单位根。
+若 $\sigma\in G_\Q$，则存在唯一的
+\[
+  a_n(\sigma)\in (\Z/\ell^n\Z)^\times
+\]
+使得
+\[
+  \sigma(\zeta)=\zeta^{a_n(\sigma)}
+  \qquad (\zeta\in \mu_{\ell^n}).
+\]
+当 $n$ 变化时，这些 $a_n(\sigma)$ 相容，
+故定义出连续特征
+\[
+  \chi_\ell\colon G_\Q\to \Zl^\times,
+\]
+称为\textbf{$\ell$-进分圆特征}。
+\end{definition}
+
+\begin{proposition}[分圆特征在 Frobenius 上的取值]
+\label{prop:ch09-cyclotomic-frobenius}
+若 $p\neq \ell$，则 $\chi_\ell$ 在 $p$ 处无分歧，且
+\[
+  \chi_\ell(\Frob_p)=p\in \Zl^\times.
+\]
+特别地，模 $\ell$ 约化后有
+\[
+  \chi_\ell(\Frob_p)\equiv p\pmod \ell.
+\]
+\end{proposition}
+
+\begin{proof}
+当 $p\neq \ell$ 时，扩张 $\Q(\mu_{\ell^n})/\Q$ 只在 $\ell$ 处分歧，
+故它在 $p$ 处无分歧。
+因此分圆特征在 $p$ 处无分歧。
+
+在有限域中，算术 Frobenius 的定义就是 $x\mapsto x^p$。
+对任意 $\ell^n$ 次单位根 $\zeta$，
+其在 $p$ 处的 Frobenius 作用满足
+\[
+  \Frob_p(\zeta)=\zeta^p.
+\]
+于是
+\[
+  a_n(\Frob_p)\equiv p\pmod{\ell^n}.
+\]
+让 $n\to \infty$，得到
+\[
+  \chi_\ell(\Frob_p)=p\in \Zl^\times.
+\]
+模 $\ell$ 约化即得最后一个同余式。
+\end{proof}
+
+\subsection*{补充：Serre 的模性猜想}
+CSS 中 Edixhoven 的文章把一个看似简单、实则极深的问题推到前台：
+哪些二维 mod $\ell$ 表示会来自模形式？
+Wiles 的方法处理的是“已知 residual 表示模，推出某些 $\ell$-进提升也模”；
+Serre 猜想则反过来断言，
+只要 residual 表示本身满足最基本的奇性与不可约性条件，
+它一开始就应当是模的。
+
+\begin{theorem}[Serre 猜想，现已成定理]
+\label{thm:ch09-serre-conjecture}
+设
+\[
+  \rhobar\colon G_\Q\to \GL_2(\F_\ell)
+\]
+是奇的、不可约的连续表示。
+则存在某个归一化特征模形式 $f$，使得
+\[
+  \rhobar\cong \rhobar_{f,\lambda}
+\]
+对某个 $\lambda\mid \ell$ 成立。
+更强地，Serre 预测了 $f$ 的最小权与最小级别；
+Khare--Wintenberger 在 2009 年证明了这一完整猜想。
+\end{theorem}
+
+\begin{proof}[历史说明]
+Serre 在 1987 年提出该猜想时，
+它已把第\ref{sec:ch09-ribet}节的水平下降哲学压缩成一句极其大胆的话：
+模形式空间不仅解释某些 residual 表示，
+而且应该解释全部奇、不可约的二维 residual 表示。
+Khare--Wintenberger 的证明结合了模性提升、水平下降与辅助手段归纳，
+其整体风格正延续了 Wiles--Taylor--Wiles 的路线。
+\end{proof}
+
+\begin{definition}[Serre 权与 Serre 级别，粗略描述]
+\label{def:ch09-serre-weight-level}
+对满足上面假设的 $\rhobar$，Serre 猜想附带两个精确的局部预测：
+\begin{itemize}
+  \item Serre 权 $k(\rhobar)$ 由局部限制 $\rhobar|_{G_{\Q_\ell}}$ 决定；
+  在最简单的情形里，若 $\rhobar|_{I_\ell}$ 半单且形如
+  \[
+    \begin{pmatrix}
+      \omega^{k-1} & 0\\ 0 & 1
+    \end{pmatrix},
+  \]
+  其中 $\omega$ 是模 $\ell$ 分圆特征，
+  则预测的最小权正是这个整数 $k$（落在 $2\le k\le \ell+1$ 的标准范围内）；
+  \item Serre 级别 $N(\rhobar)$ 由各素数处的 Artin 导子指数决定，
+  也就是
+  \[
+    N(\rhobar)=\prod_{p\neq \ell} p^{n_p(\rhobar)}.
+  \]
+  这里 $n_p(\rhobar)$ 衡量 $\rhobar$ 在 $p$ 处的分歧深度。
+\end{itemize}
+\end{definition}
+
+\textbf{注。}
+这两个局部公式与第\ref{sec:ch09-ribet}节的 Ribet 定理直接相连：
+Ribet 水平下降恰恰说明，
+当某个素数 $p$ 在 residual 表示中已经“看不见”时，
+Serre 级别中的 $p$ 指数就应下降。
+从这个意义上说，Carayol 关于导子与级别精确对应的结果，
+以及 Edixhoven 关于权的精细分析，
+共同完成了 Serre 猜想中“最小模形式参数”的字典。
+
+本节的结论可以压缩成一句话：
+\emph{连续 Galois 表示是在有限维线性空间上观察 $G_\Q$ 的方式，
+而无分歧素数处的 Frobenius 矩阵是这份观察中最可计算的坐标。}
+Serre 猜想则进一步说：
+这些坐标在二维奇不可约 mod $\ell$ 情形下，最终总能在模形式空间中找到来源。
+下一节我们把这个语言立即用到椭圆曲线上，
+从而得到本章第一类真正算术化的二维表示。

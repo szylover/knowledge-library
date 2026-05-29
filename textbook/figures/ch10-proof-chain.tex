@@ -1,0 +1,21 @@
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth, font=\small, node distance=1.15cm]
+  \node[draw, rounded corners, fill=red!8, minimum width=5.6cm, minimum height=0.9cm] (a1) {假设 $x^n+y^n=z^n$ 有正整数解};
+  \node[draw, rounded corners, fill=orange!14, below=of a1, minimum width=5.0cm, minimum height=0.9cm] (a2) {归约到 $n=4$ 或 $n=p\ge 5$};
+  \node[draw, rounded corners, fill=yellow!16, below=of a2, minimum width=5.6cm, minimum height=0.9cm] (a3) {$n=4$ 被无穷递降排除；$n=p$ 导出 Frey 曲线};
+  \node[draw, rounded corners, fill=green!10, below=of a3, minimum width=5.4cm, minimum height=0.9cm] (a4) {Frey 曲线半稳定，所以可用 \cref{thm:wiles}};
+  \node[draw, rounded corners, fill=blue!8, below=of a4, minimum width=5.6cm, minimum height=0.9cm] (a5) {对每个 $q\mid abc$，由 \cref{thm:ribet} 逐步删去级别};
+  \node[draw, rounded corners, fill=purple!10, below=of a5, minimum width=4.8cm, minimum height=0.9cm] (a6) {最终落到级别 $2$ 的权 $2$ 新形式};
+  \node[draw, rounded corners, fill=gray!14, below=of a6, minimum width=4.6cm, minimum height=0.9cm] (a7) {$\Sk_2(\GammaO(2))=0$，矛盾};
+
+  \draw[->, very thick] (a1) -- (a2);
+  \draw[->, very thick] (a2) -- (a3);
+  \draw[->, very thick] (a3) -- (a4);
+  \draw[->, very thick] (a4) -- (a5);
+  \draw[->, very thick] (a5) -- (a6);
+  \draw[->, very thick] (a6) -- (a7);
+\end{tikzpicture}
+\caption{费马大定理证明的完整链条：假想解先被归约到奇素数指数，再经 Frey 曲线、模性与水平下降一路走向空空间。}
+\label{fig:ch10-proof-chain}
+\end{figure}

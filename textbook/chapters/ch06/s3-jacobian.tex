@@ -1,0 +1,270 @@
+\section{Jacobian 的构造}
+\label{sec:jacobian-construction}
+% ============================================================================
+
+现在终于来到本章的核心构造。
+给定一条亏格为 $g$ 的紧黎曼面 $X$，前面章节已经告诉我们：
+$H^0(X,\Omega^1)$ 是一个 $g$ 维复向量空间。
+如果只停在这里，我们知道“有多少条全纯微分”，却还没有一个真正的几何对象去承载这些微分的积分信息。
+
+\textbf{我们遇到了什么问题？}
+微分本身只是线性对象；
+而我们真正想记录的是：沿着闭路径积分以后会得到哪些周期？
+这些周期不是随意散落的复数，它们会组成一个格。
+如果不把这个格也记下来，我们就得不到一个紧对象，更谈不上后续的 Abel 簇结构与 Hecke 作用。
+
+\textbf{这个概念的核心思想是什么？}
+Jacobian 簇的想法非常简单：
+先把所有全纯微分放进向量空间 $H^0(X,\Omega^1)^*$，
+再把所有闭路径积分产生的周期收集成一个格 $\Lambda_X$，最后取商
+\[
+  J(X)=H^0(X,\Omega^1)^*/\Lambda_X.
+\]
+也就是说，Jacobian 就是“全纯微分的积分空间模掉周期不确定性”。
+
+\textbf{引入之后能得到什么？}
+这样一来，曲线上的点可以通过积分送进 $J(X)$，这就是 Abel--Jacobi 映射（Abel--Jacobi map）\index{Abel--Jacobi映射!Abel--Jacobi map}。
+当 $g=1$ 时，这个商正好恢复原来的椭圆曲线；
+当 $X=X_0(N)$ 时，$H^0(X_0(N),\Omega^1)$ 又与 $\Sk_2(\GammaO(N))$ 相同，
+于是模形式直接写进了 Jacobian 的定义里。
+这就是本章真正的桥梁时刻。
+
+\input{figures/ch06-jacobian}
+
+\begin{definition}[周期格]
+\label{def:period-lattice}
+设 $X$ 是亏格为 $g$ 的紧黎曼面，记
+\[
+  V_X=H^0(X,\Omega^1)^*.
+\]
+对每个同调类 $\gamma\in H_1(X,\Z)$，定义线性泛函
+\[
+  I_\gamma: H^0(X,\Omega^1)\longrightarrow \C,
+  \qquad
+  I_\gamma(\omega)=\int_\gamma \omega.
+\]
+由此得到群同态
+\[
+  \iota_X:H_1(X,\Z)\longrightarrow V_X,
+  \qquad
+  \gamma\longmapsto I_\gamma.
+\]
+其像
+\[
+  \Lambda_X=\iota_X\bigl(H_1(X,\Z)\bigr)
+\]
+称为 $X$ 的\textbf{周期格（period lattice）}\index{周期格!period lattice}。
+\end{definition}
+
+\begin{proposition}[周期格确实是一个格]
+\label{prop:period-lattice-is-lattice}
+设 $X$ 的亏格为 $g$。
+则 $\iota_X$ 是单射，并且 $\Lambda_X\subset V_X$ 是秩 $2g$ 的离散子群。
+因此 $V_X/\Lambda_X$ 是一个 $g$ 维复环面。
+\end{proposition}
+
+\begin{proof}
+先证单射。
+若 $\gamma\in H_1(X,\Z)$ 满足 $I_\gamma=0$，则对任意全纯微分 $\omega$ 都有
+\[
+  \int_\gamma \omega=0.
+\]
+取复共轭可得对任意反全纯微分 $\overline{\omega}$ 也有
+\[
+  \int_\gamma \overline{\omega}=0.
+\]
+而紧黎曼面上的调和 $1$-形式恰好分解为“全纯部分 $+$ 反全纯部分”，
+所以 $\gamma$ 与每个调和 $1$-形式的积分都为零。
+调和形式代表了 $H^1(X,\C)$ 的全部上同调类，
+因此 $\gamma$ 与 $H^1(X,\C)$ 中每个类的配对都为零。
+由 de Rham 配对
+\[
+  H_1(X,\C)\times H^1(X,\C)\longrightarrow \C
+\]
+的非退化性，得到 $\gamma=0$ 在 $H_1(X,\C)$ 中成立。
+由于 $H_1(X,\Z)$ 是自由阿贝尔群，故 $\gamma=0$。
+
+再看离散性。
+将 $\iota_X$ 张量到实数，得到实线性映射
+\[
+  \iota_{X,\R}:H_1(X,\R)\longrightarrow V_X.
+\]
+上面的论证同样说明它仍然单射。
+而两边的实维数都等于 $2g$：
+左边因为 $H_1(X,\Z)$ 秩为 $2g$，右边因为 $V_X$ 的复维数为 $g$。
+故 $\iota_{X,\R}$ 是实线性同构。
+于是 $\Lambda_X$ 作为整数格 $H_1(X,\Z)$ 在这个同构下的像，必是 $V_X$ 中的一个秩 $2g$ 离散子群。
+所以 $V_X/\Lambda_X$ 是一个 $g$ 维复环面。
+\end{proof}
+
+\begin{definition}[Jacobian 簇]
+\label{def:jacobian}
+设 $X$ 是亏格为 $g$ 的紧黎曼面。
+定义它的\textbf{Jacobian 簇（Jacobian variety）}\index{Jacobian簇!Jacobian variety}
+为复环面
+\[
+  J(X)=V_X/\Lambda_X
+  =H^0(X,\Omega^1)^*/H_1(X,\Z).
+\]
+Riemann 双线性关系进一步说明 $J(X)$ 带有自然主极化，
+因此它实际上是一个 $g$ 维 Abel 簇。
+\end{definition}
+
+\textbf{注。}
+Abel 定理告诉我们，$J(X)$ 也可以看成次数为 $0$ 的除子类群 $\operatorname{Pic}^0(X)$。
+本节我们主要使用解析构造，因为它最直接地展示了模形式如何进入定义。
+
+\begin{definition}[Abel--Jacobi 映射]
+\label{def:abel-jacobi-map}
+固定基点 $P_0\in X$。
+对每个点 $P\in X$，任选一条从 $P_0$ 到 $P$ 的路径 $\eta$，定义
+\[
+  \phi_{P_0}(P)(\omega)=\int_\eta \omega
+  \qquad \bmod \Lambda_X.
+\]
+由此得到映射
+\[
+  \phi_{P_0}:X\longrightarrow J(X),
+\]
+称为以 $P_0$ 为基点的\textbf{Abel--Jacobi 映射}。
+\end{definition}
+
+\begin{proposition}[Abel--Jacobi 映射的基本性质]
+\label{prop:abel-jacobi-basic}
+映射 $\phi_{P_0}$ 良定义且全纯。
+若把 $P_0$ 改成另一个基点 $Q_0$，得到的新映射只与 $\phi_{P_0}$ 相差 $J(X)$ 上的一个平移。
+\end{proposition}
+
+\begin{proof}
+先证良定义。
+若 $\eta_1,\eta_2$ 都从 $P_0$ 连到 $P$，则它们的差 $\eta_1-\eta_2$ 构成闭路径，因而给出某个同调类 $\gamma\in H_1(X,\Z)$。
+对任意 $\omega\in H^0(X,\Omega^1)$，有
+\[
+  \int_{\eta_1}\omega-\int_{\eta_2}\omega
+  =\int_{\gamma}\omega=I_\gamma(\omega),
+\]
+这正是周期格中的元素。
+因此两条路径得到的值在 $J(X)=V_X/\Lambda_X$ 中相同。
+
+再证全纯性。
+取一点 $P\in X$ 的局部坐标 $z$，并令 $z(P)=0$。
+若 $\omega=f(z)\,dz$ 是任一全纯微分，则
+\[
+  \int_{P_0}^{Q}\omega
+  =C+\int_0^{z(Q)} f(\zeta)\,d\zeta
+\]
+在局部是 $z(Q)$ 的全纯函数。
+对一组基微分同时成立，因此 $\phi_{P_0}$ 在局部由若干全纯函数给出，是全纯映射。
+
+若改用基点 $Q_0$，则对任意 $P$ 有
+\[
+  \phi_{Q_0}(P)-\phi_{P_0}(P)
+  =\left(\omega\mapsto \int_{Q_0}^{P}\omega-\int_{P_0}^{P}\omega\right)
+  =\left(\omega\mapsto \int_{Q_0}^{P_0}\omega\right),
+\]
+右边与 $P$ 无关。
+故新旧映射只差一个常向量，即 Jacobian 上的平移。
+\end{proof}
+
+\begin{theorem}[亏格 $1$ 时曲线等于其 Jacobian]
+\label{thm:genus1-jacobian}
+设 $X$ 是亏格 $1$ 的紧黎曼面，并固定基点 $P_0\in X$。
+则 Abel--Jacobi 映射
+\[
+  \phi_{P_0}:X\longrightarrow J(X)
+\]
+是双全纯同构。
+特别地，亏格 $1$ 曲线的 Jacobian 就是它自身；
+若 $X$ 还带有代数结构与基点，则这正恢复熟悉的椭圆曲线群结构。
+\end{theorem}
+
+\begin{proof}
+因为 $g=1$，空间 $H^0(X,\Omega^1)$ 一维，取非零微分 $\omega$ 作为基。
+其零点除子的次数等于规范除子的次数 $2g-2=0$，
+而零点次数总是非负，故 $\omega$ 没有零点。
+
+设 $\widetilde{X}\to X$ 是普遍覆盖。
+由于 $\widetilde{X}$ 单连通，函数
+\[
+  F(Q)=\int_{\widetilde{P}_0}^{Q} \widetilde{\omega}
+\]
+在 $\widetilde{X}$ 上良定义，其中 $\widetilde{\omega}$ 是 $\omega$ 的拉回。
+并且
+\[
+  dF=\widetilde{\omega}.
+\]
+因为 $\widetilde{\omega}$ 处处不为零，$F$ 的导数处处非零，故 $F$ 是局部双全纯映射。
+其像是 $\C$ 中一个既开又闭的连通子集，只能是整个 $\C$。
+因此 $F:\widetilde{X}\to\C$ 是覆盖映射。
+但 $\C$ 单连通，故该覆盖只能是双全纯同构。
+所以 $\widetilde{X}\cong\C$。
+
+现在看 deck transformation 的作用。
+若 $\delta$ 是覆盖变换，则
+\[
+  F(\delta Q)-F(Q)
+\]
+的导数为零，因此它是常数；这个常数恰是沿相应闭路径对 $\omega$ 的积分，也就是一个周期。
+于是 deck transformation 群恰好通过平移作用，其平移向量组成周期格 $\Lambda_X$。
+因此
+\[
+  X\cong \C/\Lambda_X.
+\]
+另一方面，由于 $H^0(X,\Omega^1)$ 一维，$V_X=H^0(X,\Omega^1)^*$ 也可与 $\C$ 识别；
+在此识别下 Jacobian 恰为
+\[
+  J(X)=\C/\Lambda_X.
+\]
+由构造可知 $\phi_{P_0}$ 正是这个商同构。
+故它是双全纯同构。
+\end{proof}
+
+\begin{proposition}[模曲线的 Jacobian]
+\label{prop:j0n-from-s2}
+对紧化模曲线 $X_0(N)$，有自然同构
+\[
+  J_0(N)=J\bigl(X_0(N)\bigr)
+  \cong \Sk_2\bigl(\GammaO(N)\bigr)^*/H_1\bigl(X_0(N),\Z\bigr).
+\]
+特别地，$J_0(N)$ 的维数为
+\[
+  \dim J_0(N)=\dim \Sk_2\bigl(\GammaO(N)\bigr)=g\bigl(X_0(N)\bigr).
+\]
+\end{proposition}
+
+\begin{proof}
+由\cref{thm:s2-holomorphic-differentials}，
+\[
+  H^0\bigl(X_0(N),\Omega^1\bigr)\cong \Sk_2\bigl(\GammaO(N)\bigr).
+\]
+把这个同构代入 \cref{def:jacobian} 的定义，即得
+\[
+  J\bigl(X_0(N)\bigr)
+  =H^0\bigl(X_0(N),\Omega^1\bigr)^*/H_1\bigl(X_0(N),\Z\bigr)
+  \cong \Sk_2\bigl(\GammaO(N)\bigr)^*/H_1\bigl(X_0(N),\Z\bigr).
+\]
+维数结论则由\cref{cor:dim-s2-genus} 立刻得到。
+\end{proof}
+
+\begin{example}[$J_0(11)$ 是一条椭圆曲线]
+\label{ex:j011-elliptic}
+由\cref{ex:genus-small-levels,cor:dim-s2-genus}，
+\[
+  g\bigl(X_0(11)\bigr)=1,
+  \qquad
+  \dim \Sk_2\bigl(\GammaO(11)\bigr)=1.
+\]
+于是根据\cref{prop:j0n-from-s2}，$J_0(11)$ 是一维 Abel 簇。
+再由\cref{prop:dim1-torus-abelian,thm:genus1-jacobian}，
+一维 Abel 簇就是椭圆曲线，所以 $J_0(11)$ 本身就是一条椭圆曲线。
+这正是最早出现的模椭圆曲线例子之一。
+\end{example}
+
+\textbf{关键等式。}
+真正值得记住的是
+\[
+  J_0(N)=\Sk_2\bigl(\GammaO(N)\bigr)^*/H_1\bigl(X_0(N),\Z\bigr).
+\]
+从这一刻开始，权 $2$ 模形式不再只是“函数空间中的向量”，
+而是 Jacobian 的余切空间中的方向；
+这正是 Hecke 算子能够提升为 Jacobian 自同态的根本原因。
