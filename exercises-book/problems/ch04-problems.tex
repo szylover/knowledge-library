@@ -1,0 +1,609 @@
+\chapter{第4章：模曲线作为黎曼面 习题}
+\difficultykey
+
+\section{基础题 \easy}
+
+\begin{problem}{Gamma0(2)的尖点}
+证明 $\Gamma_0(2)\backslash\HH^*$ 只有两个尖点，并可取代表为 $\infty$ 与 $0$。
+\end{problem}
+\begin{solution}
+$\Gamma_0(2)$ 在尖点集 $\mathbb{P}^1(\Q)$ 上的轨道由分母对 $2$ 的整除情形决定。对任意既约分数 $a/c$：
+若 $2\mid c$，则该尖点与 $0$ 同轨；若 $2\nmid c$，则与 $\infty$ 同轨。更具体地，
+\[
+\begin{pmatrix}a&*\\c&*\end{pmatrix}\in\SL_2(\Z)
+\]
+把 $\infty$ 送到 $a/c$；当 $c$ 为奇数时可用与 $\Gamma_0(2)$ 中元素相乘把它化到 $\infty$，当 $c$ 为偶数时化到 $0$。而 $0$ 与 $\infty$ 不等价，因为若
+\[
+\gamma\in\Gamma_0(2),\qquad \gamma(\infty)=0,
+\]
+则其左上角必须为 $0$，从而左下角为 $\pm1$，不可能被 $2$ 整除。故恰有两个尖点。
+\end{solution}
+
+\begin{problem}{Gamma0(p)的指数}
+设 $p$ 为素数。计算
+\[
+[\SL_2(\Z):\Gamma_0(p)].
+\]
+\end{problem}
+\begin{solution}
+一般公式为
+\[
+[\SL_2(\Z):\Gamma_0(N)]=N\prod_{\ell\mid N}\left(1+\frac1\ell\right).
+\]
+对素数 $p$，即
+\[
+[\SL_2(\Z):\Gamma_0(p)]=p\left(1+\frac1p\right)=p+1.
+\]
+也可从 $\Gamma_0(p)$ 在射影直线 $\mathbb{P}^1(\mathbf{F}_p)$ 上的轨道计数得到同样结论。
+\end{solution}
+
+\begin{problem}{素数水平的亏格公式练习}
+利用 $X_0(p)$ 的亏格公式，计算 $g_0(11)$、$g_0(17)$、$g_0(37)$。
+\end{problem}
+\begin{solution}
+对素数 $p$，
+\[
+g_0(p)=1+\frac{p+1}{12}-\frac{\nu_2}{4}-\frac{\nu_3}{3}-1,
+\]
+其中 $\nu_2=2$ 当且仅当 $p\equiv1\pmod4$，$\nu_3=2$ 当且仅当 $p\equiv1\pmod3$。
+
+\begin{itemize}
+\item $p=11$：$\nu_2=\nu_3=0$，故 $g_0(11)=1$。
+\item $p=17$：$\nu_2=2$，$\nu_3=0$，故
+\[
+g_0(17)=1+\frac{18}{12}-\frac24-1=1.
+\]
+\item $p=37$：$\nu_2=2$，$\nu_3=2$，故
+\[
+g_0(37)=1+\frac{38}{12}-\frac24-\frac23-1=2.
+\]
+\end{itemize}
+所以答案分别是 $1,1,2$。
+\end{solution}
+
+\begin{problem}{i是椭圆点}
+证明 $i=\sqrt{-1}$ 是 $\SL_2(\Z)$ 作用下的椭圆点，并求其稳定子。
+\end{problem}
+\begin{solution}
+设
+\[
+S=\begin{pmatrix}0&-1\\1&0\end{pmatrix}.
+\]
+则
+\[
+S(i)=-\frac1i=i,
+\]
+所以 $i$ 是不动点。又 $S^2=-I$，而在偶权模形式理论或在 $\PSL_2(\Z)$ 中，$-I$ 作用平凡，所以 $S$ 在射影群中阶为 $2$。标准基本域告诉我们，$i$ 的稳定子正是由 $S$ 生成，因此
+\[
+\mathrm{Stab}_{\PSL_2(\Z)}(i)=\langle S\rangle\cong \Z/2\Z.
+\]
+\end{solution}
+
+\begin{problem}{rho是三阶椭圆点}
+设 $\rho=e^{2\pi i/3}$。证明 $\rho$ 的稳定子由 $ST$ 生成，且同构于 $\Z/3\Z$。
+\end{problem}
+\begin{solution}
+记
+\[
+T=\begin{pmatrix}1&1\\0&1\end{pmatrix},
+\qquad
+ST=\begin{pmatrix}0&-1\\1&1\end{pmatrix}.
+\]
+因为 $\rho^2+\rho+1=0$，所以
+\[
+(ST)(\rho)=-\frac1{\rho+1}=\rho.
+\]
+再算 $(ST)^3=-I$，故在 $\PSL_2(\Z)$ 中 $ST$ 的阶为 $3$。由基本域的顶点结构知，$\rho$ 的稳定子恰由该元素生成，于是
+\[
+\mathrm{Stab}_{\PSL_2(\Z)}(\rho)=\langle ST\rangle\cong\Z/3\Z.
+\]
+\end{solution}
+
+\begin{problem}{X0(1)与射影直线}
+用 Euler 示性数与 $j$-函数说明 $X_0(1)=\mathbb{P}^1(\C)$。
+\end{problem}
+\begin{solution}
+模曲线 $X_0(1)=X(1)=\SL_2(\Z)\backslash\HH^*$ 是紧黎曼面。其亏格由公式得 $g=0$，因此 Euler 示性数
+\[
+\chi(X(1))=2-2g=2.
+\]
+另一方面，$j$-函数是 $\SL_2(\Z)$-不变亚纯函数，在尖点 $\infty$ 处有一个单极点，并把椭圆点 $i,\rho$ 分别送到 $1728,0$。因此 $j$ 给出从紧黎曼面 $X(1)$ 到 $\mathbb{P}^1(\C)$ 的非常值全纯映射。由于两边亏格都为 $0$，且 $j$ 在函数域层面生成全部不变函数域，所以它实际上给出双全纯同构
+\[
+X_0(1)\cong\mathbb{P}^1(\C).
+\]
+\end{solution}
+
+\begin{problem}{X(2)的亏格修正题}
+修正并计算 $X(2)$ 的亏格。提示：应使用 $[\SL_2(\Z):\pm\Gamma(2)]=6$、无椭圆点、且尖点数为 $3$。
+\end{problem}
+\begin{solution}
+标准记号下 $X(2)$ 对应于 $\pm\Gamma(2)$ 的商，而不是 $\Gamma(2)$ 本身。其指数是 $6$，且没有椭圆点，所以
+\[
+g(X(2))=1+\frac{6}{12}-\frac{0}{4}-\frac{0}{3}-\frac{3}{2}=0.
+\]
+故 $X(2)$ 是亏格 $0$ 的紧黎曼面，因此同构于 $\mathbb{P}^1$。
+\end{solution}
+
+\begin{problem}{尖点稳定子与宽度}
+设 $a/c\in\mathbb{P}^1(\Q)$ 为既约分数。写出其在 $\Gamma_0(N)$ 下的稳定子，并给出生成元。
+\end{problem}
+\begin{solution}
+取 $\sigma\in\SL_2(\Z)$ 使 $\sigma(\infty)=a/c$。则稳定子是
+\[
+\mathrm{Stab}_{\Gamma_0(N)}(a/c)=\sigma\langle T^{w_{a/c}}\rangle\sigma^{-1}\cap\Gamma_0(N),
+\]
+其中 $T=\begin{pmatrix}1&1\\0&1\end{pmatrix}$，而尖点宽度为
+\[
+w_{a/c}=\frac{N}{\gcd(c^2,N)}.
+\]
+因此一个生成元可取为
+\[
+\sigma\begin{pmatrix}1&w_{a/c}\\0&1\end{pmatrix}\sigma^{-1}.
+\]
+这说明每个尖点附近的局部参数是 $q_{a/c}=e^{2\pi i\sigma^{-1}\tau/w_{a/c}}$。
+\end{solution}
+
+\begin{problem}{Atkin-Lehner对合的全纯性}
+证明 $w_N:\tau\mapsto -1/(N\tau)$ 在 $X_0(N)$ 上给出全纯自同构。
+\end{problem}
+\begin{solution}
+令
+\[
+w_N=\begin{pmatrix}0&-1\\N&0\end{pmatrix}.
+\]
+直接计算可得
+\[
+w_N^{-1}\Gamma_0(N)w_N=\Gamma_0(N),
+\]
+所以 $w_N$ 规范化 $\Gamma_0(N)$，从而在商空间 $Y_0(N)=\Gamma_0(N)\backslash\HH$ 上诱导全纯映射。又它把有理边界点送到有理边界点，故延拓到紧化 $X_0(N)$。最后
+\[
+w_N^2=-NI,
+\]
+在射影群中与恒等相同，因此它是一个对合自同构。
+\end{solution}
+
+\begin{problem}{Gamma0(12)的尖点个数}
+利用公式
+\[
+\nu_\infty(\Gamma_0(N))=\sum_{d\mid N}\phi\bigl(\gcd(d,N/d)\bigr)
+\]
+计算 $N=12$ 时的尖点个数。
+\end{problem}
+\begin{solution}
+$12$ 的正因子为 $1,2,3,4,6,12$。逐项计算：
+\[
+\gcd(1,12)=1,\ \gcd(2,6)=2,\ \gcd(3,4)=1,
+\]
+\[
+\gcd(4,3)=1,\ \gcd(6,2)=2,\ \gcd(12,1)=1.
+\]
+于是
+\[
+\nu_\infty(\Gamma_0(12))=
+\phi(1)+\phi(2)+\phi(1)+\phi(1)+\phi(2)+\phi(1)=1+1+1+1+1+1=6.
+\]
+故 $X_0(12)$ 有 $6$ 个尖点。
+\end{solution}
+
+\begin{problem}{亏格零时的Jacobian}
+若 $X_0(N)$ 的亏格为 $0$，说明 $J_0(N)$ 是什么，并解释其含义。
+\end{problem}
+\begin{solution}
+Jacobian 的维数等于曲线亏格，所以若 $g(X_0(N))=0$，则
+\[
+\dim J_0(N)=0.
+\]
+零维连通阿贝尔簇只能是平凡群方案，因此
+\[
+J_0(N)=0.
+\]
+这表示 $X_0(N)$ 上每个度数为 $0$ 的因子类都是主因子，也就是说不存在非平凡的全纯 $1$-形式与非平凡的 Jacobian 参数空间。
+\end{solution}
+
+\begin{problem}{通过j函数证明X(1)=P1}
+证明 $X(1)=\SL_2(\Z)\backslash\HH^*$ 同胚且双全纯同构于 $\mathbb{P}^1(\C)$。
+\end{problem}
+\begin{solution}
+$X(1)$ 是紧黎曼面，而 $j$-函数在 $\HH$ 上全纯、在尖点 $\infty$ 处有单极点，并且对 $\SL_2(\Z)$ 不变，所以诱导出亚纯函数
+\[
+j:X(1)\to\mathbb{P}^1(\C).
+\]
+函数域基本定理说明
+\[
+\C(X(1))=\C(j),
+\]
+因此该映射在函数域层面是同构，故为双有理映射。由于两边都是紧黎曼面，双有理映射自动双全纯。于是
+\[
+X(1)\cong\mathbb{P}^1(\C).
+\]
+\end{solution}
+
+\section{进阶题 \medium}
+
+\begin{problem}{从Riemann-Hurwitz推导亏格公式}
+从 Riemann--Hurwitz 公式出发，推导
+\[
+g_0(N)=1+\frac{\mu}{12}-\frac{\nu_2}{4}-\frac{\nu_3}{3}-\frac{\nu_\infty}{2},
+\]
+其中 $\mu=[\SL_2(\Z):\Gamma_0(N)]$，$\nu_2,\nu_3,\nu_\infty$ 分别为阶 $2$、阶 $3$ 椭圆点与尖点的个数。
+\end{problem}
+\begin{solution}
+考虑自然覆盖
+\[
+X_0(N)\longrightarrow X(1)\cong\mathbb{P}^1.
+\]
+其度数为 $\mu=[\PSL_2(\Z):\overline{\Gamma_0(N)}]$，与通常的指数只差是否模掉 $\pm I$，在这里记为 $\mu$。Riemann--Hurwitz 给出
+\[
+2g_0(N)-2=\mu(2\cdot0-2)+\sum_P(e_P-1),
+\]
+其中分歧只来自三类点：
+\begin{itemize}
+\item $j=1728$ 上方的阶 $2$ 椭圆点，每点贡献 $1$；
+\item $j=0$ 上方的阶 $3$ 椭圆点，每点贡献 $2$；
+\item $j=\infty$ 上方的尖点，宽度和等于 $\mu$，其总贡献为 $\mu-\nu_\infty$。
+\end{itemize}
+故
+\[
+2g_0(N)-2=-2\mu+\nu_2+2\nu_3+(\mu-\nu_\infty).
+\]
+再利用基本域面积关系
+\[
+\mu=\frac{\mu}{6}+\frac{\nu_2}{2}+\frac{2\nu_3}{3}+\nu_\infty
+\]
+整理即可得到标准形式
+\[
+g_0(N)=1+\frac{\mu}{12}-\frac{\nu_2}{4}-\frac{\nu_3}{3}-\frac{\nu_\infty}{2}.
+\]
+这就是所求亏格公式。
+\end{solution}
+
+\begin{problem}{亏格公式的数值练习}
+利用上题公式计算 $g_0(11)$、$g_0(37)$，并把题目中的 $g_0(100)$ 修正后求出其正确值。
+\end{problem}
+\begin{solution}
+\begin{itemize}
+\item $N=11$：$\mu=12$，$\nu_2=\nu_3=0$，$\nu_\infty=2$，故 $g_0(11)=1$。
+\item $N=37$：$\mu=38$，$\nu_2=2$，$\nu_3=2$，$\nu_\infty=2$，故 $g_0(37)=2$。
+\item $N=100$：
+\[
+\mu=100\left(1+\frac12\right)\left(1+\frac15\right)=180.
+\]
+因为 $4\mid100$，故 $\nu_2=0$；因为模 $4$ 时 $x^2+x+1\equiv0$ 无解，故 $\nu_3=0$。尖点数为
+\[
+\nu_\infty=\sum_{d\mid100}\phi(\gcd(d,100/d))=20.
+\]
+于是
+\[
+g_0(100)=1+\frac{180}{12}-\frac{20}{2}=1+15-10=6.
+\]
+\end{itemize}
+所以修正后的答案是
+\[
+g_0(11)=1,\qquad g_0(37)=2,\qquad g_0(100)=6.
+\]
+\end{solution}
+
+\begin{problem}{全纯微分与权2尖点形式}
+完整证明：$\omega=f(\tau)\,d\tau$ 在 $X(\Gamma)$ 上给出全纯 $1$-形式，当且仅当 $f\in S_2(\Gamma)$。
+\end{problem}
+\begin{solution}
+先看变换律。若 $\gamma=\begin{pmatrix}a&b\\c&d\end{pmatrix}\in\Gamma$，则
+\[
+d(\gamma\tau)=\frac{d\tau}{(c\tau+d)^2}.
+\]
+因此 $f(\gamma\tau)d(\gamma\tau)=f(\tau)d\tau$ 当且仅当
+\[
+f(\gamma\tau)=(c\tau+d)^2f(\tau),
+\]
+即 $f|_2\gamma=f$。所以在开曲面 $Y(\Gamma)$ 上，$\omega$ 全纯等价于 $f$ 是权 $2$ 模形式。
+
+接着看尖点。若 $\sigma(\infty)$ 是某个尖点，局部参数取为 $q=e^{2\pi i\sigma^{-1}\tau/h}$，则
+\[
+d\tau=\frac{h}{2\pi i}\frac{dq}{q}.
+\]
+于是
+\[
+\omega=(f|_2\sigma)(\tau)\,d\tau
+\]
+在该尖点全纯，当且仅当 $(f|_2\sigma)(\tau)$ 在 $q=0$ 处至少消去一次，即常数项为 $0$。这正是 cusp 条件。
+
+最后看椭圆点。若稳定子阶为 $e$，局部参数可取 $u=(\tau-\tau_0)^e$。由于 $d\tau\sim u^{1/e-1}du$，权 $2$ 变换律恰保证不存在额外极点，所以全纯性自动成立。综上，$\omega$ 全纯当且仅当 $f\in S_2(\Gamma)$。
+\end{solution}
+
+\begin{problem}{亏格等于dim S2}
+证明
+\[
+g(\Gamma)=\dim S_2(\Gamma).
+\]
+\end{problem}
+\begin{solution}
+由上一题，$S_2(\Gamma)$ 与 $X(\Gamma)$ 上全纯 $1$-形式空间
+\[
+H^0(X(\Gamma),\Omega^1)
+\]
+自然同构，对应由 $f\mapsto f(\tau)d\tau$ 给出。另一方面，紧黎曼面上一阶全纯微分空间的复维数正是亏格。因此
+\[
+\dim S_2(\Gamma)=\dim H^0(X(\Gamma),\Omega^1)=g(\Gamma).
+\]
+\end{solution}
+
+\begin{problem}{wp在p等于5时的不动点}
+求 $X_0(5)$ 上 Atkin--Lehner 对合 $w_5$ 的不动点代表。
+\end{problem}
+\begin{solution}
+不动点条件是在商空间中 $\tau$ 与 $-1/(5\tau)$ 等价，即存在
+\[
+\gamma=\begin{pmatrix}a&b\\5c&d\end{pmatrix}\in\Gamma_0(5)
+\]
+使
+\[
+\gamma\tau=-\frac1{5\tau}.
+\]
+等价于二次方程
+\[
+5a\tau^2+5(b+c)\tau+d=0.
+\]
+取 $\gamma=I$，得
+\[
+5\tau^2+1=0\quad\Rightarrow\quad \tau=\frac{i}{\sqrt5}.
+\]
+再取
+\[
+\gamma=\begin{pmatrix}2&1\\5&3\end{pmatrix}\in\Gamma_0(5),
+\]
+则得到
+\[
+10\tau^2+10\tau+3=0,
+\]
+其上半平面根为
+\[
+\tau=\frac{-1+i/\sqrt5}{2}.
+\]
+这两个点给出 $w_5$ 在 $X_0(5)$ 上的两个不动点代表。
+\end{solution}
+
+\begin{problem}{X1(11)的亏格}
+计算 $g(X_1(11))$，并与 $\dim S_2(\Gamma_1(11))$ 比较。
+\end{problem}
+\begin{solution}
+对 $\Gamma_1(11)$，由于 $-I\notin\Gamma_1(11)$，应用亏格公式时应使用其在 $\PSL_2(\Z)$ 中的指数
+\[
+\mu=[\PSL_2(\Z):\overline{\Gamma_1(11)}]=60.
+\]
+当 $N\ge5$ 时无椭圆点，所以 $\nu_2=\nu_3=0$。而 $\Gamma_1(11)$ 的尖点数为 $10$。于是
+\[
+g(X_1(11))=1+\frac{60}{12}-\frac{10}{2}=1.
+\]
+再由 $g(\Gamma)=\dim S_2(\Gamma)$，可得
+\[
+\dim S_2(\Gamma_1(11))=1.
+\]
+二者一致。
+\end{solution}
+
+\begin{problem}{X(2)与lambda函数}
+说明为什么 $Y(2)=\Gamma(2)\backslash\HH$ 同构于 $\mathbb{P}^1\setminus\{0,1,\infty\}$，并解释模 $\lambda$ 函数的作用。
+\end{problem}
+\begin{solution}
+$X(2)$ 的紧化亏格为 $0$，且恰有三个尖点，因此去掉尖点后的开曲线必同构于
+\[
+\mathbb{P}^1\setminus\{0,1,\infty\}.
+\]
+模 $\lambda$ 函数正是给出这一同构的经典 Hauptmodul：
+\[
+\lambda:\Gamma(2)\backslash\HH\longrightarrow \C\setminus\{0,1\}.
+\]
+它把三个尖点分别送到 $0,1,\infty$，从而把 $X(2)$ 识别为参数空间“椭圆曲线加有序 $2$-扭点基”。
+\end{solution}
+
+\begin{problem}{X0(N)的有理点的模解释}
+说明 $X_0(N)(\Q)$ 的非尖点对应什么样的几何对象。
+\end{problem}
+\begin{solution}
+非尖点表示定义在 $\Q$ 上的椭圆曲线及其循环子群：
+\[
+(E,C),\qquad C\subset E\text{ 为定义在 }\Q\text{ 上的阶 }N\text{ 循环子群}.
+\]
+等价地，这对应一条定义在 $\Q$ 上的 $N$-isogeny
+\[
+E\to E/C.
+\]
+因此 $X_0(N)(\Q)$ 的非尖点正参数化“带一条有理 $N$-同源”的椭圆曲线同构类。
+\end{solution}
+
+\begin{problem}{Pic0与J0(11)}
+说明
+\[
+\mathrm{Pic}^0(X_0(N))\cong J_0(N)(\C)\cong\C^g/\Lambda,
+\]
+并在 $X_0(11)$ 的情形描述 $J_0(11)$。
+\end{problem}
+\begin{solution}
+对任意紧黎曼面 $X$，Abel--Jacobi 理论给出
+\[
+\mathrm{Pic}^0(X)\cong H^0(X,\Omega^1)^\vee/H_1(X,\Z),
+\]
+故其复点是一个复环面 $\C^g/\Lambda$，这就是 Jacobian。取 $X=X_0(N)$ 便得
+\[
+\mathrm{Pic}^0(X_0(N))\cong J_0(N)(\C).
+\]
+对 $N=11$，亏格 $g=1$，所以
+\[
+J_0(11)(\C)\cong\C/\Lambda,
+\]
+它本身就是一个椭圆曲线。事实上，选定一个尖点作为基点后，Abel--Jacobi 映射给出
+\[
+X_0(11)\cong J_0(11),
+\]
+这正是导数 $11$ 的模椭圆曲线。
+\end{solution}
+
+\begin{problem}{亏格零水平的分类练习}
+利用亏格公式证明：对所有 $N\le10$ 以及 $N\in\{12,13,16,18,25\}$，都有 $g_0(N)=0$。
+\end{problem}
+\begin{solution}
+对这些有限个 $N$，逐个代入
+\[
+g_0(N)=1+\frac{\mu}{12}-\frac{\nu_2}{4}-\frac{\nu_3}{3}-\frac{\nu_\infty}{2}
+\]
+即可。计算时用
+\[
+\mu=N\prod_{p\mid N}\left(1+\frac1p\right),
+\]
+以及标准的 $\nu_2,\nu_3,\nu_\infty$ 公式。每个情形都恰好得到 $0$。例如
+\[
+g_0(13)=1+\frac{14}{12}-\frac24-\frac23-1=0,
+\]
+\[
+g_0(25)=1+\frac{30}{12}-0-0-\frac{7}{2}=0.
+\]
+其余情形完全类似，于是得到所列全部水平的模曲线都是有理曲线。
+\end{solution}
+
+\begin{problem}{两个尖点在Jacobian中的差}
+说明 $[\infty]-[0]$ 在 $J_0(N)$ 中是否一定为零。
+\end{problem}
+\begin{solution}
+一般并不一定为零，但 Manin--Drinfeld 定理说明它总是挠元。也就是说，存在某个正整数 $m$ 使
+\[
+m\bigl([\infty]-[0]\bigr)=0\in J_0(N).
+\]
+因此两个尖点之差在 Jacobian 中是“有限阶”而非必然平凡。对某些小水平它可能恰好非零，例如 $N=11$ 时 cusp 子群就是有限循环群。
+\end{solution}
+
+\begin{problem}{椭圆点处的局部展开}
+设 $\tau_0$ 是稳定子阶为 $e$ 的椭圆点。证明若 $u$ 是其局部参数，则全纯 $1$-形式可写成
+\[
+\omega=(\text{全纯函数})\cdot \frac{du}{u^{1-1/e}}.
+\]
+\end{problem}
+\begin{solution}
+在椭圆点邻域可取均匀化参数 $z=\tau-\tau_0$，稳定子生成元作用为
+\[
+z\mapsto \zeta_e z.
+\]
+因此商空间的局部参数可取
+\[
+u=z^e.
+\]
+微分满足
+\[
+dz=\frac1e u^{1/e-1}du.
+\]
+若 $\omega=h(z)dz$ 在上半平面一侧全纯，则写成 $u$ 的函数后有
+\[
+\omega=h(u^{1/e})\frac1e u^{1/e-1}du=(\text{全纯函数})\cdot\frac{du}{u^{1-1/e}}.
+\]
+这就是所求局部表达式。
+\end{solution}
+
+\begin{problem}{X0(37)的Abel-Jacobi修正题}
+将题目修正为：说明 $S_2(\Gamma_0(37))$ 由一个新形式及其 Galois 共轭张成，并解释这如何给出 $J_0(37)$ 的 Hecke 分解。
+\end{problem}
+\begin{solution}
+因为
+\[
+\dim S_2(\Gamma_0(37))=2,
+\]
+而 level $37$ 没有旧空间，所以整个空间都是 newspace。存在一个归一化新形式 $f$，其 Hecke 系数生成一个二次数域 $K$；于是
+\[
+S_2(\Gamma_0(37))=Kf=\C f\oplus\C f^\sigma,
+\]
+其中 $\sigma$ 是 $K/\Q$ 的非平凡自同构。
+
+由 Eichler--Shimura，$f$ 对应一个二维阿贝尔簇因子 $A_f$，并有
+\[
+J_0(37)\sim A_f
+\]
+（在 $\Q$ 上同配）。因此 $X_0(37)\hookrightarrow J_0(37)$ 的 Abel--Jacobi 嵌入可由积分
+\[
+P\longmapsto \left(\int_{P_0}^P f(\tau)d\tau,\ \int_{P_0}^P f^\sigma(\tau)d\tau\right)
+\]
+描述。这里更自然的结论是“$J_0(37)$ 由一个新形式轨道决定”，而不必错误地强行写成两个椭圆曲线的乘积。
+\end{solution}
+
+\section{挑战题 \hard}
+
+\begin{problem}{X0(N)可在Q上定义}
+完整说明为什么 $X_0(N)$ 可以定义在 $\Q$ 上。
+\end{problem}
+\begin{solution}
+关键是模解释：$X_0(N)$ 参数化椭圆曲线连同一个阶 $N$ 的循环子群。这个模问题由椭圆曲线的代数簇族与有限平坦子群构成，因而天然定义在 $\Q$ 上。解析上得到的复曲线
+\[
+X_0(N)(\C)=\Gamma_0(N)\backslash(\HH\cup\mathbb{P}^1(\Q))
+\]
+只是其复点集合。
+
+更具体地，函数 $j(\tau)$ 与 $j(N\tau)$ 具有有理 Fourier 系数，故生成的函数域在复共轭下稳定，并由 GAGA 原理对应于一个定义在 $\Q$ 上的射影代数曲线。于是存在射影曲线 $X_0(N)/\Q$，其复解析化正是上面的模曲线。
+\end{solution}
+
+\begin{problem}{平方自由水平的函数域生成元}
+解释为何当 $N$ 无平方因子时，$\C(X_0(N))$ 可由 $j(\tau)$ 与 $j(N\tau)$ 生成。
+\end{problem}
+\begin{solution}
+在 $X_0(N)$ 的非尖点上，一个点由一对 $N$-同源椭圆曲线
+\[
+E\to E'
+\]
+决定，因此天然带有两个 $j$-不变量：$j(E)=j(\tau)$ 与 $j(E')=j(N\tau)$。当 $N$ 平方自由时，循环 $N$-同源的模解释没有额外的自同构冗余，这两个函数足以在一般点把点与其模意义恢复出来，所以给出对 $X_0(N)$ 的双有理参数。
+
+从函数域观点看，模多项式关系
+\[
+\Phi_N\bigl(j(\tau),j(N\tau)\bigr)=0
+\]
+说明二者产生一个有限扩张，而平方自由假设保证该扩张已等于整个函数域。故
+\[
+\C(X_0(N))=\C\bigl(j(\tau),j(N\tau)\bigr).
+\]
+\end{solution}
+
+\begin{problem}{Faltings定理与有理点有限性}
+说明为什么当 $g(X_0(p))\ge2$ 时，$X_0(p)(\Q)$ 只有有限多个点；并解释这对非尖点意味着什么。
+\end{problem}
+\begin{solution}
+Faltings 定理断言：定义在数域上的亏格至少为 $2$ 的光滑射影曲线，其有理点集合是有限的。对素数 $p$，若
+\[
+g(X_0(p))\ge2,
+\]
+便立刻得到
+\[
+X_0(p)(\Q)
+\]
+是有限集。
+
+模意义上，非尖点对应存在有理 $p$-isogeny 的椭圆曲线。因此 Faltings 说明：当亏格至少为 $2$ 时，此类有理同源椭圆曲线只会给出有限多个同构类。这是 Mazur 定理之前的一个“有限性”版本。
+\end{solution}
+
+\begin{problem}{Mazur定理的陈述与意义}
+陈述 Mazur 关于 $X_0(p)(\Q)$ 的定理，并解释它与椭圆曲线有理 $p$-isogeny 的关系。
+\end{problem}
+\begin{solution}
+Mazur 定理断言：若 $p>163$ 为素数，则
+\[
+X_0(p)(\Q)
+\]
+只有两个尖点 $0,\infty$，没有别的有理点。更一般地，他完全分类了可能出现有理 $p$-isogeny 的素数次数。
+
+由于 $X_0(p)$ 的非尖点恰对应带有有理 $p$-isogeny 的椭圆曲线，这一定理等价于说：若 $p>163$，则不存在定义在 $\Q$ 上的椭圆曲线拥有有理 $p$-isogeny。于是模曲线的有理点问题直接转化为椭圆曲线同源的算术分类。
+\end{solution}
+
+\begin{problem}{Shimura互反律与X(N)}
+解释 $X(N)$ 的模解释，并说明 $\Gal(\Q(E[N])/\Q)$ 如何作用在其有理点上。
+\end{problem}
+\begin{solution}
+$X(N)$ 参数化椭圆曲线连同一个有序的满 level-$N$ 结构，即一个同构
+\[
+(\Z/N\Z)^2\xrightarrow{\sim}E[N].
+\]
+因此它比 $X_0(N)$、$X_1(N)$ 记住更多的扭点信息。
+
+Shimura 互反律说明：复乘椭圆曲线的特殊点在 Galois 作用下，与其 level 结构经由
+\[
+\GL_2(\Z/N\Z)
+\]
+的自然作用相互对应。换言之，
+\[
+\Gal(\Q(E[N])/\Q)
+\]
+在 $N$-扭点上的线性作用，正反映为 $X(N)$ 上相应模点的 Galois 作用。由此，模曲线把椭圆曲线扭点域的算术信息几何化了。
+\end{solution}

@@ -1,0 +1,605 @@
+\chapter{第3章：Hecke 算子 习题}
+\difficultykey
+
+\section{基础题 \easy}
+
+\begin{problem}{计算T2作用于Delta}
+设 $\Delta(\tau)=\sum_{n\ge1}\tau(n)q^n\in S_{12}(\SL_2(\Z))$。利用
+\[
+(T_p f)(\tau)=\sum_{n\ge0}\bigl(a_{pn}+p^{k-1}a_{n/p}\bigr)q^n
+\qquad (a_x=0\text{ 若 }x\notin\Z_{\ge0})
+\]
+计算 $T_2(\Delta)$ 的前三个非零 Fourier 系数。
+\end{problem}
+\begin{solution}
+对 $k=12$，
+\[
+T_2\Delta=\sum_{n\ge1}\bigl(\tau(2n)+2^{11}\tau(n/2)\bigr)q^n.
+\]
+于是
+\[
+[q]T_2\Delta=\tau(2)=-24.
+\]
+又因 $\tau(4)=-1472$，$\tau(1)=1$，故
+\[
+[q^2]T_2\Delta=\tau(4)+2^{11}\tau(1)=-1472+2048=576.
+\]
+再由 $\tau(6)=\tau(2)\tau(3)=-24\cdot252=-6048$，得
+\[
+[q^3]T_2\Delta=\tau(6)=-6048.
+\]
+所以
+\[
+T_2\Delta=-24q+576q^2-6048q^3+\cdots.
+\]
+\end{solution}
+
+\begin{problem}{Hecke算子的交换性}
+证明 $T_mT_n=T_nT_m$ 对一切正整数 $m,n$ 都成立。
+\end{problem}
+\begin{solution}
+由 Hecke 乘法公式可把一切情形归结到素数幂。若 $(m,n)=1$，则
+\[
+T_mT_n=T_{mn}=T_nT_m.
+\]
+对同一素数 $p$ 的幂，递推式
+\[
+T_{p^{r+1}}=T_pT_{p^r}-p^{k-1}T_{p^{r-1}}
+\]
+表明每个 $T_{p^r}$ 都是 $T_p$ 的整系数多项式，因此 $T_{p^r}$ 与 $T_{p^s}$ 彼此交换。把一般的 $m,n$ 分解成素数幂乘积，再利用互素部分可交换，就得 $T_mT_n=T_nT_m$。
+\end{solution}
+
+\begin{problem}{特征值与首项系数}
+设 $f(\tau)=\sum_{n\ge1}a_nq^n\in S_k(\SL_2(\Z))$ 满足 $T_pf=\lambda_pf$。证明
+\[
+a_p(f)=\lambda_p a_1(f).
+\]
+\end{problem}
+\begin{solution}
+比较 $q$ 的系数即可。由 Hecke 公式，
+\[
+T_pf=\sum_{n\ge1}\bigl(a_{pn}+p^{k-1}a_{n/p}\bigr)q^n.
+\]
+当 $n=1$ 时，第二项为 $0$，所以 $q$ 的系数是 $a_p$。另一方面，$\lambda_pf$ 的 $q$ 系数是 $\lambda_pa_1$。二者相等，故
+\[
+a_p=\lambda_pa_1.
+\]
+\end{solution}
+
+\begin{problem}{验证tau在p平方处的关系}
+已知 $\tau(1)=1$，$\tau(2)=-24$，$\tau(4)=-1472$。验证
+\[
+\tau(4)=\tau(2)^2-2^{11}.
+\]
+\end{problem}
+\begin{solution}
+直接代入：
+\[
+\tau(2)^2-2^{11}=(-24)^2-2048=576-2048=-1472=\tau(4).
+\]
+这正是归一化特征形式在 $p^2$ 处满足的关系
+\[
+a_{p^2}=a_p^2-p^{k-1}
+\]
+在 $\Delta\in S_{12}$ 上的具体实例。
+\end{solution}
+
+\begin{problem}{菱形算子的良定义性}
+对 $f\in M_k(\Gamma_1(N))$，取 $d\in(\Z/N\Z)^\times$，并令
+\[
+\langle d\rangle f=f\bigm|_k\gamma,
+\qquad
+\gamma=\begin{pmatrix}a&b\\Nc&d'\end{pmatrix}\in\Gamma_0(N),
+\quad d'\equiv d\pmod N.
+\]
+证明这一定义与矩阵 $\gamma$ 的选取无关。
+\end{problem}
+\begin{solution}
+若 $\gamma_1,\gamma_2\in\Gamma_0(N)$ 具有相同的右下角模 $N$ 余类，则
+\[
+\delta:=\gamma_2\gamma_1^{-1}\in\Gamma_1(N).
+\]
+事实上，$\delta$ 的左下角仍被 $N$ 整除，而对角元都与 $1$ 同余模 $N$。于是
+\[
+f|_k\gamma_2=f|_k\delta\gamma_1=(f|_k\delta)|_k\gamma_1=f|_k\gamma_1,
+\]
+因为 $f\in M_k(\Gamma_1(N))$ 对 $\Gamma_1(N)$ 不变。故 $\langle d\rangle$ 良定义。
+\end{solution}
+
+\begin{problem}{模形式空间的稳定性}
+证明 $M_k(\Gamma_0(N))$ 在所有 Hecke 算子 $T_n$ 与菱形算子 $\langle d\rangle$ 的作用下封闭。
+\end{problem}
+\begin{solution}
+两类算子都可写成双陪集算子：
+\[
+T_n\sim \Gamma_0(N)\begin{pmatrix}1&0\\0&n\end{pmatrix}\Gamma_0(N),
+\qquad
+\langle d\rangle\sim \Gamma_0(N)\gamma\Gamma_0(N)
+\]
+其中 $\gamma\in\Gamma_0(N)$ 的右下角模 $N$ 同余于 $d$。双陪集算子把满足 $f|_k\gamma=f$ 的函数送到仍满足同样变换律的函数，因此保持模形式条件。对 cusp form，尖点处的消没也由双陪集求和保持，所以 $M_k(\Gamma_0(N))$ 与 $S_k(\Gamma_0(N))$ 都对这些算子稳定。
+\end{solution}
+
+\begin{problem}{计算T2作用于E4}
+设
+\[
+E_4(\tau)=1+240q+2160q^2+6720q^3+\cdots.
+\]
+计算 $T_2E_4$。
+\end{problem}
+\begin{solution}
+对权 $4$，
+\[
+(T_2E_4)(\tau)=\sum_{n\ge0}(a_{2n}+2^3a_{n/2})q^n.
+\]
+常数项为 $a_0+8a_0=9$。$q$ 项为 $a_2=2160$，$q^2$ 项为 $a_4+8a_1=17520+1920=19440$。这恰好等于 $9E_4$ 的前几项。由于 Eisenstein 级数 $E_4$ 是 $T_2$ 的特征形式，其特征值为 $1+2^3=9$，故
+\[
+T_2E_4=9E_4.
+\]
+\end{solution}
+
+\begin{problem}{同时特征形式的归一化首项}
+设 $f=\sum_{n\ge1}a_nq^n\in S_k(\SL_2(\Z))$ 是所有 $T_n$ 的共同特征形式。证明 $a_1\neq0$。
+\end{problem}
+\begin{solution}
+若 $a_1=0$，则由 $T_nf=\lambda_nf$ 并比较 $q$ 的系数可得
+\[
+a_n=\lambda_n a_1=0\qquad (n\ge1).
+\]
+于是 $f=0$，与“特征形式必非零”矛盾。所以 $a_1\neq0$。因此可以把共同特征形式归一化为 $a_1=1$。
+\end{solution}
+
+\begin{problem}{Hecke代数是交换环}
+设
+\[
+\mathbb{T}_k(N)=\Z[T_1,T_2,\dots,\langle d\rangle:(d,N)=1]\subset\End(M_k(\Gamma_0(N))).
+\]
+证明 $\mathbb{T}_k(N)$ 是交换环。
+\end{problem}
+\begin{solution}
+首先 $T_mT_n=T_nT_m$。其次菱形算子满足
+\[
+\langle d_1\rangle\langle d_2\rangle=\langle d_1d_2\rangle=\langle d_2\rangle\langle d_1\rangle.
+\]
+最后，Hecke 算子与菱形算子都来自双陪集，且相应双陪集乘法在商上可交换，因此
+\[
+T_n\langle d\rangle=\langle d\rangle T_n.
+\]
+故生成元两两可交换，从而 $\mathbb{T}_k(N)$ 是交换环。
+\end{solution}
+
+\begin{problem}{计算S2Gamma0(11)的维数}
+利用亏格公式或维数公式计算 $\dim S_2(\Gamma_0(11))$，并说明其归一化新形式的唯一性。
+\end{problem}
+\begin{solution}
+对 $N=11$，
+\[
+\mu=[\SL_2(\Z):\Gamma_0(11)]=11\Bigl(1+\frac1{11}\Bigr)=12.
+\]
+又因 $11\equiv -1\pmod4$ 且 $11\equiv -1\pmod3$，故没有阶 $2$、阶 $3$ 椭圆点，即 $\nu_2=\nu_3=0$。尖点个数为 $\nu_\infty=2$。于是
+\[
+g(X_0(11))=1+\frac{12}{12}-\frac02-\frac03-\frac22=1.
+\]
+而 $g(X_0(N))=\dim S_2(\Gamma_0(N))$，所以
+\[
+\dim S_2(\Gamma_0(11))=1.
+\]
+一维空间中的非零 cusp form 仅差一个标量，因此恰有一个归一化新形式。
+\end{solution}
+
+\begin{problem}{零Hecke作用推出零向量}
+设 $f\in S_k(\Gamma_0(N))$ 满足 $T_nf=0$ 对所有与 $N$ 互素的 $n$ 都成立。证明 $f=0$。
+\end{problem}
+\begin{solution}
+注意 $1$ 与 $N$ 总是互素，而 $T_1=\mathrm{id}$。因此假设包含 $n=1$ 时立刻得到
+\[
+f=T_1f=0.
+\]
+这说明“所有与 $N$ 互素的 Hecke 算子都把 $f$ 消掉”只能发生在零向量上。
+\end{solution}
+
+\begin{problem}{Petersson自伴性的第一步}
+设 $f,g\in S_k(\Gamma)$。说明 Petersson 自伴性
+\[
+\langle T_nf,g\rangle=\langle f,T_ng\rangle
+\]
+的推导第一步：为何可把 $T_n$ 写成双陪集算子，并把转置操作与双陪集对换联系起来？
+\end{problem}
+\begin{solution}
+Hecke 算子可写成有限双陪集和
+\[
+T_n=[\Gamma\alpha\Gamma],\qquad \det(\alpha)=n.
+\]
+Petersson 内积中的积分核对变量替换 $\tau\mapsto\gamma\tau$ 不变，因此每个右陪集代表都可单独搬动到另一侧。另一方面，矩阵转置伴随
+\[
+\alpha\longmapsto\alpha^\vee:=n\alpha^{-1}
+\]
+把双陪集 $\Gamma\alpha\Gamma$ 对应到其“对偶”双陪集；而 Hecke 双陪集与其对偶给出同一个算子。于是积分中可把 $T_n$ 从左边移到右边，这就是自伴性证明的起点。
+\end{solution}
+
+\section{进阶题 \medium}
+
+\begin{problem}{互素情形的乘法公式}
+用格的定义完整证明：若 $(m,n)=1$，则
+\[
+T_mT_n=T_{mn}.
+\]
+\end{problem}
+\begin{solution}
+把权 $k$ 模形式看成格函数时，$T_m$ 对应于对指标为 $m$ 的子格求和：
+\[
+(T_mf)(L)=\sum_{L'\subset L\atop [L:L']=m}f(L').
+\]
+于是
+\[
+(T_mT_nf)(L)=\sum_{L_2\subset L_1\subset L\atop [L:L_1]=m,[L_1:L_2]=n}f(L_2).
+\]
+因为 $(m,n)=1$，任何满足 $[L:L_2]=mn$ 的子格 $L_2$ 都唯一分解为一条链
+\[
+L_2\subset L_1\subset L,
+\qquad [L:L_1]=m,
+\quad [L_1:L_2]=n.
+\]
+唯一性来自有限阿贝尔群 $L/L_2$ 的 Sylow 分解：其 $m$-部分与 $n$-部分互不干扰，于是中间子格 $L_1$ 唯一。故上式恰对所有指标 $mn$ 的子格各计数一次，即
+\[
+(T_mT_nf)(L)=\sum_{L_2\subset L\atop [L:L_2]=mn}f(L_2)=(T_{mn}f)(L).
+\]
+因此 $T_mT_n=T_{mn}$。
+\end{solution}
+
+\begin{problem}{素数幂递推公式}
+完整证明
+\[
+T_{p^{r+1}}=T_pT_{p^r}-p^{k-1}T_{p^{r-1}}.
+\]
+\end{problem}
+\begin{solution}
+仍用子格计数。$T_pT_{p^r}$ 计数的是链
+\[
+L_2\subset L_1\subset L,
+\qquad [L:L_1]=p,
+\quad [L_1:L_2]=p^r.
+\]
+若 $[L:L_2]=p^{r+1}$ 且 $L/L_2$ 的类型是循环的，则中间 $L_1$ 唯一，对应 $T_{p^{r+1}}$ 的一次计数。若 $L/L_2\cong \Z/p^r\Z\oplus\Z/p\Z$，则这样的 $L_1$ 有 $p+1$ 个；其中只有一个给出循环商，其余 $p$ 个是“额外计数”。
+
+这些额外计数恰好由指标 $p^{r-1}$ 的子格贡献：先选 $L_3\subset L$ 使 $[L:L_3]=p^{r-1}$，再在 $L/L_3\cong (\Z/p\Z)^2$ 中选一条直线，共有 $p$ 条；在权 $k$ 的 slash 作用下，每条额外直线带来因子 $p^{k-1}$。于是
+\[
+T_pT_{p^r}=T_{p^{r+1}}+p^{k-1}T_{p^{r-1}},
+\]
+移项即得所求递推。
+\end{solution}
+
+\begin{problem}{特征形式的Euler乘积}
+设 $f=\sum_{n\ge1}a_nq^n$ 是归一化特征新形式。证明
+\[
+L(f,s)=\sum_{n\ge1}a_nn^{-s}=\prod_p\bigl(1-a_pp^{-s}+p^{k-1-2s}\bigr)^{-1}.
+\]
+\end{problem}
+\begin{solution}
+归一化条件给出 $a_1=1$，而 Hecke 关系说明
+\[
+a_ma_n=a_{mn}\quad ((m,n)=1),
+\qquad
+ a_{p^{r+1}}=a_pa_{p^r}-p^{k-1}a_{p^{r-1}}.
+\]
+因此局部母函数满足
+\[
+A_p(X):=\sum_{r\ge0}a_{p^r}X^r,
+\qquad
+(1-a_pX+p^{k-1}X^2)A_p(X)=1.
+\]
+所以
+\[
+A_p(X)=\frac1{1-a_pX+p^{k-1}X^2}.
+\]
+再由完全乘法性，Dirichlet 级数按素数分解：
+\[
+L(f,s)=\prod_p\sum_{r\ge0}a_{p^r}p^{-rs}
+=\prod_p\frac1{1-a_pp^{-s}+p^{k-1-2s}}.
+\]
+\end{solution}
+
+\begin{problem}{Atkin-Lehner对合是对合}
+定义
+\[
+(W_Nf)(\tau)=N^{-k/2}\tau^{-k}f\!\left(-\frac1{N\tau}\right).
+\]
+证明 $W_N$ 在 $S_k(\Gamma_0(N))$ 上满足 $W_N^2=\mathrm{id}$。
+\end{problem}
+\begin{solution}
+写
+\[
+w_N=\begin{pmatrix}0&-1\\N&0\end{pmatrix}.
+\]
+则 $W_Nf=f|_kw_N$。先验证 $w_N^{-1}\Gamma_0(N)w_N=\Gamma_0(N)$，所以 $W_N$ 保持 $S_k(\Gamma_0(N))$。再算
+\[
+w_N^2=\begin{pmatrix}-N&0\\0&-N\end{pmatrix}=-NI.
+\]
+在权 $k$ 的作用下，标量矩阵 $-NI$ 给出因子
+\[
+\det(w_N)^{k/2}(N\tau)^{-k}=N^{k/2}N^{-k/2}(-1)^k.
+\]
+而模形式的权总是偶数，故 $(-1)^k=1$。等价地，$-I$ 在偶权上作用平凡，因此
+\[
+W_N^2=f|_kw_N^2=f.
+\]
+\end{solution}
+
+\begin{problem}{旧形式与Atkin-Lehner}
+设 $M\mid N$，$M<N$，$f\in S_k(\Gamma_0(M))$。对每个 $d\mid N/M$ 定义 $V_df(\tau)=f(d\tau)$。证明 $V_df\in S_k(\Gamma_0(N))$，并说明旧形式空间与 $W_N$ 特征向量的关系。
+\end{problem}
+\begin{solution}
+取 $\gamma=\begin{pmatrix}a&b\\Nc&d_0\end{pmatrix}\in\Gamma_0(N)$。则
+\[
+\begin{pmatrix}d&0\\0&1\end{pmatrix}
+\gamma
+\begin{pmatrix}d^{-1}&0\\0&1\end{pmatrix}
+=
+\begin{pmatrix}a&db\\(N/d)c&d_0\end{pmatrix}\in\Gamma_0(M),
+\]
+因为 $d\mid N/M$ 蕴含 $(N/d)c$ 被 $M$ 整除。所以 $f(d\tau)$ 满足 $\Gamma_0(N)$ 的变换律；尖点处消没也从 $f$ 的 cusp 条件继承，故 $V_df\in S_k(\Gamma_0(N))$。
+
+所有这类 $V_df$ 张成的子空间称为旧空间 $S_k(\Gamma_0(N))^{\mathrm{old}}$。它对 Hecke 代数和 $W_N$ 都稳定，因此在特征 $0$ 上可分解为 $W_N$ 的 $\pm1$ 特征子空间。换言之，适当正交化以后，旧空间可选一组由 $W_N$ 特征向量组成的基。
+\end{solution}
+
+\begin{problem}{多重性一定理的标准证明}
+设 $f,g\in S_k(\Gamma_0(N))$ 是归一化特征新形式，且对所有与 $N$ 互素的 $n$ 都有 $T_nf=T_ng$。证明 $f=g$。
+\end{problem}
+\begin{solution}
+由归一化条件与特征形式性质，$T_nf=a_n(f)f$、$T_ng=a_n(g)g$，故对所有 $(n,N)=1$ 有
+\[
+a_n(f)=a_n(g).
+\]
+于是两者的 Euler 乘积在所有 $p\nmid N$ 处相同：
+\[
+L^{(N)}(f,s)=\prod_{p\nmid N}(1-a_pp^{-s}+\chi(p)p^{k-1-2s})^{-1}=L^{(N)}(g,s).
+\]
+新形式在坏素数处的局部因子也由有限多个 Hecke 数据确定，因此整条 $L$-函数相同。Dirichlet 级数展开的唯一性给出
+\[
+a_n(f)=a_n(g)\qquad (n\ge1).
+\]
+故两者的 $q$-展开一致，从而 $f=g$。
+\end{solution}
+
+\begin{problem}{S16上的Hecke矩阵}
+写出 $T_2$ 在 $S_{16}(\SL_2(\Z))$ 上的矩阵。
+\end{problem}
+\begin{solution}
+因为
+\[
+\dim S_{16}(\SL_2(\Z))=1,
+\]
+可取基为 $f=E_4\Delta$。其首项为
+\[
+E_4\Delta=(1+240q+\cdots)(q-24q^2+\cdots)=q+216q^2+\cdots.
+\]
+这是归一化特征形式，所以 $T_2f=a_2(f)f=216f$。在基 $\{E_4\Delta\}$ 下，矩阵就是
+\[
+[T_2]=\begin{pmatrix}216\end{pmatrix}.
+\]
+\end{solution}
+
+\begin{problem}{Ramanujan同余修正版}
+将题目修正为：证明对任意素数 $p$，
+\[
+\tau(p)\equiv 1+p^{11}\pmod{691},
+\]
+并推出
+\[
+\tau(p)^2\equiv (1+p^{11})^2\pmod{691}.
+\]
+\end{problem}
+\begin{solution}
+在权 $12$ 中，
+\[
+M_{12}(\SL_2(\Z))=\C E_{12}\oplus\C\Delta.
+\]
+由 Bernoulli 数 $B_{12}=-691/2730$ 得
+\[
+E_{12}(\tau)=1-\frac{24}{B_{12}}\sum_{n\ge1}\sigma_{11}(n)q^n
+=1+\frac{65520}{691}\sum_{n\ge1}\sigma_{11}(n)q^n.
+\]
+另一方面，经典恒等式给出
+\[
+E_{12}=E_4^3+\frac{432000}{691}\Delta.
+\]
+比较系数便得 Ramanujan 同余
+\[
+\tau(n)\equiv\sigma_{11}(n)\pmod{691}.
+\]
+取 $n=p$ 为素数，$\sigma_{11}(p)=1+p^{11}$，所以
+\[
+\tau(p)\equiv1+p^{11}\pmod{691}.
+\]
+平方即得第二式。
+\end{solution}
+
+\begin{problem}{Petersson自伴性的完整证明}
+设 $f,g\in S_k(\SL_2(\Z))$。完整证明
+\[
+\langle T_nf,g\rangle=\langle f,T_ng\rangle.
+\]
+\end{problem}
+\begin{solution}
+取双陪集分解
+\[
+\Gamma\alpha\Gamma=\bigsqcup_i\Gamma\alpha_i,
+\qquad \det(\alpha)=n.
+\]
+则
+\[
+T_nf=n^{k/2-1}\sum_i f|_k\alpha_i.
+\]
+Petersson 内积为
+\[
+\langle u,v\rangle=\int_{\Gamma\backslash\HH}u(\tau)\overline{v(\tau)}y^k\,\frac{dx\,dy}{y^2}.
+\]
+代入后得到
+\[
+\langle T_nf,g\rangle=n^{k/2-1}\sum_i\int_{\Gamma\backslash\HH}(f|_k\alpha_i)(\tau)\overline{g(\tau)}y^k\,d\mu.
+\]
+对每一项作变量替换 $\tau\mapsto\alpha_i\tau$。因为双曲测度 $d\mu=dx\,dy/y^2$ 不变，且 slash 作用正好补偿 Jacobian，积分变成
+\[
+n^{k/2-1}\sum_i\int_{\alpha_i^{-1}\Gamma\alpha_i\backslash\HH}f(\tau)\overline{(g|_k\alpha_i^\vee)(\tau)}y^k\,d\mu,
+\]
+其中 $\alpha_i^\vee=n\alpha_i^{-1}$。对偶双陪集与原双陪集相同，因此这些项重新组合成 $\langle f,T_ng\rangle$。故 $T_n$ 对 Petersson 内积自伴。
+\end{solution}
+
+\begin{problem}{S12上一维情形的特征值}
+计算 $T_2$ 在 $S_{12}(\SL_2(\Z))$ 上的特征值，并验证它等于 $\tau(2)$。
+\end{problem}
+\begin{solution}
+空间 $S_{12}(\SL_2(\Z))$ 由 $\Delta$ 张成，是一维的。因此 $T_2$ 必为某个标量 $\lambda$。由于
+\[
+\Delta=q-24q^2+\cdots,
+\]
+比较 $q$ 的系数可得
+\[
+T_2\Delta=\lambda\Delta
+\quad\Longrightarrow\quad
+\lambda=[q]T_2\Delta=\tau(2)=-24.
+\]
+所以矩阵就是 $(-24)$，其特征值正是 $\tau(2)$。
+\end{solution}
+
+\begin{problem}{Hecke特征值的代数整性}
+证明归一化特征新形式的 Fourier 系数 $a_n$ 都是代数整数。
+\end{problem}
+\begin{solution}
+在 $q$-展开整格
+\[
+M_k(\Gamma_0(N))_{\Z}:=\{f=\sum a_nq^n: a_n\in\Z\}
+\]
+上，Hecke 算子由整数矩阵表示，因为 $T_n$ 的系数公式只用整数线性组合。故每个 $T_n$ 的特征多项式具有整数系数。若 $f$ 是共同特征形式，记 $T_nf=a_n f$（已归一化）。那么 $a_n$ 是整数矩阵 $T_n$ 的特征值，因此满足首一整系数方程，故为代数整数。
+\end{solution}
+
+\begin{problem}{权2情形的Weil估计}
+设 $f\in S_2(\Gamma_0(N))$ 是归一化新形式。解释为什么对 $p\nmid N$ 有
+\[
+|a_p|\le 2\sqrt p.
+\]
+\end{problem}
+\begin{solution}
+由 Eichler--Shimura 理论，$f$ 对应于一个阿贝尔簇因子；若 $f$ 来自椭圆曲线 $E/\Q$，则
+\[
+a_p=p+1-\#E(\mathbf{F}_p).
+\]
+因此 Hasse 定理
+\[
+|p+1-\#E(\mathbf{F}_p)|\le2\sqrt p
+\]
+立刻给出 $|a_p|\le2\sqrt p$。一般权 $2$ 新形式也可由其 $\ell$-进表示的 Frobenius 特征多项式
+\[
+X^2-a_pX+p
+\]
+的根都具有绝对值 $\sqrt p$ 来解释，于是同样得到所需估计。
+\end{solution}
+
+\begin{problem}{S2Gamma0(37)的维数}
+计算 $\dim S_2(\Gamma_0(37))$，并说明 $X_0(37)$ 的亏格。
+\end{problem}
+\begin{solution}
+对素数 $37$，
+\[
+\mu=[\SL_2(\Z):\Gamma_0(37)]=37+1=38.
+\]
+又因 $37\equiv1\pmod4$，有两个阶 $2$ 椭圆点；$37\equiv1\pmod3$，有两个阶 $3$ 椭圆点；尖点个数仍为 $2$。故
+\[
+g_0(37)=1+\frac{38}{12}-\frac24-\frac23-\frac22=2.
+\]
+所以
+\[
+\dim S_2(\Gamma_0(37))=2,
+\]
+而 $X_0(37)$ 的亏格正是 $2$。
+\end{solution}
+
+\section{挑战题 \hard}
+
+\begin{problem}{Hecke特征多项式的整性}
+完整说明为什么 Hecke 代数作用在 $S_k(\SL_2(\Z))$ 上时，每个 $T_p$ 的特征多项式都有整系数。
+\end{problem}
+\begin{solution}
+取由整 $q$-展开组成的晶格
+\[
+L=S_k(\SL_2(\Z))\cap \Z[[q]].
+\]
+这是一个有限生成自由 $\Z$-模，其秩等于 $\dim S_k(\SL_2(\Z))$。Hecke 公式
+\[
+(T_pf)(q)=\sum_{n\ge1}(a_{pn}+p^{k-1}a_{n/p})q^n
+\]
+说明若 $f\in L$，则 $T_pf\in L$；因此 $T_p$ 给出 $L$ 上的整数线性自同态。选取 $L$ 的 $\Z$-基，$T_p$ 由整数矩阵表示。于是其特征多项式
+\[
+\det(XI-T_p)
+\]
+是首一整系数多项式。这正是所求。
+\end{solution}
+
+\begin{problem}{Eichler-Selberg迹公式的一维检验}
+陈述 Eichler--Selberg 迹公式的思想，并在 $k=12$、$n=p$ 为素数时说明它为何给出
+\[
+\Tr(T_p\mid S_{12}(\SL_2(\Z)))=\tau(p).
+\]
+\end{problem}
+\begin{solution}
+Eichler--Selberg 迹公式把
+\[
+\Tr(T_n\mid S_k(\SL_2(\Z)))
+\]
+表示为若干显式项之和：主项、与二次型类数有关的椭圆项、以及来自尖点的抛物项。对一般 $k,n$，这是计算 Hecke 迹的封闭公式。
+
+在 $k=12$ 时，$S_{12}(\SL_2(\Z))$ 由 $\Delta$ 一维张成，因此任何 $T_p$ 都以标量 $\tau(p)$ 作用。故不论迹公式右边如何具体化，左边必等于这唯一特征值：
+\[
+\Tr(T_p\mid S_{12})=\tau(p).
+\]
+这正是一维情形下对迹公式的最直接检验。
+\end{solution}
+
+\begin{problem}{最优曲线与Manin常数}
+设 $E/\Q$ 是导数为 $N$ 的模椭圆曲线，$X_0(N)\to E$ 是最优参数化。解释“最优”与 Manin 常数 $c_E$ 的关系。
+\end{problem}
+\begin{solution}
+最优意味着由 Jacobian 诱导的满射
+\[
+\phi:J_0(N)\to E
+\]
+具有连通核，即 $E$ 是其同位类中的最优商。对与 $E$ 对应的归一化新形式 $f_E$，存在常数 $c_E\in\Z_{>0}$ 使
+\[
+\phi^*(\omega_E)=c_E\,2\pi i\,f_E(\tau)\,d\tau,
+\]
+其中 $\omega_E$ 是 $E$ 的 N\'eron 微分。这个整数 $c_E$ 就是 Manin 常数。
+
+因此，最优参数化给出了最自然的积分结构比较，而 $c_E$ 衡量“模形式微分”与“椭圆曲线上的最小微分”之间的偏差。若 $c_E=1$，则二者完全吻合；这在半稳定等许多情形中成立，也是 Manin 猜想所期待的结论。
+\end{solution}
+
+\begin{problem}{Fourier系数决定特征新形式}
+证明归一化特征新形式的 Fourier 系数列 $\{a_n\}$ 完全决定该形式。
+\end{problem}
+\begin{solution}
+若两个归一化特征新形式 $f,g$ 满足 $a_n(f)=a_n(g)$ 对所有 $n$ 成立，则它们的 $q$-展开完全相同：
+\[
+f(\tau)=\sum_{n\ge1}a_n(f)q^n=\sum_{n\ge1}a_n(g)q^n=g(\tau).
+\]
+反过来，模形式作为上半平面的全纯函数，由其在尖点 $\infty$ 的 Fourier 展开唯一确定。所以 $\{a_n\}$ 与 $f$ 一一对应。等价地，$L$-函数
+\[
+L(f,s)=\sum a_nn^{-s}
+\]
+也唯一确定 $f$。
+\end{solution}
+
+\begin{problem}{从新形式到模参数化}
+设 $E/\Q$ 是模椭圆曲线，对应归一化新形式为 $f_E$。证明存在满射
+\[
+\phi:J_0(N)\to E.
+\]
+\end{problem}
+\begin{solution}
+Shimura 理论把每个权 $2$ 归一化新形式 $f$ 关联到一个阿贝尔簇商
+\[
+A_f=J_0(N)/I_fJ_0(N),
+\]
+其中 $I_f\subset\mathbb{T}$ 是把 $f$ 消掉的 Hecke 理想。若 $f=f_E$ 来自椭圆曲线 $E$，则 $A_f$ 是一个一维阿贝尔簇，于是必与某个椭圆曲线同构；模性定理说明这正是 $E$ 的同位类中的曲线。故存在 Hecke-equivariant 满射
+\[
+J_0(N)\twoheadrightarrow A_{f_E}\cong E.
+\]
+这就是所求模参数化在 Jacobian 层面的形式。
+\end{solution}
