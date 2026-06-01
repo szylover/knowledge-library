@@ -1,0 +1,1616 @@
+\chapter{线性映射}
+
+线性映射是线性代数中最核心的对象之一。向量空间本身描述了“可加、可数乘”的对象集合，而线性映射则描述了不同向量空间之间保持这两种运算的变换。在模形式理论中，Hecke 算子、权 $k$ 斜作用、取 Fourier 系数等操作，本质上都可以理解为适当向量空间之间的线性映射。因此，本章的目标有三：
+\begin{itemize}
+  \item 精确理解线性映射、核、像等基本概念；
+  \item 建立线性映射与矩阵表示之间的对应；
+  \item 为以后讨论特征值、表示论、模形式算子打下代数基础。
+\end{itemize}
+
+默认 $V,W,U$ 表示域 $\F$ 上的向量空间；若讨论维数，则额外假定有关空间有限维。
+
+\section{线性映射的定义与基本性质}
+
+\subsection{定义与最初例子}
+
+\begin{definition}
+设 $V,W$ 是域 $\F$ 上的向量空间。映射
+\[
+  f\colon V\to W
+\]
+称为\emph{线性映射}，如果对任意 $u,v\in V$ 与任意 $a,b\in \F$，都有
+\[
+  f(au+bv)=af(u)+bf(v).
+\]
+等价地说，只要同时满足下列两条即可：
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item $f(u+v)=f(u)+f(v)$；
+  \item $f(av)=af(v)$。
+\end{enumerate}
+\end{definition}
+
+\begin{remark}
+线性映射保持的是\emph{线性结构}。长度、角度、面积、乘法、非线性方程的解集等性质一般并不被保持。例如旋转保持长度，而投影通常不保持长度；但它们都保持加法与数乘，因此都是线性映射。
+\end{remark}
+
+\begin{proposition}
+设 $f\colon V\to W$ 是线性映射，则：
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item $f(0)=0$；
+  \item 对任意 $v\in V$，有 $f(-v)=-f(v)$；
+  \item 对任意有限组向量 $v_1,\dots,v_r\in V$ 与标量 $a_1,\dots,a_r\in\F$，有
+  \[
+    f\Bigl(\sum_{i=1}^r a_i v_i\Bigr)=\sum_{i=1}^r a_i f(v_i).
+  \]
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+由线性性，
+\[
+  f(0)=f(0+0)=f(0)+f(0).
+\]
+两边同时减去 $f(0)$，得 $f(0)=0$，即得 (1)。
+
+再由 (1) 与线性性，
+\[
+  0=f(0)=f(v+(-v))=f(v)+f(-v),
+\]
+故 $f(-v)=-f(v)$，得 (2)。
+
+(3) 可由定义反复使用得到；也可以对 $r$ 作归纳证明。$r=2$ 即为定义本身。若结论对 $r-1$ 成立，则
+\[
+  f\Bigl(\sum_{i=1}^r a_i v_i\Bigr)
+  =f\Bigl(\Bigl(\sum_{i=1}^{r-1} a_i v_i\Bigr)+a_r v_r\Bigr)
+  =f\Bigl(\sum_{i=1}^{r-1} a_i v_i\Bigr)+a_r f(v_r)
+  =\sum_{i=1}^{r-1} a_i f(v_i)+a_r f(v_r).
+\]
+故结论成立。
+\end{proof}
+
+\begin{example}[旋转]
+在 $\R^2$ 上，固定角 $\theta$，定义
+\[
+  R_\theta(x,y)=(x\cos\theta-y\sin\theta,\ x\sin\theta+y\cos\theta).
+\]
+则 $R_\theta\colon \R^2\to\R^2$ 是线性映射，因为每个坐标都是 $(x,y)$ 的线性组合。事实上，
+\[
+  R_\theta\binom{x}{y}=
+  \mat{\cos\theta & -\sin\theta\\ \sin\theta & \cos\theta}
+  \binom{x}{y}.
+\]
+它几何上表示绕原点逆时针旋转角 $\theta$。
+\end{example}
+
+\begin{example}[投影]
+定义 $\pi_x\colon \R^2\to\R^2$ 为
+\[
+  \pi_x(x,y)=(x,0).
+\]
+则 $\pi_x$ 是线性映射。它把平面中的点正交投影到 $x$ 轴上。其几何图像如下：
+\begin{center}
+\begin{tikzpicture}[scale=1.1]
+  \draw[->] (-0.5,0) -- (3.4,0) node[right] {$x$};
+  \draw[->] (0,-0.5) -- (0,2.8) node[above] {$y$};
+  \draw[very thick,blue] (0,0) -- (3.2,0) node[below right] {$\Ima(\pi_x)$};
+  \draw[very thick,green!50!black] (0,0) -- (0,2.5) node[left] {$\Ker(\pi_x)$};
+  \fill (1.3,2.0) circle (1.6pt) node[above left] {$(a,b)$};
+  \fill (1.3,0) circle (1.6pt) node[below] {$\pi_x(a,b)$};
+  \draw[dashed] (1.3,2.0) -- (1.3,0);
+  \draw[->,red,thick] (1.3,2.0) -- (1.3,0);
+\end{tikzpicture}
+\end{center}
+这里 $y$ 轴上的向量全被送到零，所以它们构成核；$x$ 轴上所有向量都能被取到，所以像正是 $x$ 轴。
+\end{example}
+
+\begin{example}[多项式上的求导]
+设 $\mathcal P_n(\R)$ 表示次数不超过 $n$ 的实系数多项式空间。定义
+\[
+  D\colon \mathcal P_n(\R)\to \mathcal P_n(\R),\qquad D(p)=p'.
+\]
+则 $D$ 是线性映射，因为
+\[
+  D(ap+bq)=(ap+bq)'=ap'+bq'=aD(p)+bD(q).
+\]
+若把值域写成 $\mathcal P_{n-1}(\R)$，同样得到线性映射
+\[
+  D\colon \mathcal P_n(\R)\to \mathcal P_{n-1}(\R).
+\]
+求导是以后研究模形式 Fourier 展开的一个重要原型：把一个函数送到另一个函数，同时保持线性结构。
+\end{example}
+
+\begin{example}[迹映射]
+设 $\Mat_{n\times n}(\F)$ 是 $n\times n$ 矩阵空间。定义
+\[
+  \Tr\colon \Mat_{n\times n}(\F)\to \F,
+  \qquad
+  \Tr(A)=\sum_{i=1}^n a_{ii}.
+\]
+则迹是线性映射，因为对任意矩阵 $A,B$ 与标量 $c$，
+\[
+  \Tr(A+B)=\Tr(A)+\Tr(B),\qquad \Tr(cA)=c\Tr(A).
+\]
+它给出了一个从矩阵空间到标量域的线性泛函。
+\end{example}
+
+\begin{example}[不是线性映射的例子]
+映射 $t\colon \R^2\to\R^2$，$t(x,y)=(x+1,y)$ 不是线性映射，因为
+\[
+  t(0,0)=(1,0)\neq (0,0).
+\]
+又如 $g\colon \R\to\R$，$g(x)=x^2$ 也不是线性映射，因为
+\[
+  g(x+y)=(x+y)^2\neq x^2+y^2=g(x)+g(y)
+\]
+一般不成立。
+\end{example}
+
+\subsection{核与像}
+
+\begin{definition}
+设 $f\colon V\to W$ 是线性映射。
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item $f$ 的\emph{核}定义为
+  \[
+    \Ker(f)=\{v\in V\mid f(v)=0\};
+  \]
+  \item $f$ 的\emph{像}定义为
+  \[
+    \Ima(f)=\{f(v)\mid v\in V\}\subseteq W.
+  \]
+\end{enumerate}
+\end{definition}
+
+核描述哪些向量被映到零；像描述哪些向量能够作为 $f$ 的输出出现。它们是最重要的两个子空间不变量。
+
+\begin{proposition}
+设 $f\colon V\to W$ 为线性映射，则 $\Ker(f)$ 是 $V$ 的子空间，$\Ima(f)$ 是 $W$ 的子空间。
+\end{proposition}
+
+\begin{proof}
+先证核。因为 $f(0)=0$，故 $0\in\Ker(f)$。若 $u,v\in\Ker(f)$，则
+\[
+  f(u+v)=f(u)+f(v)=0+0=0,
+\]
+所以 $u+v\in\Ker(f)$。若 $a\in\F$，$u\in\Ker(f)$，则
+\[
+  f(au)=af(u)=a\cdot 0=0,
+\]
+故 $au\in\Ker(f)$。因此 $\Ker(f)$ 是子空间。
+
+再证像。因 $f(0)=0$，故 $0\in\Ima(f)$。若 $y_1,y_2\in\Ima(f)$，则存在 $u,v\in V$ 使得 $y_1=f(u),y_2=f(v)$。于是
+\[
+  y_1+y_2=f(u)+f(v)=f(u+v)\in\Ima(f).
+\]
+若 $a\in\F$，则
+\[
+  ay_1=af(u)=f(au)\in\Ima(f).
+\]
+故 $\Ima(f)$ 亦为子空间。
+\end{proof}
+
+\begin{proposition}
+设 $f\colon V\to W$ 为线性映射，$U\subseteq V$、$Y\subseteq W$ 为子空间，则：
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item $f(U)=\{f(u)\mid u\in U\}$ 是 $W$ 的子空间；
+  \item $f^{-1}(Y)=\{v\in V\mid f(v)\in Y\}$ 是 $V$ 的子空间。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(1) 把 $f$ 限制在子空间 $U$ 上，得到线性映射 $f|_U\colon U\to W$，其像就是 $f(U)$。上一命题说明像是子空间。
+
+(2) 因为 $0\in Y$ 且 $f(0)=0$，故 $0\in f^{-1}(Y)$。若 $u,v\in f^{-1}(Y)$，则 $f(u),f(v)\in Y$，所以
+\[
+  f(u+v)=f(u)+f(v)\in Y,
+\]
+故 $u+v\in f^{-1}(Y)$。若 $a\in\F$，则
+\[
+  f(au)=af(u)\in Y,
+\]
+因为 $Y$ 对数乘封闭。故 $f^{-1}(Y)$ 是子空间。
+\end{proof}
+
+\begin{proposition}
+设 $f\colon V\to W$ 为线性映射，则：
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item $f$ 单射当且仅当 $\Ker(f)=\{0\}$；
+  \item $f$ 满射当且仅当 $\Ima(f)=W$。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(2) 只是满射定义的重述。
+
+(1) 若 $f$ 单射，而 $v\in\Ker(f)$，则 $f(v)=0=f(0)$，由单射性得 $v=0$，故 $\Ker(f)=\{0\}$。
+
+反之，若 $\Ker(f)=\{0\}$ 且 $f(u)=f(v)$，则
+\[
+  f(u-v)=f(u)-f(v)=0,
+\]
+从而 $u-v\in\Ker(f)=\{0\}$，即 $u=v$。故 $f$ 为单射。
+\end{proof}
+
+\begin{example}
+考虑线性映射
+\[
+  f\colon \R^3\to\R^2,
+  \qquad
+  f(x,y,z)=(x+y,\ y+z).
+\]
+求核与像。
+
+设 $f(x,y,z)=(0,0)$，则
+\[
+  x+y=0,\qquad y+z=0.
+\]
+解得 $x=-y$, $z=-y$，故
+\[
+  \Ker(f)=\{(-t,t,-t)\mid t\in\R\}=\R(-1,1,-1).
+\]
+
+再求像。对任意 $(a,b)\in\R^2$，取 $y=0$、$x=a$、$z=b$，则
+\[
+  f(a,0,b)=(a,b).
+\]
+所以 $\Ima(f)=\R^2$，于是 $f$ 是满射但不是单射。
+\end{example}
+
+\begin{example}
+对于求导映射 $D\colon \mathcal P_n(\R)\to \mathcal P_n(\R)$，有
+\[
+  \Ker(D)=\{\text{常数多项式}\}=\R,
+\]
+而像是所有次数不超过 $n-1$ 的多项式：
+\[
+  \Ima(D)=\mathcal P_{n-1}(\R).
+\]
+事实上，任取
+\[
+  q(x)=a_0+a_1x+\cdots +a_{n-1}x^{n-1}\in \mathcal P_{n-1}(\R),
+\]
+定义
+\[
+  p(x)=a_0x+\frac{a_1}{2}x^2+\cdots+\frac{a_{n-1}}{n}x^n,
+\]
+则 $p'(x)=q(x)$。
+\end{example}
+
+\begin{remark}
+在以后学习中，核经常对应“满足某种齐次条件的对象”，像经常对应“能够由某种构造产生的对象”。例如对矩阵 $A$ 定义的线性映射 $x\mapsto Ax$，其核就是齐次线性方程组 $Ax=0$ 的解空间，像则是矩阵 $A$ 的列空间。
+\end{remark}
+
+\section{核与像，维数公式}
+
+本节在有限维情形中讨论核与像的维数关系。该关系通常称为\emph{秩--零化度定理}，它是线性代数最根本的计数定理之一。
+
+\begin{notation}
+设 $f\colon V\to W$ 为有限维向量空间之间的线性映射，定义
+\[
+  \rank(f)=\dim \Ima(f),
+  \qquad
+  \nullity(f)=\dim \Ker(f).
+\]
+分别称为 $f$ 的\emph{秩}与\emph{零化度}。
+\end{notation}
+
+\begin{theorem}[秩--零化度定理]
+设 $f\colon V\to W$ 是有限维向量空间之间的线性映射，则
+\[
+  \dim V=\nullity(f)+\rank(f)
+  =\dim\Ker(f)+\dim\Ima(f).
+\]
+\end{theorem}
+
+\begin{proof}
+设
+\[
+  \dim\Ker(f)=k.
+\]
+取核的一组基
+\[
+  u_1,\dots,u_k.
+\]
+由于 $V$ 有限维，可将其扩充为 $V$ 的一组基：
+\[
+  u_1,\dots,u_k,v_1,\dots,v_r.
+\]
+于是
+\[
+  \dim V=k+r.
+\]
+我们证明 $f(v_1),\dots,f(v_r)$ 构成 $\Ima(f)$ 的一组基。
+
+先证张成。任取 $y\in\Ima(f)$，则存在 $x\in V$ 使 $y=f(x)$。将 $x$ 在上述基下展开为
+\[
+  x=\sum_{i=1}^k a_i u_i+\sum_{j=1}^r b_j v_j.
+\]
+因为每个 $u_i\in\Ker(f)$，故 $f(u_i)=0$，于是
+\[
+  y=f(x)=\sum_{i=1}^k a_i f(u_i)+\sum_{j=1}^r b_j f(v_j)
+  =\sum_{j=1}^r b_j f(v_j).
+\]
+所以 $f(v_1),\dots,f(v_r)$ 张成 $\Ima(f)$。
+
+再证线性无关。若
+\[
+  c_1 f(v_1)+\cdots+c_r f(v_r)=0,
+\]
+则
+\[
+  f(c_1v_1+\cdots+c_rv_r)=0,
+\]
+因此向量 $c_1v_1+\cdots+c_rv_r\in\Ker(f)$。但核由 $u_1,\dots,u_k$ 张成，所以存在 $d_1,\dots,d_k\in\F$ 使
+\[
+  c_1v_1+\cdots+c_rv_r=d_1u_1+\cdots+d_ku_k.
+\]
+移项得
+\[
+  d_1u_1+\cdots+d_ku_k-c_1v_1-\cdots-c_rv_r=0.
+\]
+由于
+\[
+  u_1,\dots,u_k,v_1,\dots,v_r
+\]
+是 $V$ 的一组基，必线性无关，故
+\[
+  d_1=\cdots=d_k=c_1=\cdots=c_r=0.
+\]
+所以 $f(v_1),\dots,f(v_r)$ 线性无关。
+
+因此 $f(v_1),\dots,f(v_r)$ 是 $\Ima(f)$ 的一组基，故
+\[
+  \dim\Ima(f)=r.
+\]
+从而
+\[
+  \dim V=k+r=\dim\Ker(f)+\dim\Ima(f).
+\]
+定理得证。
+\end{proof}
+
+\begin{corollary}
+设 $f\colon V\to W$ 为有限维线性映射。
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item 若 $f$ 单射，则 $\dim V\le \dim W$；
+  \item 若 $f$ 满射，则 $\dim V\ge \dim W$；
+  \item 若 $\dim V>\dim W$，则 $f$ 不可能单射；
+  \item 若 $\dim V<\dim W$，则 $f$ 不可能满射。
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+(1) 若 $f$ 单射，则 $\Ker(f)=\{0\}$，故 $\dim\Ker(f)=0$。由秩--零化度定理，
+\[
+  \dim V=\dim\Ima(f)\le \dim W.
+\]
+(2) 若 $f$ 满射，则 $\Ima(f)=W$，故
+\[
+  \dim V=\dim\Ker(f)+\dim W\ge \dim W.
+\]
+(3)、(4) 分别是 (1)、(2) 的逆否命题。
+\end{proof}
+
+\begin{corollary}
+设 $V,W$ 有限维且 $\dim V=\dim W$。若 $f\colon V\to W$ 线性，则下列条件等价：
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item $f$ 单射；
+  \item $f$ 满射；
+  \item $f$ 为同构。
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+(3)$\Rightarrow$(1)、(2) 显然。
+
+若 (1) 成立，则由上一推论有 $\dim V\le \dim W$；又已知两者相等，因此
+\[
+  \dim\Ima(f)=\dim V=\dim W,
+\]
+故 $\Ima(f)=W$，即 (2) 成立。
+
+若 (2) 成立，则
+\[
+  \dim\Ker(f)=\dim V-\dim W=0,
+\]
+故 $f$ 单射，即 (1) 成立。
+
+有限维向量空间之间的线性映射若既单又满，即为双射，故为同构。于是三者等价。
+\end{proof}
+
+\begin{proposition}[第一同构定理]
+设 $f\colon V\to W$ 为线性映射，则存在自然同构
+\[
+  V/\Ker(f)\cong \Ima(f).
+\]
+\end{proposition}
+
+\begin{proof}
+定义映射
+\[
+  \overline f\colon V/\Ker(f)\to \Ima(f),
+  \qquad
+  \overline f(v+\Ker(f))=f(v).
+\]
+先证良定义。若
+\[
+  v+\Ker(f)=v'+\Ker(f),
+\]
+则 $v-v'\in\Ker(f)$，从而
+\[
+  f(v-v')=0,
+\]
+即 $f(v)=f(v')$。故定义与陪集代表元无关。
+
+线性性直接由商空间上的运算给出：
+\[
+  \overline f\bigl(a(v+\Ker(f))+b(v'+\Ker(f))\bigr)
+  =\overline f(av+bv'+\Ker(f))
+  =f(av+bv')
+  =a f(v)+b f(v').
+\]
+
+满射是显然的，因为值域本来就定义为 $\Ima(f)$。再求其核：
+\[
+  \overline f(v+\Ker(f))=0
+  \iff f(v)=0
+  \iff v\in\Ker(f)
+  \iff v+\Ker(f)=\Ker(f).
+\]
+故 $\Ker(\overline f)=\{\Ker(f)\}$，即 $\overline f$ 单射。因此 $\overline f$ 为同构。
+\end{proof}
+
+\begin{example}
+定义
+\[
+  f\colon \R^3\to\R^2,
+  \qquad
+  f(x,y,z)=(x-y,\ x+z).
+\]
+求维数信息。
+
+解齐次方程
+\[
+  x-y=0,\qquad x+z=0,
+\]
+得 $y=x$、$z=-x$，故
+\[
+  \Ker(f)=\R(1,1,-1),\qquad \dim\Ker(f)=1.
+\]
+由于 $\dim\R^3=3$，秩--零化度定理给出
+\[
+  \dim\Ima(f)=3-1=2.
+\]
+但值域是 $\R^2$，故 $\Ima(f)=\R^2$，从而 $f$ 满射。
+\end{example}
+
+\begin{example}[幂等投影]
+设 $p\colon V\to V$ 满足 $p^2=p$。则
+\[
+  V=\Ker(p)\oplus \Ima(p).
+\]
+
+证明如下。任取 $v\in V$，写成
+\[
+  v=(v-p(v))+p(v).
+\]
+其中
+\[
+  p(v-p(v))=p(v)-p^2(v)=p(v)-p(v)=0,
+\]
+故 $v-p(v)\in\Ker(p)$；而 $p(v)\in\Ima(p)$。因此
+\[
+  V=\Ker(p)+\Ima(p).
+\]
+若 $x\in\Ker(p)\cap\Ima(p)$，则 $x=p(y)$ 对某个 $y\in V$ 成立，同时 $p(x)=0$。但
+\[
+  p(x)=p(p(y))=p(y)=x,
+\]
+故 $x=0$。于是和为直和。
+
+这个例子说明：线性投影的结构由核与像完全决定。
+\end{example}
+
+\begin{remark}
+秩--零化度定理可以被视为“信息守恒”的线性版本：定义域的维数被分成两部分，一部分是被压缩掉的自由度（核的维数），另一部分是保留下来的自由度（像的维数）。
+\end{remark}
+
+\section{线性映射的矩阵表示}
+
+本节说明：在选定基之后，线性映射与矩阵完全等价。于是对线性映射的计算，可以转化为矩阵计算；反过来，矩阵乘法的本质也来自映射复合。
+
+\subsection{相对于基的矩阵}
+
+\begin{definition}
+设 $\dim V=n$，$\dim W=m$，并取有序基
+\[
+  \mathcal B=(v_1,\dots,v_n),\qquad \mathcal C=(w_1,\dots,w_m).
+\]
+若 $f\colon V\to W$ 为线性映射，则对每个 $j=1,\dots,n$，可唯一写成
+\[
+  f(v_j)=a_{1j}w_1+\cdots+a_{mj}w_m.
+\]
+由这些系数组成的矩阵
+\[
+  [f]_{\mathcal C}^{\mathcal B}
+  =\mat{a_{11} & a_{12} & \cdots & a_{1n}\\
+         a_{21} & a_{22} & \cdots & a_{2n}\\
+         \vdots & \vdots & \ddots & \vdots\\
+         a_{m1} & a_{m2} & \cdots & a_{mn}}
+  \in \Mat_{m\times n}(\F)
+\]
+称为 $f$ 关于基 $\mathcal B,\mathcal C$ 的\emph{矩阵表示}。
+\end{definition}
+
+\begin{remark}
+矩阵 $[f]_{\mathcal C}^{\mathcal B}$ 的第 $j$ 列，正是向量 $f(v_j)$ 在基 $\mathcal C$ 下的坐标列向量。这句话极其重要：\emph{列来自像向量的坐标}。
+\end{remark}
+
+\begin{proposition}
+设 $f\colon V\to W$ 为线性映射，$\mathcal B,\mathcal C$ 如上。则对任意 $v\in V$，有
+\[
+  [f(v)]_{\mathcal C}=[f]_{\mathcal C}^{\mathcal B}[v]_{\mathcal B}.
+\]
+\end{proposition}
+
+\begin{proof}
+设
+\[
+  v=x_1v_1+\cdots+x_nv_n,
+  \qquad
+  [v]_{\mathcal B}=\mat{x_1\\ \vdots\\ x_n}.
+\]
+由线性性，
+\[
+  f(v)=x_1f(v_1)+\cdots+x_nf(v_n).
+\]
+再把每个 $f(v_j)$ 展开到基 $\mathcal C$ 下，得
+\[
+  f(v)=\sum_{j=1}^n x_j\sum_{i=1}^m a_{ij}w_i
+  =\sum_{i=1}^m\Bigl(\sum_{j=1}^n a_{ij}x_j\Bigr)w_i.
+\]
+因此 $f(v)$ 在基 $\mathcal C$ 下的坐标恰为矩阵乘积
+\[
+  \mat{a_{11} & \cdots & a_{1n}\\ \vdots & & \vdots\\ a_{m1} & \cdots & a_{mn}}
+  \mat{x_1\\ \vdots\\ x_n}.
+\]
+命题得证。
+\end{proof}
+
+\begin{center}
+\begin{tikzcd}[column sep=large,row sep=large]
+V \arrow[r,"f"] \arrow[d,"[\,\cdot\,]_{\mathcal B}"'] & W \arrow[d,"[\,\cdot\,]_{\mathcal C}"] \\
+\F^n \arrow[r,"[f]_{\mathcal C}^{\mathcal B}"'] & \F^m
+\end{tikzcd}
+\end{center}
+
+上图说明：取坐标后，线性映射就变成了矩阵乘法。
+
+\begin{example}[标准基下的矩阵]
+设
+\[
+  f\colon \R^2\to\R^2,
+  \qquad
+  f(x,y)=(2x-y,\ 3x+4y).
+\]
+取标准基 $e_1=(1,0),e_2=(0,1)$。则
+\[
+  f(e_1)=(2,3),\qquad f(e_2)=(-1,4).
+\]
+因此
+\[
+  [f]=\mat{2 & -1\\ 3 & 4}.
+\]
+于是
+\[
+  f(x,y)=\mat{2 & -1\\ 3 & 4}\mat{x\\ y}.
+\]
+\end{example}
+
+\begin{example}[求导算子的矩阵]
+在基
+\[
+  \mathcal B=(1,x,x^2,x^3)
+\]
+下，求导映射 $D\colon \mathcal P_3(\R)\to\mathcal P_3(\R)$ 满足
+\[
+  D(1)=0,\qquad D(x)=1,\qquad D(x^2)=2x,\qquad D(x^3)=3x^2.
+\]
+故其矩阵为
+\[
+  [D]_{\mathcal B}^{\mathcal B}=
+  \mat{0 & 1 & 0 & 0\\
+       0 & 0 & 2 & 0\\
+       0 & 0 & 0 & 3\\
+       0 & 0 & 0 & 0}.
+\]
+这个矩阵是严格上三角的，反映了求导会降低次数。
+\end{example}
+
+\begin{example}[迹映射的矩阵]
+考虑线性映射
+\[
+  \Tr\colon \Mat_{2\times 2}(\F)\to \F.
+\]
+取 $\Mat_{2\times 2}(\F)$ 的基
+\[
+  E_{11},E_{12},E_{21},E_{22},
+\]
+其中 $E_{ij}$ 仅在 $(i,j)$ 处为 $1$，其余处为 $0$；值域 $\F$ 取基 $(1)$。因为
+\[
+  \Tr(E_{11})=1,\quad \Tr(E_{12})=0,\quad \Tr(E_{21})=0,\quad \Tr(E_{22})=1,
+\]
+所以
+\[
+  [\Tr]=\mat{1 & 0 & 0 & 1}.
+\]
+即迹映射由一个 $1\times 4$ 矩阵表示。
+\end{example}
+
+\subsection{复合与矩阵乘法}
+
+\begin{theorem}
+设 $f\colon U\to V$、$g\colon V\to W$ 为线性映射，取有序基
+\[
+  \mathcal A\text{ 为 }U\text{ 的基},\qquad
+  \mathcal B\text{ 为 }V\text{ 的基},\qquad
+  \mathcal C\text{ 为 }W\text{ 的基}.
+\]
+则
+\[
+  [g\circ f]_{\mathcal C}^{\mathcal A}
+  =[g]_{\mathcal C}^{\mathcal B}[f]_{\mathcal B}^{\mathcal A}.
+\]
+\end{theorem}
+
+\begin{proof}
+任取 $u\in U$。由上一命题，
+\[
+  [f(u)]_{\mathcal B}=[f]_{\mathcal B}^{\mathcal A}[u]_{\mathcal A}.
+\]
+再作用 $g$，得
+\[
+  [(g\circ f)(u)]_{\mathcal C}
+  =[g]_{\mathcal C}^{\mathcal B}[f(u)]_{\mathcal B}
+  =[g]_{\mathcal C}^{\mathcal B}[f]_{\mathcal B}^{\mathcal A}[u]_{\mathcal A}.
+\]
+另一方面，按定义也有
+\[
+  [(g\circ f)(u)]_{\mathcal C}
+  =[g\circ f]_{\mathcal C}^{\mathcal A}[u]_{\mathcal A}.
+\]
+由于这对任意坐标列向量 $[u]_{\mathcal A}$ 都成立，故两个矩阵必相等。
+\end{proof}
+
+\begin{corollary}
+设 $f\colon V\to V$ 为线性自同态，$\mathcal B$ 是 $V$ 的一组基。则
+\[
+  [f^r]_{\mathcal B}^{\mathcal B}=([f]_{\mathcal B}^{\mathcal B})^r,
+  \qquad r\in\N.
+\]
+\end{corollary}
+
+\begin{proof}
+对 $r$ 作归纳即可。$r=1$ 显然。若结论对 $r$ 成立，则
+\[
+  [f^{r+1}]_{\mathcal B}^{\mathcal B}
+  =[f\circ f^r]_{\mathcal B}^{\mathcal B}
+  =[f]_{\mathcal B}^{\mathcal B}[f^r]_{\mathcal B}^{\mathcal B}
+  =[f]_{\mathcal B}^{\mathcal B}([f]_{\mathcal B}^{\mathcal B})^r.
+\]
+故得结论。
+\end{proof}
+
+\begin{proposition}
+设 $V,W$ 有限维，$\dim V=n$，$\dim W=m$。则所有线性映射的集合 $\Hom(V,W)$ 在逐点加法与数乘下构成向量空间。
+\end{proposition}
+
+\begin{proof}
+若 $f,g\in\Hom(V,W)$，定义
+\[
+  (f+g)(v)=f(v)+g(v),\qquad (af)(v)=a f(v).
+\]
+需证 $f+g$ 与 $af$ 仍线性。对任意 $u,v\in V$ 与 $\alpha,\beta\in\F$，
+\[
+  (f+g)(\alpha u+\beta v)
+  =f(\alpha u+\beta v)+g(\alpha u+\beta v)
+  =\alpha(f(u)+g(u))+\beta(f(v)+g(v)),
+\]
+故 $f+g$ 线性；
+\[
+  (af)(\alpha u+\beta v)=a f(\alpha u+\beta v)=\alpha(af)(u)+\beta(af)(v),
+\]
+故 $af$ 线性。其余向量空间公理逐点验证即可，因为值域 $W$ 本身是向量空间。
+\end{proof}
+
+\begin{theorem}
+设 $V,W$ 有限维，$\dim V=n$，$\dim W=m$，并固定基 $\mathcal B,\mathcal C$。则映射
+\[
+  \Phi\colon \Hom(V,W)\to \Mat_{m\times n}(\F),
+  \qquad
+  \Phi(f)=[f]_{\mathcal C}^{\mathcal B}
+\]
+是线性同构。
+\end{theorem}
+
+\begin{proof}
+先证线性。设 $f,g\in\Hom(V,W)$，$a\in\F$。对每个基向量 $v_j\in\mathcal B$，若
+\[
+  f(v_j)=\sum_i b_{ij}w_i,
+  \qquad
+  g(v_j)=\sum_i c_{ij}w_i,
+\]
+则
+\[
+  (f+g)(v_j)=\sum_i (b_{ij}+c_{ij})w_i,
+  \qquad
+  (af)(v_j)=\sum_i (ab_{ij})w_i.
+\]
+故
+\[
+  \Phi(f+g)=\Phi(f)+\Phi(g),
+  \qquad
+  \Phi(af)=a\Phi(f).
+\]
+
+再证单射。若 $\Phi(f)=0$，则每个 $f(v_j)$ 的坐标都为零，所以 $f(v_j)=0$ 对一切 $j$ 成立。由线性性，$f$ 在整个 $V$ 上恒为零，故 $f=0$。
+
+最后证满射。任取矩阵
+\[
+  A=(a_{ij})\in\Mat_{m\times n}(\F).
+\]
+对基向量定义
+\[
+  f_A(v_j)=\sum_{i=1}^m a_{ij}w_i,
+  \qquad j=1,\dots,n.
+\]
+再按线性性唯一延拓到整个 $V$：若
+\[
+  v=x_1v_1+\cdots+x_nv_n,
+\]
+则设
+\[
+  f_A(v)=x_1f_A(v_1)+\cdots+x_nf_A(v_n).
+\]
+这是一个线性映射，且按构造有
+\[
+  [f_A]_{\mathcal C}^{\mathcal B}=A.
+\]
+故 $\Phi$ 满射。
+
+因此 $\Phi$ 为线性同构。
+\end{proof}
+
+\begin{corollary}
+若 $\dim V=n$，则固定一组基后，$\End(V)$ 与矩阵代数 $\Mat_{n\times n}(\F)$ 同构。
+\end{corollary}
+
+\begin{remark}
+这个结论非常重要：今后我们讨论线性自同态时，可以自由切换“映射语言”与“矩阵语言”。不过必须记住，矩阵依赖于基；真正不依赖基的是线性映射本身。
+\end{remark}
+
+\section{基变换与过渡矩阵}
+
+同一个线性映射在不同基下会得到不同矩阵。本节研究这些矩阵之间的关系，并据此理解相似矩阵的本质。
+
+\subsection{过渡矩阵}
+
+\begin{definition}
+设 $V$ 是有限维向量空间，
+\[
+  \mathcal B=(v_1,\dots,v_n),\qquad \mathcal B'=(v_1',\dots,v_n')
+\]
+是 $V$ 的两组有序基。定义从基 $\mathcal B'$ 到基 $\mathcal B$ 的\emph{过渡矩阵} $P$ 为满足
+\[
+  [x]_{\mathcal B}=P[x]_{\mathcal B'}\qquad (x\in V)
+\]
+的矩阵。
+\end{definition}
+
+\begin{proposition}
+过渡矩阵 $P$ 的第 $j$ 列，正是新基向量 $v_j'$ 在旧基 $\mathcal B$ 下的坐标，即若
+\[
+  v_j'=p_{1j}v_1+\cdots+p_{nj}v_n,
+\]
+则
+\[
+  P=(p_{ij})_{1\le i,j\le n}.
+\]
+此外，$P$ 必为可逆矩阵，且
+\[
+  P^{-1}
+\]
+正是从 $\mathcal B$ 到 $\mathcal B'$ 的过渡矩阵。
+\end{proposition}
+
+\begin{proof}
+把 $x=v_j'$ 代入定义式
+\[
+  [x]_{\mathcal B}=P[x]_{\mathcal B'}
+\]
+即可。因为 $[v_j']_{\mathcal B'}$ 恰是第 $j$ 个标准基向量，所以 $P$ 的第 $j$ 列就是 $[v_j']_{\mathcal B}$。
+
+再证可逆性。对任意 $x\in V$，既有
+\[
+  [x]_{\mathcal B}=P[x]_{\mathcal B'},
+\]
+又有某个矩阵 $Q$ 使
+\[
+  [x]_{\mathcal B'}=Q[x]_{\mathcal B}.
+\]
+代入得
+\[
+  [x]_{\mathcal B}=PQ[x]_{\mathcal B}
+\]
+对一切 $x$ 成立，因此 $PQ=I_n$。同理 $QP=I_n$，故 $Q=P^{-1}$。因此 $P$ 可逆，且逆矩阵给出反向过渡。
+\end{proof}
+
+\begin{example}
+在 $\R^2$ 中取
+\[
+  \mathcal B=(e_1,e_2),
+  \qquad
+  \mathcal B'=(e_1+e_2,\ e_1-e_2).
+\]
+则
+\[
+  [e_1+e_2]_{\mathcal B}=\mat{1\\1},
+  \qquad
+  [e_1-e_2]_{\mathcal B}=\mat{1\\-1}.
+\]
+故从 $\mathcal B'$ 到 $\mathcal B$ 的过渡矩阵为
+\[
+  P=\mat{1 & 1\\ 1 & -1}.
+\]
+从 $\mathcal B$ 到 $\mathcal B'$ 的过渡矩阵是
+\[
+  P^{-1}=\frac12\mat{1 & 1\\ 1 & -1}.
+\]
+\end{example}
+
+\subsection{同一线性映射在不同基下的矩阵}
+
+\begin{theorem}[基变换公式]
+设 $f\colon V\to V$ 是有限维向量空间上的线性自同态。若
+\[
+  A=[f]_{\mathcal B}^{\mathcal B},
+  \qquad
+  A'=[f]_{\mathcal B'}^{\mathcal B'},
+\]
+且 $P$ 是从 $\mathcal B'$ 到 $\mathcal B$ 的过渡矩阵，则
+\[
+  A'=P^{-1}AP.
+\]
+\end{theorem}
+
+\begin{proof}
+任取 $x\in V$。由过渡矩阵的定义，
+\[
+  [x]_{\mathcal B}=P[x]_{\mathcal B'}.
+\]
+对 $f(x)$ 也有
+\[
+  [f(x)]_{\mathcal B}=P[f(x)]_{\mathcal B'}.
+\]
+另一方面，按矩阵表示定义，
+\[
+  [f(x)]_{\mathcal B}=A[x]_{\mathcal B},
+  \qquad
+  [f(x)]_{\mathcal B'}=A'[x]_{\mathcal B'}.
+\]
+将这些关系连起来：
+\[
+  P A'[x]_{\mathcal B'}=[f(x)]_{\mathcal B}=A[x]_{\mathcal B}=AP[x]_{\mathcal B'}.
+\]
+由于这对任意 $[x]_{\mathcal B'}$ 成立，故
+\[
+  PA'=AP.
+\]
+左乘 $P^{-1}$ 即得
+\[
+  A'=P^{-1}AP.
+\]
+\end{proof}
+
+\begin{center}
+\begin{tikzcd}[column sep=large,row sep=large]
+\F^n \arrow[r,"A'"] \arrow[d,"P"'] & \F^n \arrow[d,"P"] \\
+\F^n \arrow[r,"A"'] & \F^n
+\end{tikzcd}
+\end{center}
+
+这个交换图说明：不同基下的两个矩阵表示的是同一个线性映射，因此它们并不是毫无关系的两个矩阵，而是由一个基变换联系起来的。矩阵论中称这两个矩阵\emph{相似}。
+
+\begin{definition}
+两个 $n\times n$ 矩阵 $A,B$ 称为\emph{相似}，如果存在可逆矩阵 $P$ 使得
+\[
+  B=P^{-1}AP.
+\]
+\end{definition}
+
+\begin{remark}
+相似不是普通的数值相等，而是“表示同一线性变换，只不过坐标系不同”。因此，相似矩阵应当具有相同的本质性质。本节后面将证明迹、行列式、秩等都在相似下保持不变。
+\end{remark}
+
+\begin{example}
+取
+\[
+  A=\mat{1 & 0\\ 0 & 2},
+  \qquad
+  P=\mat{1 & 1\\ 1 & -1}.
+\]
+则
+\[
+  P^{-1}=\frac12\mat{1 & 1\\ 1 & -1},
+\]
+从而
+\[
+  A'=P^{-1}AP=\frac12\mat{3 & -1\\ -1 & 3}.
+\]
+于是同一个线性映射在两组基下的矩阵可以长得很不同：一个是对角矩阵，另一个却不是；但它们的迹都是 $3$，行列式都是 $2$，秩都是 $2$。
+\end{example}
+
+\subsection{相似不变量}
+
+\begin{lemma}
+对任意同型方阵 $X,Y$，有
+\[
+  \Tr(XY)=\Tr(YX).
+\]
+\end{lemma}
+
+\begin{proof}
+设 $X=(x_{ij})$，$Y=(y_{ij})$。则
+\[
+  \Tr(XY)=\sum_i (XY)_{ii}=\sum_i\sum_j x_{ij}y_{ji}.
+\]
+交换求和次序得
+\[
+  \Tr(XY)=\sum_j\sum_i y_{ji}x_{ij}=\sum_j (YX)_{jj}=\Tr(YX).
+\]
+\end{proof}
+
+\begin{proposition}
+若 $A,B$ 相似，则
+\[
+  \Tr(A)=\Tr(B).
+\]
+\end{proposition}
+
+\begin{proof}
+设 $B=P^{-1}AP$。由上引理，
+\[
+  \Tr(B)=\Tr(P^{-1}AP)=\Tr(APP^{-1})=\Tr(A).
+\]
+\end{proof}
+
+\begin{proposition}
+若 $A,B$ 相似，则
+\[
+  \det(A)=\det(B).
+\]
+\end{proposition}
+
+\begin{proof}
+设 $B=P^{-1}AP$。由行列式的乘法性质，
+\[
+  \det(B)=\det(P^{-1})\det(A)\det(P)=\det(A).
+\]
+\end{proof}
+
+\begin{proposition}
+若 $A,B$ 相似，则
+\[
+  \rank(A)=\rank(B).
+\]
+\end{proposition}
+
+\begin{proof}
+设 $B=P^{-1}AP$，其中 $P$ 可逆。由于右乘 $P$ 只是对定义域先做一个线性同构，故
+\[
+  \Ima(AP)=\Ima(A),
+\]
+从而 $\rank(AP)=\rank(A)$。再左乘 $P^{-1}$ 只是对值域做一个线性同构，因此
+\[
+  \Ima(P^{-1}AP)=P^{-1}(\Ima(AP)),
+\]
+故
+\[
+  \dim\Ima(P^{-1}AP)=\dim\Ima(AP).
+\]
+于是
+\[
+  \rank(B)=\rank(P^{-1}AP)=\rank(AP)=\rank(A).
+\]
+\end{proof}
+
+\begin{corollary}
+设 $f\colon V\to V$ 为有限维线性自同态，则 $\Tr(f)$、$\det(f)$、$\rank(f)$ 的值与所选基无关。
+\end{corollary}
+
+\begin{proof}
+在任意两组基下，$f$ 的矩阵彼此相似。由前三个命题，相似矩阵具有相同的迹、行列式与秩，因此这些量只依赖于 $f$ 本身，而不依赖于基。
+\end{proof}
+
+\section{对偶空间与对偶映射}
+
+对偶空间把“向量”转化为“线性函数”。这是线性代数中极其深刻的一步，因为很多问题并不直接研究向量本身，而研究向量上的线性观测。模形式中的取系数、取常数项、Petersson 内积固定一个变量后的泛函等，都属于这一思想的不同表现。
+
+\subsection{对偶空间与对偶基}
+
+\begin{definition}
+设 $V$ 为域 $\F$ 上的向量空间。称
+\[
+  V^*=\Hom(V,\F)
+\]
+为 $V$ 的\emph{对偶空间}。其中元素 $\varphi\in V^*$ 称为 $V$ 上的\emph{线性泛函}。
+\end{definition}
+
+\begin{example}
+若 $V=\F^n$，则每个行向量
+\[
+  (a_1,\dots,a_n)
+\]
+都定义一个线性泛函
+\[
+  \varphi(x_1,\dots,x_n)=a_1x_1+\cdots+a_nx_n.
+\]
+因此 $\F^n$ 上的线性泛函正是“行向量乘列向量”的形式。
+\end{example}
+
+\begin{example}
+在多项式空间 $\mathcal P_n(\F)$ 上，映射
+\[
+  \varepsilon_0(p)=p(0)
+\]
+是线性泛函；更一般地，固定任意 $a\in\F$，映射
+\[
+  \varepsilon_a(p)=p(a)
+\]
+也是线性泛函。
+\end{example}
+
+\begin{definition}
+设 $V$ 有一组基
+\[
+  \mathcal B=(v_1,\dots,v_n).
+\]
+若 $\varphi_1,\dots,\varphi_n\in V^*$ 满足
+\[
+  \varphi_i(v_j)=\delta_{ij}
+  =\begin{cases}
+    1,& i=j,\\
+    0,& i\neq j,
+  \end{cases}
+\]
+则称
+\[
+  \mathcal B^*=(\varphi_1,\dots,\varphi_n)
+\]
+为基 $\mathcal B$ 的\emph{对偶基}。
+\end{definition}
+
+\begin{theorem}
+设 $V$ 为 $n$ 维向量空间，$\mathcal B=(v_1,\dots,v_n)$ 是 $V$ 的一组基。则存在唯一的对偶基
+\[
+  \mathcal B^*=(\varphi_1,\dots,\varphi_n),
+\]
+而且 $\varphi_1,\dots,\varphi_n$ 构成 $V^*$ 的一组基。特别地，
+\[
+  \dim V^*=\dim V=n.
+\]
+\end{theorem}
+
+\begin{proof}
+先证存在。任取 $v\in V$，由 $\mathcal B$ 是基，可唯一写成
+\[
+  v=a_1v_1+\cdots+a_nv_n.
+\]
+对每个 $i$，定义
+\[
+  \varphi_i(v)=a_i.
+\]
+因为坐标表示唯一，上式定义良好。又对任意 $u,v\in V$ 与 $\alpha,\beta\in\F$，若
+\[
+  u=\sum b_jv_j,\qquad v=\sum c_jv_j,
+\]
+则
+\[
+  \alpha u+\beta v=\sum (\alpha b_j+\beta c_j)v_j,
+\]
+故
+\[
+  \varphi_i(\alpha u+\beta v)=\alpha b_i+\beta c_i
+  =\alpha\varphi_i(u)+\beta\varphi_i(v).
+\]
+所以每个 $\varphi_i$ 都是线性泛函。并且按定义直接得到
+\[
+  \varphi_i(v_j)=\delta_{ij}.
+\]
+故对偶基存在。
+
+再证唯一。若 $\psi_1,\dots,\psi_n$ 也满足 $\psi_i(v_j)=\delta_{ij}$，则对任意
+\[
+  v=\sum a_jv_j,
+\]
+有
+\[
+  \psi_i(v)=\sum a_j\psi_i(v_j)=a_i=\varphi_i(v).
+\]
+故 $\psi_i=\varphi_i$。
+
+最后证 $\varphi_1,\dots,\varphi_n$ 构成 $V^*$ 的基。先证线性无关：若
+\[
+  c_1\varphi_1+\cdots+c_n\varphi_n=0,
+\]
+则作用在 $v_j$ 上得
+\[
+  0=(c_1\varphi_1+\cdots+c_n\varphi_n)(v_j)=c_j,
+\]
+故全体系数都为零。
+
+再证张成。任取 $\psi\in V^*$，令
+\[
+  a_i=\psi(v_i).
+\]
+则对任意 $v=\sum x_iv_i$，
+\[
+  \psi(v)=\sum x_i\psi(v_i)=\sum x_i a_i,
+\]
+而
+\[
+  \sum_{i=1}^n a_i\varphi_i(v)=\sum_{i=1}^n a_i x_i.
+\]
+所以
+\[
+  \psi=\sum_{i=1}^n a_i\varphi_i.
+\]
+因此 $\varphi_1,\dots,\varphi_n$ 张成 $V^*$，故为一组基。
+\end{proof}
+
+\begin{example}
+设 $V=\R^2$，取基
+\[
+  v_1=(1,1),\qquad v_2=(1,-1).
+\]
+设对偶基为 $\varphi_1,\varphi_2$。对任意 $(x,y)\in\R^2$，写成
+\[
+  (x,y)=a(1,1)+b(1,-1)= (a+b, a-b).
+\]
+解得
+\[
+  a=\frac{x+y}{2},\qquad b=\frac{x-y}{2}.
+\]
+因此
+\[
+  \varphi_1(x,y)=\frac{x+y}{2},
+  \qquad
+  \varphi_2(x,y)=\frac{x-y}{2}.
+\]
+\end{example}
+
+\subsection{双对偶与自然嵌入}
+
+\begin{definition}
+设 $V$ 为向量空间。定义映射
+\[
+  \iota_V\colon V\to V^{**},
+  \qquad
+  \iota_V(v)(\varphi)=\varphi(v)
+  \quad (\varphi\in V^*) .
+\]
+称为从 $V$ 到双对偶 $V^{**}$ 的\emph{自然映射}。
+\end{definition}
+
+\begin{proposition}
+映射 $\iota_V$ 是线性的。
+\end{proposition}
+
+\begin{proof}
+对任意 $u,v\in V$、$a,b\in\F$ 与任意 $\varphi\in V^*$，
+\[
+  \iota_V(au+bv)(\varphi)=\varphi(au+bv)=a\varphi(u)+b\varphi(v)
+  =\bigl(a\iota_V(u)+b\iota_V(v)\bigr)(\varphi).
+\]
+因为两边对任意 $\varphi$ 的取值相同，所以
+\[
+  \iota_V(au+bv)=a\iota_V(u)+b\iota_V(v).
+\]
+\end{proof}
+
+\begin{theorem}
+若 $V$ 有限维，则自然映射
+\[
+  \iota_V\colon V\to V^{**}
+\]
+是同构。
+\end{theorem}
+
+\begin{proof}
+先证单射。设 $v\in V$ 满足 $\iota_V(v)=0$。若 $v\neq 0$，可将 $v$ 扩充为一组基
+\[
+  v,v_2,\dots,v_n.
+\]
+取其对偶基中的第一个泛函 $\varphi_1$，则 $\varphi_1(v)=1$。于是
+\[
+  \iota_V(v)(\varphi_1)=\varphi_1(v)=1,
+\]
+与 $\iota_V(v)=0$ 矛盾。故 $v=0$，即 $\iota_V$ 单射。
+
+再比较维数。由前一节结论，
+\[
+  \dim V^{**}=\dim V^*=\dim V.
+\]
+有限维向量空间之间的线性单射必为满射，因此 $\iota_V$ 为同构。
+\end{proof}
+
+\begin{remark}
+无限维情形下，$\iota_V$ 仍总是单射，但一般不再满射。因此“向量等于双对偶中的自然元素”在无限维空间中不是无条件正确的；有限维是这一结论成立的关键假设。
+\end{remark}
+
+\subsection{对偶映射与湮没子}
+
+\begin{definition}
+设 $f\colon V\to W$ 是线性映射。定义其\emph{对偶映射}（也称转置映射）
+\[
+  f^*\colon W^*\to V^*,
+  \qquad
+  f^*(\psi)=\psi\circ f.
+\]
+即对任意 $\psi\in W^*$ 与 $v\in V$，
+\[
+  f^*(\psi)(v)=\psi(f(v)).
+\]
+\end{definition}
+
+\begin{proposition}
+对偶映射 $f^*$ 是线性映射，并满足函子性关系
+\[
+  (g\circ f)^*=f^*\circ g^*,
+  \qquad
+  (\Id_V)^*=\Id_{V^*}.
+\]
+\end{proposition}
+
+\begin{proof}
+对任意 $\psi_1,\psi_2\in W^*$、$a,b\in\F$ 与 $v\in V$，
+\[
+  f^*(a\psi_1+b\psi_2)(v)
+  =(a\psi_1+b\psi_2)(f(v))
+  =a\psi_1(f(v))+b\psi_2(f(v))
+  =(af^*(\psi_1)+bf^*(\psi_2))(v),
+\]
+故 $f^*$ 线性。
+
+再设 $g\colon W\to U$ 线性。对任意 $\eta\in U^*$，
+\[
+  ((g\circ f)^*\eta)(v)=\eta(g(f(v)))=(g^*\eta)(f(v))=(f^*(g^*\eta))(v).
+\]
+故 $(g\circ f)^*=f^*\circ g^*$。恒等映射的情形直接验证即可。
+\end{proof}
+
+\begin{theorem}
+设 $f\colon V\to W$ 为线性映射，$\mathcal B=(v_1,\dots,v_n)$、$\mathcal C=(w_1,\dots,w_m)$ 分别是 $V,W$ 的基，对偶基记为
+\[
+  \mathcal B^*=(\varphi_1,\dots,\varphi_n),
+  \qquad
+  \mathcal C^*=(\psi_1,\dots,\psi_m).
+\]
+若
+\[
+  [f]_{\mathcal C}^{\mathcal B}=A=(a_{ij})\in \Mat_{m\times n}(\F),
+\]
+则
+\[
+  [f^*]_{\mathcal B^*}^{\mathcal C^*}=A^\mathsf{t}.
+\]
+\end{theorem}
+
+\begin{proof}
+由
+\[
+  f(v_j)=\sum_{i=1}^m a_{ij}w_i
+\]
+出发。对每个 $i=1,\dots,m$，考察 $f^*(\psi_i)=\psi_i\circ f\in V^*$。对基向量 $v_j$ 有
+\[
+  f^*(\psi_i)(v_j)=\psi_i(f(v_j))
+  =\psi_i\Bigl(\sum_{k=1}^m a_{kj}w_k\Bigr)
+  =\sum_{k=1}^m a_{kj}\psi_i(w_k)
+  =a_{ij}.
+\]
+另一方面，若把 $f^*(\psi_i)$ 在基 $\mathcal B^*$ 下展开为
+\[
+  f^*(\psi_i)=\sum_{j=1}^n b_{ji}\varphi_j,
+\]
+则代入 $v_j$ 得
+\[
+  f^*(\psi_i)(v_j)=b_{ji}.
+\]
+于是 $b_{ji}=a_{ij}$。这说明 $f^*$ 的矩阵第 $i$ 列由 $a_{i1},\dots,a_{in}$ 组成，即正是 $A$ 的第 $i$ 行。因此
+\[
+  [f^*]_{\mathcal B^*}^{\mathcal C^*}=A^\mathsf{t}.
+\]
+\end{proof}
+
+\begin{center}
+\begin{tikzcd}[column sep=huge,row sep=large]
+W^* \arrow[r,"f^*"] \arrow[d,"[\,\cdot\,]_{\mathcal C^*}"'] & V^* \arrow[d,"[\,\cdot\,]_{\mathcal B^*}"] \\
+\F^m \arrow[r,"A^\mathsf{t}"'] & \F^n
+\end{tikzcd}
+\end{center}
+
+\begin{definition}
+设 $U\subseteq V$ 为子空间。定义 $U$ 的\emph{湮没子}（annihilator）为
+\[
+  U^0=\{\varphi\in V^*\mid \varphi(u)=0\ \text{对一切 }u\in U\}.
+\]
+它是 $V^*$ 的子空间。
+\end{definition}
+
+\begin{proposition}
+设 $U\subseteq V$ 为有限维子空间，且 $\dim V=n$、$\dim U=r$，则
+\[
+  \dim U^0=n-r=\dim V-\dim U.
+\]
+\end{proposition}
+
+\begin{proof}
+取 $U$ 的一组基
+\[
+  u_1,\dots,u_r,
+\]
+并将其扩充为 $V$ 的一组基
+\[
+  u_1,\dots,u_r,u_{r+1},\dots,u_n.
+\]
+设对偶基为
+\[
+  \varphi_1,\dots,\varphi_n.
+\]
+我们证明
+\[
+  U^0=\mathrm{span}(\varphi_{r+1},\dots,\varphi_n).
+\]
+
+首先，对每个 $j>r$ 与每个 $i\le r$，有
+\[
+  \varphi_j(u_i)=0,
+\]
+故 $\varphi_{r+1},\dots,\varphi_n\in U^0$，于是
+\[
+  \mathrm{span}(\varphi_{r+1},\dots,\varphi_n)\subseteq U^0.
+\]
+
+反过来，任取 $\varphi\in U^0$。因为对偶基张成 $V^*$，可写
+\[
+  \varphi=c_1\varphi_1+\cdots+c_n\varphi_n.
+\]
+对 $i=1,\dots,r$，由于 $u_i\in U$ 且 $\varphi\in U^0$，有
+\[
+  0=\varphi(u_i)=c_1\varphi_1(u_i)+\cdots+c_n\varphi_n(u_i)=c_i.
+\]
+故 $c_1=\cdots=c_r=0$，于是
+\[
+  \varphi\in\mathrm{span}(\varphi_{r+1},\dots,\varphi_n).
+\]
+因此二者相等。故
+\[
+  \dim U^0=n-r.
+\]
+\end{proof}
+
+\begin{proposition}
+设 $f\colon V\to W$ 为线性映射，则
+\[
+  \Ker(f^*)=(\Ima(f))^0.
+\]
+若 $V,W$ 有限维，则还有
+\[
+  \Ima(f^*)=(\Ker(f))^0.
+\]
+\end{proposition}
+
+\begin{proof}
+先证第一式。对任意 $\psi\in W^*$，
+\[
+  \psi\in\Ker(f^*)
+  \iff f^*(\psi)=0
+  \iff \psi(f(v))=0\ \text{对一切 }v\in V
+  \iff \psi(y)=0\ \text{对一切 }y\in\Ima(f)
+  \iff \psi\in(\Ima(f))^0.
+\]
+故 $\Ker(f^*)=(\Ima(f))^0$。
+
+再证第二式。若 $\psi=f^*(\eta)=\eta\circ f$，则对任意 $v\in\Ker(f)$，
+\[
+  \psi(v)=\eta(f(v))=\eta(0)=0,
+\]
+故 $\psi\in(\Ker(f))^0$。于是
+\[
+  \Ima(f^*)\subseteq (\Ker(f))^0.
+\]
+
+现假定有限维。由秩--零化度定理应用于 $f^*$，
+\[
+  \dim\Ima(f^*)=\dim W^*-\dim\Ker(f^*).
+\]
+而
+\[
+  \dim W^*=\dim W,
+  \qquad
+  \dim\Ker(f^*)=\dim(\Ima(f))^0=\dim W-\dim\Ima(f).
+\]
+故
+\[
+  \dim\Ima(f^*)=\dim\Ima(f)=\rank(f).
+\]
+另一方面，
+\[
+  \dim(\Ker(f))^0=\dim V-\dim\Ker(f)=\rank(f).
+\]
+因此 $\Ima(f^*)$ 与 $(\Ker(f))^0$ 是后者中的两个同维子空间，而前者已包含于后者，所以二者相等。
+\end{proof}
+
+\begin{remark}
+命题中的关系非常值得记住：
+\[
+  \Ker(f^*)=(\Ima(f))^0,
+  \qquad
+  \Ima(f^*)=(\Ker(f))^0.
+\]
+它表明“核与像”在对偶化后互相交换，并通过湮没子联系起来。这种对偶性将在以后反复出现。
+\end{remark}
+
+\section*{本章习题}
+\addcontentsline{toc}{section}{本章习题}
+
+\subsection*{基础题}
+
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=3.5em]
+  \item {\basic} 证明映射 $f\colon \R^2\to\R^2$，$f(x,y)=(x+2y,3x-y)$ 是线性映射，并写出其在标准基下的矩阵。
+  \item {\basic} 证明映射 $t\colon \R^2\to\R^2$，$t(x,y)=(x+1,y)$ 不是线性映射。
+  \item {\basic} 设 $R_{\theta}\colon \R^2\to\R^2$ 为绕原点旋转角 $\theta$ 的映射，验证它是线性映射，并求其矩阵。
+  \item {\basic} 设 $\pi\colon \R^3\to\R^3$，$\pi(x,y,z)=(x,y,0)$。求 $\Ker(\pi)$ 与 $\Ima(\pi)$ 的一组基。
+  \item {\basic} 设 $D\colon \mathcal P_4(\R)\to\mathcal P_4(\R)$ 为求导映射。求 $\Ker(D)$ 与 $\Ima(D)$ 的维数。
+  \item {\basic} 设 $\Tr\colon \Mat_{2\times 2}(\F)\to\F$ 为迹映射。证明它线性，并求其核的维数。
+  \item {\basic} 定义 $s\colon \Mat_{2\times 2}(\R)\to\Mat_{2\times 2}(\R)$ 为 $s(A)=A+A^\mathsf{t}$。证明 $s$ 线性，并求其像空间。
+  \item {\basic} 设 $\varepsilon_0\colon \mathcal P_3(\R)\to\R$，$\varepsilon_0(p)=p(0)$。求其核与像。
+  \item {\basic} 设 $f\colon \R^3\to\R^2$，$f(x,y,z)=(x-y,y-z)$。求 $\Ker(f)$ 的一组基，并判断 $f$ 是否满射。
+  \item {\basic} 设 $A=\mat{1 & 2 & 0\\ 0 & 1 & 1}$，令 $f(x)=Ax$。求 $\Ker(f)$ 与 $\Ima(f)$ 的维数。
+  \item {\basic} 证明零映射 $0\colon V\to W$ 与恒等映射 $\Id_V\colon V\to V$ 都是线性映射。
+  \item {\basic} 设 $f\colon \R^3\to\R^2$，$f(x,y,z)=(x+y,y+z)$，令 $U=\R(1,0,0)+\R(0,1,0)$。求 $f(U)$。
+  \item {\basic} 设 $g\colon \R^2\to\R^2$，$g(x,y)=(x,0)$，令 $Y=\R(1,0)$。求 $g^{-1}(Y)$。
+  \item {\basic} 设 $f\colon \R^2\to\R^2$，$f(x,y)=(x+y,x-y)$。求其在标准基下的矩阵。
+  \item {\basic} 在基 $(1,x,x^2,x^3)$ 下，求求导映射 $D\colon \mathcal P_3(\R)\to\mathcal P_3(\R)$ 的矩阵。
+  \item {\basic} 设 $p\colon \R^2\to\R^2$ 为投影 $p(x,y)=(x,0)$。取基 $\mathcal B=((1,1),(1,-1))$，求 $[p]_{\mathcal B}^{\mathcal B}$。
+  \item {\basic} 对基 $E_{11},E_{12},E_{21},E_{22}$，求迹映射 $\Tr\colon \Mat_{2\times 2}(\F)\to\F$ 的矩阵。
+  \item {\basic} 设 $f\colon \R^2\to\R^2$，$f(x,y)=(x+y,y)$；$g\colon \R^2\to\R^2$，$g(x,y)=(x,2y)$。求 $[g\circ f]$，并验证它等于 $[g][f]$。
+  \item {\basic} 求旋转 $R_{\pi/2}$ 在标准基下的矩阵，并计算 $R_{\pi/2}^2$ 的矩阵。
+  \item {\basic} 在 $\R^2$ 中取基 $\mathcal B=((1,0),(0,1))$ 与 $\mathcal B'=((1,1),(1,-1))$，求从 $\mathcal B'$ 到 $\mathcal B$ 的过渡矩阵。
+  \item {\basic} 延续上一题，求从 $\mathcal B$ 到 $\mathcal B'$ 的过渡矩阵。
+  \item {\basic} 设 $A=\mat{2 & 0\\ 0 & 3}$，$P=\mat{1 & 1\\ 1 & -1}$。计算 $P^{-1}AP$。
+  \item {\basic} 对上一题得到的矩阵，分别计算其迹、行列式与秩，并与 $A$ 比较。
+  \item {\basic} 设 $V=\R^2$，基 $\mathcal B=((1,1),(1,-1))$。求其对偶基。
+  \item {\basic} 在 $\mathcal P_2(\R)$ 中取基 $(1,x+1,x^2)$。求对应的对偶基对任意多项式 $a+bx+cx^2$ 的作用公式。
+  \item {\basic} 设 $f\colon \R^2\to\R^2$ 的标准矩阵为 $\mat{1 & 2\\ 3 & 4}$。求对偶映射 $f^*$ 在标准对偶基下的矩阵。
+  \item {\basic} 设 $U=\R(1,1,0)\subseteq \R^3$。求 $U^0\subseteq (\R^3)^*$ 的一组基。
+  \item {\basic} 设 $U=\{(x,y,z,w)\in\F^4\mid x+y+z+w=0,\ x-y=0\}$。求 $\dim U^0$。
+  \item {\basic} 设 $V=\R^2$，$v=(2,-1)$。写出 $\iota_V(v)\in V^{**}$ 对任意线性泛函 $\varphi$ 的作用。
+  \item {\basic} 设 $f\colon \R^3\to\R^3$，$f(x,y,z)=(x,y,0)$。验证 $f^2=f$，并直接求出 $\Ker(f)$ 与 $\Ima(f)$。
+\end{enumerate}
+
+\subsection*{进阶题}
+
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=3.5em, start=31]
+  \item {\medium} 证明：线性映射 $f\colon V\to W$ 单射当且仅当 $\Ker(f)=\{0\}$。
+  \item {\medium} 证明：线性映射 $f\colon V\to W$ 满射当且仅当 $\Ima(f)=W$。
+  \item {\medium} 证明第一同构定理：$V/\Ker(f)\cong \Ima(f)$。
+  \item {\medium} 利用秩--零化度定理证明：不存在单射线性映射 $\F^5\to\F^3$。
+  \item {\medium} 设 $V,W$ 有限维且 $\dim V=\dim W$。证明：若 $f\colon V\to W$ 单射，则 $f$ 必满射。
+  \item {\medium} 设 $f\colon V\to W$、$g\colon W\to V$ 满足 $f\circ g=\Id_W$。证明 $f$ 满射且 $g$ 单射。
+  \item {\medium} 设 $f\colon U\to V$、$g\colon V\to W$ 线性。证明
+  \[
+    \rank(g\circ f)\le \min\{\rank(f),\rank(g)\}.
+  \]
+  \item {\medium} 证明 $\Hom(V,W)$ 在逐点加法与数乘下构成向量空间。
+  \item {\medium} 固定有限维向量空间 $V,W$ 的基，证明映射 $f\mapsto [f]$ 是线性映射。
+  \item {\medium} 设 $A\in\Mat_{m\times n}(\F)$。构造一个线性映射 $f_A\colon \F^n\to\F^m$，使得 $[f_A]=A$。
+  \item {\medium} 用坐标向量的观点重新证明：$[g\circ f]=[g][f]$。
+  \item {\medium} 证明：两个矩阵表示同一有限维向量空间上线性自同态的不同基下矩阵，当且仅当它们相似。
+  \item {\medium} 证明：若 $A,B$ 为同型方阵，则 $\Tr(AB)=\Tr(BA)$。
+  \item {\medium} 证明：若 $P,Q$ 可逆，则 $\rank(PAQ)=\rank(A)$。
+  \item {\medium} 证明：有限维线性自同态 $f\colon V\to V$ 的行列式与所选基无关。
+  \item {\medium} 设 $p\colon V\to V$ 满足 $p^2=p$。证明 $V=\Ker(p)\oplus\Ima(p)$。
+  \item {\medium} 证明：线性自同态 $p\colon V\to V$ 是投影当且仅当 $p^2=p$。
+  \item {\medium} 证明：给定有限维向量空间 $V$ 的一组基，总存在唯一的对偶基。
+  \item {\medium} 证明：若 $\dim V=n<\infty$，则 $\dim V^*=n$。
+  \item {\medium} 证明：有限维情形下，自然映射 $\iota_V\colon V\to V^{**}$ 是单射。
+  \item {\medium} 在有限维情形下，利用维数比较证明 $\iota_V\colon V\to V^{**}$ 是满射。
+  \item {\medium} 证明：对任意线性映射 $f\colon V\to W$，有 $\Ker(f^*)=(\Ima(f))^0$。
+  \item {\medium} 设 $V,W$ 有限维。证明：$\Ima(f^*)=(\Ker(f))^0$。
+  \item {\medium} 设 $U\subseteq V$ 为有限维子空间。证明 $\dim U^0=\dim V-\dim U$。
+  \item {\medium} 设 $U_1,U_2\subseteq V$ 为子空间。证明
+  \[
+    (U_1+U_2)^0=U_1^0\cap U_2^0.
+  \]
+\end{enumerate}
+
+\subsection*{挑战题}
+
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=3.5em, start=56]
+  \item {\hard} 设 $M_k(\Gamma)$ 是某个同余子群 $\Gamma$ 上权 $k$ 模形式构成的复向量空间。证明：若 Hecke 算子 $T_n\colon M_k(\Gamma)\to M_k(\Gamma)$ 满足
+  \[
+    T_n(af+bg)=aT_n(f)+bT_n(g),
+  \]
+  则 $T_n$ 是线性映射；进一步说明一旦选定 $M_k(\Gamma)$ 的一组基，$T_n$ 就对应一个复矩阵。
+  \item {\hard} 设 $\gamma_1,\gamma_2\in \SL_2(\R)$，并在适当函数空间上定义权 $k$ 斜作用 $f\mapsto f|_k\gamma$。证明
+  \[
+    (f|_k\gamma_1)|_k\gamma_2=f|_k(\gamma_1\gamma_2).
+  \]
+  说明这给出了一个群作用，并解释为什么对固定 $\gamma$，映射 $f\mapsto f|_k\gamma$ 是线性映射。
+  \item {\hard} 在模形式空间 $M_k(\Gamma)$ 上，对每个 $n\ge 0$ 定义取 Fourier 系数的映射
+  \[
+    a_n\colon M_k(\Gamma)\to \C,
+    \qquad
+    a_n\Bigl(\sum_{m\ge 0} c_m q^m\Bigr)=c_n.
+  \]
+  证明 $a_n$ 是线性泛函，因此属于 $M_k(\Gamma)^*$。
+  \item {\hard} 设 $U\subseteq V$ 为子空间，$\pi\colon V\to V/U$ 为商映射。证明短正合列
+  \[
+    0\longrightarrow U\longrightarrow V\overset{\pi}{\longrightarrow} V/U\longrightarrow 0
+  \]
+  是正合的，并由此推出
+  \[
+    \dim V=\dim U+\dim(V/U).
+  \]
+  \item {\hard} 设
+  \[
+    0\longrightarrow U\overset{i}{\longrightarrow} V\overset{p}{\longrightarrow} W\longrightarrow 0
+  \]
+  是有限维向量空间的短正合列。证明
+  \[
+    \dim V=\dim U+\dim W.
+  \]
+  \item {\hard} 在上一题条件下，对偶化得到
+  \[
+    0\longrightarrow W^*\overset{p^*}{\longrightarrow} V^*\overset{i^*}{\longrightarrow} U^*\longrightarrow 0.
+  \]
+  证明该列也是正合的。
+  \item {\hard} 设 $V$ 有限维，$U\subseteq V$。证明
+  \[
+    (U^0)^0=U.
+  \]
+  从而说明湮没子给出有限维情形下子空间格的一个反序对应。
+  \item {\hard} 设 $U\subseteq V$ 且 $f\colon V\to V$ 满足 $f(U)\subseteq U$。证明可以诱导出商空间上的线性映射
+  \[
+    \overline f\colon V/U\to V/U,
+    \qquad
+    \overline f(v+U)=f(v)+U.
+  \]
+  并说明在适当选基下，$[f]$ 具有分块上三角形式。
+  \item {\hard} 设 $U\subseteq V$ 为有限维子空间。证明限制映射
+  \[
+    \rho\colon V^*\to U^*,\qquad \rho(\varphi)=\varphi|_U
+  \]
+  是满射，且诱导同构
+  \[
+    V^*/U^0\cong U^*.
+  \]
+  \item {\hard} 设
+  \[
+    0\longrightarrow U\overset{i}{\longrightarrow} V\overset{p}{\longrightarrow} W\longrightarrow 0
+  \]
+  是短正合列。证明下列条件等价：
+  \begin{enumerate}[label=\textnormal{(\alph*)}]
+    \item 存在线性映射 $s\colon W\to V$ 使得 $p\circ s=\Id_W$；
+    \item 存在线性映射 $r\colon V\to U$ 使得 $r\circ i=\Id_U$；
+    \item $V\cong U\oplus W$。
+  \end{enumerate}
+\end{enumerate}
+
+至此，我们已经建立了线性映射的三种等价视角：作为保持线性结构的映射、作为选基后的矩阵、以及作为对偶空间上的转置操作。下一章将利用这些基础研究特征值与特征向量，从而进入线性算子的谱理论。
+
+
+
+
+

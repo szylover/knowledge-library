@@ -1,0 +1,880 @@
+\chapter{群的基本理论}
+
+群论是现代代数的基本语言，也是进入模形式理论之前必须掌握的工具。在模形式中，我们反复遇到诸如 $\SL_2(\Z)$、$\Gamma_0(N)$、$\left(\Z/N\Z\right)^\times$、$\SL_2(\Z/N\Z)$ 这样的对象；它们本质上都是群，或者与群的构造紧密相关。因此，本章的目标是系统建立如下观念：群的公理如何控制运算，子群与陪集如何刻画局部结构，正规子群与商群如何产生新群，同态与同构定理如何把不同群之间的关系组织起来，以及循环群如何提供最基本的模型。
+
+除特别说明外，本章中的群运算通常写成乘法记号，单位元记为 $e$；若群是交换的，则也常用加法记号。所有证明都将写全，以便自学时能够逐步跟随论证。
+
+\section{群的定义与例子}
+
+\subsection*{群的公理}
+
+\begin{definition}
+设 $G$ 是一个集合。一个\emph{二元运算}是一个映射
+\[
+*: G \times G \longrightarrow G, \qquad (a,b) \longmapsto a*b.
+\]
+若不致混淆，通常把 $a*b$ 简记为 $ab$。
+\end{definition}
+
+\begin{definition}
+设 $G$ 是一个集合，配备一个二元运算。若满足下列三条公理，则称 $G$ 连同该运算构成一个\emph{群}：
+\begin{enumerate}[label=\textnormal{(G\arabic*)}, leftmargin=3.8em]
+  \item \textbf{结合律：} 对任意 $a,b,c \in G$，有 $(ab)c=a(bc)$；
+  \item \textbf{单位元存在：} 存在 $e \in G$，使得对任意 $a \in G$，有 $ea=ae=a$；
+  \item \textbf{逆元存在：} 对任意 $a \in G$，存在 $a^{-1} \in G$，使得 $aa^{-1}=a^{-1}a=e$。
+\end{enumerate}
+若还满足交换律 $ab=ba$（对任意 $a,b \in G$），则称 $G$ 为\emph{阿贝尔群}或\emph{交换群}。
+\end{definition}
+
+\begin{remark}
+群的定义极其简洁，但它抽象出“可逆对称性”的共同本质。置换、矩阵、剩余类、几何对称变换都可以放进这一框架中讨论。
+\end{remark}
+
+\begin{lemma}
+群中的单位元唯一；每个元素的逆元也唯一。
+\end{lemma}
+
+\begin{proof}
+先证单位元唯一。若 $e,e'$ 都是单位元，则由 $e$ 的右单位性质得 $ee'=e'$，由 $e'$ 的左单位性质得 $ee'=e$，故 $e=e'$。
+
+再证逆元唯一。设 $b,c$ 都是 $a$ 的逆元，则
+\[
+ b=be=b(ac)=(ba)c=ec=c.
+\]
+故逆元唯一。
+\end{proof}
+
+\begin{proposition}[消去律]
+设 $G$ 为群，$a,b,c \in G$。若 $ab=ac$，则 $b=c$；若 $ba=ca$，则 $b=c$。
+\end{proposition}
+
+\begin{proof}
+若 $ab=ac$，左乘 $a^{-1}$，得
+\[
+ a^{-1}(ab)=a^{-1}(ac).
+\]
+由结合律化为 $(a^{-1}a)b=(a^{-1}a)c$，即 $eb=ec$，于是 $b=c$。右消去律同理。
+\end{proof}
+
+\begin{proposition}
+设 $G$ 为群，$a,b \in G$。则
+\begin{enumerate}[label=\textnormal{(\arabic*)}, leftmargin=3em]
+  \item $(a^{-1})^{-1}=a$；
+  \item $(ab)^{-1}=b^{-1}a^{-1}$；
+  \item 对任意整数 $m,n$，有 $a^m a^n=a^{m+n}$。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(1) 由 $aa^{-1}=a^{-1}a=e$ 可知 $a$ 是 $a^{-1}$ 的逆元，故 $(a^{-1})^{-1}=a$。
+
+(2) 计算
+\[
+(ab)(b^{-1}a^{-1})=a(bb^{-1})a^{-1}=aea^{-1}=e,
+\]
+同理 $(b^{-1}a^{-1})(ab)=e$，故 $(ab)^{-1}=b^{-1}a^{-1}$。
+
+(3) 对非负整数由结合律归纳即可；负整数情形由逆元定义推出；混合情形把正负部分分开处理即可。
+\end{proof}
+
+\begin{definition}
+设 $G$ 为群。
+\begin{enumerate}[label=\textnormal{(\arabic*)}, leftmargin=3em]
+  \item 若存在正整数 $n$ 使 $a^n=e$，则其中最小的正整数称为元素 $a$ 的\emph{阶}，记为 $\ord(a)$；若不存在这样的正整数，则称 $a$ 的阶为无穷，记为 $\ord(a)=\infty$；
+  \item 若 $G$ 是有限集合，则其元素个数称为群 $G$ 的\emph{阶}，记为 $|G|$。
+\end{enumerate}
+\end{definition}
+
+\subsection*{基本例子}
+
+\begin{example}[整数加法群]
+集合 $\Z$ 在加法下构成阿贝尔群 $(\Z,+)$。单位元为 $0$，元素 $a$ 的逆元为 $-a$。同理，$(\Q,+)$、$(\R,+)$、$(\C,+)$ 也都是阿贝尔群。
+\end{example}
+
+\begin{example}[模 $n$ 剩余类加法群]
+对正整数 $n$，集合 $\Z/n\Z$ 的元素是模 $n$ 的剩余类 $\bar a$。定义加法
+\[
+\bar a+\bar b=\overline{a+b}.
+\]
+该运算是良定的，并使 $\Z/n\Z$ 成为阿贝尔群。单位元是 $\bar 0$，元素 $\bar a$ 的逆元是 $\overline{-a}$。此群有 $n$ 个元素，故 $|\Z/n\Z|=n$。
+\end{example}
+
+\begin{example}[模 $n$ 可逆剩余类群]
+定义
+\[
+\left(\Z/n\Z\right)^\times=\{\bar a \in \Z/n\Z: \gcd(a,n)=1\}.
+\]
+在乘法
+\[
+\bar a\cdot\bar b=\overline{ab}
+\]
+下，它构成一个群。单位元是 $\bar 1$。
+
+关键点是：$\bar a$ 可逆当且仅当 $\gcd(a,n)=1$。若 $\bar a\bar b=\bar 1$，则 $ab\equiv 1 \pmod n$，从而存在整数 $k$ 使 $ab-kn=1$，故 $\gcd(a,n)=1$。反过来，若 $\gcd(a,n)=1$，则由 Bézout 等式可取整数 $u,v$ 使 $au+nv=1$，模 $n$ 取剩余即得 $\bar a\bar u=\bar 1$。因此它确实是群。
+
+该群的阶记为 $\varphi(n)$，这就是 Euler 函数。
+\end{example}
+
+\begin{example}[对称群 $S_n$]
+集合 $\{1,2,\dots,n\}$ 上的全部双射，在映射复合下构成群，称为 $n$ 次\emph{对称群}，记为 $S_n$。单位元是恒等置换，逆元是置换的反函数。显然 $|S_n|=n!$。
+
+当 $n\ge 3$ 时，$S_n$ 一般不是阿贝尔群。例如在 $S_3$ 中，
+\[
+(12)(23)=(123), \qquad (23)(12)=(132),
+\]
+二者不同。
+\end{example}
+
+\begin{example}[二面体群 $D_n$]
+正 $n$ 边形的全部刚性对称变换在复合下构成群，称为\emph{二面体群}，记为 $D_n$。它由一个旋转 $r$ 和一个反射 $s$ 生成，并满足
+\[
+ r^n=e, \qquad s^2=e, \qquad srs=r^{-1}.
+\]
+每个元素都可唯一写成 $r^i$ 或 $sr^i$ 的形式（$0\le i<n$），因此 $|D_n|=2n$。
+\end{example}
+
+\begin{example}[矩阵群]
+设 $F$ 是一个域。
+\begin{enumerate}[label=\textnormal{(\arabic*)}, leftmargin=3em]
+  \item 全体可逆 $n\times n$ 矩阵在矩阵乘法下构成群，称为\emph{一般线性群}，记为 $\GL_n(F)$；
+  \item 全体行列式为 $1$ 的可逆 $n\times n$ 矩阵构成子群，称为\emph{特殊线性群}，记为 $\SL_n(F)$。
+\end{enumerate}
+\end{example}
+
+\begin{proof}[说明]
+矩阵乘法满足结合律，单位矩阵是单位元，可逆矩阵有逆矩阵，所以 $\GL_n(F)$ 是群。又因为 $\det(AB)=\det(A)\det(B)$，若 $A,B \in \SL_n(F)$，则 $\det(AB)=1$，且 $\det(A^{-1})=\det(A)^{-1}=1$，故 $\SL_n(F)$ 也是群。
+\end{proof}
+
+\begin{proposition}[阶为素数的群是循环群]
+若有限群 $G$ 的阶为素数 $p$，则 $G \cong \Z/p\Z$。
+\end{proposition}
+
+\begin{proof}
+任取 $a\in G$ 且 $a\ne e$。考虑 $a$ 的各次幂。若 $a^i=a^j$（$0\le i<j<p$），左乘 $a^{-i}$ 得 $a^{j-i}=e$，这与 $j-i<p$ 且 $a\ne e$ 矛盾。因此
+\[
+ e,a,a^2,\dots,a^{p-1}
+\]
+两两不同，共有 $p$ 个元素，只能穷尽整个 $G$。故 $G=\langle a \rangle$，于是 $G$ 为循环群，并同构于 $\Z/p\Z$。
+\end{proof}
+
+\begin{proposition}[阶为 $4$ 的群分类]
+设 $|G|=4$，则 $G$ 同构于 $\Z/4\Z$ 或 $\Z/2\Z \times \Z/2\Z$。
+\end{proposition}
+
+\begin{proof}
+若 $G$ 中存在阶为 $4$ 的元素 $a$，则 $G=\langle a \rangle \cong \Z/4\Z$。
+
+若不存在这样的元素，则除单位元外的每个元素阶都只能是 $2$。取三个不同的非单位元 $a,b,c$。因为 $a^2=b^2=c^2=e$，又由 $ab\ne e,a,b$ 可知 $ab=c$。于是
+\[
+ ab=c, \qquad bc=a, \qquad ca=b,
+\]
+并且 $ab=ba$。故 $G$ 同构于 $\Z/2\Z \times \Z/2\Z$。
+\end{proof}
+
+\begin{remark}
+上述两个命题表明，有限群的结构常常先通过元素的阶来观察。后面的 Lagrange 定理将把这种方法系统化。
+\end{remark}
+
+\section{子群、陪集与 Lagrange 定理}
+
+\subsection*{子群与判别法}
+
+\begin{definition}
+设 $G$ 为群，非空子集 $H\subseteq G$ 若在继承的运算下本身构成群，则称 $H$ 为 $G$ 的\emph{子群}，记为 $H\le G$。
+\end{definition}
+
+\begin{theorem}[子群判别法]
+设 $G$ 为群，非空子集 $H\subseteq G$。则 $H\le G$ 当且仅当对任意 $a,b\in H$ 都有 $ab^{-1}\in H$。
+\end{theorem}
+
+\begin{proof}
+若 $H$ 是子群，则 $b^{-1}\in H$，故 $ab^{-1}\in H$。
+
+反过来，设对任意 $a,b\in H$ 有 $ab^{-1}\in H$。任取 $h\in H$，令 $a=b=h$，得 $hh^{-1}=e\in H$。再令 $a=e,b=h$，得 $eh^{-1}=h^{-1}\in H$。最后，对任意 $a,b\in H$，由于 $b^{-1}\in H$，再次应用条件可得
+\[
+ a(b^{-1})^{-1}=ab \in H.
+\]
+于是 $H$ 含单位元、对乘法和取逆封闭，所以是子群。
+\end{proof}
+
+\begin{corollary}
+群 $G$ 的任意一族子群的交集仍是 $G$ 的子群。
+\end{corollary}
+
+\begin{proof}
+设 $\{H_i\}_{i\in I}$ 是一族子群。交集非空，因为所有 $H_i$ 都含单位元 $e$。若 $a,b\in \bigcap_{i\in I}H_i$，则对每个 $i$ 都有 $a,b\in H_i$，从而 $ab^{-1}\in H_i$。故 $ab^{-1}\in \bigcap_{i\in I}H_i$。由子群判别法，交集是子群。
+\end{proof}
+
+\begin{example}
+在加法群 $(\Z,+)$ 中，任意形如 $m\Z=\{mk:k\in \Z\}$ 的集合都是子群。
+\end{example}
+
+\begin{example}
+在 $S_3$ 中，$H=\{e,(12)\}$ 是子群，因为 $(12)^2=e$。但 $\{e,(12),(13)\}$ 不是子群，因为 $(12)(13)=(132)$ 不在其中。
+\end{example}
+
+\begin{definition}
+设 $S\subseteq G$。包含 $S$ 的所有子群的交集称为由 $S$\emph{生成的子群}，记为 $\langle S \rangle$。若存在单个元素 $a$ 使 $G=\langle a \rangle$，则称 $G$ 为\emph{循环群}，称 $a$ 为一个\emph{生成元}。
+\end{definition}
+
+\subsection*{陪集与指数}
+
+\begin{definition}
+设 $H\le G$，$g\in G$。定义
+\[
+ gH=\{gh:h\in H\}, \qquad Hg=\{hg:h\in H\}.
+\]
+它们分别称为 $H$ 关于 $g$ 的\emph{左陪集}与\emph{右陪集}。
+\end{definition}
+
+\begin{proposition}
+设 $H\le G$，$g\in G$。则左陪集 $gH$ 与 $H$ 等势，因此 $|gH|=|H|$；右陪集也同样如此。
+\end{proposition}
+
+\begin{proof}
+映射 $H\to gH$，$h\mapsto gh$，显然满射。若 $gh_1=gh_2$，由左消去律得 $h_1=h_2$，故它是双射。
+\end{proof}
+
+\begin{proposition}
+关系
+\[
+ x\sim y \iff x^{-1}y \in H
+\]
+是 $G$ 上的等价关系，其等价类正好是 $H$ 的左陪集。
+\end{proposition}
+
+\begin{proof}
+自反性：$x^{-1}x=e\in H$，故 $x\sim x$。
+
+对称性：若 $x\sim y$，则 $x^{-1}y\in H$，于是其逆元 $(x^{-1}y)^{-1}=y^{-1}x\in H$，故 $y\sim x$。
+
+传递性：若 $x\sim y$ 且 $y\sim z$，则 $x^{-1}y,y^{-1}z\in H$，从而
+\[
+(x^{-1}y)(y^{-1}z)=x^{-1}z \in H,
+\]
+故 $x\sim z$。
+
+最后，$y\sim x$ 当且仅当 $x^{-1}y\in H$，也即当且仅当存在 $h\in H$ 使 $y=xh$。这说明 $x$ 的等价类就是左陪集 $xH$。
+\end{proof}
+
+\begin{corollary}
+群 $G$ 被子群 $H$ 的左陪集分割为若干互不相交的部分；右陪集也同样分割 $G$。
+\end{corollary}
+
+\begin{definition}
+若 $H\le G$ 且左陪集个数有限，则这个个数称为 $H$ 在 $G$ 中的\emph{指数}，记为 $[G:H]$。若 $G$ 有限，则 $[G:H]$ 总是有限。
+\end{definition}
+
+\begin{example}
+在 $(\Z,+)$ 中取子群 $2\Z$，则陪集恰为 $2\Z$ 与 $1+2\Z$。
+
+在 $S_3$ 中取 $H=\{e,(12)\}$，则三个左陪集是
+\[
+H, \qquad (13)H=\{(13),(132)\}, \qquad (23)H=\{(23),(123)\}.
+\]
+\end{example}
+
+\subsection*{Lagrange 定理}
+
+\begin{theorem}[Lagrange 定理]
+设 $G$ 为有限群，$H\le G$，则
+\[
+ |G|=[G:H]\,|H|.
+\]
+特别地，$|H|$ 整除 $|G|$。
+\end{theorem}
+
+\begin{proof}
+由上面的等价关系，$G$ 被 $H$ 的左陪集分割成 $[G:H]$ 个互不相交的块。每个左陪集都与 $H$ 等势，因而都有 $|H|$ 个元素。于是整个 $G$ 的元素个数等于陪集个数乘以每个陪集的元素个数，即
+\[
+ |G|=[G:H]\cdot |H|.
+\]
+结论成立。
+\end{proof}
+
+\begin{corollary}
+设 $G$ 为有限群，$a\in G$。则 $\ord(a)$ 整除 $|G|$。
+\end{corollary}
+
+\begin{proof}
+由 $a$ 生成的子群 $\langle a \rangle$ 是 $G$ 的子群，其阶恰为 $\ord(a)$。由 Lagrange 定理即得 $\ord(a)\mid |G|$。
+\end{proof}
+
+\begin{corollary}
+设 $G$ 为有限群，$a\in G$，则 $a^{|G|}=e$。
+\end{corollary}
+
+\begin{proof}
+设 $\ord(a)=m$。由上一个推论，$m\mid |G|$，故存在整数 $k$ 使 $|G|=mk$。于是
+\[
+ a^{|G|}=a^{mk}=(a^m)^k=e^k=e.
+\]
+\end{proof}
+
+\begin{corollary}
+若 $G$ 的阶为素数 $p$，则 $G$ 为循环群。
+\end{corollary}
+
+\begin{proof}
+任取 $a\ne e$。由上面的整除结论，$\ord(a)$ 整除 $p$，而又不可能等于 $1$，故必为 $p$。因此 $\langle a \rangle$ 有 $p$ 个元素，只能等于整个 $G$。
+\end{proof}
+
+\begin{remark}
+Lagrange 定理的逆命题一般不成立：整数 $d$ 即使整除 $|G|$，群 $G$ 也未必存在阶为 $d$ 的子群。例如 $A_4$ 的阶为 $12$，但它没有阶为 $6$ 的子群。
+\end{remark}
+
+\section{正规子群与商群}
+
+\subsection*{正规子群}
+
+\begin{definition}
+设 $N\le G$。若对任意 $g\in G$ 都有
+\[
+ gN=Ng,
+\]
+则称 $N$ 为 $G$ 的\emph{正规子群}，记为 $N\trianglelefteq G$。
+\end{definition}
+
+\begin{proposition}[正规性的等价刻画]
+设 $N\le G$。下列条件等价：
+\begin{enumerate}[label=\textnormal{(\arabic*)}, leftmargin=3em]
+  \item $N\trianglelefteq G$；
+  \item 对任意 $g\in G$，有 $gNg^{-1}=N$；
+  \item 对任意 $g\in G$，有 $gNg^{-1}\subseteq N$；
+  \item 对任意 $g\in G$ 与 $n\in N$，都有 $gng^{-1}\in N$。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+$(1)\Rightarrow(2)$：由 $gN=Ng$，对任意 $n\in N$，存在 $n'\in N$ 使 $gn=n'g$，故 $gng^{-1}=n'\in N$。于是 $gNg^{-1}\subseteq N$。将 $g$ 换为 $g^{-1}$ 可得反向包含，从而 $gNg^{-1}=N$。
+
+$(2)\Rightarrow(3)$ 与 $(3)\Rightarrow(4)$ 显然。
+
+$(4)\Rightarrow(2)$：由假设 $gNg^{-1}\subseteq N$。把 $g$ 换为 $g^{-1}$，得 $g^{-1}Ng\subseteq N$，左右同乘 $g$ 与 $g^{-1}$，推出 $N\subseteq gNg^{-1}$。故有等号。
+
+$(2)\Rightarrow(1)$：若 $gNg^{-1}=N$，右乘 $g$ 即得 $gN=Ng$。
+\end{proof}
+
+\begin{example}
+任意阿贝尔群的每个子群都是正规子群。
+\end{example}
+
+\begin{example}
+在加法群 $(\Z,+)$ 中，任意子群 $n\Z$ 都正规。以后看到的商群 $\Z/n\Z$ 正是由正规子群 $n\Z$ 构造出来的。
+\end{example}
+
+\begin{proposition}
+若 $H\le G$ 且 $[G:H]=2$，则 $H\trianglelefteq G$。
+\end{proposition}
+
+\begin{proof}
+左陪集只有两个：$H$ 与 $G\setminus H$；右陪集也只有两个：$H$ 与 $G\setminus H$。因此对任意 $g\in G$，必有 $gH=Hg$，故 $H$ 正规。
+\end{proof}
+
+\subsection*{商群}
+
+\begin{definition}
+设 $N\trianglelefteq G$。全体陪集组成的集合
+\[
+ G/N=\{gN:g\in G\}
+\]
+称为 $G$ 关于 $N$ 的\emph{商群候选集}。在其上定义运算
+\[
+ (gN)(hN)=(gh)N.
+\]
+\end{definition}
+
+\begin{proposition}
+若 $N\trianglelefteq G$，则上述运算是良定的，并使 $G/N$ 成为群，称为 $G$ 对 $N$ 的\emph{商群}。
+\end{proposition}
+
+\begin{proof}
+先证良定。若 $gN=g'N$ 且 $hN=h'N$，则存在 $n_1,n_2\in N$ 使 $g'=gn_1$、$h'=hn_2$。于是
+\[
+ g'h'=gn_1hn_2=gh(h^{-1}n_1h)n_2.
+\]
+因为 $N\trianglelefteq G$，故 $h^{-1}n_1h\in N$，从而 $(h^{-1}n_1h)n_2\in N$。于是 $g'h'\in ghN$，即 $g'h'N=ghN$，所以乘法良定。
+
+结合律来自 $G$ 的结合律：
+\[
+ ((gN)(hN))(kN)=(ghk)N=(gN)((hN)(kN)).
+\]
+单位元为 $N=eN$；元素 $gN$ 的逆元是 $g^{-1}N$，因为
+\[
+ (gN)(g^{-1}N)=(gg^{-1})N=N.
+\]
+故 $G/N$ 是群。
+\end{proof}
+
+\begin{example}
+取加法群 $(\Z,+)$ 及其正规子群 $n\Z$。陪集为
+\[
+ 0+n\Z,1+n\Z,\dots,(n-1)+n\Z.
+\]
+商群运算是
+\[
+ (a+n\Z)+(b+n\Z)=(a+b)+n\Z.
+\]
+这正是通常的 $\Z/n\Z$。
+\end{example}
+
+\begin{example}
+交错群 $A_n$ 是 $S_n$ 的正规子群。其证明将在下一节通过符号同态给出。
+\end{example}
+
+\begin{remark}
+并非每个子群都正规。例如在 $S_3$ 中，$H=\{e,(12)\}$ 不是正规子群，因为
+\[
+ (13)(12)(13)=(23) \notin H.
+\]
+\end{remark}
+
+\section{群同态与同构定理}
+
+\subsection*{群同态、核与像}
+
+\begin{definition}
+设 $G,H$ 为群。映射 $f:G\to H$ 若满足
+\[
+ f(ab)=f(a)f(b) \qquad (a,b\in G),
+\]
+则称 $f$ 为\emph{群同态}。若 $f$ 还是双射，则称其为\emph{群同构}，记为 $G\cong H$。
+\end{definition}
+
+\begin{proposition}
+设 $f:G\to H$ 为群同态，则对任意 $a\in G$ 与整数 $n$，有
+\begin{enumerate}[label=\textnormal{(\arabic*)}, leftmargin=3em]
+  \item $f(e_G)=e_H$；
+  \item $f(a^{-1})=f(a)^{-1}$；
+  \item $f(a^n)=f(a)^n$。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+由 $e_Ge_G=e_G$，取像得
+\[
+ f(e_G)=f(e_G)^2.
+\]
+左乘 $f(e_G)^{-1}$ 得 $f(e_G)=e_H$。
+
+又因 $aa^{-1}=e_G$，取像得
+\[
+ f(a)f(a^{-1})=f(e_G)=e_H,
+\]
+故 $f(a^{-1})=f(a)^{-1}$。第三条对正整数由归纳法得到，对负整数由第二条推出，$n=0$ 的情形显然。
+\end{proof}
+
+\begin{definition}
+设 $f:G\to H$ 为同态。定义
+\[
+\Ker(f)=\{g\in G:f(g)=e_H\}, \qquad \Ima(f)=\{f(g):g\in G\}.
+\]
+分别称为 $f$ 的\emph{核}与\emph{像}。
+\end{definition}
+
+\begin{proposition}
+设 $f:G\to H$ 为群同态，则 $\Ker(f)\trianglelefteq G$，且 $\Ima(f)\le H$。
+\end{proposition}
+
+\begin{proof}
+先证像是子群。它非空，因为 $f(e_G)=e_H\in \Ima(f)$。若 $x=f(a),y=f(b)\in \Ima(f)$，则
+\[
+ xy^{-1}=f(a)f(b)^{-1}=f(a)f(b^{-1})=f(ab^{-1}) \in \Ima(f).
+\]
+故 $\Ima(f)$ 是子群。
+
+再证核正规。若 $a,b\in \Ker(f)$，则
+\[
+ f(ab^{-1})=f(a)f(b)^{-1}=e_H,
+\]
+故 $ab^{-1}\in \Ker(f)$，所以 $\Ker(f)$ 是子群。对任意 $g\in G$ 与 $k\in \Ker(f)$，
+\[
+ f(gkg^{-1})=f(g)f(k)f(g)^{-1}=e_H,
+\]
+故 $gkg^{-1}\in \Ker(f)$。于是 $\Ker(f)\trianglelefteq G$。
+\end{proof}
+
+\begin{example}[行列式同态]
+行列式给出同态
+\[
+ \det:\GL_n(F) \longrightarrow F^\times.
+\]
+其核为 $\SL_n(F)$，像为 $F^\times$，因此
+\[
+ \GL_n(F)/\SL_n(F) \cong F^\times.
+\]
+\end{example}
+
+\begin{example}[符号同态]
+符号映射
+\[
+ \sgn:S_n \longrightarrow \{\pm 1\}
+\]
+是群同态，其核正是偶置换群 $A_n$。故 $A_n\trianglelefteq S_n$，并且
+\[
+ S_n/A_n \cong \{\pm1\} \cong \Z/2\Z.
+\]
+\end{example}
+
+\subsection*{第一同构定理}
+
+\begin{theorem}[第一同构定理]
+设 $f:G\to H$ 为群同态，则
+\[
+ G/\Ker(f) \cong \Ima(f).
+\]
+更具体地，映射
+\[
+ \Phi:G/\Ker(f) \longrightarrow \Ima(f), \qquad g\Ker(f) \longmapsto f(g)
+\]
+是良定的群同构。
+\end{theorem}
+
+\begin{proof}
+先证良定。若 $g\Ker(f)=g'\Ker(f)$，则 $g^{-1}g'\in \Ker(f)$，故
+\[
+ f(g^{-1}g')=e_H.
+\]
+于是 $f(g)^{-1}f(g')=e_H$，从而 $f(g)=f(g')$。
+
+再证它是同态：
+\[
+ \Phi((g\Ker(f))(h\Ker(f)))=\Phi(gh\Ker(f))=f(gh)=f(g)f(h).
+\]
+这正等于 $\Phi(g\Ker(f))\Phi(h\Ker(f))$。
+
+满射性显然，因为像中的每个元素都形如 $f(g)$。若 $\Phi(g\Ker(f))=e_H$，则 $f(g)=e_H$，即 $g\in \Ker(f)$，故 $g\Ker(f)=\Ker(f)$，也就是商群单位元。因此 $\Phi$ 单射。故它是同构。
+\end{proof}
+
+\begin{example}
+自然映射 $\pi:\Z\to \Z/n\Z$，$a\mapsto \bar a$，其核为 $n\Z$，像为整个 $\Z/n\Z$。第一同构定理给出
+\[
+ \Z/n\Z \cong \Z/n\Z,
+\]
+其内容是：通常意义下的“模 $n$ 取剩余类”本质上就是商群构造 $\Z/n\Z$。
+\end{example}
+
+\subsection*{第二与第三同构定理}
+
+\begin{theorem}[第二同构定理]
+设 $H\le G$，$N\trianglelefteq G$。则
+\begin{enumerate}[label=\textnormal{(\arabic*)}, leftmargin=3em]
+  \item $HN=\{hn:h\in H,n\in N\}$ 是 $G$ 的子群；
+  \item $H\cap N\trianglelefteq H$；
+  \item 有自然同构
+  \[
+    H/(H\cap N) \cong HN/N.
+  \]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+先证 $HN$ 是子群。它非空，因为 $e=ee\in HN$。若 $h_1n_1,h_2n_2\in HN$，则
+\[
+ (h_1n_1)(h_2n_2)^{-1}=h_1n_1n_2^{-1}h_2^{-1}=h_1h_2^{-1}(h_2n_1n_2^{-1}h_2^{-1}).
+\]
+因为 $N\trianglelefteq G$，括号中的元素属于 $N$；而 $h_1h_2^{-1}\in H$。故上式属于 $HN$，由子群判别法可知 $HN\le G$。
+
+其次，$H\cap N$ 显然是 $H$ 的子群。若 $x\in H\cap N$、$h\in H$，则 $hxh^{-1}\in H$，又因 $N$ 正规而有 $hxh^{-1}\in N$，故 $hxh^{-1}\in H\cap N$，于是 $H\cap N\trianglelefteq H$。
+
+定义同态
+\[
+ \psi:H \longrightarrow HN/N, \qquad h \longmapsto hN.
+\]
+其核为
+\[
+ \Ker(\psi)=\{h\in H:hN=N\}=H\cap N,
+\]
+其像为整个 $HN/N$。由第一同构定理，得
+\[
+ H/(H\cap N) \cong HN/N.
+\]
+\end{proof}
+
+\begin{theorem}[第三同构定理]
+设 $N\trianglelefteq G$，$H\trianglelefteq G$，且 $N\subseteq H$。则 $H/N\trianglelefteq G/N$，并且
+\[
+ (G/N)/(H/N) \cong G/H.
+\]
+\end{theorem}
+
+\begin{proof}
+任取 $gN\in G/N$ 与 $hN\in H/N$，则
+\[
+ (gN)(hN)(gN)^{-1}=ghg^{-1}N.
+\]
+由于 $H\trianglelefteq G$，故 $ghg^{-1}\in H$，所以 $ghg^{-1}N\in H/N$。于是 $H/N\trianglelefteq G/N$。
+
+再定义映射
+\[
+ \theta:G/N \longrightarrow G/H, \qquad gN \longmapsto gH.
+\]
+若 $gN=g'N$，则 $g^{-1}g'\in N\subseteq H$，故 $gH=g'H$，因此 $\theta$ 良定。它显然是同态，且满射。其核为
+\[
+ \Ker(\theta)=\{gN:gH=H\}=H/N.
+\]
+由第一同构定理便得
+\[
+ (G/N)/(H/N) \cong G/H.
+\]
+\end{proof}
+
+\begin{corollary}[对应定理]
+设 $N\trianglelefteq G$。则所有包含 $N$ 的 $G$ 的子群，与商群 $G/N$ 的子群之间存在一一对应
+\[
+ H \longleftrightarrow H/N.
+\]
+在此对应下，正规子群对应到正规子群。
+\end{corollary}
+
+\begin{proof}
+若 $H\le G$ 且 $N\subseteq H$，则 $H/N\le G/N$。反过来，若 $K\le G/N$，定义
+\[
+ H=\{g\in G:gN\in K\}.
+\]
+容易验证 $H$ 是包含 $N$ 的子群，且 $K=H/N$。两个构造互逆，因此得到所述一一对应。正规性的保持可由共轭计算直接验证。
+\end{proof}
+
+\section{循环群与生成元}
+
+\subsection*{循环群的分类}
+
+\begin{definition}
+设 $G$ 为群，$a\in G$。集合
+\[
+ \langle a \rangle=\{a^n:n\in \Z\}
+\]
+称为由 $a$ 生成的\emph{循环子群}。若 $G=\langle a \rangle$，则称 $G$ 为\emph{循环群}。
+\end{definition}
+
+\begin{proposition}
+对任意 $a\in G$，集合 $\langle a \rangle$ 是 $G$ 的子群，而且是包含 $a$ 的最小子群。
+\end{proposition}
+
+\begin{proof}
+它非空，因为 $e=a^0\in \langle a \rangle$。若 $a^m,a^n\in \langle a \rangle$，则
+\[
+ a^m(a^n)^{-1}=a^{m-n} \in \langle a \rangle.
+\]
+故它是子群。若 $H\le G$ 且 $a\in H$，由于子群对乘法与逆元封闭，$H$ 必包含 $a$ 的所有整数次幂，从而 $\langle a \rangle\subseteq H$。故它是最小的。
+\end{proof}
+
+\begin{theorem}[循环群分类]
+设 $G=\langle a \rangle$。
+\begin{enumerate}[label=\textnormal{(\arabic*)}, leftmargin=3em]
+  \item 若 $\ord(a)=\infty$，则 $G\cong \Z$；
+  \item 若 $\ord(a)=n<\infty$，则 $G\cong \Z/n\Z$。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+若 $\ord(a)=\infty$，定义 $\phi:\Z\to G$，$m\mapsto a^m$。它是同态。若 $\phi(m)=\phi(n)$，则 $a^{m-n}=e$。由 $a$ 的阶无穷，得 $m=n$，故单射；又因 $G$ 由 $a$ 生成，故满射。所以 $G\cong \Z$。
+
+若 $\ord(a)=n$，定义 $\psi:\Z/n\Z\to G$，$\bar m\mapsto a^m$。若 $\bar m=\bar m'$，则 $n\mid(m-m')$，故 $a^m=a^{m'}$，所以良定。它显然是同态且满射。若 $\psi(\bar m)=e$，则 $a^m=e$，故 $n\mid m$，于是 $\bar m=\bar 0$。所以单射，进而是同构。
+\end{proof}
+
+\begin{theorem}[循环群的子群]
+循环群的任意子群仍是循环群。更具体地：
+\begin{enumerate}[label=\textnormal{(\arabic*)}, leftmargin=3em]
+  \item $(\Z,+)$ 的任意子群都形如 $d\Z$；
+  \item 若 $G=\langle a \rangle$ 且 $|G|=n$，则对每个 $d\mid n$，恰有一个阶为 $d$ 的子群，即 $\langle a^{n/d} \rangle$。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+先证 (1)。设 $H\le \Z$。若 $H=\{0\}$ 则显然。否则 $H$ 含正整数，取其中最小者 $d$。对任意 $h\in H$，由整数除法可写 $h=qd+r$，其中 $0\le r<d$。由于 $h,qd\in H$，故 $r=h-qd\in H$。由 $d$ 的最小性得 $r=0$，故 $h\in d\Z$。因此 $H=d\Z$。
+
+再证 (2)。设 $K\le G$。若 $K=\{e\}$ 则显然循环。否则取所有满足 $a^m\in K$ 的正整数 $m$ 中最小者 $t$。我们断言 $K=\langle a^t \rangle$。任取 $a^k\in K$，用除法写 $k=qt+r$，$0\le r<t$。则
+\[
+ a^r=a^k(a^t)^{-q} \in K.
+\]
+由 $t$ 的最小性，必有 $r=0$。故 $a^k\in \langle a^t \rangle$，因此 $K=\langle a^t \rangle$，从而 $K$ 循环。
+
+现在设 $d\mid n$。由下一个命题，元素 $a^{n/d}$ 的阶正是 $d$，故 $\langle a^{n/d} \rangle$ 为一个阶 $d$ 的子群。若 $K$ 也是阶 $d$ 的子群，由上面已知它必为循环群，设 $K=\langle a^t \rangle$。则 $\ord(a^t)=d$，由下一个命题可知 $n/\gcd(n,t)=d$，故 $\gcd(n,t)=n/d$，从而 $\langle a^t \rangle=\langle a^{n/d} \rangle$。唯一性得证。
+\end{proof}
+
+\begin{proposition}[循环群中元素的阶]
+设 $G=\langle a \rangle$，且 $\ord(a)=n<\infty$。则对任意整数 $k$，
+\[
+ \ord(a^k)=\frac{n}{\gcd(n,k)}.
+\]
+若 $\ord(a)=\infty$，则对任意 $k\ne0$ 有 $\ord(a^k)=\infty$。
+\end{proposition}
+
+\begin{proof}
+设 $d=\gcd(n,k)$，写成 $n=dn_1$、$k=dk_1$，其中 $\gcd(n_1,k_1)=1$。则
+\[
+ (a^k)^{n_1}=a^{kn_1}=a^{dk_1n_1}=a^{k_1n}=e,
+\]
+故 $\ord(a^k)\mid n_1$。
+
+反过来，若 $(a^k)^m=e$，则 $a^{km}=e$，于是 $n\mid km$，即 $dn_1\mid dk_1m$，从而 $n_1\mid k_1m$。因为 $\gcd(n_1,k_1)=1$，所以 $n_1\mid m$。这说明 $a^k$ 的阶不小于 $n_1$，故恰为 $n_1=n/d$。
+
+若 $\ord(a)=\infty$ 且 $(a^k)^m=e$，则 $a^{km}=e$。当 $k\ne0$ 时只能有 $m=0$，这不可能是正整数，因此 $a^k$ 无有限正阶。
+\end{proof}
+
+\begin{corollary}
+有限循环群 $G=\langle a \rangle$、$|G|=n$ 中，$a^k$ 是生成元当且仅当 $\gcd(k,n)=1$。因此 $G$ 的生成元个数恰为 $\varphi(n)$。
+\end{corollary}
+
+\begin{proof}
+由上一个命题，$a^k$ 是生成元当且仅当 $\ord(a^k)=n$，即 $n/\gcd(n,k)=n$，也就是 $\gcd(k,n)=1$。而模 $n$ 与 $n$ 互素的剩余类个数正是 $\varphi(n)$。
+\end{proof}
+
+\subsection*{Euler 定理与有限阿贝尔群结构}
+
+\begin{theorem}[Euler 定理]
+若整数 $a,n$ 满足 $\gcd(a,n)=1$，则
+\[
+ a^{\varphi(n)} \equiv 1 \pmod n.
+\]
+\end{theorem}
+
+\begin{proof}
+由于 $\gcd(a,n)=1$，剩余类 $\bar a$ 属于乘法群 $\left(\Z/n\Z\right)^\times$。该群的阶为 $\varphi(n)$。由 Lagrange 定理的推论，群中任意元素的 $\varphi(n)$ 次幂都等于单位元，因此
+\[
+ \bar a^{\varphi(n)}=\bar 1.
+\]
+这正是 $a^{\varphi(n)} \equiv 1 \pmod n$。
+\end{proof}
+
+\begin{remark}
+当 $n=p$ 为素数时，Euler 定理退化为 Fermat 小定理：若 $p\nmid a$，则 $a^{p-1}\equiv1 \pmod p$。
+\end{remark}
+
+\begin{theorem}[有限阿贝尔群结构定理，陈述]
+每个有限阿贝尔群都同构于有限个循环群的直积。等价地，可写成
+\[
+ G \cong \Z/n_1\Z \times \cdots \times \Z/n_r\Z, \qquad n_1\mid n_2\mid \cdots \mid n_r,
+\]
+也可写成素数幂循环群的直积。这两种分解都在同构意义下唯一。
+\end{theorem}
+
+\begin{remark}[与模形式的联系]
+在模形式理论中，$\SL_2(\Z)$ 及其同余子群（尤其是 $\Gamma_0(N)$ 与 $\Gamma(N)$）起核心作用；模 $N$ 约化会产生有限群 $\SL_2(\Z/N\Z)$；而 $\left(\Z/N\Z\right)^\times$ 则出现在 Dirichlet 特征、Nebentypus 与水平结构的讨论中。本章内容正是理解这些对象的代数基础。
+\end{remark}
+
+\section*{习题}
+
+下列习题共 $70$ 题，按难度分为三级：\basic 为基础题，\medium 为进阶题，\hard 为挑战题。
+
+\subsection*{基础题}
+
+\begin{enumerate}[label=\textbf{习题6.\arabic*.}, leftmargin=7em]
+  \item \basic 验证 $(\Z,+)$ 满足群公理；再说明正整数集合 $\Z_{>0}$ 在加法下为什么不是群。
+  \item \basic 设 $n\ge1$。验证 $(\Z/n\Z,+)$ 是阿贝尔群，并写出元素 $\bar a$ 的逆元。
+  \item \basic 求出 $\left(\Z/10\Z\right)^\times$ 的全部元素，并验证它在乘法下构成群。
+  \item \basic 求出 $\left(\Z/8\Z\right)^\times$ 中每个元素的阶。
+  \item \basic 列出 $S_3$ 的全部六个元素，并求 $(12)$、$(123)$、$(132)$ 的阶。
+  \item \basic 写出 $D_4$ 的八个元素，并区分旋转与反射。
+  \item \basic 证明 $\SL_2(\R)\le \GL_2(\R)$。
+  \item \basic 在 $(\Z/12\Z,+)$ 中求 $\bar 2,\bar 3,\bar 4,\bar 6$ 的阶。
+  \item \basic 求循环群 $\Z/12\Z$ 的全部子群。
+  \item \basic 设 $H=\{e,(12)\}\subset S_3$。证明 $H$ 是子群。
+  \item \basic 判断集合 $\{e,(12),(13)\}$ 是否为 $S_3$ 的子群，并说明理由。
+  \item \basic 证明在加法群 $(\Z,+)$ 中，任意 $m\Z$ 都是子群。
+  \item \basic 证明 $H=\{\bar 0,\bar 3,\bar 6,\bar 9\}$ 是 $(\Z/12\Z,+)$ 的子群。
+  \item \basic 求子群 $2\Z$ 在 $(\Z,+)$ 中的全部陪集。
+  \item \basic 求指数 $[\Z:2\Z]$ 与 $[\Z:3\Z]$。
+  \item \basic 在 $S_3$ 中取 $H=\{e,(12)\}$。求全部左陪集与全部右陪集。
+  \item \basic 设 $H=\{\bar 0,\bar 4,\bar 8\}\le \Z/12\Z$。求 $[\Z/12\Z:H]$。
+  \item \basic 设 $|G|=8$。利用 Lagrange 定理说明 $G$ 中元素的阶只能取哪些值。
+  \item \basic 利用 Lagrange 定理说明 $S_3$ 中不存在五阶子群。
+  \item \basic 证明任意阶为素数的群都是循环群。
+  \item \basic 在 $S_3$ 中判断 $\{e,(12)\}$ 是否正规，并用陪集计算说明理由。
+  \item \basic 证明阿贝尔群的任意子群都是正规子群。
+  \item \basic 证明 $3\Z\trianglelefteq \Z$，并写出商群 $\Z/3\Z$ 的全部元素。
+  \item \basic 写出商群 $(\Z/6\Z)/\{\bar 0,\bar 3\}$ 的全部元素，并判断它与哪个熟悉的小群同构。
+  \item \basic 设 $f:\Z\to \Z/6\Z$，$f(a)=\bar a$。证明 $f$ 是群同态，并求 $\Ker(f)$ 与 $\Ima(f)$。
+  \item \basic 求行列式同态 $\det:\GL_2(\R)\to \R^\times$ 的核与像。
+  \item \basic 求符号同态 $\sgn:S_3\to \{\pm1\}$ 的核与像。
+  \item \basic 设 $G=\langle a \rangle$，且 $\ord(a)=12$。求 $\ord(a^2),\ord(a^3),\ord(a^4),\ord(a^6)$。
+  \item \basic 求循环群 $\Z/12\Z$ 的全部生成元。
+  \item \basic 设 $\gcd(a,15)=1$。利用 Euler 定理验证 $2^8 \equiv1 \pmod{15}$ 与 $7^8 \equiv1 \pmod{15}$。
+\end{enumerate}
+
+\subsection*{进阶题}
+
+\begin{enumerate}[start=31, label=\textbf{习题6.\arabic*.}, leftmargin=7em]
+  \item \medium 证明如下判别法：若非空子集 $H\subseteq G$ 对乘法与取逆都封闭，则 $H\le G$。
+  \item \medium 设 $\{H_i\}_{i\in I}$ 是 $G$ 的一族子群。证明 $\bigcap_{i\in I}H_i$ 仍是子群，并举例说明并集一般不是子群。
+  \item \medium 再证明一次：若 $[G:H]=2$，则 $H\trianglelefteq G$。
+  \item \medium 重新证明阶为 $4$ 的群只有 $\Z/4\Z$ 与 $\Z/2\Z\times\Z/2\Z$ 两种同构类型。
+  \item \medium 设 $G$ 是六阶非阿贝尔群。证明 $G\cong S_3$。
+  \item \medium 证明二面体群 $D_n$ 的每个元素都可唯一写成 $r^i$ 或 $sr^i$（$0\le i<n$）。
+  \item \medium 求二面体群 $D_n$ 的中心，并分别讨论 $n$ 为奇数与偶数的情形。
+  \item \medium 求 $S_3$ 的全部正规子群。
+  \item \medium 用符号同态证明 $A_n\trianglelefteq S_n$。
+  \item \medium 证明 $S_3/A_3 \cong \Z/2\Z$。
+  \item \medium 证明 $\GL_n(F)/\SL_n(F) \cong F^\times$。
+  \item \medium 设 $m,n$ 互素。利用第一同构定理证明
+  \[
+    \Z/mn\Z \cong \Z/m\Z \times \Z/n\Z.
+  \]
+  \item \medium 证明群 $\left(\Z/8\Z\right)^\times$ 不是循环群。
+  \item \medium 证明循环群的任意子群都是循环群。
+  \item \medium 设 $G=\langle a \rangle$，$|G|=n$。证明对每个 $d\mid n$，$G$ 恰有一个阶为 $d$ 的子群。
+  \item \medium 设 $G=\langle a \rangle$，$|G|=n$。证明 $a^k$ 是生成元当且仅当 $\gcd(k,n)=1$。
+  \item \medium 设 $\bar a\in \Z/n\Z$。证明它在加法群 $\Z/n\Z$ 中的阶等于 $n/\gcd(a,n)$。
+  \item \medium 设 $f:\Z\to G$ 是群同态。证明 $f$ 完全由 $f(1)$ 决定；进一步说明从 $\Z/n\Z$ 到任意群 $G$ 的同态由 $\bar 1$ 的像决定，并写出该像应满足的条件。
+  \item \medium 设 $A,B$ 是阿贝尔群 $G$ 的子群。利用第二同构定理证明
+  \[
+    (A+B)/B \cong A/(A\cap B).
+  \]
+  \item \medium 在加法群 $\Z$ 中取 $N=12\Z$、$H=4\Z$。利用第三同构定理证明
+  \[
+    (\Z/12\Z)/(4\Z/12\Z) \cong \Z/4\Z.
+  \]
+  \item \medium 证明：若有限阿贝尔群 $G$ 中每个非单位元都满足 $x^2=e$，则 $G\cong (\Z/2\Z)^r$ 对某个 $r\ge0$ 成立。
+  \item \medium 证明有限阿贝尔群的 Cauchy 定理：若素数 $p$ 整除 $|G|$，则 $G$ 中存在阶为 $p$ 的元素。
+  \item \medium 利用上一题证明：每个十五阶阿贝尔群都是循环群。
+  \item \medium 证明：若 $G$ 是阿贝尔群且 $|G|=p^2$（$p$ 为素数），则 $G\cong \Z/p^2\Z$ 或 $G\cong \Z/p\Z \times \Z/p\Z$。
+  \item \medium 设 $G$ 为循环群，$H,K\le G$。证明 $H\cap K$ 与 $HK$ 都是循环群，并求它们的阶与 $|H|,|K|$ 的关系。
+\end{enumerate}
+
+\subsection*{挑战题}
+
+\begin{enumerate}[start=56, label=\textbf{习题6.\arabic*.}, leftmargin=7em]
+  \item \hard 陈述 Sylow 三定理，并利用它们证明：任意二十一阶群都存在正规七阶子群。
+  \item \hard 利用 Sylow 定理证明：不存在十二阶单群。
+  \item \hard 证明：任意阶为 $p^2$ 的群都是阿贝尔群。
+  \item \hard 构造半直积 $\Z/3\Z \rtimes \Z/2\Z$，其中 $\Z/2\Z$ 的非平凡元素对 $\Z/3\Z$ 的作用是取逆；证明所得群同构于 $S_3$。
+  \item \hard 证明 $D_n \cong \Z/n\Z \rtimes \Z/2\Z$，其中 $\Z/2\Z$ 对 $\Z/n\Z$ 的作用由 $x\mapsto -x$ 给出。
+  \item \hard 设 $N\trianglelefteq G$，$H\le G$，满足 $N\cap H=\{e\}$ 且 $NH=G$。证明：若 $N\trianglelefteq G$，则 $G$ 同构于某个半直积 $N \rtimes H$。
+  \item \hard 计算 $\SL_2(\Z/2\Z)$ 的元素个数，并证明 $\SL_2(\Z/2\Z) \cong S_3$。
+  \item \hard 设 $p$ 为素数。证明
+  \[
+    |\GL_2(\F_p)|=(p^2-1)(p^2-p), \qquad |\SL_2(\F_p)|=p(p^2-1).
+  \]
+  \item \hard 对任意正整数 $N$，定义主同余子群
+  \[
+    \Gamma(N)=\left\{\begin{pmatrix}a&b\\ c&d\end{pmatrix}\in \SL_2(\Z):
+    \begin{pmatrix}a&b\\ c&d\end{pmatrix} \equiv \begin{pmatrix}1&0\\ 0&1\end{pmatrix} \pmod N\right\}.
+  \]
+  证明 $\Gamma(N)\trianglelefteq \SL_2(\Z)$。
+  \item \hard 定义
+  \[
+    \Gamma_0(N)=\left\{\begin{pmatrix}a&b\\ c&d\end{pmatrix}\in \SL_2(\Z): c \equiv0 \pmod N\right\}.
+  \]
+  证明 $\Gamma_0(N)\le \SL_2(\Z)$。
+  \item \hard 证明 $\Gamma(N)\subseteq \Gamma_0(N)$，并说明为什么这表明 $\Gamma_0(N)$ 在 $\SL_2(\Z)$ 中具有有限指数。
+  \item \hard 设 $N\ge1$。考虑模 $N$ 约化映射
+  \[
+    \rho_N:\SL_2(\Z) \longrightarrow \SL_2(\Z/N\Z).
+  \]
+  证明 $\Ker(\rho_N)=\Gamma(N)$；若进一步已知 $\rho_N$ 为满射，说明如何由第一同构定理推出
+  \[
+    \SL_2(\Z)/\Gamma(N) \cong \SL_2(\Z/N\Z).
+  \]
+  \item \hard 证明 $\SL_2(\Z)$ 在上半平面
+  \[
+    \mathfrak{H}=\{z\in \C: \Im(z)>0\}
+  \]
+  上通过分式线性变换
+  \[
+    \begin{pmatrix}a&b\\ c&d\end{pmatrix}·z=\frac{az+b}{cz+d}
+  \]
+  定义了一个群作用。
+  \item \hard 设 $N$ 为素数。求 $\Gamma_0(N)/\Gamma(N)$ 在 $\SL_2(\Z/N\Z)$ 中对应的像，并证明它同构于上三角且行列式为 $1$ 的矩阵群。
+  \item \hard 结合上一题，说明为什么 $\Gamma_0(N)$ 可以理解为“保留一个模 $N$ 的一维子空间”的矩阵群；进一步解释这一点为何在模形式的“水平结构”中是自然的。
+\end{enumerate}

@@ -1,0 +1,818 @@
+\chapter{Galois 理论初步}
+
+上一章已经介绍了分裂域、可分扩张与正规扩张。本章要说明：对于一个有限可分正规扩张 $L/K$，群
+\[
+\Gal(L/K)=\Aut_K(L)
+\]
+能够完整编码这个扩张的内部结构。Galois 理论的基本定理把中间域与 Galois 群的子群一一对应；而群的可解性又控制多项式能否由根式求解。最后，我们简要概览绝对 Galois 群、$\ell$-进表示与模形式之间的联系。
+
+本章默认所有扩张都嵌入某个固定的代数闭包中。若无特别说明，扩张均指有限扩张。
+
+\section{Galois 群的定义}
+
+\subsection*{定义}
+
+\begin{definition}
+设 $L/K$ 是域扩张。称
+\[
+\Gal(L/K)=\Aut_K(L)=\{\sigma:L\to L \mid \sigma \text{ 是域自同构且 } \sigma|_K=\Id_K\}
+\]
+为扩张 $L/K$ 的 \emph{Galois 群}。
+\end{definition}
+
+\begin{proposition}
+在映射复合下，$\Gal(L/K)$ 构成一个群。
+\end{proposition}
+
+\begin{proof}
+恒等映射显然在其中。若 $\sigma,\tau$ 都固定 $K$，则 $\sigma\circ\tau$ 仍是 $L$ 的域自同构，且对任意 $a\in K$ 有
+\[
+(\sigma\circ\tau)(a)=\sigma(a)=a。
+\]
+故 $\sigma\circ\tau$ 也固定 $K$。又若 $\sigma\in\Gal(L/K)$，则 $\sigma^{-1}$ 仍是域自同构，并满足 $\sigma^{-1}(a)=a$ 对所有 $a\in K$ 成立，因此逆元也在其中。故它构成一个群。
+\end{proof}
+
+\begin{remark}
+Galois 群本质上描述的是扩张中的“对称性”：它保留底域中的系数不变，只在上层域中重新排列共轭元素，尤其是重新排列多项式的根。
+\end{remark}
+
+\subsection*{基本例子}
+
+\begin{example}[二次扩张]
+若 $d\in\Q$ 不是有理数平方，则
+\[
+\Gal(\Q(\sqrt d)/\Q)\cong \Z/2\Z。
+\]
+特别地，$\Gal(\Q(\sqrt2)/\Q)\cong \Z/2\Z$。
+\end{example}
+
+\begin{proof}
+扩张 $\Q(\sqrt d)/\Q$ 的次数为 $2$，所以任何 $\Q$-自同构都由 $\sqrt d$ 的像唯一决定。又
+\[
+(\sigma(\sqrt d))^2=\sigma(d)=d，
+\]
+故 $\sigma(\sqrt d)$ 只能是 $\sqrt d$ 或 $-\sqrt d$。因此至多有两个自同构。另一方面，映射
+\[
+\tau(a+b\sqrt d)=a-b\sqrt d,
+\qquad (a,b\in\Q)
+\]
+确实给出一个非平凡的 $\Q$-自同构，所以 Galois 群恰有两个元素，与 $\Z/2\Z$ 同构。
+\end{proof}
+
+\begin{example}[双二次扩张]
+设
+\[
+L=\Q(\sqrt2,\sqrt3)。
+\]
+则
+\[
+\Gal(L/\Q)\cong (\Z/2\Z)^2。
+\]
+\end{example}
+
+\begin{proof}
+任一 $\Q$-自同构必须把 $\sqrt2$ 送到 $\pm\sqrt2$，把 $\sqrt3$ 送到 $\pm\sqrt3$，故至多有四个自同构。而四种符号组合都确实给出自同构，因此群恰有四个元素。它由
+\[
+\sigma(\sqrt2)=-\sqrt2,
+\quad
+\sigma(\sqrt3)=\sqrt3；
+\]
+\[
+\tau(\sqrt2)=\sqrt2,
+\quad
+\tau(\sqrt3)=-\sqrt3
+\]
+生成，且 $\sigma^2=\tau^2=1$、$\sigma\tau=\tau\sigma$，因此 Galois 群同构于 Klein 四元群 $(\Z/2\Z)^2$。
+\end{proof}
+
+\begin{example}[有限域]
+对任意素数 $p$ 与正整数 $n$，有
+\[
+\Gal(\F_{p^n}/\F_p)\cong \Z/n\Z，
+\]
+其生成元可取 Frobenius 自同构
+\[
+\Frob_p:x\mapsto x^p。
+\]
+\end{example}
+
+\begin{proof}
+在特征 $p$ 下，$(x+y)^p=x^p+y^p$，因此映射 $x\mapsto x^p$ 是域同态；有限域上的单射自动满射，所以它是 $\F_{p^n}$ 的自同构。又对所有 $a\in\F_p$，有 $a^p=a$，故此自同构固定 $\F_p$。
+
+对任意 $x\in\F_{p^n}$，有 $x^{p^n}=x$，故 $\Frob_p^n=\Id$。若存在 $0<m<n$ 使 $\Frob_p^m=\Id$，则 $\F_{p^n}$ 的所有元素都满足 $x^{p^m}=x$，于是多项式 $X^{p^m}-X$ 有至少 $p^n$ 个根，这与其次数 $p^m<p^n$ 矛盾。因此 $\Frob_p$ 的阶为 $n$。
+
+再取 $\alpha\in\F_{p^n}$ 使 $\F_{p^n}=\F_p(\alpha)$。任何 $\F_p$-自同构由 $\alpha$ 的像唯一决定，而 $\alpha$ 的共轭根正是
+\[
+\alpha,\alpha^p,\alpha^{p^2},\dots,\alpha^{p^{n-1}}。
+\]
+故每个 $\F_p$-自同构都是某个 $\Frob_p^i$。于是 Galois 群由 $\Frob_p$ 生成，因而是阶为 $n$ 的循环群。
+\end{proof}
+
+\begin{example}[分圆域]
+若 $\zeta_n$ 是原始 $n$ 次单位根，则对每个与 $n$ 互素的整数 $a$，赋值
+\[
+\sigma_a(\zeta_n)=\zeta_n^a
+\]
+给出一个 $\Q$-自同构。因此存在单射
+\[
+(\Z/n\Z)^\times \hookrightarrow \Gal(\Q(\zeta_n)/\Q)。
+\]
+在 12.4 中我们将证明这其实是同构。
+\end{example}
+
+\begin{proof}
+因为 $a$ 与 $n$ 互素时，$\zeta_n^a$ 仍是原始 $n$ 次单位根，所以它与 $\zeta_n$ 满足同一个最小多项式，于是把 $\zeta_n$ 送到 $\zeta_n^a$ 可唯一延拓为一个 $\Q$-嵌入。有限扩张上的嵌入必为自同构。若 $\sigma_a=\sigma_b$，则 $\zeta_n^a=\zeta_n^b$，从而 $n\mid(a-b)$，故得到单射。
+\end{proof}
+
+\begin{example}[三次分裂域]
+多项式 $x^3-2$ 的分裂域为
+\[
+L=\Q(\sqrt[3]{2},\omega)，
+\qquad
+\omega=\frac{-1+\sqrt{-3}}{2}。
+\]
+并且
+\[
+\Gal(L/\Q)\cong S_3。
+\]
+\end{example}
+
+\begin{proof}
+由 Eisenstein 判别法，$x^3-2$ 在 $\Q$ 上不可约，因此 $[\Q(\sqrt[3]{2}):\Q]=3$。其三个根为
+\[
+\sqrt[3]{2},
+\quad
+\omega\sqrt[3]{2},
+\quad
+\omega^2\sqrt[3]{2}。
+\]
+所以分裂域必须同时加入 $\omega$。又 $\Q(\sqrt[3]{2})\subseteq\R$ 而 $\Q(\omega)\notsubseteq\R$，故交为 $\Q$，于是 $[L:\Q]=6$。
+
+任一 $\Q$-自同构必须把 $\sqrt[3]{2}$ 送到上述三个根之一，把 $\omega$ 送到 $\omega$ 或 $\omega^2$，所以至多有六个自同构。另一方面，映射
+\[
+\sigma(\sqrt[3]{2})=\omega\sqrt[3]{2},
+\qquad
+\sigma(\omega)=\omega；
+\]
+\[
+\tau(\sqrt[3]{2})=\sqrt[3]{2},
+\qquad
+\tau(\omega)=\omega^2
+\]
+都给出自同构，且满足 $\sigma^3=\tau^2=1$ 与 $\tau\sigma\tau=\sigma^{-1}$，故它们生成一个与 $S_3$ 同构的六阶群。因此整个 Galois 群就是 $S_3$。
+\end{proof}
+
+\section{Galois 对应}
+
+本节证明有限 Galois 扩张的基本定理。思想非常朴素：给定中间域 $E$，考虑固定 $E$ 的自同构；给定子群 $H$，考虑被 $H$ 全部元素固定的元素。结论是这两个过程互为逆运算。
+
+\subsection*{固定域}
+
+\begin{definition}
+设 $L$ 是域，$G\le\Aut(L)$。定义固定域
+\[
+L^G=\{x\in L \mid \sigma(x)=x\text{ 对一切 }\sigma\in G}。
+\]
+若 $K\subseteq E\subseteq L$，则称 $E$ 为扩张 $L/K$ 的中间域。
+\end{definition}
+
+\begin{lemma}
+设 $L/K$ 是有限 Galois 扩张，$E$ 为中间域。则 $L/E$ 仍是有限 Galois 扩张，并且
+\[
+|\Gal(L/E)|=[L:E]。
+\]
+\end{lemma}
+
+\begin{proof}
+因为 $L/K$ 可分，所以中间扩张 $L/E$ 也可分。若 $f(x)\in E[x]$ 在 $L$ 中有一个根，那么该根在 $K$ 上的最小多项式在 $L$ 中完全分裂；于是 $f$ 的全部共轭根仍在 $L$ 中，所以 $L/E$ 正规。故 $L/E$ 为 Galois 扩张。
+
+有限可分扩张的 $E$-嵌入个数等于扩张次数 $[L:E]$；正规性保证这些嵌入的像都落在 $L$ 内，因此恰好给出全部 $E$-自同构，故结论成立。
+\end{proof}
+
+\begin{theorem}[固定子群次数公式]
+设 $L/K$ 为有限 Galois 扩张，$H\le G=\Gal(L/K)$。记 $E=L^H$。则
+\[
+[L:E]=|H|，
+\qquad
+\Gal(L/E)=H。
+\]
+\end{theorem}
+
+\begin{proof}
+首先，$H$ 中每个元素都固定 $E=L^H$，所以 $H\subseteq\Gal(L/E)$。由上引理，
+\[
+|H|\le |\Gal(L/E)|=[L:E]。
+\]
+
+接着证明反向不等式。因为 $L/E$ 是有限可分扩张，由原始元定理可取 $\alpha\in L$ 使 $L=E(\alpha)$。考虑轨道多项式
+\[
+P(T)=\prod_{\sigma\in H}(T-\sigma(\alpha))。
+\]
+对任意 $\tau\in H$，集合 $\{\tau\sigma(\alpha):\sigma\in H}$ 与 $\{\sigma(\alpha):\sigma\in H}$ 相同，因此 $\tau$ 固定 $P(T)$ 的系数。故 $P(T)\in E[T]$。于是 $\alpha$ 在 $E$ 上的最小多项式整除 $P(T)$，从而
+\[
+[L:E]=\deg m_{\alpha,E}(T)\le\deg P(T)=|H|。
+\]
+结合前面的不等式，得 $[L:E]=|H|$。于是
+\[
+|\Gal(L/E)|=[L:E]=|H|。
+\]
+而 $H\subseteq\Gal(L/E)$，所以只能有 $\Gal(L/E)=H$。
+\end{proof}
+
+\begin{theorem}[有限 Galois 扩张的基本定理]
+设 $L/K$ 为有限 Galois 扩张，记 $G=\Gal(L/K)$。则映射
+\[
+E\mapsto\Gal(L/E)
+\]
+在中间域集合
+\[
+\{E\mid K\subseteq E\subseteq L}
+\]
+与子群集合
+\[
+\{H\mid H\le G}
+\]
+之间给出一个反向包含双射，其逆映射为
+\[
+H\mapsto L^H。
+\]
+此外，对任意中间域 $E$ 都有
+\[
+[L:E]=|\Gal(L/E)|，
+\qquad
+[E:K]=[G:\Gal(L/E)]。
+\]
+\end{theorem}
+
+\begin{proof}
+先取中间域 $E$。令 $H=\Gal(L/E)$。由固定子群次数公式，
+\[
+[L:L^H]=|H|=|\Gal(L/E)|=[L:E]。
+\]
+又显然 $E\subseteq L^H$，故只能有 $E=L^H$。
+
+再取任意子群 $H\le G$。令 $E=L^H$。由固定子群次数公式，立即得
+\[
+\Gal(L/E)=H。
+\]
+因此这两个映射互为逆映射，从而构成双射。
+
+若 $E_1\subseteq E_2$，则固定较大域的自同构更少，因此
+\[
+\Gal(L/E_2)\subseteq\Gal(L/E_1)。
+\]
+这说明包含关系反向。最后，由塔式公式和 $|G|=[L:K]$ 得
+\[
+[E:K]=\frac{[L:K]}{[L:E]}=\frac{|G|}{|\Gal(L/E)|}=[G:\Gal(L/E)]。
+\]
+\end{proof}
+
+\begin{proposition}[正规子群与正规中间扩张]
+设 $L/K$ 为有限 Galois 扩张，$E$ 为中间域，$H=\Gal(L/E)$。则下列条件等价：
+\begin{enumerate}[label=\normalfont(\arabic*), leftmargin=2.5em]
+\item $E/K$ 是 Galois 扩张；
+\item $H\lhd\Gal(L/K)$。
+\end{enumerate}
+在这时，限制映射
+\[
+\Gal(L/K)\to\Gal(E/K)，
+\qquad
+\sigma\mapsto\sigma|_E
+\]
+是满同态，且有
+\[
+\Gal(E/K)\cong \Gal(L/K)/H。
+\]
+\end{proposition}
+
+\begin{proof}
+先证 $(2)\Rightarrow(1)$。取 $\tau\in\Gal(L/K)$ 与 $x\in E=L^H$。若 $\sigma\in H$，则由正规性知 $\tau^{-1}\sigma\tau\in H$，于是
+\[
+\sigma(\tau(x))=\tau((\tau^{-1}\sigma\tau)(x))=\tau(x)。
+\]
+故 $\tau(x)$ 被 $H$ 中全部元素固定，故 $\tau(x)\in E$。因此每个 $K$-自同构都稳定 $E$，从而 $E/K$ 正规；又中间扩张仍可分，所以 $E/K$ 为 Galois 扩张。
+
+再证 $(1)\Rightarrow(2)$。任取 $\tau\in\Gal(L/K)$ 与 $\sigma\in H$。若 $x\in E$，由于 $E/K$ 正规，$\tau(x)\in E$；又 $\sigma$ 固定 $E$，所以
+\[
+(\tau^{-1}\sigma\tau)(x)=\tau^{-1}(\sigma(\tau(x)))=x。
+\]
+故 $\tau^{-1}\sigma\tau\in H$，即 $H$ 为正规子群。
+
+若两条件成立，则限制映射的核正是固定 $E$ 的自同构群，即 $H$。为证满射，任取 $\rho\in\Gal(E/K)$。因为 $L/E$ 为有限可分扩张，$\rho$ 可以延拓为一个 $K$-嵌入 $L\hookrightarrow\bar K$；又由于 $L/K$ 正规，其像仍在 $L$ 中，因此该延拓实际上属于 $\Gal(L/K)$。于是限制映射满，由第一同构定理即得结论。
+\end{proof}
+
+\subsection*{格图示例}
+
+\begin{example}[双二次扩张]
+对扩张
+\[
+L=\Q(\sqrt2,\sqrt3)，
+\qquad
+G=\Gal(L/\Q)\cong(\Z/2\Z)^2，
+\]
+中间域格与子群格如下。
+\end{example}
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.6cm and 2.2cm]
+\node (L) {$L=\Q(\sqrt2,\sqrt3)$};
+\node (E1) [below left=of L] {$\Q(\sqrt2)$};
+\node (E2) [below=of L] {$\Q(\sqrt6)$};
+\node (E3) [below right=of L] {$\Q(\sqrt3)$};
+\node (K) [below=of E2] {$\Q$};
+\draw (L)--(E1) (L)--(E2) (L)--(E3);
+\draw (E1)--(K) (E2)--(K) (E3)--(K);
+\end{tikzpicture}
+\hspace{2cm}
+\begin{tikzpicture}[node distance=1.6cm and 2.2cm]
+\node (T) {$\{1\}$};
+\node (H1) [below left=of T] {$\langle \sigma \rangle$};
+\node (H2) [below=of T] {$\langle \sigma\tau \rangle$};
+\node (H3) [below right=of T] {$\langle \tau \rangle$};
+\node (B) [below=of H2] {$G$};
+\draw (T)--(H1) (T)--(H2) (T)--(H3);
+\draw (H1)--(B) (H2)--(B) (H3)--(B);
+\end{tikzpicture}
+\end{center}
+
+左图中的三个二次子域分别对应右图中的三个二阶子群，而且包含关系完全反向。
+
+\begin{example}[三次分裂域]
+若 $L=\Q(\sqrt[3]{2},\omega)$，则 Galois 群同构于 $S_3$。因为 $S_3$ 具有一个三阶正规子群和三个二阶子群，所以 $L/\Q$ 恰有一个二次中间域 $\Q(\omega)$，以及三个互相共轭的三次中间域。只有二次中间域对应正规子群，因此只有它是 $\Q$ 上的 Galois 扩张。
+\end{example}
+
+\section{可解群与根式可解性}
+
+\subsection*{可解群}
+
+\begin{definition}
+设 $G$ 为群。其导出列定义为
+\[
+G^{(0)}=G，
+\qquad
+G^{(i+1)}=[G^{(i)},G^{(i)}]。
+\]
+若存在 $m\ge0$ 使得 $G^{(m)}=1$，则称 $G$ 为可解群。
+\end{definition}
+
+\begin{proposition}
+下列命题成立：
+\begin{enumerate}[label=\normalfont(\arabic*), leftmargin=2.5em]
+\item 阿贝尔群都是可解群；
+\item 可解群的子群与商群仍可解；
+\item 若 $N\lhd G$ 且 $N$ 与 $G/N$ 都可解，则 $G$ 可解。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+阿贝尔群的交换子群平凡，因此可解。若 $H\le G$，则 $H^{(i)}\subseteq G^{(i)}$ 对所有 $i$ 成立，所以 $G$ 可解推出 $H$ 可解。对商群，设 \pi:G\twoheadrightarrow G/N\ 为自然投影，则 \pi(G^{(i)})=(G/N)^{(i)}，所以 $G$ 可解推出 $G/N$ 可解。
+
+若 $N^{(r)}=1$ 且 $(G/N)^{(s)}=1$，则由投影映射可知 $G^{(s)}\subseteq N$，因而
+\[
+G^{(s+r)}=(G^{(s)})^{(r)}\subseteq N^{(r)}=1。
+\]
+故 $G$ 可解。
+\end{proof}
+
+\begin{example}
+二面体群 $D_{2n}$ 可解，因为它有正规循环子群 $C_n$，而商群同构于 $C_2$。另一方面，
+\[
+1\lhd V_4\lhd A_4\lhd S_4
+\]
+给出 $S_4$ 的一个商列，其各商群依次为 $C_2,C_3,C_2$，所以 $S_4$ 也是可解群。
+\end{example}
+
+\subsection*{$S_n$ 在 $n\ge5$ 时不可解}
+
+\begin{proposition}
+对一切 $n\ge2$，有
+\[
+[S_n,S_n]=A_n。
+\]
+\end{proposition}
+
+\begin{proof}
+符号同态 \operatorname{sgn}:S_n\to\{\pm1\}\ 的核是 $A_n$，所以交换子群包含于 $A_n$。另一方面，$A_n$ 由 3-循环生成，而
+\[
+(1\,2\,3)=(1\,2)(2\,3)(1\,2)(2\,3)^{-1}
+\]
+是一个交换子，因此所有 3-循环都属于 $[S_n,S_n]$，从而 $A_n\subseteq[S_n,S_n]$。故等号成立。
+\end{proof}
+
+\begin{theorem}
+当 $n\ge5$ 时，$S_n$ 不是可解群。
+\end{theorem}
+
+\begin{proof}
+已知 $A_n$ 在 $n\ge5$ 时是非阿贝尔单群。由上命题，$S_n'=A_n$。又因为 $A_n$ 非阿贝尔且单，故其交换子群 $A_n'$ 是一个非平凡正规子群，只能等于 $A_n$ 本身。于是从第二步开始，$S_n$ 的导出列恒等于 $A_n$，不可能下降到平凡群。因此 $S_n$ 不可解。
+\end{proof}
+
+\begin{remark}
+这解释了为什么三次与四次一般方程存在统一的根式公式，而五次一般方程不存在：本质区别就在于 $S_3,S_4$ 可解，而 $S_n$ 在 $n\ge5$ 时不可解。
+\end{remark}
+
+\subsection*{根式可解性}
+
+\begin{definition}
+设 $K$ 的特征为 $0$。若存在域塔
+\[
+K=K_0\subseteq K_1\subseteq\cdots\subseteq K_r
+\]
+使得对每个 $i$，都有某个元素 \alpha_i\in K_i\ 与正整数 $m_i$ 满足
+\[
+K_i=K_{i-1}(\alpha_i)，
+\qquad
+\alpha_i^{m_i}\in K_{i-1}，
+\]
+则称 $K_r/K$ 为根式扩张。若多项式 $f\in K[x]$ 的全部根包含于某个根式扩张中，则称 $f$ 在 $K$ 上可由根式求解。
+\end{definition}
+
+\begin{proposition}
+若 $K$ 含有原始 $m$ 次单位根 $\zeta_m$，并且 $L$ 是多项式 $x^m-a$ 在 $K$ 上的分裂域，则 $\Gal(L/K)$ 为阿贝尔群。
+\end{proposition}
+
+\begin{proof}
+取根 $\alpha$ 使 $\alpha^m=a$。由于 $K$ 已含有全部 $m$ 次单位根，$x^m-a$ 的全部根为
+\[
+\alpha,\zeta_m\alpha,\dots,\zeta_m^{m-1}\alpha，
+\]
+故分裂域就是 $L=K(\alpha)$。任一 $\sigma\in\Gal(L/K)$ 满足
+\[
+(\sigma(\alpha))^m=\sigma(a)=a，
+\]
+因此 $\sigma(\alpha)=\zeta_m^j\alpha$ 对某个 $j$ 成立。于是映射
+\[
+\Gal(L/K)\to\mu_m，
+\qquad
+\sigma\mapsto\frac{\sigma(\alpha)}{\alpha}
+\]
+是单射，故 $\Gal(L/K)$ 同构于循环群 $\mu_m$ 的某个子群，特别是阿贝尔群。
+\end{proof}
+
+\begin{theorem}
+若特征为 $0$ 的域 $K$ 上多项式 $f$ 可由根式求解，则其分裂域的 Galois 群是可解群。
+\end{theorem}
+
+\begin{proof}
+设 $f$ 的全部根落在某个根式扩张塔的顶层域中。把每一步所需的单位根也一并加入塔中；这些分圆扩张的 Galois 群是阿贝尔群，因此是可解的。于是可以假设每一步 $K_i/K_{i-1}$ 都由加入一个满足 \alpha_i^{m_i}\in K_{i-1}\ 的根式元素得到，并且底域已经含有原始 $m_i$ 次单位根。
+
+对每一步，上一命题说明相应的 Galois 闭包相对于前一步的商群是阿贝尔的。于是逐层应用“可解正规子群与可解商群推出整体可解”的判据，可得最上层 Galois 闭包对 $K$ 的 Galois 群可解。分裂域对应于这个 Galois 群的一个商群，因此也可解。
+\end{proof}
+
+\begin{theorem}[Abel--Ruffini 定理]
+当次数 $n\ge5$ 时，一般 $n$ 次多项式不能由根式统一求解。
+\end{theorem}
+
+\begin{proof}[证明思路]
+把一般 $n$ 次多项式看作
+\[
+X^n+t_1X^{n-1}+\cdots+t_n
+\]
+在有理函数域 $\Q(t_1,\dots,t_n)$ 上的多项式。它的 Galois 群是 $S_n$。若 $n\ge5$，则前定理表明 $S_n$ 不可解，所以一般方程不可能由根式统一求解。
+\end{proof}
+
+\begin{remark}
+Abel--Ruffini 定理说的是“一般方程”不可解，而不是每个五次方程都不可解。某些特殊五次方程的 Galois 群仍可能是可解群，从而依然可以由根式求解。
+\end{remark}
+
+\section{分圆域与分圆多项式}
+
+分圆域是最重要的一类显式 Galois 扩张。它们一方面提供了大量可计算的例子，另一方面又是阿贝尔扩张理论的模型。
+
+\subsection*{分圆多项式的定义}
+
+\begin{definition}
+设 $n\ge1$。定义第 $n$ 个分圆多项式为
+\[
+\Phi_n(x)=\prod_{1\le a\le n,\,(a,n)=1}(x-\zeta_n^a)，
+\]
+其中 $\zeta_n$ 为任意一个原始 $n$ 次单位根。
+\end{definition}
+
+\begin{proposition}
+对任意 $n\ge1$，有
+\[
+x^n-1=\prod_{d\mid n}\Phi_d(x)。
+\]
+\end{proposition}
+
+\begin{proof}
+$ x^n-1 $ 的根恰好是所有 $n$ 次单位根。每个 $n$ 次单位根的阶是某个除数 $d\mid n$，并且它恰是某个原始 $d$ 次单位根。不同的 $d$ 给出互不相交的根集合，而这些集合的并恰好是 $x^n-1$ 的全部根。由于各因子都是首一多项式，所以它们的乘积就是 $x^n-1$。
+\end{proof}
+
+\begin{corollary}
+有 Möbius 反演公式
+\[
+\Phi_n(x)=\prod_{d\mid n}(x^d-1)^{\mu(n/d)}。
+\]
+\end{corollary}
+
+\begin{proof}
+由上一命题在除数格上施行 Möbius 反演即可。
+\end{proof}
+
+\begin{example}
+前几个分圆多项式为
+\[
+\Phi_1(x)=x-1,
+\quad
+\Phi_2(x)=x+1,
+\quad
+\Phi_3(x)=x^2+x+1,
+\quad
+\Phi_4(x)=x^2+1；
+\]
+\[
+\Phi_5(x)=x^4+x^3+x^2+x+1,
+\quad
+\Phi_6(x)=x^2-x+1,
+\quad
+\Phi_8(x)=x^4+1。
+\]
+\end{example}
+
+\subsection*{不可约性}
+
+\begin{theorem}
+对任意正整数 $n$，分圆多项式 $\Phi_n(x)$ 在 $\Q$ 上不可约。
+\end{theorem}
+
+\begin{proof}
+设 $f(x)\in\Z[x]$ 是 $\Phi_n(x)$ 的一个首一不可约因子，取其根 $\alpha$。因为 $\alpha$ 是原始 $n$ 次单位根，我们只需证明：若素数 $p$ 不整除 $n$，则 $\alpha^p$ 也是 $f$ 的根。如此便可推出与 $n$ 互素的所有指数幂 $\alpha^a$ 都是 $f$ 的根，从而 $f$ 包含全部原始 $n$ 次单位根，只能等于 $\Phi_n(x)$。
+
+反设存在素数 $p$ 满足 $p\nmid n$ 且 $\alpha^p$ 不是 $f$ 的根。取 $\Phi_n(x)$ 的另一个首一不可约因子 $g(x)$ 使得 $g(\alpha^p)=0$。于是 $\alpha$ 是 $g(x^p)$ 的根，所以 $f(x)\mid g(x^p)$。由 Gauss 引理，此整除关系可视为在 $\Z[x]$ 中成立。
+
+模 $p$ 约化后，记约化用横线表示，则
+\[
+\bar f(x)\mid\overline{g(x^p)}=\bar g(x)^p。
+\]
+由于 $\bar f(x)$ 在 $\F_p[x]$ 中不可约，故必有 $\bar f(x)\mid\bar g(x)$。这意味着 $\bar f$ 与 $\bar g$ 在某个代数闭包中有公共根，于是 $\overline{\Phi_n(x)}$ 有重根。
+
+另一方面，当 $p\nmid n$ 时，$x^n-1$ 在 $\F_p[x]$ 中的导数为 $nx^{n-1}$，与 $x^n-1$ 互素，所以 $x^n-1$ 没有重根。既然 $\overline{\Phi_n(x)}$ 整除 $x^n-1$，它也不可能有重根，矛盾。
+
+故 $\alpha^p$ 必为 $f$ 的根。由素因子分解可知，对每个与 $n$ 互素的整数 $a$，$\alpha^a$ 都是 $f$ 的根。于是 $f$ 的根正是全部原始 $n$ 次单位根，所以 $f=\Phi_n$，定理得证。
+\end{proof}
+
+\begin{corollary}
+\[
+[\Q(\zeta_n):\Q]=\varphi(n)。
+\]
+\end{corollary}
+
+\begin{proof}
+扩张 $\Q(\zeta_n)/\Q$ 的次数等于 $\zeta_n$ 在 $\Q$ 上最小多项式的次数，而该最小多项式正是 $\Phi_n(x)$，其次数为 $\varphi(n)$。
+\end{proof}
+
+\begin{theorem}
+对任意正整数 $n$，有自然同构
+\[
+\Gal(\Q(\zeta_n)/\Q)\cong(\Z/n\Z)^\times。
+\]
+\end{theorem}
+
+\begin{proof}
+在 12.1 中已构造出单射
+\[
+(\Z/n\Z)^\times\hookrightarrow\Gal(\Q(\zeta_n)/\Q)。
+\]
+左侧群的阶为 $\varphi(n)$，右侧群作为 Galois 群的阶为
+\[
+|\Gal(\Q(\zeta_n)/\Q)|=[\Q(\zeta_n):\Q]=\varphi(n)。
+\]
+故此单射必为双射，从而得到同构。
+\end{proof}
+
+\begin{example}
+$\Gal(\Q(\zeta_5)/\Q)$ 是四阶循环群；$\Gal(\Q(\zeta_8)/\Q)$ 与 $\Gal(\Q(\zeta_{12})/\Q)$ 都同构于 Klein 四元群。
+\end{example}
+
+\subsection*{应用}
+
+\begin{proposition}
+若 $p$ 为奇素数，则 $\Gal(\Q(\zeta_p)/\Q)$ 是阶为 $p-1$ 的循环群。因此对每个除数 $d\mid(p-1)$，存在唯一的中间域 $E$ 使得 $[E:\Q]=d$。
+\end{proposition}
+
+\begin{proof}
+因为 $(\Z/p\Z)^\times\cong\F_p^\times$，而有限域乘法群是循环群，所以分圆域的 Galois 群为循环群。循环群对每个除数恰有一个相应阶的子群，故由 Galois 对应得到唯一的中间域。
+\end{proof}
+
+\begin{proposition}[正多边形可作的必要条件]
+若正 $n$ 边形可由直尺与圆规作出，则 $\varphi(n)$ 必为 $2$ 的幂。
+\end{proposition}
+
+\begin{proof}
+正 $n$ 边形可作，当且仅当实数 $\cos(2\pi/n)$ 可由反复二次扩张从 $\Q$ 得到。又
+\[
+\Q(\cos(2\pi/n))=\Q(\zeta_n+\zeta_n^{-1})
+\]
+是分圆域的最大实子域，其次数为 \varphi(n)/2（当 $n>2$ 时）。若它可由反复二次扩张得到，则该次数只能是 $2$ 的幂，所以 $\varphi(n)$ 也必须是 $2$ 的幂。
+\end{proof}
+
+\begin{remark}
+更精确的 Gauss--Wantzel 定理说明：正 $n$ 边形可作，当且仅当 $n$ 是 $2$ 的幂与若干互异 Fermat 素数的乘积。这一结论本质上来自分圆域 Galois 群的结构。
+\end{remark}
+
+\begin{remark}
+Kronecker--Weber 定理断言：$\Q$ 的每个有限阿贝尔扩张都包含在某个分圆域中。它说明分圆域并非若干孤立的例子，而是阿贝尔扩张理论的总模型。
+\end{remark}
+
+\section{Galois 表示与模形式（概览）}
+
+这一节不再追求完整证明，而是给出通向现代数论的路线图。前面研究的是有限 Galois 群；更深刻的对象是绝对 Galois 群及其线性表示。
+
+\subsection*{绝对 Galois 群}
+
+\begin{definition}
+设 $K$ 是域，\bar K\ 是其代数闭包。群
+\[
+G_K=\Gal(\bar K/K)
+\]
+称为 $K$ 的绝对 Galois 群。特别地，
+\[
+G_{\Q}=\Gal(\bar{\Q}/\Q)
+\]
+称为有理数域的绝对 Galois 群。
+\end{definition}
+
+\begin{remark}
+绝对 Galois 群通常是无限的，并且是一个 profinite 群：
+\[
+G_K\cong\varprojlim_{L/K\text{ 有限 Galois}}\Gal(L/K)。
+\]
+因此，对绝对 Galois 群的研究就是对所有有限 Galois 扩张的整体研究。
+\end{remark}
+
+\subsection*{$\ell$-进表示}
+
+\begin{definition}
+设 $\ell$ 为素数。一个二维 $\ell$-进 Galois 表示是一个连续同态
+\[
+\rho:G_{\Q}\to\GL_2(\Q_{\ell})
+\]
+或更一般地
+\[
+\rho:G_{\Q}\to\GL_2(E)，
+\]
+其中 $E/\Q_{\ell}$ 为有限扩张。
+\end{definition}
+
+\begin{example}
+若 $E/\Q$ 是椭圆曲线，则其 $\ell$-进 Tate 模
+\[
+T_{\ell}(E)=\varprojlim_n E[\ell^n]
+\]
+是秩为 $2$ 的 $\Z_{\ell}$-模。绝对 Galois 群作用在各层挠点上，取逆极限得到表示
+\[
+\rho_{E,\ell}:G_{\Q}\to\Aut_{\Z_{\ell}}(T_{\ell}(E))\cong\GL_2(\Z_{\ell})。
+\]
+\end{example}
+
+\begin{definition}
+设 $\rho:G_{\Q}\to\GL_2(E)$，并设 $p\neq\ell$ 为素数。若 $p$ 处的惯性群在该表示下作用平凡，则称 $\rho$ 在 $p$ 处不分歧。此时可以定义 Frobenius 共轭类 $\Frob_p$，并讨论其迹与行列式
+\[
+\mathrm{tr}(\rho(\Frob_p))，
+\qquad
+\det(\rho(\Frob_p))。
+\]
+\end{definition}
+
+\begin{theorem}[Deligne，陈述]
+设
+\[
+f(q)=\sum_{n\ge1}a_nq^n
+\]
+是权 $k\ge1$、水平 $N$、特征 $\varepsilon$ 的归一化 Hecke 特征模形式。则对每个素数 $\ell$，存在连续半单表示
+\[
+\rho_{f,\ell}:G_{\Q}\to\GL_2(\bar{\Q}_{\ell})
+\]
+使得对每个 $p\nmid N\ell$，有
+\[
+\mathrm{tr}(\rho_{f,\ell}(\Frob_p))=a_p，
+\qquad
+\det(\rho_{f,\ell}(\Frob_p))=\varepsilon(p)p^{k-1}。
+\]
+\end{theorem}
+
+\begin{remark}
+这条定理把模形式的 Fourier 系数解释为绝对 Galois 群在 Frobenius 元上的迹。它是模形式与算术之间最核心的桥梁之一。
+\end{remark}
+
+\begin{theorem}[Serre 模性猜想，现为定理]
+每个连续、奇的、不可约的二维模 $\ell$ 表示
+\[
+\bar\rho:G_{\Q}\to\GL_2(\bar{\F}_{\ell})
+\]
+都来自某个模形式。
+\end{theorem}
+
+\begin{remark}
+这里“奇”是指复共轭元在表示下的行列式为 $-1$。该定理由 Khare--Wintenberger 等人完成证明，是现代数论的里程碑。
+\end{remark}
+
+\subsection*{Fermat 大定理的图景}
+
+\begin{theorem}[模性定理，陈述]
+定义在 $\Q$ 上的每条椭圆曲线都是模的。等价地，每条椭圆曲线都对应一个权 $2$ 的模形式，并且二者诱导的 Galois 表示相匹配。
+\end{theorem}
+
+\begin{proof}[与 Fermat 大定理的关系]
+若 Fermat 方程
+\[
+a^p+b^p=c^p,
+\qquad
+p\ge3
+\]
+有非平凡整数解，则可构造 Frey 曲线
+\[
+E_{a,b,p}:y^2=x(x-a^p)(x+b^p)。
+\]
+Ribet 定理表明：由这样的解得到的 Frey 曲线会给出一个“不可能模”的模 $p$ Galois 表示；而 Wiles 及其后继者证明半稳定椭圆曲线都是模的，所以该表示又必须来自模形式。矛盾由此产生，因此 Fermat 方程没有非平凡整数解。
+\end{proof}
+
+\begin{remark}
+从本章视角看，Fermat 大定理的证明链条是
+\[
+\text{整数方程}\to\text{椭圆曲线}\to\text{Galois 表示}\to\text{模形式}。
+\]
+Galois 理论在其中充当了连接算术、几何与分析的共同语言。
+\end{remark}
+
+\section*{习题}
+
+本章共有 \60\ 道习题，分为基础、进阶、挑战三级。
+
+\subsection*{基础题}
+
+\begin{enumerate}[label=\textbf{习题12.\arabic*.}, leftmargin=*, itemsep=0.75em]
+\item \basic 设 $d\in\Z$ 为无平方因子整数且 $d\neq1$。证明 $\Gal(\Q(\sqrt d)/\Q)\cong\Z/2\Z$，并写出非平凡自同构。
+\item \basic 计算 $\Gal(\Q(i)/\Q)$，并说明它与复共轭的关系。
+\item \basic 设 $d_1,d_2$ 为互异无平方因子整数。求 $\Gal(\Q(\sqrt{d_1},\sqrt{d_2})/\Q)$。
+\item \basic 求 $\Q(\sqrt2,\sqrt5)$ 的全部中间域。
+\item \basic 对 $L=\Q(\sqrt2,\sqrt3)$ 画出中间域格与子群格。
+\item \basic 求 \alpha=\sqrt2+\sqrt3\ 在 $\Q$ 上的最小多项式，并确定其分裂域。
+\item \basic 证明 $x^3-2$ 在 $\Q$ 上不可约，并求其分裂域与 Galois 群。
+\item \basic 把上一题中的 $2$ 换成 $3$，重新计算分裂域与 Galois 群。
+\item \basic 求 $x^3-1$ 的分裂域与 Galois 群。
+\item \basic 计算 $\Gal(\F_9/\F_3)$，并写出其生成元。
+\item \basic 计算 $\Gal(\F_{16}/\F_2)$，并说明它为何是循环群。
+\item \basic 设 $n\mid m$。求 $\Gal(\F_{p^m}/\F_{p^n})$。
+\item \basic 求 $\Gal(\Q(\zeta_3)/\Q)$。
+\item \basic 求 $\Gal(\Q(\zeta_4)/\Q)$ 与 $\Gal(\Q(\zeta_6)/\Q)$。
+\item \basic 计算 $\Gal(\Q(\zeta_5)/\Q)$，并找出一个生成元。
+\item \basic 计算 $\Gal(\Q(\zeta_8)/\Q)$，并证明它不是循环群。
+\item \basic 求 $\Q(\zeta_8)$ 的全部二次子域。
+\item \basic 求 \Phi_8(x), \Phi_{10}(x), \Phi_{12}(x)$。
+\item \basic 对 $L=\Q(\sqrt2,\sqrt3)$，求 $\langle \sigma \rangle$、$\langle \tau \rangle$、$\langle \sigma\tau \rangle$ 的固定域。
+\item \basic 设 $L=\F_{p^2}$。证明 $L^{\langle \Frob_p \rangle}=\F_p$。
+\item \basic 证明任意 \sigma\in\Gal(\Q(\zeta_n)/\Q)$ 都把原始 $n$ 次单位根送到另一个原始 $n$ 次单位根。
+\item \basic 对 $L=\Q(\zeta_5)$，描述 \sigma_2, \sigma_3, \sigma_4\ 的作用。
+\item \basic 求 $x^4-2$ 的分裂域，并说明其 Galois 群的阶。
+\item \basic 对 $L=\Q(i,\sqrt2)$，求 $\Gal(L/\Q)$ 并判断它是否循环。
+\item \basic 证明 $\Q(\zeta_n)=\Q(\zeta_n^{-1})$，并指出复共轭对应于 $(\Z/n\Z)^\times$ 中哪个元素。
+\end{enumerate}
+
+\subsection*{进阶题}
+
+\begin{enumerate}[resume, label=\textbf{习题12.\arabic*.}, leftmargin=*, itemsep=0.75em]
+\item \medium 设 $L/K$ 为有限 Galois 扩张，$E$ 为中间域。证明 $[E:K]=[\Gal(L/K):\Gal(L/E)]$。
+\item \medium 设 $L/K$ 为有限 Galois 扩张。证明 $E_1\subseteq E_2$ 当且仅当 $\Gal(L/E_2)\subseteq\Gal(L/E_1)$。
+\item \medium 若 $\Gal(L/K)\cong C_p$，其中 $p$ 为素数，证明 $L/K$ 没有非平凡真中间域。
+\item \medium 若 $\Gal(L/K)\cong C_{p^2}$，证明 $L/K$ 恰有一个次数为 $p$ 的中间域。
+\item \medium 证明：中间域 $E/K$ 为 Galois 扩张当且仅当 $\Gal(L/E)\lhd\Gal(L/K)$。
+\item \medium 求 $\Q(\zeta_{12})/\Q$ 的全部中间域，并写出对应子群。
+\item \medium 利用分圆分解公式证明 \sum_{d\mid n}\varphi(d)=n。
+\item \medium 证明对奇素数 $p$，有 \Phi_{2p}(x)=\Phi_p(-x)。
+\item \medium 证明 \Phi_{p^r}(x+1)$ 满足 Eisenstein 判别法，从而给出另一个不可约性证明。
+\item \medium 证明 $x^{p^n}-x$ 等于所有次数整除 $n$ 的首一不可约多项式之积。
+\item \medium 设 $n\mid m$。证明 $\Gal(\F_{p^m}/\F_{p^n})$ 由 $x\mapsto x^{p^n}$ 生成。
+\item \medium 对 $p=7,11$，分别找出 $\Gal(\Q(\zeta_p)/\Q)$ 的一个生成元。
+\item \medium 证明 $\Q(\zeta_p+\zeta_p^{-1})$ 是 $\Q(\zeta_p)$ 的最大实子域，且次数为 $(p-1)/2$。
+\item \medium 利用 Galois 对应，分类 $\Q(\zeta_7)$ 的全部中间域。
+\item \medium 设 $f(x)=x^3+ax+b$ 在 $\Q$ 上不可约，判别式为 $\Delta=-4a^3-27b^2$。证明其 Galois 群同构于 $A_3$ 当且仅当 $\Delta$ 是平方数。
+\item \medium 把上一题应用到 $x^3-3x-1$ 与 $x^3-2$。
+\item \medium 证明一切有限 $p$-群都是可解群。
+\item \medium 证明二面体群 $D_{2n}$ 对任意 $n$ 都可解。
+\item \medium 证明 $A_4$ 可解但不是阿贝尔群。
+\item \medium 写出 $S_4$ 的一个阿贝尔商列，并据此解释一般四次方程为何可能由根式求解。
+\item \medium 对 $L=\Q(\sqrt[3]{2},\omega)$，求所有中间域，并指出哪些是 $\Q$ 上的 Galois 扩张。
+\item \medium 证明：若 $K$ 含有原始 $m$ 次单位根，则 $x^m-a$ 的分裂域 Galois 群是阿贝尔群。
+\item \medium 证明 $\Gal(\Q(\zeta_9)/\Q)\cong C_6$，并分类其全部中间域。
+\item \medium 计算 $\Gal(\Q(\zeta_{15})/\Q)$，并将其分解为两个循环群的直积。
+\item \medium 解释正 $17$ 边形可作与 $\Gal(\Q(\zeta_{17})/\Q)$ 结构之间的关系。
+\end{enumerate}
+
+\subsection*{挑战题}
+
+\begin{enumerate}[resume, label=\textbf{习题12.\arabic*.}, leftmargin=*, itemsep=0.75em]
+\item \hard 证明 $x^5-2$ 在 $\Q$ 上的分裂域 Galois 群同构于 $C_5\rtimes C_4$，其阶为 $20$。
+\item \hard 对上一题的分裂域，尽可能详细写出中间域与子群对应，至少给出所有指数为 $2,4,5$ 的子群所对应的固定域。
+\item \hard 叙述逆 Galois 问题，并说明为什么分圆域为有限阿贝尔群的实现提供了重要线索。
+\item \hard 设 $\rho:G_{\Q}\to\GL_2(E)$ 在 $p\neq\ell$ 处不分歧。证明若 $\Frob_p$ 与 $\Frob_p'$ 共轭，则它们在 $\rho$ 下的迹与行列式相同。
+\item \hard 对有限 Galois 扩张与其一个复表示，写出 Artin $L$-函数的 Euler 乘积定义，并验证平凡表示时退化为 Dedekind \zeta\-函数的局部因子。
+\item \hard 设 $E/\Q$ 是椭圆曲线，$a_p=p+1-#E(\F_p)$。说明为什么 $X^2-a_pX+p$ 可以看作某个二维 Galois 表示在 $\Frob_p$ 上的特征多项式。
+\item \hard 详细说明 Wiles 证明 Fermat 大定理中的三步：Frey 曲线、Ribet 定理、模性定理，并指出每一步涉及的 Galois 表示。
+\item \hard 设 $f$ 是 $\Q$ 上不可约五次多项式。证明若其 Galois 群作为 $S_5$ 的传递子群是可解的，则它嵌入 $C_5\rtimes C_4$。
+\item \hard 设 $L/K$ 是 Galois 扩张且 $\Gal(L/K)\cong S_5$。证明不存在一个从 $1$ 到 $S_5$ 的正规列使所有商群都循环，并解释其与一般五次方程不可解性的关系。
+\item \hard 设 \bar\rho:G_{\Q}\to\GL_2(\bar{\F}_{\ell})\ 是连续不可约表示。解释什么叫奇表示，并说明来自椭圆曲线的模 $\ell$ 表示为什么是奇的。
+\end{enumerate}
+

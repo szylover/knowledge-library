@@ -1,0 +1,1155 @@
+\chapter{环与理想}
+
+环论是现代代数的核心语言之一。一个环同时带有加法与乘法两种运算：加法使其成为交换群，乘法则编码了“可组合的代数过程”。理想把“整除”“同余”“商结构”等概念统一到一个框架中，而素理想、极大理想、主理想整环、唯一分解整环以及中国剩余定理，则是进一步理解代数结构与算术结构的基础工具。本章的目标是从定义出发，系统建立环与理想的基本理论，并在最后用 Hecke 代数说明这些抽象概念在模形式论中的自然出现。
+
+\section{环的定义与例子}
+
+\begin{definition}
+一个\emph{环} $R$ 是一个集合，配备两种二元运算
+\[
+(a,b)\longmapsto a+b,\qquad (a,b)\longmapsto ab,
+\]
+满足下列公理：
+\begin{enumerate}[label=\textnormal{(R\arabic*)}]
+  \item $(R,+)$ 是交换群；其零元记为 $0$，元素 $a$ 的加法逆元记为 $-a$；
+  \item 乘法满足结合律：对任意 $a,b,c\in R$，有 $(ab)c=a(bc)$；
+  \item 分配律成立：对任意 $a,b,c\in R$，有
+  \[
+  a(b+c)=ab+ac,\qquad (a+b)c=ac+bc;
+  \]
+  \item 存在乘法单位元 $1\in R$，使得对任意 $a\in R$ 都有
+  \[
+  1a=a1=a.
+  \]
+\end{enumerate}
+若对任意 $a,b\in R$ 还有 $ab=ba$，则称 $R$ 为\emph{交换环}。
+\end{definition}
+
+除非特别说明，本章中的环都默认带有单位元 $1$，且 $1\neq 0$；这意味着零环不在我们的主要讨论范围之内。
+
+\begin{proposition}
+设 $R$ 是一个环，$a,b\in R$。则有：
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item $0a=a0=0$；
+  \item $(-a)b=-(ab)$，$a(-b)=-(ab)$；
+  \item $(-a)(-b)=ab$；
+  \item 乘法单位元若存在，则唯一。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(1) 由 $0+0=0$，得
+\[
+0a=(0+0)a=0a+0a.
+\]
+在等式两边同时加上 $-(0a)$，得到 $0a=0$。同理 $a0=0$。
+
+(2) 因为 $(a+(-a))b=0b=0$，所以 $ab+(-a)b=0$，这说明 $(-a)b$ 是 $ab$ 的加法逆元，即 $(-a)b=-(ab)$。同理 $a(-b)=-(ab)$。
+
+(3) 由 (2)，
+\[
+(-a)(-b)=-\bigl(a(-b)\bigr)=-\bigl(-(ab)\bigr)=ab.
+\]
+
+(4) 设 $e,e'$ 都是乘法单位元，则
+\[
+e=ee'=e'.
+\]
+故单位元唯一。
+\end{proof}
+
+\begin{definition}
+设 $R,S$ 为环。映射 $\varphi:R\to S$ 称为\emph{环同态}，如果对任意 $a,b\in R$ 都有
+\[
+\varphi(a+b)=\varphi(a)+\varphi(b),\qquad \varphi(ab)=\varphi(a)\varphi(b),\qquad \varphi(1)=1.
+\]
+若 $\varphi$ 双射，则称为\emph{环同构}。
+\end{definition}
+
+\begin{remark}
+有些文献允许环同态不保单位元。对于本章中的主要结论，这一差别通常不会造成困难，但为了表述统一，我们默认环同态保单位元。
+\end{remark}
+
+\begin{example}
+整数环 $\Z$ 是交换环。其加法与乘法都是通常意义下的整数加法与乘法，单位元为 $1$。
+\end{example}
+
+\begin{example}
+对正整数 $n$，模 $n$ 的剩余类集合
+\[
+\Z/n\Z=\{\overline{0},\overline{1},\dots,\overline{n-1}\}
+\]
+在按模 $n$ 定义的加法与乘法下构成交换环。这里
+\[
+\overline{a}+\overline{b}=\overline{a+b},\qquad \overline{a}\,\overline{b}=\overline{ab}.
+\]
+运算良定性来自同余与加法、乘法的相容性。
+\end{example}
+
+\begin{example}
+设 $\F$ 是一个域，则一元多项式环
+\[
+\F[x]=\left\{a_0+a_1x+\cdots+a_nx^n\mid n\ge 0,\ a_i\in\F\right\}
+\]
+在通常的多项式加法与乘法下构成交换环，单位元是常数多项式 $1$。
+\end{example}
+
+\begin{example}
+设 $\F$ 为域，$n\ge 1$。全体 $n\times n$ 矩阵组成的集合 $\Mat_n(\F)$ 在矩阵加法与矩阵乘法下构成环，单位元是单位矩阵 $I_n$。当 $n\ge 2$ 时它一般不是交换环，因为通常 $AB\neq BA$。
+\end{example}
+
+\begin{example}
+高斯整数环
+\[
+\Z[i]=\{a+bi\mid a,b\in\Z\}\subset \C
+\]
+在复数加法与乘法下构成交换环。它是研究平方和、二次互反律以及唯一分解现象的基本例子。
+\end{example}
+
+\begin{example}
+环
+\[
+\Z[\sqrt{-5}]=\{a+b\sqrt{-5}\mid a,b\in\Z\}\subset \C
+\]
+也是交换环。它是数论中极其重要的反例：这个环不是唯一分解整环。我们将在 \S9.4 中详细证明这一点。
+\end{example}
+
+\begin{example}
+设 $\F$ 是一个域，$m\ge 1$，则多元多项式环
+\[
+\F[x_1,\dots,x_m]
+\]
+由有限和
+\[
+\sum_{\alpha=(\alpha_1,\dots,\alpha_m)} c_{\alpha}x_1^{\alpha_1}\cdots x_m^{\alpha_m}
+\qquad (c_{\alpha}\in \F)
+\]
+组成，其中只有有限多个系数 $c_{\alpha}$ 非零。它在逐项相加与通常乘法下构成交换环。
+\end{example}
+
+\begin{proposition}
+设 $R$ 为交换环，则 $R[x_1,\dots,x_m]$ 也是交换环；若 $R$ 非交换，则一般 $R[x]$ 仍然是环，但通常只考虑变量与系数可交换的情形。
+\end{proposition}
+
+\begin{proof}
+加法定义为同类项系数相加，因此 $(R[x_1,\dots,x_m],+)$ 是交换群。乘法由单项式相乘再线性延拓给出。由于系数环 $R$ 的乘法结合，且指数满足
+\[
+x_1^{\alpha_1}\cdots x_m^{\alpha_m}\cdot x_1^{\beta_1}\cdots x_m^{\beta_m}
+=x_1^{\alpha_1+\beta_1}\cdots x_m^{\alpha_m+\beta_m},
+\]
+故乘法结合。分配律直接由展开式得到。常数多项式 $1$ 是乘法单位元。若 $R$ 交换，则两个单项式相乘时既可交换系数，也可交换变量次序，于是整个多项式环交换。
+\end{proof}
+
+\begin{definition}
+设 $R$ 是环，$S\subset R$。若 $S$ 对加法、乘法与取负封闭，并且 $1\in S$，则称 $S$ 为 $R$ 的\emph{子环}。
+\end{definition}
+
+\begin{example}
+$\Z\subset \Q\subset \R\subset \C$ 都是子环；$\Z[i]\subset \C$ 与 $\Z[\sqrt{-5}]\subset \C$ 也是子环；而 $2\Z$ 不是 $\Z$ 的子环，因为它不含单位元 $1$。
+\end{example}
+
+\section{理想与商环}
+
+\begin{definition}
+设 $R$ 是环，$I\subset R$ 是一个加法子群。
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item 若对任意 $r\in R$ 与 $x\in I$ 都有 $rx\in I$，则称 $I$ 为\emph{左理想}；
+  \item 若对任意 $r\in R$ 与 $x\in I$ 都有 $xr\in I$，则称 $I$ 为\emph{右理想}；
+  \item 若 $I$ 同时是左理想与右理想，则称 $I$ 为\emph{双边理想}，简称\emph{理想}。
+\end{enumerate}
+若 $R$ 是交换环，则左、右、双边三种概念一致。
+\end{definition}
+
+\begin{example}
+在交换环 $\Z$ 中，任意整数 $n$ 给出的集合
+\[
+(n)=n\Z=\{nk\mid k\in \Z\}
+\]
+是理想。事实上，$\Z$ 的每个理想都形如 $n\Z$；我们稍后会证明这一点。
+\end{example}
+
+\begin{example}
+在非交换环 $\Mat_n(\F)$ 中，左理想与右理想一般不同。例如固定第一列为零的矩阵集合对左乘封闭但不一定对右乘封闭，因此它是一个左理想而不一定是右理想，更不一定是双边理想。这个例子提醒我们：在非交换情形中构造商环时必须使用双边理想。
+\end{example}
+
+\begin{definition}
+设 $R$ 是交换环，$a\in R$。由 $a$ 生成的理想
+\[
+(a)=aR=\{ar\mid r\in R\}
+\]
+称为\emph{主理想}。更一般地，若 $a_1,\dots,a_n\in R$，则
+\[
+(a_1,\dots,a_n)=a_1R+\cdots+a_nR
+\]
+表示由它们生成的理想。
+\end{definition}
+
+\begin{proposition}
+设 $\varphi:R\to S$ 是环同态。
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item $\Ker\varphi=\{r\in R\mid \varphi(r)=0\}$ 是 $R$ 的理想；
+  \item 若 $J$ 是 $S$ 的理想，则原像
+  \[
+  \varphi^{-1}(J)=\{r\in R\mid \varphi(r)\in J\}
+  \]
+  是 $R$ 的理想；
+  \item 若 $\varphi$ 满射且 $I$ 是满足 $I\supset \Ker\varphi$ 的 $R$-理想，则 $\varphi(I)$ 是 $S$ 的理想；反过来，$S$ 的每个理想都唯一地写成某个这类 $I$ 的像。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(1) 若 $x,y\in\Ker\varphi$，则
+\[
+\varphi(x-y)=\varphi(x)-\varphi(y)=0,
+\]
+故 $x-y\in\Ker\varphi$，所以它是加法子群。又对任意 $r\in R$ 与 $x\in\Ker\varphi$，有
+\[
+\varphi(rx)=\varphi(r)\varphi(x)=\varphi(r)\cdot 0=0,
+\]
+同理 $\varphi(xr)=0$，故 $\Ker\varphi$ 是双边理想。
+
+(2) 若 $x,y\in\varphi^{-1}(J)$，则 $\varphi(x),\varphi(y)\in J$，于是
+\[
+\varphi(x-y)=\varphi(x)-\varphi(y)\in J,
+\]
+故 $x-y\in\varphi^{-1}(J)$。又对任意 $r\in R$，
+\[
+\varphi(rx)=\varphi(r)\varphi(x)\in J,
+\]
+因为 $J$ 是理想；同理 $xr\in\varphi^{-1}(J)$。
+
+(3) 先设 $\varphi$ 满射且 $I\supset\Ker\varphi$。任取 $s\in S$ 与 $y\in\varphi(I)$，取 $r\in R$ 使 $\varphi(r)=s$，并写 $y=\varphi(x)$，其中 $x\in I$。则
+\[
+sy=\varphi(r)\varphi(x)=\varphi(rx)\in\varphi(I),
+\]
+同理 $ys\in\varphi(I)$，故 $\varphi(I)$ 是理想。
+
+反过来，设 $J$ 是 $S$ 的理想。由 (2) 知 $\varphi^{-1}(J)$ 是 $R$ 的理想，且显然包含 $\Ker\varphi$。又因为 $\varphi$ 满射，
+\[
+\varphi\bigl(\varphi^{-1}(J)\bigr)=J.
+\]
+若另有理想 $I\supset\Ker\varphi$ 满足 $\varphi(I)=J$，则对任意 $x\in\varphi^{-1}(J)$，有 $\varphi(x)=\varphi(i)$ 对某个 $i\in I$ 成立，于是 $x-i\in\Ker\varphi\subset I$，从而 $x\in I$。故 $\varphi^{-1}(J)\subset I$。反过来 $I\subset\varphi^{-1}(J)$ 显然，因此 $I=\varphi^{-1}(J)$。唯一性得证。
+\end{proof}
+
+\begin{definition}
+设 $R$ 是环，$I$ 是双边理想。在集合
+\[
+R/I=\{a+I\mid a\in R\}
+\]
+上定义
+\[
+(a+I)+(b+I)=(a+b)+I,
+\qquad
+(a+I)(b+I)=ab+I.
+\]
+则称 $R/I$ 为 $R$ 模 $I$ 的\emph{商环}。
+\end{definition}
+
+\begin{proposition}
+上述加法与乘法都是良定的，从而 $R/I$ 成为一个环；若 $R$ 交换，则 $R/I$ 交换。
+\end{proposition}
+
+\begin{proof}
+设 $a-a'\in I$，$b-b'\in I$。由于 $I$ 是加法子群，
+\[
+(a+b)-(a'+b')=(a-a')+(b-b')\in I,
+\]
+因此 $(a+b)+I=(a'+b')+I$，加法良定。
+
+再看乘法：
+\[
+ab-a'b'=(a-a')b+a'(b-b').
+\]
+其中 $(a-a')b\in I$，$a'(b-b')\in I$，因为 $I$ 是双边理想，所以 $ab-a'b'\in I$，故乘法也良定。
+
+其余环公理由 $R$ 中对应公理逐项验证即可。商环的零元是 $0+I$，单位元是 $1+I$。若 $R$ 交换，则
+\[
+(a+I)(b+I)=ab+I=ba+I=(b+I)(a+I),
+\]
+故 $R/I$ 交换。
+\end{proof}
+
+\begin{example}
+对整数环 $\Z$ 与理想 $n\Z$，商环 $\Z/n\Z$ 就是我们熟悉的模 $n$ 剩余类环。因此模运算本质上就是商环运算。
+\end{example}
+
+\begin{example}
+设 $\F$ 为域，$f(x)\in\F[x]$ 非零，则
+\[
+\F[x]/(f(x))
+\]
+由模 $f(x)$ 的多项式剩余类组成。每个剩余类都可以唯一表示成次数小于 $\deg f$ 的多项式，这是多项式带余除法的直接结果。
+\end{example}
+
+\begin{theorem}[第一同构定理]
+设 $\varphi:R\to S$ 是环同态，则
+\[
+R/\Ker\varphi\cong \Ima\varphi.
+\]
+更具体地，映射
+\[
+\overline{\varphi}:R/\Ker\varphi\longrightarrow \Ima\varphi,
+\qquad
+r+\Ker\varphi\longmapsto \varphi(r)
+\]
+是环同构。
+\end{theorem}
+
+\begin{proof}
+首先证明 $\overline{\varphi}$ 良定。若
+\[
+r+\Ker\varphi=r'+\Ker\varphi,
+\]
+则 $r-r'\in\Ker\varphi$，故 $\varphi(r-r')=0$，于是 $\varphi(r)=\varphi(r')$，良定。
+
+其次，$\overline{\varphi}$ 保持加法与乘法：
+\[
+\overline{\varphi}\bigl((r+\Ker\varphi)+(s+\Ker\varphi)\bigr)
+=\overline{\varphi}(r+s+\Ker\varphi)=\varphi(r+s)=\varphi(r)+\varphi(s),
+\]
+乘法同理。
+
+它是满射，因为 $\Ima\varphi$ 中每个元素本来就形如 $\varphi(r)$。它也是单射：若
+\[
+\overline{\varphi}(r+\Ker\varphi)=0,
+\]
+则 $\varphi(r)=0$，即 $r\in\Ker\varphi$，于是 $r+\Ker\varphi=\Ker\varphi$。故它是双射，从而为环同构。
+\end{proof}
+
+\begin{corollary}
+设 $I$ 是环 $R$ 的理想，则理想格中“包含 $I$ 的理想”与商环 $R/I$ 的理想之间存在一一对应：
+\[
+J\longleftrightarrow J/I.
+\]
+其中 $J$ 在 $R$ 中满足 $I\subset J\subset R$。
+\end{corollary}
+
+\begin{proof}
+考虑自然满射 $\pi:R\to R/I$。由上一命题，$R/I$ 的任意理想 $K$ 的原像 $\pi^{-1}(K)$ 是包含 $I$ 的理想；反过来，若 $J\supset I$，则 $J/I$ 是 $R/I$ 的理想。两种构造互为逆映射。
+\end{proof}
+
+\begin{example}
+取评价同态
+\[
+\operatorname{ev}_a:\F[x]\to \F,
+\qquad f(x)\mapsto f(a).
+\]
+它显然是满射，且
+\[
+\Ker(\operatorname{ev}_a)=(x-a),
+\]
+因为 $f(a)=0$ 当且仅当 $x-a$ 整除 $f(x)$。由第一同构定理，
+\[
+\F[x]/(x-a)\cong \F.
+\]
+这是最基本的商环例子之一。
+\end{example}
+
+\section{素理想与极大理想}
+
+在本节中，除非特别说明，$R$ 都表示交换环。
+
+\begin{definition}
+设 $R$ 是交换环，$I\subsetneq R$ 是真理想。
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item 若对任意 $a,b\in R$，只要 $ab\in I$ 就有 $a\in I$ 或 $b\in I$，则称 $I$ 为\emph{素理想}；
+  \item 若 $I\subsetneq J\subsetneq R$ 不可能成立，即只要 $I\subset J\subset R$ 且 $J$ 是理想就必有 $J=I$ 或 $J=R$，则称 $I$ 为\emph{极大理想}。
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}
+设 $P\subsetneq R$ 是真理想，则 $P$ 是素理想当且仅当商环 $R/P$ 是整环。
+\end{theorem}
+
+\begin{proof}
+先设 $P$ 为素理想。取 $a+P,b+P\in R/P$，若
+\[
+(a+P)(b+P)=P,
+\]
+则 $ab+P=P$，即 $ab\in P$。由素理想定义，$a\in P$ 或 $b\in P$，于是 $a+P=P$ 或 $b+P=P$。这说明 $R/P$ 没有零因子，因此是整环。
+
+反之，设 $R/P$ 是整环。若 $ab\in P$，则
+\[
+(a+P)(b+P)=ab+P=P.
+\]
+由于 $R/P$ 无零因子，故 $a+P=P$ 或 $b+P=P$，即 $a\in P$ 或 $b\in P$。故 $P$ 为素理想。
+\end{proof}
+
+\begin{theorem}
+设 $M\subsetneq R$ 是真理想，则 $M$ 是极大理想当且仅当商环 $R/M$ 是域。
+\end{theorem}
+
+\begin{proof}
+先设 $M$ 是极大理想。任取 $a+M\in R/M$ 且 $a\notin M$，考虑由 $M$ 与 $a$ 生成的理想
+\[
+(M,a)=M+aR.
+\]
+因为 $a\notin M$ 且 $M$ 极大，所以 $(M,a)=R$。于是存在 $m\in M$ 与 $r\in R$ 使得
+\[
+m+ar=1.
+\]
+模去 $M$ 得
+\[
+(a+M)(r+M)=1+M.
+\]
+因此每个非零元素 $a+M$ 都可逆，故 $R/M$ 是域。
+
+反之，设 $R/M$ 是域。若 $M\subset J\subset R$，其中 $J$ 是理想，则 $J/M$ 是 $R/M$ 的理想。域只有两个理想：零理想与整个域，因此 $J/M=0$ 或 $J/M=R/M$。前者给出 $J=M$，后者给出 $J=R$。故 $M$ 极大。
+\end{proof}
+
+\begin{corollary}
+在交换环中，每个极大理想都是素理想。
+\end{corollary}
+
+\begin{proof}
+若 $M$ 极大，则 $R/M$ 是域，而每个域都是整环。由上一定理，$M$ 是素理想。
+\end{proof}
+
+\begin{example}
+在 $\Z$ 中，真理想都形如 $(n)$。其中 $(p)$ 在且仅在 $p$ 为素数时既是素理想又是极大理想，因为
+\[
+\Z/(p)\cong \Z/p\Z
+\]
+是域；若 $n$ 合成，则 $\Z/n\Z$ 有零因子，不是整环，所以 $(n)$ 不是素理想，更不是极大理想。
+\end{example}
+
+\begin{example}
+在 $\F[x]$ 中，理想 $(f)$ 是极大理想当且仅当 $f$ 在 $\F[x]$ 中不可约；这时它也是素理想。原因是 $\F[x]$ 是主理想整环，后文将证明在 PID 中非零素理想与由不可约元生成的理想密切对应。
+\end{example}
+
+\begin{theorem}[佐恩引理]
+设 $(\mathcal{P},\le)$ 是一个偏序集。若 $\mathcal{P}$ 的每一条全序子集（链）都有上界，则 $\mathcal{P}$ 中存在极大元。
+\end{theorem}
+
+\begin{remark}
+佐恩引理与选择公理、良序定理等价，是现代代数中处理“存在性而不显式构造”的基本工具。它的证明属于集合论内容，本书不再展开。
+\end{remark}
+
+\begin{theorem}
+每个非零交换环 $R$ 都至少有一个极大理想。
+\end{theorem}
+
+\begin{proof}
+考虑 $R$ 的所有真理想组成的集合
+\[
+\mathcal{S}=\{I\subsetneq R\mid I\text{ 是理想}\},
+\]
+按包含关系排序。由于 $R\neq 0$ 且 $1\neq 0$，零理想属于 $\mathcal{S}$，所以 $\mathcal{S}$ 非空。
+
+我们验证佐恩引理的条件。设 $\mathcal{C}\subset \mathcal{S}$ 是一条链，即其中任意两个理想都可比较。令
+\[
+I_\mathcal{C}=\bigcup_{I\in \mathcal{C}} I.
+\]
+因为 $\mathcal{C}$ 是链，若 $x,y\in I_\mathcal{C}$，则存在 $I,J\in\mathcal{C}$ 使 $x\in I$，$y\in J$。不妨设 $I\subset J$，则 $x,y\in J$，故 $x-y\in J\subset I_\mathcal{C}$。又对任意 $r\in R$，有 $rx\in J\subset I_\mathcal{C}$。因此 $I_\mathcal{C}$ 是理想。
+
+还要证明它是真理想。若 $1\in I_\mathcal{C}$，则 $1\in I$ 对某个 $I\in\mathcal{C}$ 成立，从而 $I=R$，与 $I\in\mathcal{S}$ 矛盾。所以 $1\notin I_\mathcal{C}$，故 $I_\mathcal{C}\in\mathcal{S}$。这说明每条链都有上界。
+
+由佐恩引理，$\mathcal{S}$ 中有极大元 $M$。按定义，这正是 $R$ 的极大理想。
+\end{proof}
+
+\begin{remark}
+这个结论在交换代数中至关重要。它说明只要环不是零环，就一定可以把它“投影”到某个域：对极大理想 $M$ 取商即可得到域 $R/M$。
+\end{remark}
+
+\section{整环、主理想整环、唯一分解整环}
+
+\begin{definition}
+交换环 $R$ 称为\emph{整环}，如果 $R\neq 0$ 且没有零因子，即
+\[
+ab=0\Longrightarrow a=0\text{ 或 }b=0.
+\]
+\end{definition}
+
+\begin{definition}
+设 $R$ 是整环。
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item 若 $u\in R$ 存在 $v\in R$ 使 $uv=vu=1$，则称 $u$ 为\emph{单位}；
+  \item 若 $a,b\in R$ 满足 $a=ub$，其中 $u$ 是单位，则称 $a,b$ \emph{关联}；
+  \item 非零非单位元 $p\in R$ 称为\emph{不可约元}，如果由 $p=ab$ 总能推出 $a$ 或 $b$ 是单位；
+  \item 非零非单位元 $p\in R$ 称为\emph{素元}，如果 $p\mid ab$ 总能推出 $p\mid a$ 或 $p\mid b$。
+\end{enumerate}
+\end{definition}
+
+\begin{remark}
+在任意整环中，素元一定不可约；反过来一般不成立。恰恰是 PID 与 UFD 这类良好整环中，不可约元与素元才一致。
+\end{remark}
+
+\begin{definition}
+设 $R$ 是整环。
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+  \item 若 $R$ 的每个理想都是主理想，则称 $R$ 为\emph{主理想整环}（PID）；
+  \item 若 $R$ 的每个非零非单位元都能分解成有限个不可约元的乘积，并且这种分解在重排与关联意义下唯一，则称 $R$ 为\emph{唯一分解整环}（UFD）；
+  \item 若存在映射
+  \[
+  \delta:R\setminus\{0\}\to \N
+  \]
+  使得对任意 $a,b\in R$ 且 $b\neq 0$，都存在 $q,r\in R$ 满足
+  \[
+  a=bq+r,
+  \qquad r=0\ \text{或}\ \delta(r)<\delta(b),
+  \]
+  则称 $R$ 为\emph{欧几里得整环}（ED）。
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}
+每个欧几里得整环都是主理想整环。
+\end{theorem}
+
+\begin{proof}
+设 $R$ 是欧几里得整环，$I\subset R$ 是非零理想。取 $0\neq d\in I$ 使 $\delta(d)$ 在 $I\setminus\{0\}$ 中最小。我们证明 $I=(d)$。
+
+首先 $(d)\subset I$ 显然，因为 $d\in I$ 且 $I$ 是理想。反过来，任取 $a\in I$。由欧几里得除法，存在 $q,r\in R$ 使
+\[
+a=dq+r,
+\qquad r=0\ \text{或}\ \delta(r)<\delta(d).
+\]
+由于 $a,dq\in I$，所以 $r=a-dq\in I$。若 $r\neq 0$，则它是 $I$ 中一个非零元且 $\delta(r)<\delta(d)$，与 $d$ 的极小性矛盾。因此 $r=0$，故 $a=dq\in(d)$。于是 $I\subset(d)$。
+
+所以 $I=(d)$，即 $R$ 是 PID。
+\end{proof}
+
+\begin{proposition}
+每个 PID 都是诺特环，即每个理想都有限生成，而且任意理想升链最终稳定。
+\end{proposition}
+
+\begin{proof}
+在 PID 中每个理想都由一个元素生成，当然有限生成。另一方面，设
+\[
+I_1\subset I_2\subset I_3\subset \cdots
+\]
+是理想升链。令 $I=\bigcup_{n\ge 1} I_n$。与上节极大理想存在证明中的论证完全相同，$I$ 是理想，于是 $I=(a)$ 对某个 $a\in R$。因为 $a\in I$，所以 $a\in I_N$ 对某个 $N$ 成立。于是对任意 $n\ge N$，有
+\[
+I_N\subset I_n\subset I=(a)\subset I_N,
+\]
+故 $I_n=I_N$。升链稳定。
+\end{proof}
+
+\begin{lemma}
+在 PID 中，每个不可约元都是素元。
+\end{lemma}
+
+\begin{proof}
+设 $p$ 是不可约元，且 $p\mid ab$。若 $p\mid a$，结论已得；以下假设 $p\nmid a$，证明 $p\mid b$。
+
+考虑理想 $(p,a)$。由于 $R$ 是 PID，存在 $d\in R$ 使
+\[
+(p,a)=(d).
+\]
+于是 $d\mid p$。因为 $p$ 不可约，所以 $d$ 不是单位就是与 $p$ 关联。
+
+若 $d$ 与 $p$ 关联，则 $(p,a)=(p)$，从而 $a\in (p)$，即 $p\mid a$，与假设矛盾。因此 $d$ 必为单位，于是 $(p,a)=R$。故存在 $x,y\in R$ 使
+\[
+px+ay=1.
+\]
+两边乘以 $b$，得到
+\[
+pbx+aby=b.
+\]
+其中 $pbx$ 显然被 $p$ 整除，而 $aby$ 也被 $p$ 整除，因为 $p\mid ab$。所以右端 $b$ 被 $p$ 整除。故 $p$ 是素元。
+\end{proof}
+
+\begin{theorem}
+每个 PID 都是 UFD。
+\end{theorem}
+
+\begin{proof}
+分两步。
+
+\emph{第一步：存在性。} 设存在非零非单位元不能写成不可约元乘积。把所有这类元素生成的主理想收集起来，得到集合
+\[
+\mathcal{B}=\{(a)\mid a\neq 0,\ a\text{ 不是单位，且 }a\text{ 不能分解为不可约元乘积}\}.
+\]
+由上一命题，$R$ 满足升链条件，因此 $\mathcal{B}$ 中可取极大元 $(a)$。元素 $a$ 本身不是不可约元，否则它已是长度为 $1$ 的不可约分解。故可写
+\[
+a=bc,
+\]
+其中 $b,c$ 都不是单位。于是 $(a)\subsetneq (b)$ 且 $(a)\subsetneq (c)$。由 $(a)$ 的极大性，$b,c$ 都可以分解为不可约元乘积，于是 $a=bc$ 也可以分解，矛盾。故每个非零非单位元都存在不可约分解。
+
+\emph{第二步：唯一性。} 设
+\[
+a=p_1\cdots p_r=q_1\cdots q_s
+\]
+是同一元素的两个不可约分解。由于 $p_1\mid q_1\cdots q_s$，而在 PID 中不可约元是素元，所以 $p_1\mid q_j$ 对某个 $j$ 成立。不失一般性，交换顺序后设 $j=1$。由于 $q_1$ 不可约，$p_1\mid q_1$ 蕴含 $p_1$ 与 $q_1$ 关联。消去这两个关联因子后，对剩余乘积重复同样论证，即得 $r=s$ 且经过重排后每个 $p_i$ 与对应的 $q_i$ 关联。
+
+因此 $R$ 是 UFD。
+\end{proof}
+
+\begin{corollary}
+有蕴含链
+\[
+\text{ED} \Longrightarrow \text{PID} \Longrightarrow \text{UFD}.
+\]
+\end{corollary}
+
+\begin{example}
+$\Z$ 是欧几里得整环。欧几里得函数可取
+\[
+\delta(n)=|n|\qquad (n\neq 0).
+\]
+对任意整数 $a,b$ 且 $b\neq 0$，按通常的带余除法，存在 $q,r\in\Z$ 使
+\[
+a=bq+r,
+\qquad 0\le |r|<|b|.
+\]
+因此 $\Z$ 是 ED，从而也是 PID 和 UFD。
+\end{example}
+
+\begin{example}
+若 $\F$ 是域，则 $\F[x]$ 是欧几里得整环，欧几里得函数可取 $\delta(f)=\deg f$。多项式带余除法表明：对任意 $f,g\in\F[x]$ 且 $g\neq 0$，存在 $q,r\in\F[x]$ 使
+\[
+f=gq+r,
+\qquad r=0\ \text{或}\ \deg r<\deg g.
+\]
+因此 $\F[x]$ 也是 PID 和 UFD。
+\end{example}
+
+\begin{theorem}
+高斯整数环 $\Z[i]$ 是欧几里得整环。
+\end{theorem}
+
+\begin{proof}
+定义范数
+\[
+N(a+bi)=a^2+b^2\in \N.
+\]
+显然当且仅当 $a+bi\neq 0$ 时 $N(a+bi)>0$，并且
+\[
+N(\alpha\beta)=N(\alpha)N(\beta)
+\]
+对任意 $\alpha,\beta\in\Z[i]$ 成立，因为这是复数模长平方的乘法性。
+
+给定 $\alpha,\beta\in\Z[i]$，$\beta\neq 0$。令
+\[
+z=\frac{\alpha}{\beta}\in \C.
+\]
+取高斯整数 $q=m+ni\in\Z[i]$，其中 $m,n\in\Z$ 分别是 $\Re(z),\Im(z)$ 的最近整数，于是
+\[
+|\Re(z)-m|\le \frac12,
+\qquad
+|\Im(z)-n|\le \frac12.
+\]
+令 $r=\alpha-\beta q$，则
+\[
+\frac{r}{\beta}=z-q.
+\]
+于是
+\[
+N(r)=N(\beta)N(z-q)
+= N(\beta)\bigl((\Re(z)-m)^2+(\Im(z)-n)^2\bigr)
+\le N(\beta)\cdot \frac12.
+\]
+特别地，若 $r\neq 0$，则 $N(r)<N(\beta)$。这就给出了欧几里得除法
+\[
+\alpha=\beta q+r,
+\qquad r=0\ \text{或}\ N(r)<N(\beta).
+\]
+因此 $\Z[i]$ 是欧几里得整环。
+\end{proof}
+
+\begin{remark}
+由于 $\Z[i]$ 是 ED，它自动是 PID 与 UFD。因此在 $\Z[i]$ 中可以进行欧几里得算法求最大公因子，这在求解二平方和分解问题时非常有效。
+\end{remark}
+
+\begin{proposition}
+环 $\Z[\sqrt{-5}]$ 不是 UFD。
+\end{proposition}
+
+\begin{proof}
+先定义范数
+\[
+N(a+b\sqrt{-5})=a^2+5b^2\in \N.
+\]
+它满足 $N(\alpha\beta)=N(\alpha)N(\beta)$，因为
+\[
+(a+b\sqrt{-5})(c+d\sqrt{-5})=(ac-5bd)+(ad+bc)\sqrt{-5},
+\]
+直接展开可得乘法性，也可写成 $N(\alpha)=\alpha\overline{\alpha}$ 的形式看出。
+
+\emph{第一步：求单位。} 若 $u\in\Z[\sqrt{-5}]$ 是单位，则存在 $v$ 使 $uv=1$，取范数得
+\[
+N(u)N(v)=1.
+\]
+由于范数取正整数值，只能有 $N(u)=1$。而方程
+\[
+a^2+5b^2=1
+\]
+只有解 $(a,b)=(\pm1,0)$，故单位只有 $\pm1$。
+
+\emph{第二步：证明 $2,3,1+\sqrt{-5},1-\sqrt{-5}$ 都不可约。}
+
+对 $2$ 而言，若 $2=\alpha\beta$，则
+\[
+4=N(2)=N(\alpha)N(\beta).
+\]
+若两因子都不是单位，则 $N(\alpha),N(\beta)>1$，只能同时等于 $2$。但方程
+\[
+a^2+5b^2=2
+\]
+无整数解，因此不存在范数为 $2$ 的元素。故 $2$ 不可约。
+
+同理，若 $3=\alpha\beta$ 且两因子非单位，则
+\[
+9=N(3)=N(\alpha)N(\beta)
+\]
+迫使某个因子范数为 $3$。但方程
+\[
+a^2+5b^2=3
+\]
+也无整数解，所以 $3$ 不可约。
+
+再看 $1+\sqrt{-5}$。它的范数是 $6$。若
+\[
+1+\sqrt{-5}=\alpha\beta
+\]
+且两因子非单位，则
+\[
+6=N(\alpha)N(\beta)
+\]
+且 $N(\alpha),N(\beta)>1$。因此可能的范数组合只有 $(2,3)$ 或 $(3,2)$。然而范数为 $2$ 或 $3$ 的元素都不存在，所以 $1+\sqrt{-5}$ 不可约。对 $1-\sqrt{-5}$ 同理。
+
+\emph{第三步：证明这两种分解彼此本质不同。} 在 $\Z[\sqrt{-5}]$ 中有
+\[
+6=2\cdot 3=(1+\sqrt{-5})(1-\sqrt{-5}).
+\]
+由于单位只有 $\pm1$，若 $2$ 与 $1+\sqrt{-5}$ 关联，则应有
+\[
+1+\sqrt{-5}=\pm 2,
+\]
+显然不可能；$2$ 与 $1-\sqrt{-5}$、$3$ 与 $1\pm\sqrt{-5}$ 也都不关联。因此 $6$ 有两种由不可约元组成而互不关联的分解。
+
+故 $\Z[\sqrt{-5}]$ 不是 UFD。
+\end{proof}
+
+\begin{remark}
+这个例子说明“整环”远不足以保证唯一分解。正是因为在某些数环中元素分解失败，人们才引入理想分解，从而导向戴德金整环与类群理论。
+\end{remark}
+
+\section{中国剩余定理}
+
+\begin{theorem}[整数情形的中国剩余定理]
+设 $m,n\in\N$ 且 $(m,n)=1$。则映射
+\[
+\phi:\Z/(mn)\Z\longrightarrow \Z/m\Z\times \Z/n\Z,
+\qquad
+\overline{a}\longmapsto (\overline{a}\bmod m,\overline{a}\bmod n)
+\]
+是环同构。
+\end{theorem}
+
+\begin{proof}
+映射显然保加法与乘法。
+
+先求核。若 $\phi(\overline{a})=(\overline{0},\overline{0})$，则 $m\mid a$ 且 $n\mid a$。由 $(m,n)=1$，知 $mn\mid a$，故 $\overline{a}=\overline{0}$ 于 $\Z/(mn)\Z$ 中。因此核平凡，$\phi$ 单射。
+
+再证满射。由贝祖等式，存在 $u,v\in\Z$ 使
+\[
+um+vn=1.
+\]
+给定 $(\overline{r},\overline{s})\in \Z/m\Z\times \Z/n\Z$，取
+\[
+a=rvn+sum.
+\]
+则模 $m$ 看，$vn\equiv 1$ 且 $um\equiv 0$，故
+\[
+a\equiv r\pmod m.
+\]
+模 $n$ 看，$um\equiv 1$ 且 $vn\equiv 0$，故
+\[
+a\equiv s\pmod n.
+\]
+于是 $\phi(\overline{a})=(\overline{r},\overline{s})$，故 $\phi$ 满射。
+
+所以 $\phi$ 是环同构。
+\end{proof}
+
+\begin{corollary}
+若正整数 $n_1,\dots,n_r$ 两两互素，则
+\[
+\Z/(n_1\cdots n_r)\Z\cong \Z/n_1\Z\times\cdots\times \Z/n_r\Z.
+\]
+\end{corollary}
+
+\begin{proof}
+对 $r$ 做归纳。$r=2$ 时就是上一定理。若结论对 $r-1$ 个模数成立，令 $m=n_1\cdots n_{r-1}$。因为各 $n_i$ 两两互素，所以 $(m,n_r)=1$。于是
+\[
+\Z/(mn_r)\Z\cong \Z/m\Z\times \Z/n_r\Z.
+\]
+再对 $\Z/m\Z$ 应用归纳假设即可。
+\end{proof}
+
+\begin{theorem}[环上的中国剩余定理：两个理想]
+设 $R$ 是交换环，$I,J$ 是理想，且
+\[
+I+J=R.
+\]
+则自然映射
+\[
+\Phi:R\longrightarrow R/I\times R/J,
+\qquad r\longmapsto (r+I,r+J)
+\]
+是满射，且
+\[
+\Ker\Phi=I\cap J.
+\]
+从而
+\[
+R/(I\cap J)\cong R/I\times R/J.
+\]
+\end{theorem}
+
+\begin{proof}
+核的计算是直接的：$r\in\Ker\Phi$ 当且仅当 $r\in I$ 且 $r\in J$，故
+\[
+\Ker\Phi=I\cap J.
+\]
+
+关键是证明满射。因为 $I+J=R$，存在 $a\in I$、$b\in J$ 使
+\[
+a+b=1.
+\]
+给定任意 $(x+I,y+J)\in R/I\times R/J$，取
+\[
+r=xb+ya.
+\]
+则模 $I$ 看，因 $a\in I$ 且 $b\equiv 1\pmod I$，有
+\[
+r\equiv x\cdot 1+y\cdot 0\equiv x \pmod I.
+\]
+模 $J$ 看，因 $b\in J$ 且 $a\equiv 1\pmod J$，有
+\[
+r\equiv x\cdot 0+y\cdot 1\equiv y \pmod J.
+\]
+故 $\Phi(r)=(x+I,y+J)$，所以 $\Phi$ 满射。
+
+最后由第一同构定理得到
+\[
+R/(I\cap J)\cong R/I\times R/J.
+\]
+\end{proof}
+
+\begin{proposition}
+在上一定理的条件下，有
+\[
+I\cap J=IJ.
+\]
+因此
+\[
+R/IJ\cong R/I\times R/J.
+\]
+\end{proposition}
+
+\begin{proof}
+总有 $IJ\subset I\cap J$，因为任意有限和 $\sum_k a_kb_k$ 中每项都同时属于 $I$ 与 $J$。
+
+反过来，取 $x\in I\cap J$。由 $I+J=R$，存在 $a\in I$、$b\in J$ 使 $a+b=1$。于是
+\[
+x=x(a+b)=xa+xb.
+\]
+由于 $x\in J$ 且 $a\in I$，故 $xa\in IJ$；又 $x\in I$ 且 $b\in J$，故 $xb\in IJ$。所以 $x\in IJ$。由此 $I\cap J\subset IJ$。
+
+两边合并得 $I\cap J=IJ$。再代入前一定理即可。
+\end{proof}
+
+\begin{theorem}[有限个两两互素理想的情形]
+设 $I_1,\dots,I_r$ 是交换环 $R$ 的理想，并且对任意 $i\neq j$ 都有
+\[
+I_i+I_j=R.
+\]
+则自然映射
+\[
+R\longrightarrow \prod_{k=1}^r R/I_k,
+\qquad r\longmapsto (r+I_1,\dots,r+I_r)
+\]
+诱导出环同构
+\[
+R/(I_1\cdots I_r)\cong \prod_{k=1}^r R/I_k.
+\]
+\end{theorem}
+
+\begin{proof}
+由上一个命题，两个互素理想的交等于积。对 $r$ 做归纳。$r=2$ 时已证。设结论对 $r-1$ 个理想成立，记
+\[
+J=I_1\cdots I_{r-1}.
+\]
+因为 $I_r$ 与每个 $I_j$ 两两互素，所以 $J+I_r=R$。事实上，对每个 $j<r$ 取 $a_j\in I_j,b_j\in I_r$ 使 $a_j+b_j=1$，连乘可得
+\[
+1=\prod_{j<r}(a_j+b_j)=A+B,
+\]
+其中 $A\in J$，而 $B\in I_r$。于是由两个理想的情形，
+\[
+R/(JI_r)\cong R/J\times R/I_r.
+\]
+再由归纳假设，
+\[
+R/J\cong \prod_{k=1}^{r-1}R/I_k.
+\]
+合并即得所求同构。
+\end{proof}
+
+\begin{example}
+在 $\Z$ 中，理想 $(3)$ 与 $(4)$ 满足 $(3)+(4)=\Z$，因此
+\[
+\Z/12\Z\cong \Z/3\Z\times \Z/4\Z.
+\]
+例如 $\overline{5}$ 在右边对应 $(\overline{2},\overline{1})$。
+\end{example}
+
+\begin{example}
+考虑同余方程组
+\[
+x\equiv 2\pmod 3,
+\qquad
+x\equiv 3\pmod 5.
+\]
+由于 $3,5$ 互素，CRT 保证模 $15$ 有唯一解。事实上，取 $2\cdot 10+3\cdot 6=38$，得
+\[
+x\equiv 8\pmod{15}.
+\]
+这与环同构
+\[
+\Z/15\Z\cong \Z/3\Z\times \Z/5\Z
+\]
+完全一致。
+\end{example}
+
+\begin{example}
+设 $\F$ 是域，$a\neq b\in \F$。因为理想 $(x-a)$ 与 $(x-b)$ 互素，所以
+\[
+\F[x]/\bigl((x-a)(x-b)\bigr)
+\cong
+\F[x]/(x-a)\times \F[x]/(x-b)
+\cong \F\times \F.
+\]
+这个分解在插值、幂等元构造与局部分析中都十分重要。
+\end{example}
+
+\begin{remark}
+中国剩余定理的本质是：当若干理想彼此“足够独立”时，环模它们的乘积理想的商，可以分解成若干简单商环的直积。许多局部到整体的思想都可以追溯到这一分解。
+\end{remark}
+
+\section{Hecke 代数的环结构（选学）}
+
+本节说明：在模形式论中自然出现的 Hecke 算子，按加法与复合构成一个交换环。这一事实使得环与理想的语言可以直接用于研究模形式的特征值、同余与算术性质。
+
+为避免与模形式理论的技术细节纠缠，我们固定权 $k$ 与级 $N$，并取一个有限维复向量空间
+\[
+V_k(N),
+\]
+它可以是 $M_k(\Gamma_0(N))$ 或 $S_k(\Gamma_0(N))$。记
+\[
+\mathbb{T}_N\subset \End_{\C}(V_k(N))
+\]
+为由所有 Hecke 算子 $T_n$（以及需要时的钻石算子）生成的 $\Z$-子环，称为\emph{Hecke 代数}。
+
+\begin{proposition}
+Hecke 代数 $\mathbb{T}_N$ 是带单位元的交换环。
+\end{proposition}
+
+\begin{proof}
+由于 $\mathbb{T}_N$ 被定义为 $\End_{\C}(V_k(N))$ 的一个子环，它在加法与乘法（这里乘法是算子复合）下自动成为环，单位元就是恒等算子 $\Id$。在 Hecke 理论中，算子满足乘法公式
+\[
+T_mT_n=\sum_{d\mid (m,n),\,(d,N)=1} d^{k-1}T_{mn/d^2},
+\]
+在带特征的情形下右端还会出现适当的钻石算子；无论哪种情形，右端都关于 $m,n$ 对称。于是
+\[
+T_mT_n=T_nT_m.
+\]
+因此所有 Hecke 算子彼此交换，故由它们生成的环 $\mathbb{T}_N$ 也是交换环。
+\end{proof}
+
+\begin{proposition}
+Hecke 代数可以表示为多项式环的商。更准确地说，存在满射环同态
+\[
+\pi:\Z[X_1,X_2,X_3,\dots]\longrightarrow \mathbb{T}_N,
+\qquad X_n\longmapsto T_n,
+\]
+从而
+\[
+\mathbb{T}_N\cong \Z[X_1,X_2,X_3,\dots]/\Ker\pi.
+\]
+\end{proposition}
+
+\begin{proof}
+因为 $\mathbb{T}_N$ 按定义由所有 $T_n$ 作为环生成，所以把第 $n$ 个变量 $X_n$ 送到 $T_n$ 的多项式表达，恰好给出一个满射到 $\mathbb{T}_N$ 的环同态 $\pi$。于是由第一同构定理，
+\[
+\mathbb{T}_N\cong \Z[X_1,X_2,X_3,\dots]/\Ker\pi.
+\]
+这说明 Hecke 代数的一切代数关系，都编码在核理想 $\Ker\pi$ 中。
+\end{proof}
+
+\begin{remark}
+在许多具体情形中，$\mathbb{T}_N$ 事实上是有限生成的 $\Z$-模，因此也可以看作有限变量多项式环的商；但对本章的环论目的而言，知道它是某个多项式环的商已经足够。
+\end{remark}
+
+\begin{definition}
+设 $f\in V_k(N)$ 是一个非零模形式。若对所有 Hecke 算子 $T\in\mathbb{T}_N$ 都有
+\[
+Tf=\lambda_f(T)f
+\]
+成立，则称 $f$ 为一个\emph{Hecke 本征形式}，而
+\[
+\lambda_f:\mathbb{T}_N\longrightarrow \C
+\]
+称为与 $f$ 对应的\emph{本征特征}。特别地，若 $T_n f=a_n(f)f$，则 $a_n(f)$ 称为 $f$ 的第 $n$ 个 Hecke 特征值。
+\end{definition}
+
+\begin{proposition}
+若 $f$ 是 Hecke 本征形式，则 $\lambda_f$ 是环同态。
+\end{proposition}
+
+\begin{proof}
+对任意 $T,S\in\mathbb{T}_N$，有
+\[
+(T+S)f=Tf+Sf=\lambda_f(T)f+\lambda_f(S)f=(\lambda_f(T)+\lambda_f(S))f,
+\]
+因此
+\[
+\lambda_f(T+S)=\lambda_f(T)+\lambda_f(S).
+\]
+又
+\[
+(TS)f=T(Sf)=T(\lambda_f(S)f)=\lambda_f(S)Tf=\lambda_f(S)\lambda_f(T)f,
+\]
+故
+\[
+\lambda_f(TS)=\lambda_f(T)\lambda_f(S).
+\]
+最后 $\Id f=f$，所以 $\lambda_f(\Id)=1$。于是 $\lambda_f$ 是环同态。
+\end{proof}
+
+\begin{theorem}
+设 $f$ 是归一化 Hecke 本征形式。则由它的全部 Hecke 特征值生成的域
+\[
+K_f=\Q\bigl(a_n(f):n\ge 1\bigr)
+\]
+是一个数域，即 $K_f/\Q$ 是有限扩张。
+\end{theorem}
+
+\begin{proof}
+这里使用模形式理论中的一个标准事实：固定 $k,N$ 后，Hecke 代数的有理化
+\[
+\mathbb{T}_{N,\Q}=\mathbb{T}_N\otimes_\Z \Q
+\]
+是一个有限维交换 $\Q$-代数。
+
+由上一个命题，本征特征 $\lambda_f$ 延拓为一个 $\Q$-代数同态
+\[
+\lambda_{f,\Q}:\mathbb{T}_{N,\Q}\longrightarrow \C.
+\]
+其像 $\Ima(\lambda_{f,\Q})$ 是 $\C$ 的一个子环，并且由于 $f$ 是共同本征向量，这个像实际上嵌入 $\C$，因此是整环。另一方面，由同态基本定理，
+\[
+\Ima(\lambda_{f,\Q})\cong \mathbb{T}_{N,\Q}/\Ker(\lambda_{f,\Q}).
+\]
+右边是有限维 $\Q$-代数的商，所以也是有限维 $\Q$-向量空间。
+
+一个有限维且本身是整环的 $\Q$-代数必为域：任取非零元 $x$，乘法映射
+\[
+\mu_x:y\mapsto xy
+\]
+是单射；在有限维向量空间上单射即满射，因此存在 $y$ 使 $xy=1$。故 $\Ima(\lambda_{f,\Q})$ 是 $\Q$ 上有限维的域，也就是数域。
+
+而所有特征值 $a_n(f)=\lambda_f(T_n)$ 都属于这个像，因此它们生成的域 $K_f$ 是该数域的子域，特别也是有限扩张。这就证明了结论。
+\end{proof}
+
+\begin{remark}
+上述定理说明：Hecke 特征值不是任意的复数，而是落在某个有限次代数扩张中。这是模形式算术性质的起点，也是 Galois 表示、$L$-函数与同余理论中的基本输入。
+\end{remark}
+
+\section*{习题}
+
+以下习题共 $65$ 题，分为基础题（\basic）、进阶题（\medium）与挑战题（\hard）三组。默认所有环都带单位元。
+
+\subsection*{基础题（\basic）}
+
+\begin{enumerate}[label=\textbf{9.\arabic*}, leftmargin=*]
+  \item \basic 设 $R$ 是环，证明加法零元与加法逆元都唯一。
+  \item \basic 设 $R$ 是环，证明对任意 $a\in R$ 有 $(-1)a=-a$。
+  \item \basic 验证 $\Z/n\Z$ 的加法与乘法良定。
+  \item \basic 证明 $\Mat_2(\R)$ 不是交换环，给出两个具体矩阵 $A,B$ 使 $AB\neq BA$。
+  \item \basic 证明 $\Z[i]$ 在通常运算下是交换环。
+  \item \basic 证明 $\Z[\sqrt{-5}]$ 在通常运算下是交换环。
+  \item \basic 写出 $\F[x,y]$ 中两个非零多项式，其乘积的次数恰为各自次数之和。
+  \item \basic 设 $S\subset R$，证明：若 $1\in S$，且 $S$ 对减法与乘法封闭，则 $S$ 是 $R$ 的子环。
+  \item \basic 求证：$2\Z$ 不是 $\Z$ 的子环，但它是 $\Z$ 的理想。
+  \item \basic 求出 $\Z$ 中理想 $(12)$ 与 $(18)$ 的和与交。
+  \item \basic 证明 $n\Z$ 是 $\Z$ 的理想。
+  \item \basic 设 $R$ 为交换环，$a\in R$。证明 $(a)=R$ 当且仅当 $a$ 是单位。
+  \item \basic 设 $\varphi:\Z\to \Z/6\Z$ 为自然投影，求 $\Ker\varphi$ 与 $\Ima\varphi$。
+  \item \basic 设 $\operatorname{ev}_2:\Q[x]\to \Q$ 为代入 $x=2$ 的评价同态，求其核。
+  \item \basic 写出 $\Q[x]/(x^2-1)$ 中元素 $x+(x^2-1)$ 的平方。
+  \item \basic 求 $\Z/8\Z$ 中所有幂等元，即满足 $e^2=e$ 的元素。
+  \item \basic 证明 $\Z/(p)\cong \Z/p\Z$，其中 $p$ 为素数。
+  \item \basic 判断 $\Z$ 中的理想 $(7)$、$(9)$、$(15)$ 哪些是素理想，哪些是极大理想。
+  \item \basic 判断 $\Q[x]$ 中理想 $(x)$、$(x^2+1)$ 是否为极大理想。
+  \item \basic 证明：在域 $\F$ 中，零理想 $(0)$ 是素理想。
+  \item \basic 证明：在域 $\F$ 中，唯一的极大理想是 $(0)$。
+  \item \basic 证明：若 $R/P$ 是整环，则 $P$ 是真理想。
+  \item \basic 写出 $\Z$ 的全部单位，并证明除此之外没有别的单位。
+  \item \basic 写出 $\Z[i]$ 的所有单位。
+  \item \basic 在 $\Z$ 中判定 $2,3,5,6$ 哪些不可约，哪些是素元。
+  \item \basic 证明 $\Q[x]$ 是 PID。
+  \item \basic 用带余除法求 $\gcd(x^3-1,x^2-1)$ 于 $\Q[x]$ 中的值。
+  \item \basic 在 $\Z[i]$ 中用欧几里得算法求 $\gcd(3+2i,1+4i)$。
+  \item \basic 将 $6$ 在 $\Z[\sqrt{-5}]$ 中写成两种不同的不可约分解。
+  \item \basic 求解同余方程组
+  \[
+  x\equiv 1\pmod 2,
+  \qquad
+  x\equiv 2\pmod 3,
+  \qquad
+  x\equiv 3\pmod 5.
+  \]
+\end{enumerate}
+
+\subsection*{进阶题（\medium）}
+
+\begin{enumerate}[label=\textbf{9.\arabic*}, leftmargin=*, resume]
+  \item \medium 证明：若 $I,J$ 是交换环 $R$ 的理想，则 $I+J$ 与 $I\cap J$ 仍是理想。
+  \item \medium 证明：$\Z$ 的每个理想都形如 $n\Z$。
+  \item \medium 证明：$\F[x]$ 的每个理想都形如 $(f)$，其中 $f\in\F[x]$。
+  \item \medium 设 $R$ 为交换环，证明 $R/I$ 的理想与包含 $I$ 的理想一一对应。
+  \item \medium 设 $R$ 为交换环，$I\subsetneq R$。证明：$I$ 极大当且仅当商环 $R/I$ 是域。
+  \item \medium 证明：在 PID 中，非零极大理想必形如 $(p)$，其中 $p$ 为不可约元。
+  \item \medium 证明：在整环中，若 $p$ 是素元，则 $(p)$ 是素理想。
+  \item \medium 证明：在 UFD 中，每个不可约元都是素元。
+  \item \medium 不借助正文中的定理，重新证明：PID $\Rightarrow$ UFD。
+  \item \medium 设 $R$ 是 ED，证明任意两个元素都有最大公因子，并且可表示成贝祖等式 $d=ax+by$ 的形式。
+  \item \medium 证明：$\Z[i]$ 中的范数 $N(a+bi)=a^2+b^2$ 具有乘法性。
+  \item \medium 用范数方法证明：若高斯整数 $\pi$ 的范数是通常素数 $p$，则 $\pi$ 是 $\Z[i]$ 中的不可约元。
+  \item \medium 证明：$x^2+1$ 在 $\R[x]$ 中不可约，但在 $\C[x]$ 中可约。
+  \item \medium 用 Eisenstein 判别法证明 $x^3-2$ 在 $\Q[x]$ 中不可约。
+  \item \medium 用 Eisenstein 判别法证明 $x^4+10x+5$ 在 $\Q[x]$ 中不可约。
+  \item \medium 证明：若 $f\in\Z[x]$ 在 $\Q[x]$ 中可约，则它在 $\Z[x]$ 中也可分解成两个正次数多项式之积（Gauss 引理的一个特例）。
+  \item \medium 设 $I=(x,2)\subset \Z[x]$。证明 $I$ 不是主理想。
+  \item \medium 分类 $\Z[x]$ 中所有包含 $(2,x)$ 的极大理想。
+  \item \medium 证明：$\Z[x]$ 不是 PID。
+  \item \medium 设 $m,n\in\N$。证明 $\Z/m\Z\times \Z/n\Z$ 作为加法群是循环群当且仅当 $(m,n)=1$。
+  \item \medium 用环论形式证明整数版中国剩余定理。
+  \item \medium 证明：若 $I+J=R$，则 $R/(IJ)\cong R/I\times R/J$。
+  \item \medium 设 $a\neq b\in \F$，构造 $\F[x]/((x-a)(x-b))\cong \F\times \F$ 的显式同构。
+  \item \medium 证明：在 $\Z[\sqrt{-5}]$ 中不存在范数为 $2$ 或 $3$ 的元素。
+  \item \medium 证明：$2,3,1+\sqrt{-5},1-\sqrt{-5}$ 在 $\Z[\sqrt{-5}]$ 中两两不关联。
+\end{enumerate}
+
+\subsection*{挑战题（\hard）}
+
+\begin{enumerate}[label=\textbf{9.\arabic*}, leftmargin=*, resume]
+  \item \hard 设 $R$ 为诺特整环，且每个非零素理想都是极大理想。证明：若 $R$ 还是整闭的，则 $R$ 是戴德金整环。（提示：可查阅相关定义并整理证明框架。）
+  \item \hard 设 $K=\Q(\sqrt{-5})$，说明为什么 $\Z[\sqrt{-5}]$ 不是主理想整环，并用理想 $(2,1+\sqrt{-5})$ 讨论其类群非平凡的原因。
+  \item \hard 证明理想
+  \[
+  I=(2,1+\sqrt{-5})\subset \Z[\sqrt{-5}]
+  \]
+  不是主理想；进一步验证 $I^2=(2)$。
+  \item \hard 设 $R$ 是交换环，$S\subset R$ 为乘法闭集。定义局部化 $S^{-1}R$，并证明自然映射 $R\to S^{-1}R$ 的核是
+  \[
+  \{r\in R\mid \exists s\in S,\ sr=0\}.
+  \]
+  \item \hard 设 $P$ 是交换环 $R$ 的素理想，证明局部化 $R_P$ 只有一个极大理想，即 $PR_P$。
+  \item \hard 设 $R$ 是 UFD，证明 $R[x]$ 仍是 UFD。（提示：结合 Gauss 引理。）
+  \item \hard 设 $f$ 是归一化 Hecke 本征形式，证明对应本征特征 $\lambda_f:\mathbb{T}_N\to \C$ 的核是 $\mathbb{T}_N$ 的极大理想。
+  \item \hard 在一个具体的小维空间（例如 $S_{12}(\SL_2(\Z))$）中，说明 Hecke 代数为何由单个算子生成，并据此把它写成一个一元多项式环的商。
+  \item \hard 证明：若 $\mathbb{T}_{N,\Q}$ 是有限维交换半单 $\Q$-代数，则它同构于若干数域的直积；解释这与 Hecke 本征形式分解的关系。
+  \item \hard 设 $R$ 为交换环。证明 $\Spec(R/I)$ 与 $\{\mathfrak p\in \Spec(R)\mid I\subset \mathfrak p\}$ 作为拓扑空间同胚，并说明这一结论如何推广了“理想对应定理”。
+\end{enumerate}

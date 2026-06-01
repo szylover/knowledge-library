@@ -1,0 +1,1215 @@
+\chapter{特征值与对角化}
+
+在线性代数中，矩阵最重要的结构之一是它在某些特殊方向上的作用：若一个非零向量在变换之后仍落在原来的直线上，那么这个方向往往揭示了算子的本质。特征值、特征向量、特征多项式、Jordan 标准形与最小多项式，正是描述这种结构的基本语言。它们不仅在纯粹代数中起核心作用，也在微分方程、数值分析、表示论以及模形式的 Hecke 算子理论中反复出现。
+
+本章讨论有限维向量空间上的线性算子及其矩阵表示。除 \cref{sec:jordan-form} 外，底域记为任意域 \(\F\)。在讨论 Jordan 标准形时，我们将假设底域是代数闭域，通常取 \(\C\)。
+
+\section{特征值与特征向量}\label{sec:eigenvalues-vectors}
+
+设 \(V\) 是 \(\F\) 上的 \(n\) 维向量空间，\(T\colon V\to V\) 是线性算子。选定一组基以后，\(T\) 可由一个矩阵 \(A\in \Mat_n(\F)\) 表示。我们常常交替使用“算子语言”和“矩阵语言”；二者本质上是同一件事。
+
+\begin{definition}
+设 \(T\colon V\to V\) 为线性算子。若存在标量 \(\lambda\in \F\) 与非零向量 \(v\in V\) 使得
+\[
+T(v)=\lambda v,
+\]
+则称 \(\lambda\) 是 \(T\) 的一个\emph{特征值}，称 \(v\) 是对应于 \(\lambda\) 的一个\emph{特征向量}。
+
+若 \(A\in \Mat_n(\F)\)，且存在非零列向量 \(x\in \F^n\) 使
+\[
+Ax=\lambda x,
+\]
+则称 \(\lambda\) 是 \(A\) 的特征值，\(x\) 是其特征向量。
+\end{definition}
+
+\begin{definition}
+设 \(\lambda\in \F\)。算子 \(T\) 对应于 \(\lambda\) 的\emph{特征子空间}定义为
+\[
+E_\lambda(T)=\{v\in V:T(v)=\lambda v\}=\Ker(T-\lambda \Id).
+\]
+对于矩阵 \(A\in \Mat_n(\F)\)，定义
+\[
+E_\lambda(A)=\Ker(A-\lambda I_n).
+\]
+\end{definition}
+
+\begin{proposition}
+对任意 \(\lambda\in \F\)，\(E_\lambda(T)\) 是 \(V\) 的子空间。并且 \(\lambda\) 是特征值，当且仅当 \(E_\lambda(T)\neq \{0\}\)。
+\end{proposition}
+
+\begin{proof}
+因为 \(E_\lambda(T)=\Ker(T-\lambda\Id)\)，而任意线性映射的核总是子空间，所以 \(E_\lambda(T)\) 是子空间。由定义可知，\(\lambda\) 是特征值等价于存在非零向量 \(v\) 满足 \((T-\lambda\Id)v=0\)，这又等价于核非零。
+\end{proof}
+
+从几何上看，特征向量描述的是“方向不变”的向量。变换可能将该向量伸长、缩短或反向，但不会把它从原来的一维子空间中扭出去。
+
+\begin{example}
+考虑 \(\R^2\) 上的线性变换
+\[
+A=\mat{2&0\\0&3}.
+\]
+则
+\[
+A\mat{x\\y}=\mat{2x\\3y}.
+\]
+沿 \(x\)-轴的向量被放大为原来的 \(2\) 倍，沿 \(y\)-轴的向量被放大为原来的 \(3\) 倍。因此 \(2,3\) 是特征值，对应的特征子空间分别是
+\[
+E_2(A)=\operatorname{span}\!\left\{\mat{1\\0}\right\},\qquad E_3(A)=\operatorname{span}\!\left\{\mat{0\\1}\right\}.
+\]
+\end{example}
+
+\begin{example}
+考虑平面上的旋转矩阵
+\[
+R=\mat{0&-1\\1&0}.
+\]
+这是逆时针旋转 \(90^\circ\) 的变换。任意非零实向量经此变换后都不与原向量共线，因此 \(R\) 在 \(\R\) 上没有特征值。但在 \(\C\) 上，\(R\) 的特征值是 \(i\) 与 \(-i\)。这说明特征值是否存在，与底域密切相关。
+\end{example}
+
+\begin{example}
+设
+\[
+N=\mat{1&1\\0&1}.
+\]
+则
+\[
+N\mat{x\\y}=\mat{x+y\\y}.
+\]
+若 \(N\mat{x\\y}=\lambda\mat{x\\y}\)，则方程组为
+\[
+x+y=\lambda x,\qquad y=\lambda y.
+\]
+由第二式可知，要么 \(y=0\)，要么 \(\lambda=1\)。进一步可得唯一的特征值是 \(1\)，其特征子空间为
+\[
+E_1(N)=\operatorname{span}\!\left\{\mat{1\\0}\right\}.
+\]
+这里虽然特征值 \(1\) 的“重数”是 \(2\)，但特征向量方向只有一个，这正是不能对角化的最简单例子。
+\end{example}
+
+\begin{proposition}\label{prop:eigenvalue-det-criterion}
+设 \(A\in \Mat_n(\F)\)，\(\lambda\in \F\)。则下列命题等价：
+\begin{enumerate}[label=(\arabic*), leftmargin=2.4em]
+  \item \(\lambda\) 是 \(A\) 的特征值；
+  \item 线性方程组 \((A-\lambda I_n)x=0\) 有非零解；
+  \item 矩阵 \(A-\lambda I_n\) 不可逆；
+  \item \(\det(A-\lambda I_n)=0\)。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+\((1)\Leftrightarrow(2)\) 只是定义的改写。\((2)\Leftrightarrow(3)\) 来自齐次线性方程组有非零解当且仅当系数矩阵不可逆。\((3)\Leftrightarrow(4)\) 则是矩阵可逆与行列式非零的标准判据。
+\end{proof}
+
+这说明寻找特征值的代数方法是：先计算多项式 \(\det(A-\lambda I_n)\)，再求它的根。
+
+\begin{definition}
+设 \(A\in \Mat_n(\F)\)。称
+\[
+\chi_A(t)=\det(tI_n-A)
+\]
+为 \(A\) 的\emph{特征多项式}。其中 \(t\) 是不定元。
+\end{definition}
+
+由 \cref{prop:eigenvalue-det-criterion} 立刻得到：\(\lambda\in \F\) 是 \(A\) 的特征值，当且仅当 \(\chi_A(\lambda)=0\)。
+
+\begin{example}
+设
+\[
+A=\mat{4&2\\1&3}.
+\]
+则
+\[
+\chi_A(t)=\dmat{t-4&-2\\-1&t-3}=(t-4)(t-3)-2=t^2-7t+10=(t-5)(t-2).
+\]
+故特征值为 \(5\) 与 \(2\)。
+
+当 \(\lambda=5\) 时，
+\[
+A-5I_2=\mat{-1&2\\1&-2},
+\]
+故特征子空间由方程 \(-x+2y=0\) 给出，即
+\[
+E_5(A)=\operatorname{span}\!\left\{\mat{2\\1}\right\}.
+\]
+当 \(\lambda=2\) 时，
+\[
+A-2I_2=\mat{2&2\\1&1},
+\]
+故
+\[
+E_2(A)=\operatorname{span}\!\left\{\mat{-1\\1}\right\}.
+\]
+\end{example}
+
+\begin{lemma}\label{lem:distinct-eigenvectors-li}
+对应于不同特征值的特征向量线性无关。更准确地说，若 \(v_1,\dots,v_r\) 分别对应于两两不同的特征值 \(\lambda_1,\dots,\lambda_r\)，则 \(v_1,\dots,v_r\) 线性无关。
+\end{lemma}
+
+\begin{proof}
+对 \(r\) 作归纳。\(r=1\) 显然。设结论对 \(r-1\) 成立，并有关系式
+\[
+a_1v_1+\cdots+a_rv_r=0.
+\]
+对两边施加算子 \(T-\lambda_r\Id\)，得
+\[
+a_1(\lambda_1-\lambda_r)v_1+\cdots+a_{r-1}(\lambda_{r-1}-\lambda_r)v_{r-1}=0.
+\]
+由于 \(\lambda_i-\lambda_r\neq 0\)，归纳假设推出 \(a_1=\cdots=a_{r-1}=0\)。再代回原式，得 \(a_rv_r=0\)，从而 \(a_r=0\)。故 \(v_1,\dots,v_r\) 线性无关。
+\end{proof}
+
+\begin{corollary}
+若 \(A\in \Mat_n(\F)\) 有 \(n\) 个两两不同的特征值，则 \(A\) 可对角化。
+\end{corollary}
+
+\begin{proof}
+每个特征值对应至少一个非零特征向量。由 \cref{lem:distinct-eigenvectors-li}，这 \(n\) 个特征向量线性无关，因此构成 \(\F^n\) 的一组基。在这组基下，\(A\) 的矩阵就是对角矩阵。
+\end{proof}
+
+\begin{proposition}
+若 \(A=(a_{ij})\in \Mat_n(\F)\) 是上三角矩阵或下三角矩阵，则
+\[
+\chi_A(t)=\prod_{i=1}^n(t-a_{ii}).
+\]
+因此 \(A\) 的特征值恰是主对角线上的元素，按重数计算。
+\end{proposition}
+
+\begin{proof}
+矩阵 \(tI_n-A\) 仍是三角矩阵，其对角线元素为 \(t-a_{11},\dots,t-a_{nn}\)。三角矩阵的行列式等于对角线元素之积，故结论成立。
+\end{proof}
+
+\begin{remark}
+在计算中，三角化常常是第一目标，因为一旦把矩阵化为三角形，它的特征值便一目了然。后面的 Jordan 标准形就是把这种想法推到极致：不仅要知道对角线上的特征值，还要精确描述对角线附近的幂零扰动。
+\end{remark}
+
+\section{特征多项式与 Cayley--Hamilton 定理}\label{sec:charpoly-CH}
+
+\subsection{特征多项式的基本性质}
+
+\begin{proposition}\label{prop:charpoly-basic}
+设 \(A\in \Mat_n(\F)\)。则 \(\chi_A(t)=\det(tI_n-A)\) 满足：
+\begin{enumerate}[label=(\arabic*), leftmargin=2.4em]
+  \item \(\chi_A(t)\) 是次数为 \(n\) 的首一多项式；
+  \item 常数项为 \(\chi_A(0)=(-1)^n\det(A)\)；
+  \item \(t^{n-1}\) 的系数等于 \(-\Tr(A)\)。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+写出
+\[
+\chi_A(t)=\det\!
+\mat{
+ t-a_{11} & -a_{12} & \cdots & -a_{1n}\\
+ -a_{21} & t-a_{22} & \cdots & -a_{2n}\\
+ \vdots & \vdots & \ddots & \vdots\\
+ -a_{n1} & -a_{n2} & \cdots & t-a_{nn}}
+\]
+并按 Leibniz 公式展开。
+
+只有恒等置换贡献 \(t^n\) 项，因此 \(\chi_A(t)\) 的最高次项是 \(t^n\)，故它是次数为 \(n\) 的首一多项式，得 \((1)\)。
+
+令 \(t=0\) 即得
+\[
+\chi_A(0)=\det(-A)=(-1)^n\det(A),
+\]
+于是 \((2)\) 成立。
+
+为了求 \(t^{n-1}\) 项，只需在 Leibniz 展开中恰好从一个对角元取常数项，其余 \(n-1\) 个对角元取 \(t\)。任何非恒等置换至少会使两个位置偏离对角线，因此至多贡献 \(t^{n-2}\) 次项。故 \(t^{n-1}\) 的系数为
+\[
+-(a_{11}+\cdots+a_{nn})=-\Tr(A).
+\]
+得 \((3)\)。
+\end{proof}
+
+于是若在代数闭包中分解
+\[
+\chi_A(t)=\prod_{i=1}^n (t-\lambda_i),
+\]
+其中 \(\lambda_i\) 按代数重数重复出现，则由比较系数可得
+\[
+\lambda_1+\cdots+\lambda_n=\Tr(A),\qquad \lambda_1\cdots\lambda_n=\det(A).
+\]
+
+\begin{proposition}\label{prop:similar-charpoly}
+若 \(A,B\in \Mat_n(\F)\) 相似，即存在可逆矩阵 \(P\) 使 \(B=P^{-1}AP\)，则
+\[
+\chi_B(t)=\chi_A(t).
+\]
+特别地，相似矩阵有相同的特征值及其代数重数。
+\end{proposition}
+
+\begin{proof}
+利用行列式的乘法性，得
+\[
+\chi_B(t)=\det(tI_n-P^{-1}AP)=\det\bigl(P^{-1}(tI_n-A)P\bigr)
+=\det(P^{-1})\det(tI_n-A)\det(P)=\chi_A(t).
+\]
+\end{proof}
+
+\begin{example}
+设
+\[
+A=\mat{1&1\\1&0}.
+\]
+则
+\[
+\chi_A(t)=\dmat{t-1&-1\\-1&t}=t^2-t-1.
+\]
+因此 \(A\) 的特征值是
+\[
+\frac{1+\sqrt5}{2},\qquad \frac{1-\sqrt5}{2}.
+\]
+由 \cref{prop:charpoly-basic} 也可立刻看出：两特征值之和为 \(1=\Tr(A)\)，乘积为 \(-1=\det(A)\)。
+\end{example}
+
+\subsection{Cayley--Hamilton 定理}
+
+Cayley--Hamilton 定理断言：矩阵满足它自己的特征多项式。这是线性代数中最深刻也最实用的基本定理之一。
+
+\begin{theorem}[Cayley--Hamilton 定理]\label{thm:cayley-hamilton}
+设 \(A\in \Mat_n(\F)\)，其特征多项式为
+\[
+\chi_A(t)=t^n+c_{n-1}t^{n-1}+\cdots+c_1t+c_0.
+\]
+则
+\[
+\chi_A(A)=A^n+c_{n-1}A^{n-1}+\cdots+c_1A+c_0I_n=0.
+\]
+\end{theorem}
+
+\begin{proof}
+考虑矩阵多项式 \(tI_n-A\)。记其伴随矩阵为 \(\mathrm{adj}(tI_n-A)\)。由伴随矩阵恒等式，既有
+\[
+(tI_n-A)\,\mathrm{adj}(tI_n-A)=\chi_A(t)I_n,
+\]
+也有
+\[
+\mathrm{adj}(tI_n-A)(tI_n-A)=\chi_A(t)I_n.
+\]
+
+因为 \(\mathrm{adj}(tI_n-A)\) 的每个条目都是次数至多 \(n-1\) 的多项式，可写成
+\[
+\mathrm{adj}(tI_n-A)=B_{n-1}t^{n-1}+B_{n-2}t^{n-2}+\cdots+B_1t+B_0,
+\]
+其中 \(B_0,\dots,B_{n-1}\in \Mat_n(\F)\)。将其代入上面两个恒等式，分别得到
+\[
+\chi_A(t)I_n=\sum_{k=0}^{n-1} B_k t^{k+1}-\sum_{k=0}^{n-1}AB_k t^k,
+\]
+以及
+\[
+\chi_A(t)I_n=\sum_{k=0}^{n-1} B_k t^{k+1}-\sum_{k=0}^{n-1}B_kA t^k.
+\]
+比较两式中各次幂的系数，得对每个 \(k\) 都有
+\[
+AB_k=B_kA.
+\]
+也就是说，每个 \(B_k\) 都与 \(A\) 交换。
+
+于是可以在第一条恒等式中把不定元 \(t\) 用矩阵 \(A\) 代入，得到
+\[
+\chi_A(A)=\sum_{k=0}^{n-1} B_k A^{k+1}-\sum_{k=0}^{n-1}AB_kA^k.
+\]
+由于 \(AB_k=B_kA\)，右边两项逐项相消，因此 \(\chi_A(A)=0\)。
+\end{proof}
+
+\begin{corollary}\label{cor:invertible-via-CH}
+若 \(A\in \Mat_n(\F)\) 可逆，则 \(A^{-1}\) 可表示为 \(A\) 的一个次数至多 \(n-1\) 的多项式。
+\end{corollary}
+
+\begin{proof}
+由 \cref{thm:cayley-hamilton}，设
+\[
+\chi_A(t)=t^n+c_{n-1}t^{n-1}+\cdots+c_1t+c_0,
+\]
+则
+\[
+A^n+c_{n-1}A^{n-1}+\cdots+c_1A+c_0I_n=0.
+\]
+因为 \(A\) 可逆，所以 \(\det(A)\neq 0\)，从而由 \cref{prop:charpoly-basic} 可知 \(c_0=(-1)^n\det(A)\neq 0\)。两边左乘 \(A^{-1}\) 得
+\[
+A^{n-1}+c_{n-1}A^{n-2}+\cdots+c_1I_n+c_0A^{-1}=0,
+\]
+故
+\[
+A^{-1}=-c_0^{-1}\bigl(A^{n-1}+c_{n-1}A^{n-2}+\cdots+c_1I_n\bigr).
+\]
+\end{proof}
+
+\begin{example}
+对矩阵
+\[
+A=\mat{1&1\\1&0}
+\]
+有 \(\chi_A(t)=t^2-t-1\)。由 Cayley--Hamilton 定理，
+\[
+A^2-A-I_2=0.
+\]
+因此
+\[
+A^{-1}=A-I_2=\mat{0&1\\1&-1}.
+\]
+直接相乘也可验证这一点。
+\end{example}
+
+\begin{example}
+设
+\[
+N=\mat{1&1\\0&1}.
+\]
+则
+\[
+\chi_N(t)=(t-1)^2=t^2-2t+1.
+\]
+由 Cayley--Hamilton 定理，
+\[
+N^2-2N+I_2=0,
+\]
+即
+\[
+(N-I_2)^2=0.
+\]
+记 \(U=N-I_2=\mat{0&1\\0&0}\)，则 \(U^2=0\)，于是
+\[
+N^m=(I_2+U)^m=I_2+mU=\mat{1&m\\0&1}
+\qquad (m\ge 0).
+\]
+这说明 Cayley--Hamilton 定理常常能够把高次幂的计算转化为低次幂的线性组合。
+\end{example}
+
+\begin{remark}
+从 \cref{thm:cayley-hamilton} 可以看出，\(I_n,A,A^2,\dots,A^n\) 在线性空间 \(\Mat_n(\F)\) 中必线性相关。更强地说，任意 \(A\) 的一切高次幂都可以化为 \(I_n,A,\dots,A^{n-1}\) 的线性组合。这一思想在讨论最小多项式时会被系统化。
+\end{remark}
+
+\section{对角化的条件}\label{sec:diagonalization}
+
+\begin{definition}
+设 \(A\in \Mat_n(\F)\)。若存在可逆矩阵 \(P\) 与对角矩阵 \(D\) 使得
+\[
+P^{-1}AP=D,
+\]
+则称 \(A\) \emph{可对角化}。等价地，若对线性算子 \(T\colon V\to V\) 存在一组由特征向量组成的基，则称 \(T\) 可对角化。
+\end{definition}
+
+\begin{theorem}\label{thm:diag-criterion-basis}
+设 \(A\in \Mat_n(\F)\)。下列条件等价：
+\begin{enumerate}[label=(\arabic*), leftmargin=2.4em]
+  \item \(A\) 可对角化；
+  \item \(\F^n\) 存在一组由 \(A\) 的特征向量组成的基；
+  \item \(\F^n\) 是各个特征子空间的直和：
+  \[
+  \F^n=\bigoplus_{\lambda} E_\lambda(A);
+  \]
+  \item 各特征子空间维数之和等于 \(n\)。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\((1)\Rightarrow(2)\)：若 \(P^{-1}AP=D=\diag(\lambda_1,\dots,\lambda_n)\)，记 \(P\) 的列向量为 \(v_1,\dots,v_n\)，则
+\[
+AP=PD.
+\]
+比较第 \(i\) 列可得 \(Av_i=\lambda_iv_i\)，故 \(v_i\) 是特征向量，且它们构成一组基。
+
+\((2)\Rightarrow(3)\)：若一组基由特征向量组成，把属于同一特征值的向量归并在一起，就得到整个空间是各特征子空间之和。不同特征值对应的特征向量组线性无关，由 \cref{lem:distinct-eigenvectors-li} 可知该和是直和。
+
+\((3)\Rightarrow(4)\) 显然，因为直和的维数等于各部分维数之和。
+
+\((4)\Rightarrow(2)\)：在每个 \(E_\lambda(A)\) 中取一组基，把这些基合并起来。由于维数总和是 \(n\)，并且不同特征值的特征子空间相交只有 \(0\)，故这些向量构成 \(\F^n\) 的一组基。
+
+由 \((2)\Rightarrow(1)\) 只需令 \(P\) 以这些基向量为列即可。
+\end{proof}
+
+\begin{definition}
+设 \(\lambda\) 是 \(A\in \Mat_n(\F)\) 的特征值。
+\begin{itemize}
+  \item \(\lambda\) 在特征多项式 \(\chi_A(t)\) 中作为根出现的重数，称为 \(\lambda\) 的\emph{代数重数}，记作 \(m_a(\lambda)\)；
+  \item 特征子空间 \(E_\lambda(A)\) 的维数称为 \(\lambda\) 的\emph{几何重数}，记作 \(m_g(\lambda)\)。
+\end{itemize}
+\end{definition}
+
+\begin{proposition}\label{prop:gm-le-am}
+对任意特征值 \(\lambda\)，都有
+\[
+1\le m_g(\lambda)\le m_a(\lambda).
+\]
+\end{proposition}
+
+\begin{proof}
+因为 \(\lambda\) 是特征值，所以 \(E_\lambda(A)\neq\{0\}\)，故 \(m_g(\lambda)\ge 1\)。
+
+设 \(r=m_g(\lambda)=\dim E_\lambda(A)\)。取 \(E_\lambda(A)\) 的一组基并延拓为 \(\F^n\) 的一组基。在这组基下，\(A\) 的矩阵具有分块形式
+\[
+\mat{\lambda I_r & *\\0 & B}.
+\]
+于是
+\[
+\chi_A(t)=\det\mat{(t-\lambda)I_r & *\\0 & tI-B}
+=(t-\lambda)^r\det(tI-B).
+\]
+因此 \((t-\lambda)^r\) 整除 \(\chi_A(t)\)，说明 \(m_a(\lambda)\ge r=m_g(\lambda)\)。
+\end{proof}
+
+\begin{theorem}\label{thm:diag-am-gm}
+设 \(A\in \Mat_n(\F)\)，并假设 \(\chi_A(t)\) 在 \(\F\) 上分解为
+\[
+\chi_A(t)=\prod_{i=1}^s (t-\lambda_i)^{m_a(\lambda_i)}.
+\]
+则 \(A\) 可对角化，当且仅当对每个 \(i\) 都有
+\[
+m_g(\lambda_i)=m_a(\lambda_i).
+\]
+\end{theorem}
+
+\begin{proof}
+若 \(A\) 可对角化，则由 \cref{thm:diag-criterion-basis}，整个空间是各特征子空间的直和，因此
+\[
+n=\sum_{i=1}^s m_g(\lambda_i).
+\]
+另一方面，代数重数之和也等于 \(n\)：
+\[
+n=\sum_{i=1}^s m_a(\lambda_i).
+\]
+由 \cref{prop:gm-le-am} 对每个 \(i\) 都有 \(m_g(\lambda_i)\le m_a(\lambda_i)\)。两个和相等，只能逐项相等。
+
+反之，若对每个 \(i\) 都有 \(m_g(\lambda_i)=m_a(\lambda_i)\)，则
+\[
+\sum_{i=1}^s \dim E_{\lambda_i}(A)=\sum_{i=1}^s m_g(\lambda_i)=\sum_{i=1}^s m_a(\lambda_i)=n.
+\]
+由 \cref{thm:diag-criterion-basis}，\(A\) 可对角化。
+\end{proof}
+
+\begin{corollary}
+若 \(\chi_A(t)\) 在 \(\F\) 上没有重根，则 \(A\) 可对角化。
+\end{corollary}
+
+\begin{proof}
+没有重根意味着 \(\chi_A(t)\) 有 \(n\) 个两两不同的根。由 \cref{lem:distinct-eigenvectors-li}，可以取得 \(n\) 个线性无关特征向量，因此 \(A\) 可对角化。
+\end{proof}
+
+\begin{example}
+矩阵
+\[
+A=\mat{2&1\\0&2}
+\]
+的特征多项式为 \((t-2)^2\)。其唯一特征值 \(2\) 的代数重数为 \(2\)。但
+\[
+A-2I_2=\mat{0&1\\0&0},
+\]
+故
+\[
+E_2(A)=\left\{\mat{x\\0}:x\in \F\right\}
+\]
+是一维的，因此几何重数为 \(1\)。由 \cref{thm:diag-am-gm}，\(A\) 不可对角化。
+\end{example}
+
+\begin{example}
+矩阵
+\[
+B=\mat{1&0&0\\0&2&1\\0&0&2}
+\]
+的特征多项式为
+\[
+\chi_B(t)=(t-1)(t-2)^2.
+\]
+对 \(\lambda=1\)，几何重数为 \(1\)；对 \(\lambda=2\)，
+\[
+B-2I_3=\mat{-1&0&0\\0&0&1\\0&0&0},
+\]
+故 \(E_2(B)\) 一维，几何重数也是 \(1\)。于是
+\[
+1+1<3,
+\]
+所以 \(B\) 不可对角化。
+\end{example}
+
+\begin{proposition}
+若 \(A\in \Mat_n(\F)\) 只有一个特征值 \(\lambda\)，则 \(A\) 可对角化当且仅当 \(A=\lambda I_n\)。
+\end{proposition}
+
+\begin{proof}
+若 \(A=\lambda I_n\)，则显然可对角化。反之，若 \(A\) 可对角化，则在某组基下有
+\[
+P^{-1}AP=\diag(\mu_1,\dots,\mu_n).
+\]
+对角元 \(\mu_i\) 都是 \(A\) 的特征值。由于 \(A\) 只有一个特征值 \(\lambda\)，故所有 \(\mu_i=\lambda\)，于是 \(P^{-1}AP=\lambda I_n\)，从而 \(A=\lambda I_n\)。
+\end{proof}
+
+\begin{remark}
+在实际计算中，判断“是否可对角化”通常有三条常用途径：
+\begin{enumerate}[label=(\arabic*), leftmargin=2.4em]
+  \item 直接求出足够多的线性无关特征向量；
+  \item 比较几何重数与代数重数；
+  \item 在后面的 \cref{sec:minimal-polynomial} 中，借助最小多项式判定。
+\end{enumerate}
+\end{remark}
+
+\section{Jordan 标准形}\label{sec:jordan-form}
+
+从本节开始，假设底域是代数闭域，通常取 \(\C\)。这样每个矩阵的特征多项式都可以完全分解。
+
+\subsection{广义特征向量与广义特征子空间}
+
+\begin{definition}
+设 \(A\in \Mat_n(\C)\)，\(\lambda\in \C\)。若存在正整数 \(m\) 使得
+\[
+(A-\lambda I_n)^m v=0,
+\qquad v\neq 0,
+\]
+则称 \(v\) 是对应于 \(\lambda\) 的\emph{广义特征向量}。定义对应的\emph{广义特征子空间}
+\[
+G_\lambda(A)=\Ker(A-\lambda I_n)^n.
+\]
+\end{definition}
+
+这里把指数固定为 \(n\) 只是为了避免记号混乱。实际上，核链最终会稳定下来，因此取任何足够大的指数都得到同一子空间。
+
+\begin{lemma}\label{lem:kernel-stabilize}
+设 \(N\in \Mat_n(\C)\)。核链
+\[
+\Ker N\subseteq \Ker N^2\subseteq \cdots\subseteq \Ker N^n\subseteq \Ker N^{n+1}\subseteq \cdots
+\]
+最终稳定；更准确地说，若对某个 \(r\) 有 \(\Ker N^r=\Ker N^{r+1}\)，则对所有 \(m\ge r\) 都有 \(\Ker N^m=\Ker N^r\)。特别地，存在 \(r\le n\) 使得 \(\Ker N^r=\Ker N^{r+1}=\cdots\)。
+\end{lemma}
+
+\begin{proof}
+包含关系显然成立。若 \(\Ker N^r=\Ker N^{r+1}\)，取任意 \(v\in \Ker N^{r+2}\)，则 \(N(v)\in \Ker N^{r+1}=\Ker N^r\)，故 \(N^{r+1}(v)=0\)，即 \(v\in \Ker N^{r+1}=\Ker N^r\)。于是 \(\Ker N^{r+2}=\Ker N^{r+1}\)。归纳可知之后全部稳定。
+
+又因为
+\[
+0\le \dim\Ker N\le \dim\Ker N^2\le \cdots\le n,
+\]
+每次若严格增大至少增加 \(1\)，故最多严格增大 \(n\) 次，于是在某个 \(r\le n\) 稳定。
+\end{proof}
+
+\begin{proposition}
+设 \(\lambda\in \C\)。则 \(G_\lambda(A)\) 是 \(A\)-不变子空间，并且
+\[
+E_\lambda(A)\subseteq G_\lambda(A).
+\]
+\end{proposition}
+
+\begin{proof}
+若 \(v\in G_\lambda(A)\)，则 \((A-\lambda I_n)^n v=0\)。由于 \(A\) 与 \(A-\lambda I_n\) 交换，故
+\[
+(A-\lambda I_n)^n(Av)=A(A-\lambda I_n)^n v=0,
+\]
+所以 \(Av\in G_\lambda(A)\)，即 \(G_\lambda(A)\) 为 \(A\)-不变。
+
+若 \(v\in E_\lambda(A)\)，则 \((A-\lambda I_n)v=0\)，从而 \((A-\lambda I_n)^n v=0\)，故 \(v\in G_\lambda(A)\)。
+\end{proof}
+
+\begin{theorem}[广义特征子空间分解]\label{thm:primary-decomposition}
+设 \(A\in \Mat_n(\C)\) 的特征多项式分解为
+\[
+\chi_A(t)=\prod_{i=1}^s (t-\lambda_i)^{a_i},
+\qquad \lambda_i\neq \lambda_j\ (i\neq j).
+\]
+令
+\[
+p_i(t)=(t-\lambda_i)^{a_i}.
+\]
+则
+\[
+\C^n=G_{\lambda_1}(A)\oplus\cdots\oplus G_{\lambda_s}(A),
+\qquad G_{\lambda_i}(A)=\Ker p_i(A).
+\]
+\end{theorem}
+
+\begin{proof}
+各多项式 \(p_1,\dots,p_s\) 两两互素，因此由 Bézout 恒等式，存在多项式 \(q_1,\dots,q_s\in \C[t]\) 使
+\[
+q_1(t)\frac{\chi_A(t)}{p_1(t)}+\cdots+q_s(t)\frac{\chi_A(t)}{p_s(t)}=1.
+\]
+把 \(t\) 代入矩阵 \(A\)，并使用 Cayley--Hamilton 定理 \(\chi_A(A)=0\)，得
+\[
+q_1(A)\prod_{j\ne 1} p_j(A)+\cdots+q_s(A)\prod_{j\ne s} p_j(A)=I_n.
+\]
+令
+\[
+Q_i(A)=q_i(A)\prod_{j\ne i}p_j(A).
+\]
+则任意 \(v\in \C^n\) 都可写成
+\[
+v=Q_1(A)v+\cdots+Q_s(A)v.
+\]
+并且对每个 \(i\)，
+\[
+p_i(A)Q_i(A)v=q_i(A)\chi_A(A)v=0,
+\]
+所以 \(Q_i(A)v\in \Ker p_i(A)\)。这说明
+\[
+\C^n=\Ker p_1(A)+\cdots+\Ker p_s(A).
+\]
+
+下面证此和是直和。若 \(v\in \Ker p_i(A)\cap \sum_{j\ne i}\Ker p_j(A)\)，则对某个表示 \(v=\sum_{j\ne i}v_j\) 有 \(p_j(A)v_j=0\)。令
+\[
+r_i(t)=\prod_{j\ne i} p_j(t).
+\]
+则 \(r_i(A)v=0\)，又有 \(p_i(A)v=0\)。因为 \(p_i\) 与 \(r_i\) 互素，存在多项式 \(\alpha(t),\beta(t)\) 使
+\[
+\alpha(t)p_i(t)+\beta(t)r_i(t)=1.
+\]
+代入 \(A\) 并作用于该向量 \(v\)，得
+\[
+v=\alpha(A)p_i(A)v+\beta(A)r_i(A)v=0.
+\]
+因此交只有零向量，和是直和。
+
+最后，由 \cref{lem:kernel-stabilize}，\(\Ker(A-\lambda_i I_n)^n\) 正是稳定后的核，而这里 \(p_i(t)=(t-\lambda_i)^{a_i}\) 且 \(a_i\le n\)，故
+\[
+\Ker p_i(A)=\Ker(A-\lambda_i I_n)^{a_i}=\Ker(A-\lambda_i I_n)^n=G_{\lambda_i}(A).
+\]
+证毕。
+\end{proof}
+
+\subsection{Jordan 块与 Jordan 标准形}
+
+\begin{definition}
+对 \(\lambda\in \C\) 与正整数 \(r\)，定义大小为 \(r\) 的 \emph{Jordan 块}
+\[
+J_r(\lambda)=
+\mat{
+\lambda&1&0&\cdots&0\\
+0&\lambda&1&\ddots&\vdots\\
+\vdots&\ddots&\ddots&\ddots&0\\
+0&\cdots&0&\lambda&1\\
+0&\cdots&\cdots&0&\lambda }.
+\]
+若一个分块对角矩阵由若干 Jordan 块组成，则称其为一个\emph{Jordan 矩阵}。
+\end{definition}
+
+Jordan 块可写为
+\[
+J_r(\lambda)=\lambda I_r+N_r,
+\]
+其中 \(N_r\) 是在超对角线上全为 \(1\) 的幂零矩阵，满足 \(N_r^r=0\) 而 \(N_r^{r-1}\neq 0\)。因此 Jordan 块的非对角部分精确记录了“偏离可对角化”的程度。
+
+\begin{theorem}[Jordan 标准形定理]
+设 \(A\in \Mat_n(\C)\)。则存在可逆矩阵 \(P\) 使得
+\[
+P^{-1}AP=J,
+\]
+其中 \(J\) 是若干 Jordan 块的分块对角和。并且：
+\begin{enumerate}[label=(\arabic*), leftmargin=2.4em]
+  \item \(J\) 中每个 Jordan 块的对角元都是 \(A\) 的特征值；
+  \item 对每个特征值 \(\lambda\)，对应 Jordan 块的总大小等于 \(\lambda\) 的代数重数；
+  \item Jordan 块的大小在块的排列次序之外是唯一确定的。
+\end{enumerate}
+\end{theorem}
+
+\begin{remark}
+定理的证明分两步：先用 \cref{thm:primary-decomposition} 把空间分解为各个广义特征子空间的直和；再在每个广义特征子空间上研究幂零算子 \(N=A-\lambda I\) 的结构，把它分解成若干“Jordan 链”。本节不追求最技术化的存在性证明，而强调如何从核维数中读出 Jordan 块，并据此进行计算。
+\end{remark}
+
+\begin{proposition}\label{prop:jordan-kernel-count}
+设 \(A\in \Mat_n(\C)\)，固定一个特征值 \(\lambda\)。记
+\[
+d_k=\dim \Ker(A-\lambda I_n)^k\qquad (k\ge 1),\qquad d_0=0.
+\]
+则：
+\begin{enumerate}[label=(\arabic*), leftmargin=2.4em]
+  \item 对应于 \(\lambda\) 的 Jordan 块中，大小至少为 \(k\) 的块的个数等于 \(d_k-d_{k-1}\)；
+  \item 大小恰为 \(k\) 的块的个数等于
+  \[
+  (d_k-d_{k-1})-(d_{k+1}-d_k)=2d_k-d_{k-1}-d_{k+1}.
+  \]
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+只需在 \(\lambda\) 对应的广义特征子空间上考虑矩阵 \(A-\lambda I\)，于是问题化为研究幂零 Jordan 块。
+
+若某个 Jordan 块大小为 \(r\)，则对幂零块 \(J_r(0)\) 有
+\[
+\dim\Ker J_r(0)^k=\min(k,r).
+\]
+因此当我们把所有 Jordan 块的贡献相加时，\(d_k\) 恰是对每个块取 \(\min(k,r)\) 后的总和。于是
+\[
+d_k-d_{k-1}
+\]
+正好统计了满足 \(r\ge k\) 的 Jordan 块个数，因为对每个大小为 \(r\) 的块，差值
+\[
+\min(k,r)-\min(k-1,r)
+\]
+在 \(r\ge k\) 时等于 \(1\)，否则等于 \(0\)。这证明了 \((1)\)。
+
+再用“大小至少为 \(k\) 的块数”减去“大小至少为 \(k+1\) 的块数”，即可得到大小恰为 \(k\) 的块数，故 \((2)\) 成立。
+\end{proof}
+
+\subsection{计算 Jordan 标准形的算法}
+
+在实际运算中，可按以下步骤求 Jordan 标准形：
+
+\begin{enumerate}[label=\arabic*., leftmargin=2.4em]
+  \item 计算特征多项式，求出全部特征值及其代数重数；
+  \item 对每个特征值 \(\lambda\)，计算核维数序列
+  \[
+  d_k=\dim \Ker(A-\lambda I)^k \quad (k=1,2,\dots);
+  \]
+  \item 利用 \cref{prop:jordan-kernel-count}，由差值 \(d_k-d_{k-1}\) 求出各个 Jordan 块的大小；
+  \item 为了构造 Jordan 基，先在最高阶核中选取链首向量 \(v\)，再令
+  \[
+  (A-\lambda I)v_1=0,\quad (A-\lambda I)v_2=v_1,\quad \dots,\quad (A-\lambda I)v_r=v_{r-1},
+  \]
+  得到一个 Jordan 链 \(v_1,\dots,v_r\)；
+  \item 把所有特征值的 Jordan 链合并，即得一组 Jordan 基。在这组基下，矩阵就是 Jordan 标准形。
+\end{enumerate}
+
+\begin{example}[一个 \(3\times 3\) 例子]\label{ex:jordan-3x3}
+设
+\[
+A=\mat{2&1&1\\0&2&0\\0&0&3}.
+\]
+因为 \(A\) 是上三角矩阵，所以特征值为 \(2,2,3\)。故
+\[
+\chi_A(t)=(t-2)^2(t-3).
+\]
+
+先看 \(\lambda=2\)。有
+\[
+A-2I_3=\mat{0&1&1\\0&0&0\\0&0&1}.
+\]
+解 \((A-2I_3)x=0\) 得 \(x_2=x_3=0\)，故
+\[
+E_2(A)=\operatorname{span}\!\left\{\mat{1\\0\\0}\right\},
+\]
+其维数为 \(1\)。由于 \(2\) 的代数重数为 \(2\)，可知对应于 \(2\) 必有一个大小为 \(2\) 的 Jordan 块。
+
+为了构造 Jordan 链，取
+\[
+v_1=\mat{1\\0\\0}.
+\]
+再求 \(v_2\) 使 \((A-2I_3)v_2=v_1\)。令 \(v_2=\mat{x\\y\\z}\)，则
+\[
+(A-2I_3)v_2=\mat{y+z\\0\\z}=\mat{1\\0\\0}.
+\]
+于是可取 \(z=0,y=1\)，例如
+\[
+v_2=\mat{0\\1\\0}.
+\]
+
+再看 \(\lambda=3\)。解 \((A-3I_3)x=0\)：
+\[
+A-3I_3=\mat{-1&1&1\\0&-1&0\\0&0&0},
+\]
+可取特征向量
+\[
+w=\mat{1\\0\\1}.
+\]
+于是按基 \((v_1,v_2,w)\) 排列时，\(A\) 的矩阵为
+\[
+J=\mat{2&1&0\\0&2&0\\0&0&3}=J_2(2)\oplus J_1(3).
+\]
+\end{example}
+
+\begin{example}[一个 \(4\times 4\) 例子]\label{ex:jordan-4x4}
+设
+\[
+A=\mat{4&0&1&0\\0&4&0&0\\0&0&4&1\\0&0&0&4}.
+\]
+这是一个只有特征值 \(4\) 的矩阵，因为它是上三角矩阵，且对角线全为 \(4\)。记
+\[
+N=A-4I_4=\mat{0&0&1&0\\0&0&0&0\\0&0&0&1\\0&0&0&0}.
+\]
+计算各级核：
+\[
+Nv=0 \iff v_3=v_4=0,
+\]
+故
+\[
+d_1=\dim\Ker N=2.
+\]
+再算
+\[
+N^2=\mat{0&0&0&1\\0&0&0&0\\0&0&0&0\\0&0&0&0},
+\]
+从而
+\[
+d_2=\dim\Ker N^2=3,
+\qquad d_3=\dim\Ker N^3=4.
+\]
+根据 \cref{prop:jordan-kernel-count}：
+\[
+d_1-d_0=2,
+\qquad d_2-d_1=1,
+\qquad d_3-d_2=1.
+\]
+因此 Jordan 块个数为 \(2\)，其中大小至少为 \(2\) 的块有 \(1\) 个，大小至少为 \(3\) 的块也有 \(1\) 个，所以块大小只能是 \(3\) 与 \(1\)。即
+\[
+J=J_3(4)\oplus J_1(4).
+\]
+
+下面构造 Jordan 链。先取特征向量
+\[
+v_1=\mat{1\\0\\0\\0},
+\qquad u=\mat{0\\1\\0\\0}.
+\]
+其中 \(u\) 将对应那个大小为 \(1\) 的块。再解
+\[
+Nv_2=v_1,
+\qquad Nv_3=v_2.
+\]
+由
+\[
+Ne_3=e_1,
+\qquad Ne_4=e_3,
+\]
+可取
+\[
+v_2=\mat{0\\0\\1\\0},
+\qquad v_3=\mat{0\\0\\0\\1}.
+\]
+于是按基 \((v_1,v_2,v_3,u)\) 排列时，\(A\) 的 Jordan 标准形为
+\[
+\mat{4&1&0&0\\0&4&1&0\\0&0&4&0\\0&0&0&4}.
+\]
+\end{example}
+
+\begin{remark}
+Jordan 标准形提供了“相似分类”的精确答案：在 \(\C\) 上，两个矩阵相似，当且仅当它们具有完全相同的 Jordan 块大小与特征值。也就是说，特征值告诉我们“对角线上是什么”，Jordan 块大小告诉我们“离对角化还差多少”。
+\end{remark}
+
+\section{最小多项式}\label{sec:minimal-polynomial}
+
+\begin{definition}
+设 \(A\in \Mat_n(\F)\)。称满足 \(m_A(A)=0\) 的首一多项式中次数最小者为 \(A\) 的\emph{最小多项式}，记作 \(m_A(t)\)。
+\end{definition}
+
+为了说明这个定义是良定的，需先证明这种多项式确实存在且唯一。
+
+\begin{proposition}\label{prop:minpoly-exists}
+对每个矩阵 \(A\in \Mat_n(\F)\)，最小多项式存在且唯一。并且对任意多项式 \(f(t)\in \F[t]\)，有
+\[
+f(A)=0\quad\Longleftrightarrow\quad m_A(t)\mid f(t).
+\]
+\end{proposition}
+
+\begin{proof}
+由 Cayley--Hamilton 定理，\(\chi_A(A)=0\)，故至少存在一个非零多项式在 \(A\) 处取零。令
+\[
+I_A=\{f(t)\in \F[t]:f(A)=0\}.
+\]
+这是 \(\F[t]\) 的一个非零理想。由于 \(\F[t]\) 是主理想整环，存在唯一首一多项式 \(m_A(t)\) 生成该理想，即
+\[
+I_A=(m_A(t)).
+\]
+于是 \(m_A(A)=0\)，且它是所有湮没 \(A\) 的首一多项式中次数最小者；唯一性也由首一生成元的唯一性得到。
+
+进一步，\(f(A)=0\) 当且仅当 \(f\in I_A=(m_A)\)，这正等价于 \(m_A\mid f\)。
+\end{proof}
+
+\begin{corollary}\label{cor:minpoly-divides-charpoly}
+最小多项式整除特征多项式：
+\[
+m_A(t)\mid \chi_A(t).
+\]
+\end{corollary}
+
+\begin{proof}
+由 Cayley--Hamilton 定理，\(\chi_A(A)=0\)。再由 \cref{prop:minpoly-exists}，得 \(m_A\mid \chi_A\)。
+\end{proof}
+
+\begin{proposition}\label{prop:eigenvalues-roots-minpoly}
+设 \(A\in \Mat_n(\F)\)。则 \(\lambda\in \F\) 是 \(A\) 的特征值，当且仅当 \(m_A(\lambda)=0\)。因此 \(A\) 的特征值恰是最小多项式在 \(\F\) 中的根。
+\end{proposition}
+
+\begin{proof}
+先证必要性。若 \(\lambda\) 是特征值，取对应非零特征向量 \(v\)，则
+\[
+Av=\lambda v.
+\]
+若
+\[
+m_A(t)=a_0+a_1t+\cdots+a_rt^r,
+\]
+则
+\[
+0=m_A(A)v=(a_0I+a_1A+\cdots+a_rA^r)v=(a_0+a_1\lambda+\cdots+a_r\lambda^r)v=m_A(\lambda)v.
+\]
+因 \(v\neq 0\)，故 \(m_A(\lambda)=0\)。
+
+再证充分性。若 \(m_A(\lambda)=0\)，则在 \(\F[t]\) 中有分解
+\[
+m_A(t)=(t-\lambda)q(t).
+\]
+假设 \(\lambda\) 不是特征值，则 \(A-\lambda I_n\) 可逆。于是
+\[
+0=m_A(A)=(A-\lambda I_n)q(A).
+\]
+左乘 \((A-\lambda I_n)^{-1}\) 得 \(q(A)=0\)。这与 \(m_A\) 是次数最小的首一湮没多项式矛盾，因为 \(\deg q<\deg m_A\)。故 \(\lambda\) 必是特征值。
+\end{proof}
+
+\begin{proposition}\label{prop:minpoly-block-diag}
+若
+\[
+A=\diag(A_1,\dots,A_r),
+\]
+则
+\[
+m_A(t)=\lcm\bigl(m_{A_1}(t),\dots,m_{A_r}(t)\bigr).
+\]
+\end{proposition}
+
+\begin{proof}
+对任意多项式 \(f(t)\)，有
+\[
+f(A)=\diag(f(A_1),\dots,f(A_r)).
+\]
+因此 \(f(A)=0\) 当且仅当对每个 \(i\) 都有 \(f(A_i)=0\)，亦即当且仅当每个 \(m_{A_i}\) 都整除 \(f\)。这等价于它们的最小公倍式整除 \(f\)。由 \cref{prop:minpoly-exists} 的刻画，结论成立。
+\end{proof}
+
+\begin{proposition}\label{prop:minpoly-jordan}
+设 \(J\) 是 Jordan 标准形。对每个特征值 \(\lambda\)，记其对应 Jordan 块中最大块大小为 \(s_\lambda\)。则
+\[
+m_J(t)=\prod_{\lambda}(t-\lambda)^{s_\lambda}.
+\]
+特别地，指数 \(s_\lambda\) 正是特征值 \(\lambda\) 对应的最大 Jordan 块大小。
+\end{proposition}
+
+\begin{proof}
+由 \cref{prop:minpoly-block-diag}，只需先求单个 Jordan 块的最小多项式。对 \(J_r(\lambda)=\lambda I_r+N_r\)，其中 \(N_r^r=0\) 且 \(N_r^{r-1}\neq 0\)，有
+\[
+(J_r(\lambda)-\lambda I_r)^r=N_r^r=0,
+\qquad (J_r(\lambda)-\lambda I_r)^{r-1}=N_r^{r-1}\neq 0.
+\]
+故 \(J_r(\lambda)\) 的最小多项式恰为 \((t-\lambda)^r\)。
+
+再对所有 Jordan 块取最小公倍式。对于同一特征值 \(\lambda\)，不同块贡献的幂次中，只保留最大幂次；对不同特征值，因对应线性因子互素，最小公倍式就是它们的乘积。于是得到所求公式。
+\end{proof}
+
+\begin{theorem}\label{thm:minpoly-diag-criterion}
+设 \(A\in \Mat_n(\F)\)，并假设其最小多项式在 \(\F\) 上分解。则下列命题等价：
+\begin{enumerate}[label=(\arabic*), leftmargin=2.4em]
+  \item \(A\) 可对角化；
+  \item \(m_A(t)\) 没有重根；
+  \item \(m_A(t)\) 可写成两两不同线性因子的乘积：
+  \[
+  m_A(t)=\prod_{i=1}^s (t-\lambda_i).
+  \]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\((2)\Leftrightarrow(3)\) 显然。
+
+\((1)\Rightarrow(3)\)：若 \(A\) 可对角化，则存在可逆矩阵 \(P\) 使
+\[
+P^{-1}AP=D=\diag(\mu_1,\dots,\mu_n).
+\]
+对任意多项式 \(f(t)\)，都有
+\[
+f(P^{-1}AP)=P^{-1}f(A)P.
+\]
+因此 \(f(A)=0\) 当且仅当 \(f(D)=0\)，从而 \(A\) 与 \(D\) 有相同的最小多项式。于是只需求 \(D\) 的最小多项式。由 \cref{prop:minpoly-block-diag}，
+\[
+m_D(t)=\lcm(t-\mu_1,\dots,t-\mu_n),
+\]
+这只是出现过的不同线性因子的乘积，没有重根。故 \(m_A(t)=m_D(t)\) 也没有重根。
+
+\((3)\Rightarrow(1)\)：设
+\[
+m_A(t)=\prod_{i=1}^s (t-\lambda_i),
+\qquad \lambda_i\neq \lambda_j\ (i\neq j).
+\]
+记
+\[
+p_i(t)=\frac{m_A(t)}{t-\lambda_i}.
+\]
+因为这些线性因子两两互素，存在多项式 \(a_1(t),\dots,a_s(t)\) 使
+\[
+a_1(t)p_1(t)+\cdots+a_s(t)p_s(t)=1.
+\]
+代入 \(A\) 得
+\[
+a_1(A)p_1(A)+\cdots+a_s(A)p_s(A)=I_n.
+\]
+于是任意向量 \(v\in \F^n\) 都可分解为
+\[
+v=\sum_{i=1}^s v_i,
+\qquad v_i=a_i(A)p_i(A)v.
+\]
+下面证明 \(v_i\in E_{\lambda_i}(A)\)。因为
+\[
+(A-\lambda_i I_n)v_i=(A-\lambda_i I_n)a_i(A)p_i(A)v=a_i(A)m_A(A)v=0,
+\]
+所以 \(v_i\in \Ker(A-\lambda_i I_n)=E_{\lambda_i}(A)\)。这说明
+\[
+\F^n=E_{\lambda_1}(A)+\cdots+E_{\lambda_s}(A).
+\]
+
+再证此和是直和。若 \(v\in E_{\lambda_i}(A)\cap \sum_{j\ne i}E_{\lambda_j}(A)\)，则
+\[
+(A-\lambda_i I_n)v=0,
+\qquad \prod_{j\ne i}(A-\lambda_j I_n)v=0.
+\]
+由于多项式 \(t-\lambda_i\) 与 \(\prod_{j\ne i}(t-\lambda_j)\) 互素，可用 Bézout 恒等式推出 \(v=0\)。因此
+\[
+\F^n=\bigoplus_{i=1}^s E_{\lambda_i}(A).
+\]
+由 \cref{thm:diag-criterion-basis}，\(A\) 可对角化。
+\end{proof}
+
+\begin{example}
+对矩阵
+\[
+A=\mat{2&1\\0&2}
+\]
+有
+\[
+(A-2I_2)^2=0,
+\qquad A-2I_2\neq 0.
+\]
+因此
+\[
+m_A(t)=(t-2)^2.
+\]
+最小多项式有重根，故 \(A\) 不可对角化。这与前面的几何重数判定一致。
+\end{example}
+
+\begin{example}
+设
+\[
+A=\mat{1&0&0\\0&2&0\\0&0&2}.
+\]
+则
+\[
+m_A(t)=(t-1)(t-2).
+\]
+最小多项式分裂且无重根，因此 \(A\) 可对角化。注意此时特征多项式为
+\[
+\chi_A(t)=(t-1)(t-2)^2,
+\]
+它有重根，但这并不妨碍 \(A\) 可对角化。可见：判断对角化看的是最小多项式是否有重根，而不是特征多项式是否有重根。
+\end{example}
+
+\begin{example}
+设
+\[
+J=\diag\bigl(J_2(1),J_3(2)\bigr).
+\]
+则由 \cref{prop:minpoly-jordan}，
+\[
+m_J(t)=(t-1)^2(t-2)^3.
+\]
+这里指数 \(2\) 和 \(3\) 分别记录了特征值 \(1\) 与 \(2\) 对应的最大 Jordan 块大小。
+\end{example}
+
+\begin{remark}
+在模形式理论中，Hecke 算子族之所以特别重要，一个原因就在于它们在适当的内积空间上往往可以同时对角化，于是存在由共同特征向量组成的基；这些共同特征向量就是\emph{特征模形式}（eigenforms）。从线性代数角度看，其核心正是本章讨论的“交换算子的同时对角化”与“最小多项式无重根”这两条思想。
+\end{remark}
+
+\section*{习题}
+\addcontentsline{toc}{section}{习题}
+
+下面共给出 \textbf{70} 题，分为基础、进阶、挑战三级。除特别说明外，矩阵的元素都取自 \(\R\) 或 \(\C\)。
+
+\subsection*{基础题}
+
+\begin{enumerate}[label=\arabic*., leftmargin=2.8em]
+  \item （\basic）求矩阵 \(\mat{2&0\\0&3}\) 的全部特征值、特征向量与特征子空间。
+  \item （\basic）求矩阵 \(\mat{1&1\\0&1}\) 的特征值与特征子空间，并判断其是否可对角化。
+  \item （\basic）在 \(\R\) 上讨论矩阵 \(\mat{0&-1\\1&0}\) 的特征值；再在 \(\C\) 上重复此题。
+  \item （\basic）求矩阵 \(\mat{4&2\\1&3}\) 的特征值与对应特征向量。
+  \item （\basic）求矩阵 \(\mat{2&1\\-1&4}\) 的特征值与特征子空间。
+  \item （\basic）求矩阵 \(\mat{0&1\\-2&-3}\) 的特征值与特征子空间。
+  \item （\basic）求矩阵 \(\mat{5&-2\\2&1}\) 的特征值与特征子空间。
+  \item （\basic）求矩阵 \(\mat{1&2\\2&1}\) 的特征值与特征子空间。
+  \item （\basic）求矩阵 \(\mat{3&0\\4&3}\) 的特征值与特征子空间。
+  \item （\basic）设 \(a\in \F\)。求矩阵 \(\mat{a&1\\0&a}\) 的特征值与特征子空间，并判断它何时可对角化。
+  \item （\basic）求对角矩阵 \(\mat{1&0&0\\0&2&0\\0&0&3}\) 的特征值与特征子空间。
+  \item （\basic）求矩阵 \(\mat{1&1&0\\0&2&1\\0&0&2}\) 的特征值与各特征子空间维数。
+  \item （\basic）求矩阵 \(\mat{0&1&0\\0&0&1\\0&0&0}\) 的特征值，并判断其是否可对角化。
+  \item （\basic）求矩阵 \(\mat{2&0&0\\1&2&0\\0&0&5}\) 的特征值与特征子空间。
+  \item （\basic）求矩阵 \(\mat{1&0&1\\0&1&0\\0&0&2}\) 的特征值与特征子空间。
+  \item （\basic）求矩阵 \(\mat{2&1\\0&2}\) 的特征子空间，并给出其几何重数。
+  \item （\basic）求矩阵 \(\mat{3&0&0\\0&3&1\\0&0&3}\) 的特征子空间，并判断其维数。
+  \item （\basic）对矩阵 \(\mat{4&1&0\\0&4&0\\0&0&4}\)，求特征值 \(4\) 的代数重数与几何重数。
+  \item （\basic）直接验证矩阵 \(\mat{1&1\\1&0}\) 满足它的特征多项式。
+  \item （\basic）直接验证矩阵 \(\mat{2&1\\0&2}\) 满足它的特征多项式。
+  \item （\basic）直接验证矩阵 \(\mat{0&1\\-2&-3}\) 满足它的特征多项式。
+  \item （\basic）直接验证矩阵 \(\mat{1&0&0\\0&2&1\\0&0&2}\) 满足它的特征多项式。
+  \item （\basic）将矩阵 \(\mat{2&0\\0&3}\) 对角化，写出可逆矩阵 \(P\) 与对角矩阵 \(D\)。
+  \item （\basic）将矩阵 \(\mat{1&1\\1&1}\) 对角化。
+  \item （\basic）将矩阵 \(\mat{0&1\\1&0}\) 对角化。
+  \item （\basic）判断矩阵 \(\mat{2&1\\0&2}\) 是否可对角化，并说明理由。
+  \item （\basic）利用 Cayley--Hamilton 定理求 \(\mat{1&1\\0&1}\)^n 的显式公式。
+  \item （\basic）利用 Cayley--Hamilton 定理求矩阵 \(\mat{1&1\\1&0}\) 的逆矩阵。
+  \item （\basic）求矩阵 \(\mat{2&1\\0&2}\) 的 Jordan 标准形。
+  \item （\basic）判断矩阵 \(\mat{1&0&0\\0&2&0\\0&0&2}\) 是否可对角化；若可，对角化之。
+\end{enumerate}
+
+\subsection*{进阶题}
+
+\begin{enumerate}[label=\arabic*., leftmargin=2.8em, resume]
+  \item （\medium）证明：对应于两两不同特征值的特征向量线性无关。
+  \item （\medium）证明：相似矩阵有相同的特征多项式。
+  \item （\medium）证明：三角矩阵的特征值恰为其对角线上的元素。
+  \item （\medium）设 \(A\in \Mat_n(\C)\)，证明 \(\Tr(A)\) 等于 \(A\) 的全部特征值之和（按代数重数计）。
+  \item （\medium）设 \(A\in \Mat_n(\C)\)，证明 \(\det(A)\) 等于 \(A\) 的全部特征值之积（按代数重数计）。
+  \item （\medium）证明：若 \(A,B\in \Mat_n(\F)\)，则 \(AB\) 与 \(BA\) 具有相同的非零特征值（按代数重数计）。
+  \item （\medium）设 \(A\) 可逆，证明：\(\lambda\) 是 \(A\) 的特征值，当且仅当 \(\lambda^{-1}\) 是 \(A^{-1}\) 的特征值。
+  \item （\medium）设 \(f(t)\in \F[t]\)。证明：若 \(Av=\lambda v\)，则 \(f(A)v=f(\lambda)v\)。
+  \item （\medium）求矩阵 \(\mat{2&1&1\\0&2&0\\0&0&3}\) 的 Jordan 标准形，并构造一组 Jordan 基。
+  \item （\medium）求矩阵 \(\mat{0&1&1\\0&0&0\\0&0&0}\) 的 Jordan 标准形，并构造一组 Jordan 基。
+  \item （\medium）设 \(A\in \Mat_4(\C)\) 的唯一特征值为 \(0\)，且
+  \[
+  \dim\Ker A=2,\qquad \dim\Ker A^2=3,\qquad \dim\Ker A^3=4.
+  \]
+  求 \(A\) 的 Jordan 标准形。
+  \item （\medium）求矩阵 \(\mat{4&0&1&0\\0&4&0&0\\0&0&4&1\\0&0&0&4}\) 的 Jordan 标准形。
+  \item （\medium）求矩阵 \(J=\diag(J_2(1),J_3(2))\) 的最小多项式。
+  \item （\medium）求矩阵 \(\mat{2&1&0\\0&2&1\\0&0&2}\) 的最小多项式。
+  \item （\medium）证明：任一特征值的几何重数不超过其代数重数。
+  \item （\medium）证明：矩阵 \(A\in \Mat_n(\F)\) 可对角化，当且仅当各特征子空间维数之和等于 \(n\)。
+  \item （\medium）证明：若 \(A\in \Mat_n(\F)\) 有 \(n\) 个两两不同的特征值，则 \(A\) 可对角化。
+  \item （\medium）证明：若矩阵 \(A\) 只有一个特征值 \(\lambda\)，则 \(A\) 可对角化当且仅当 \(A=\lambda I_n\)。
+  \item （\medium）在 \(\C\) 上按相似分类所有 \(2\times 2\) 矩阵：分别讨论有两个不同特征值、只有一个特征值且可对角化、只有一个特征值且不可对角化三种情形。
+  \item （\medium）设矩阵 \(A\) 满足 \(A^2-3A+2I_n=0\)。证明 \(A\) 可对角化，并写出其所有可能特征值。
+  \item （\medium）设 \(A=\diag(1,1,2)\)。求所有满足 \(f(A)=0\) 的多项式 \(f(t)\in \F[t]\)。
+  \item （\medium）证明：矩阵 \(A\) 幂零，当且仅当其特征多项式为 \(t^n\)。
+  \item （\medium）证明：若 \(A^2=A\)，则 \(A\) 可对角化，且其特征值只可能是 \(0\) 或 \(1\)。
+  \item （\medium）设 \(\Char(\F)\neq 2\)。证明：若 \(A^2=I_n\)，则 \(A\) 可对角化，且其特征值只可能是 \(\pm 1\)。
+  \item （\medium）证明：若 \(A=\diag(A_1,A_2)\)，则 \(m_A(t)=\lcm(m_{A_1}(t),m_{A_2}(t))\)。
+\end{enumerate}
+
+\subsection*{挑战题}
+
+\begin{enumerate}[label=\arabic*., leftmargin=2.8em, resume]
+  \item （\hard）设 \(A,B\in \Mat_n(\C)\) 都可对角化且满足 \(AB=BA\)。证明：\(A\) 与 \(B\) 可以同时对角化。
+  \item （\hard）把上一题推广到有限个两两交换且都可对角化的矩阵族 \(A_1,\dots,A_r\)。
+  \item （\hard）设 \(A\in \Mat_n(\C)\) 有 \(n\) 个两两不同的特征值，且 \(AB=BA\)。证明：存在次数小于 \(n\) 的多项式 \(q(t)\) 使 \(B=q(A)\)。
+  \item （\hard）举出两个都可对角化但不能同时对角化的 \(2\times 2\) 复矩阵，并解释原因。
+  \item （\hard）举出两个可交换但不能同时对角化的复矩阵，并解释原因。
+  \item （\hard）设 \(\chi_A(t)=(t-1)^4\) 且 \(m_A(t)=(t-1)^2\)。列出 \(A\) 所有可能的 Jordan 标准形。
+  \item （\hard）设 \(d_k=\dim\Ker(A-\lambda I_n)^k\)，证明：对应于特征值 \(\lambda\) 的 Jordan 块中，大小至少为 \(k\) 的块个数等于 \(d_k-d_{k-1}\)。
+  \item （\hard）设 \(N\) 是幂零矩阵。证明：\(N\) 的 Jordan 块个数等于 \(\dim\Ker N\)，最大 Jordan 块大小等于满足 \(N^r=0\) 的最小正整数 \(r\)。
+  \item （\hard）设 \(A\in \Mat_6(\C)\) 的唯一特征值为 \(0\)，且
+  \[
+  \rank A=4,\qquad \rank A^2=2,\qquad \rank A^3=1,\qquad \rank A^4=0.
+  \]
+  求 \(A\) 的 Jordan 标准形。
+  \item （\hard）设 \(A\in \Mat_7(\C)\) 满足
+  \[
+  \chi_A(t)=(t-2)^7,
+  \qquad \dim\Ker(A-2I)^1=3,
+  \qquad \dim\Ker(A-2I)^2=5,
+  \qquad \dim\Ker(A-2I)^3=7.
+  \]
+  求 \(A\) 的 Jordan 标准形。
+  \item （\hard）证明：若 \(J\) 是 Jordan 标准形，则 \(m_J(t)=\prod_{\lambda}(t-\lambda)^{s_\lambda}\)，其中 \(s_\lambda\) 为特征值 \(\lambda\) 对应的最大 Jordan 块大小。
+  \item （\hard）设 \(V\) 是有限维复内积空间，\(T_1,\dots,T_r\in \End(V)\) 两两交换，且每个 \(T_i\) 都是自伴算子。证明：存在一组 \(V\) 的标准正交基，由这些算子的共同特征向量组成。
+  \item （\hard）设 \(W\subseteq S_k(\SL_2(\Z))\) 是一个有限维复向量空间，并且对所有 Hecke 算子 \(T_n\) 都稳定。假设这些 \(T_n\) 两两交换，且在 Petersson 内积下都是自伴的。证明：\(W\) 有一组由 Hecke 共同特征向量组成的基。
+  \item （\hard）设
+  \[
+  f(z)=\sum_{m\ge 1} a_m q^m\in S_k(\SL_2(\Z))
+  \]
+  是所有 Hecke 算子 \(T_n\) 的共同特征向量，并满足 \(T_n f=\lambda_n f\)。若再假设 \(a_1=1\)，证明 \(\lambda_n=a_n\)。
+  \item （\hard）设 \(f\in S_k(\SL_2(\Z))\) 是权 \(k\) 的归一化 Hecke 特征模形式，记其 Fourier 系数为 \(a_n\)。利用关系
+  \[
+  T_p^2-T_{p^2}=p^{k-1}\Id
+  \]
+  证明
+  \[
+  a_{p^2}=a_p^2-p^{k-1}.
+  \]
+\end{enumerate}

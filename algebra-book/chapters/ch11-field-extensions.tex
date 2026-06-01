@@ -1,0 +1,831 @@
+\chapter{域扩张}
+
+域扩张是从已知域出发构造新域的基本手段。在线性代数中，我们常把向量空间看成建立在某个固定标量域上的对象；而在域论中，一个更大的域本身就可以看成较小域上的向量空间。这一观点把“代数方程有没有根”“一个多项式在多大范围内完全分解”“有限域如何分类”等问题统一起来。对模形式而言，Fourier 系数所生成的数域正是典型的域扩张。
+
+\section{域扩张与扩张次数}
+
+\begin{definition}
+设 $K,L$ 是两个域，且 $K$ 是 $L$ 的子域，即 $K\subset L$，并且 $K,L$ 上的加法与乘法相容。此时称 $L/K$ 为一个\emph{域扩张}，也称 $L$ 是 $K$ 的一个扩张域，$K$ 是 $L$ 的一个子域。
+
+由于 $K\subset L$，所以 $L$ 在来自 $K$ 的数乘下成为一个 $K$-向量空间。这个向量空间的维数称为扩张 $L/K$ 的\emph{扩张次数}，记为
+\[
+[L:K]=\dim_K L.
+\]
+若该维数有限，则称 $L/K$ 为\emph{有限扩张}；否则称为\emph{无限扩张}。
+\end{definition}
+
+因此，研究域扩张的第一步就是把“大域”当作“小域”上的线性空间来理解。下面几个最基本的例子会在整章中反复出现。
+
+\begin{example}
+考虑 $\Q(\sqrt2)=\{a+b\sqrt2\mid a,b\in\Q\}$。由于 $\sqrt2\notin\Q$，而每个元素都能唯一写成 $a+b\sqrt2$ 的形式，所以
+\[
+\Q(\sqrt2)=\Q\oplus \Q\sqrt2
+\]
+是一个二维 $\Q$-向量空间，故
+\[
+[\Q(\sqrt2):\Q]=2.
+\]
+一组 $\Q$-基可以取为 $\{1,\sqrt2\}$。
+\end{example}
+
+\begin{example}
+复数域 $\C$ 是实数域 $\R$ 的扩张。每个复数都唯一写成 $a+bi$，其中 $a,b\in\R$。因此
+\[
+\C=\R\oplus \R i,
+\qquad [\C:\R]=2.
+\]
+这里 $\{1,i\}$ 是一组 $\R$-基。
+\end{example}
+
+\begin{example}
+在第 11.4 节中我们将证明：对任意素数 $p$ 与正整数 $n$，都存在一个具有 $p^n$ 个元素的域，记为 $\F_{p^n}$，而且它作为 $\F_p$ 上的向量空间维数正好为 $n$。也就是说
+\[
+[\F_{p^n}:\F_p]=n.
+\]
+这是有限域与线性代数之间最直接的联系。
+\end{example}
+
+域扩张常常分层出现：若 $K\subset L\subset M$，则既有扩张 $L/K$，也有扩张 $M/L$ 与 $M/K$。这三者的扩张次数由著名的塔定律联系起来。
+
+\begin{theorem}[塔定律]
+设 $K\subset L\subset M$ 是域的塔，并且 $[L:K]$ 与 $[M:L]$ 都有限。则 $[M:K]$ 也有限，且
+\[
+[M:K]=[M:L][L:K].
+\]
+\end{theorem}
+
+\begin{proof}
+设
+\[
+[L:K]=n,\qquad [M:L]=m.
+\]
+取 $L/K$ 的一组 $K$-基 $e_1,\dots,e_n$，再取 $M/L$ 的一组 $L$-基 $f_1,\dots,f_m$。我们证明
+\[
+\{e_i f_j\mid 1\le i\le n,\ 1\le j\le m\}
+\]
+是 $M/K$ 的一组基。
+
+先证张成性。任取 $x\in M$。由于 $f_1,\dots,f_m$ 是 $M/L$ 的一组基，存在 $\lambda_1,\dots,\lambda_m\in L$，使得
+\[
+ x=\lambda_1 f_1+\cdots+\lambda_m f_m.
+\]
+而每个 $\lambda_j\in L$ 又都可由 $e_1,\dots,e_n$ 唯一表示，即
+\[
+\lambda_j=a_{1j}e_1+\cdots+a_{nj}e_n,\qquad a_{ij}\in K.
+\]
+代回得
+\[
+ x=\sum_{j=1}^m\sum_{i=1}^n a_{ij}e_i f_j.
+\]
+故这些 $e_i f_j$ 张成 $M$ 的整个 $K$-向量空间。
+
+再证线性无关。设
+\[
+\sum_{j=1}^m\sum_{i=1}^n a_{ij}e_i f_j=0,\qquad a_{ij}\in K.
+\]
+按 $f_j$ 分组可写为
+\[
+\sum_{j=1}^m \left(\sum_{i=1}^n a_{ij}e_i\right)f_j=0.
+\]
+因为 $f_1,\dots,f_m$ 在 $L$ 上线性无关，所以对每个 $j$ 都有
+\[
+\sum_{i=1}^n a_{ij}e_i=0.
+\]
+再由 $e_1,\dots,e_n$ 在 $K$ 上线性无关，推出一切 $a_{ij}=0$。于是这些 $e_i f_j$ 在 $K$ 上线性无关。
+
+因此它们构成 $M/K$ 的一组基，其元素个数为 $nm$，故
+\[
+[M:K]=nm=[M:L][L:K].
+\]
+\end{proof}
+
+\begin{remark}
+若三层扩张中某一层是无限扩张，则塔定律需要以基数乘法的语言来表述。对本章的大多数讨论，有限扩张的情形已经足够。
+\end{remark}
+
+\begin{example}
+取
+\[
+\Q\subset \Q(\sqrt2)\subset \Q(\sqrt2,i).
+\]
+由于 $[\Q(\sqrt2):\Q]=2$，而 $i\notin \Q(\sqrt2)$，故 $x^2+1$ 在 $\Q(\sqrt2)$ 上仍不可约，从而
+\[
+[\Q(\sqrt2,i):\Q(\sqrt2)]=2.
+\]
+由塔定律
+\[
+[\Q(\sqrt2,i):\Q]=2\cdot 2=4.
+\]
+事实上，一组 $\Q$-基可以取为
+\[
+\{1,\sqrt2,i,i\sqrt2\}.
+\]
+\end{example}
+
+\begin{example}
+若 $E$ 是一个具有 $p^n$ 个元素的有限域，则 $E$ 含有素域 $\F_p$，并且 $E$ 作为 $\F_p$-向量空间的维数必为某个正整数。由于 $|E|=p^n$，我们将在第 11.4 节证明这个维数恰为 $n$。因此有限域的元素个数总是素数幂，而不是任意整数。
+\end{example}
+
+\section{代数扩张与超越扩张}
+
+域扩张最基本的问题是：给定扩张 $L/K$ 以及元素 $\alpha\in L$，它是否满足某个以 $K$ 为系数的多项式方程？若满足，则称它是代数的；否则称它是超越的。
+
+\begin{definition}
+设 $L/K$ 是域扩张，$\alpha\in L$。
+\begin{enumerate}[label=(\arabic*)]
+  \item 若存在非零多项式 $f(x)\in K[x]$ 使得 $f(\alpha)=0$，则称 $\alpha$ \emph{在 $K$ 上代数}，或简称 $\alpha$ 是 $K$ 上的\emph{代数元}。
+  \item 若对任意非零 $f(x)\in K[x]$ 都有 $f(\alpha)\ne 0$，则称 $\alpha$ \emph{在 $K$ 上超越}，或简称 $\alpha$ 是 $K$ 上的\emph{超越元}。
+\end{enumerate}
+若扩张 $L/K$ 的每个元素都在 $K$ 上代数，则称 $L/K$ 为\emph{代数扩张}。
+\end{definition}
+
+\begin{example}
+$\sqrt2$ 在 $\Q$ 上代数，因为它满足 $x^2-2=0$。同理，$i$ 在 $\R$ 上代数，因为它满足 $x^2+1=0$。
+\end{example}
+
+\begin{example}
+数 $\pi$ 在 $\Q$ 上是超越元。这是 Lindemann 定理的一个著名结论，因此 $\Q(\pi)/\Q$ 不是代数扩张，而是超越扩张。
+\end{example}
+
+对代数元，最重要的对象是它的极小多项式。
+
+\begin{theorem}[极小多项式]
+设 $L/K$ 是域扩张，$\alpha\in L$ 在 $K$ 上代数。则存在唯一的首一不可约多项式 $m_{\alpha,K}(x)\in K[x]$，满足
+\[
+m_{\alpha,K}(\alpha)=0.
+\]
+它称为 $\alpha$ 在 $K$ 上的\emph{极小多项式}。
+\end{theorem}
+
+\begin{proof}
+考虑代入同态
+\[
+\varphi:K[x]\longrightarrow L,\qquad f(x)\longmapsto f(\alpha).
+\]
+这是一个环同态。由于 $\alpha$ 代数，$\Ker\varphi$ 非零。又因为 $K[x]$ 是主理想整环，故存在首一多项式 $m(x)\in K[x]$，使得
+\[
+\Ker\varphi=(m(x)).
+\]
+显然 $m(\alpha)=0$。
+
+先证 $m(x)$ 不可约。若 $m(x)=u(x)v(x)$，其中 $u,v\in K[x]$ 的次数都严格小于 $\deg m$，则
+\[
+0=m(\alpha)=u(\alpha)v(\alpha).
+\]
+由于 $L$ 是域，没有零因子，所以 $u(\alpha)=0$ 或 $v(\alpha)=0$。这说明 $u$ 或 $v$ 属于 $\Ker\varphi=(m)$，从而 $m$ 整除 $u$ 或 $v$，与次数严格更小矛盾。所以 $m$ 不可约。
+
+再证唯一性。若 $m_1,m_2\in K[x]$ 都是首一不可约多项式且都以 $\alpha$ 为根，则 $m_1,m_2\in\Ker\varphi=(m)$，故 $m$ 整除 $m_1,m_2$。由于 $m,m_1,m_2$ 都是首一且不可约，必有 $m=m_1=m_2$。
+\end{proof}
+
+\begin{proposition}
+设 $\alpha$ 在 $K$ 上代数，极小多项式为 $m_{\alpha,K}(x)$，其次数记为 $d$。则
+\[
+[K(\alpha):K]=d,
+\]
+并且
+\[
+\{1,\alpha,\alpha^2,\dots,\alpha^{d-1}\}
+\]
+是 $K(\alpha)$ 的一组 $K$-基。
+\end{proposition}
+
+\begin{proof}
+由代入同态 $\varphi:K[x]\to K(\alpha)$，其像恰为 $K[\alpha]$。我们先说明 $K[\alpha]$ 已经是域。任取非零元 $g(\alpha)\in K[\alpha]$。若极小多项式 $m_{\alpha,K}(x)$ 整除 $g(x)$，则 $g(\alpha)=0$，矛盾；故 $m_{\alpha,K}$ 与 $g$ 互素。由 Bezout 恒等式，存在 $u(x),v(x)\in K[x]$，使得
+\[
+u(x)g(x)+v(x)m_{\alpha,K}(x)=1.
+\]
+代入 $x=\alpha$ 得
+\[
+u(\alpha)g(\alpha)=1.
+\]
+故 $g(\alpha)$ 可逆，所以 $K[\alpha]$ 是域，从而 $K[\alpha]=K(\alpha)$。由同构定理得到
+\[
+K(\alpha)\cong K[x]/(m_{\alpha,K}(x)).
+\]
+若 $d=\deg m_{\alpha,K}$，则商环中每个元素都唯一表示成次数小于 $d$ 的多项式类，因此作为 $K$-向量空间，它以
+\[
+1,x,\dots,x^{d-1}
+\]
+的像为一组基。把 $x$ 的像对应到 $\alpha$，便得到
+\[
+1,\alpha,\dots,\alpha^{d-1}
+\]
+是 $K(\alpha)$ 的一组 $K$-基，故扩张次数等于 $d$。
+\end{proof}
+
+\begin{corollary}
+设 $L/K$ 是域扩张，$\alpha\in L$。则 $\alpha$ 在 $K$ 上代数，当且仅当 $[K(\alpha):K]<\infty$。
+\end{corollary}
+
+\begin{proof}
+若 $\alpha$ 代数，则由上命题
+\[
+[K(\alpha):K]=\deg m_{\alpha,K}<\infty.
+\]
+反之，若 $[K(\alpha):K]=n<\infty$，则 $1,\alpha,\dots,\alpha^n$ 是 $n+1$ 个向量，位于 $n$ 维的 $K$-向量空间 $K(\alpha)$ 中，故线性相关。于是存在不全为零的 $a_0,\dots,a_n\in K$，使
+\[
+a_0+a_1\alpha+\cdots+a_n\alpha^n=0.
+\]
+这正说明 $\alpha$ 在 $K$ 上代数。
+\end{proof}
+
+代数元在加减乘除下保持封闭，这一点说明“由有限多个代数元生成的域”仍是有限扩张。
+
+\begin{proposition}
+设 $L/K$ 是域扩张，$\alpha,\beta\in L$ 都在 $K$ 上代数。则 $\alpha\pm\beta$、$\alpha\beta$ 也都在 $K$ 上代数；若 $\beta\ne 0$，则 $\alpha/\beta$ 也在 $K$ 上代数。并且扩张 $K(\alpha,\beta)/K$ 是有限扩张。
+\end{proposition}
+
+\begin{proof}
+由上一个命题，$K(\alpha)/K$ 与 $K(\beta)/K$ 都是有限扩张。于是由塔定律
+\[
+[K(\alpha,\beta):K]=[K(\alpha,\beta):K(\alpha)]\,[K(\alpha):K]<\infty,
+\]
+因为 $\beta$ 在 $K$ 上代数，当然也在更大的域 $K(\alpha)$ 上代数，所以 $[K(\alpha,\beta):K(\alpha)]<\infty$。
+
+现在 $K(\alpha,\beta)$ 是一个有限维 $K$-向量空间。其任一元素，特别是 $\alpha\pm\beta$、$\alpha\beta$、$\alpha/\beta$（当 $\beta\ne0$ 时），都生成一个简单扩张
+\[
+K\subset K(\alpha\pm\beta),\ K(\alpha\beta),\ K(\alpha/\beta)
+\]
+并嵌入 $K(\alpha,\beta)$。因此这些简单扩张都是有限维的，从而这些元素都在 $K$ 上代数。
+\end{proof}
+
+\begin{example}
+设 $\alpha=\sqrt2+\sqrt3$。由于 $\alpha$ 落在代数扩张 $\Q(\sqrt2,\sqrt3)$ 中，它必在 $\Q$ 上代数。直接计算可得
+\[
+\alpha^2=5+2\sqrt6,
+\qquad (\alpha^2-5)^2=24,
+\]
+故
+\[
+\alpha^4-10\alpha^2+1=0.
+\]
+于是 $\alpha$ 满足首一四次方程 $x^4-10x^2+1=0$。事实上这个多项式在 $\Q[x]$ 中不可约，因此它就是 $\alpha$ 的极小多项式。
+\end{example}
+
+\begin{definition}
+设 $L/K$ 是域扩张。若存在 $\alpha\in L$ 在 $K$ 上超越，则称 $L/K$ 为\emph{超越扩张}。若 $L=K(t)$ 且 $t$ 超越，则称之为一个\emph{单超越扩张}。
+\end{definition}
+
+\begin{example}
+有理函数域 $K(t)$ 是 $K$ 的单超越扩张，其中 $t$ 在 $K$ 上超越。事实上，若存在非零多项式
+\[
+a_0+a_1 t+\cdots+a_n t^n=0,\qquad a_i\in K,
+\]
+把它看成有理函数恒等于零，就只能有所有系数都为零，矛盾。
+\end{example}
+
+\begin{remark}
+更一般地，若 $t_1,\dots,t_r$ 之间不存在非平凡多项式关系，则称它们在 $K$ 上\emph{代数无关}。一个扩张中最大代数无关集的基数称为该扩张的\emph{超越次数}，记作 transcendence degree。它度量了扩张中“超越变量”的个数。本章只作点到为止的介绍，不展开一般理论。
+\end{remark}
+
+\section{分裂域与代数闭包}
+
+一个多项式可能在原来的系数域上没有足够多的根。为了让它完全分解，我们需要把系数域扩大到恰好容纳所有根的最小域。
+
+\begin{definition}
+设 $f(x)\in K[x]$。若扩张 $L/K$ 满足：
+\begin{enumerate}[label=(\arabic*)]
+  \item 在 $L[x]$ 中，多项式 $f(x)$ 分解为一次因子的乘积；
+  \item $L$ 由 $f(x)$ 的所有根在 $K$ 上生成，
+\end{enumerate}
+则称 $L$ 为 $f(x)$ 在 $K$ 上的\emph{分裂域}。
+\end{definition}
+
+\begin{example}
+多项式 $x^2-2\in\Q[x]$ 的两个根是 $\pm\sqrt2$，因此它在 $\Q$ 上的分裂域就是 $\Q(\sqrt2)$。
+\end{example}
+
+\begin{example}
+多项式 $x^3-2\in\Q[x]$ 的三个根为
+\[
+\sqrt[3]{2},\qquad \omega\sqrt[3]{2},\qquad \omega^2\sqrt[3]{2},
+\]
+其中 $\omega=e^{2\pi i/3}=(-1+i\sqrt3)/2$ 是三次单位根。因此它的分裂域为
+\[
+\Q(\sqrt[3]{2},\omega).
+\]
+这个例子说明：即便一个多项式有一个实根，为了装下全部根，也常常必须引入复数。
+\end{example}
+
+分裂域的存在与唯一性都建立在一个简单扩张的同构延拓引理上。
+
+\begin{lemma}[简单扩张的同构延拓]
+设 $\sigma:K\to K'$ 是域同构，$p(x)\in K[x]$ 为不可约多项式，$\alpha$ 是 $p$ 的一个根，$\beta$ 是 $\sigma(p)$ 的一个根，其中 $\sigma(p)$ 表示把 $p$ 的系数逐个施以 $\sigma$ 后得到的多项式。则 $\sigma$ 唯一延拓为一个域同构
+\[
+\widetilde\sigma:K(\alpha)\longrightarrow K'(\beta)
+\]
+满足 $\widetilde\sigma(\alpha)=\beta$。
+\end{lemma}
+
+\begin{proof}
+由前一节的讨论，
+\[
+K(\alpha)\cong K[x]/(p(x)),\qquad K'(\beta)\cong K'[x]/(\sigma(p)(x)).
+\]
+定义映射
+\[
+\Phi:K[x]\longrightarrow K'(\beta),\qquad \sum a_i x^i\longmapsto \sum \sigma(a_i)\beta^i.
+\]
+这是一个环同态。由于 $\beta$ 是 $\sigma(p)$ 的根，所以 $p(x)$ 在 $\Phi$ 下被送到零，即 $(p)\subset\Ker\Phi$。反过来，若 $f\in\Ker\Phi$，则 $\sigma(f)(\beta)=0$。因为 $\sigma(p)$ 是 $\beta$ 在 $K'$ 上的极小多项式，故 $\sigma(p)$ 整除 $\sigma(f)$，于是 $p$ 整除 $f$。故 $\Ker\Phi=(p)$。
+
+由同构定理，$\Phi$ 诱导出一个同构
+\[
+K[x]/(p)\xrightarrow{\sim} K'(\beta).
+\]
+在这个同构下，$x$ 的像就是 $\beta$，而 $a\in K$ 的像为 $\sigma(a)$。借助 $K(\alpha)\cong K[x]/(p)$，便得到所需的延拓同构。唯一性来自于：$K(\alpha)$ 由 $K$ 与 $\alpha$ 生成，因此延拓一旦在 $K$ 上等于 $\sigma$ 且把 $\alpha$ 送到 $\beta$，就完全确定。
+\end{proof}
+
+\begin{theorem}[分裂域的存在]
+任意多项式 $f(x)\in K[x]$ 在 $K$ 上都存在分裂域。
+\end{theorem}
+
+\begin{proof}
+对 $\deg f$ 作归纳。若 $\deg f=0$ 或 $1$，则 $f$ 已在 $K$ 上分裂，分裂域就是 $K$ 本身。
+
+设 $\deg f\ge2$，并假定次数更小的情形已知。若 $f$ 在 $K$ 上已经完全分解，则分裂域仍是 $K$。否则，$f$ 有一个不可约因子 $p(x)$，其次数至少为 $2$。取 $p$ 的一个根 $\alpha$，形成简单扩张 $K_1=K(\alpha)$。在 $K_1[x]$ 中，$f$ 至少分解出一个一次因子，因此可以写成
+\[
+f(x)=(x-\alpha)g(x)
+\]
+其中 $g(x)\in K_1[x]$ 的次数比 $f$ 小。
+
+由归纳假设，$g(x)$ 在 $K_1$ 上有分裂域 $L$。于是 $f$ 在 $L$ 上完全分解，而 $L$ 由 $\alpha$ 与 $g$ 的所有根生成，也即由 $f$ 的所有根生成。因此 $L$ 正是 $f$ 在 $K$ 上的分裂域。
+\end{proof}
+
+\begin{theorem}[分裂域的唯一性]
+设 $f(x)\in K[x]$。若 $L$ 与 $L'$ 都是 $f$ 在 $K$ 上的分裂域，则存在一个保持 $K$ 中每个元素不动的域同构
+\[
+L\xrightarrow{\sim}L'.
+\]
+换言之，分裂域在 $K$-同构意义下唯一。
+\end{theorem}
+
+\begin{proof}
+仍对 $\deg f$ 作归纳。次数 $0,1$ 的情形显然。
+
+设 $\deg f\ge2$。取 $f$ 的一个不可约因子 $p(x)$，并在 $L$ 中取其一个根 $\alpha$，在 $L'$ 中取对应的一个根 $\beta$。由上一个引理，恒等同构 $\Id_K:K\to K$ 可延拓为一个同构
+\[
+\tau:K(\alpha)\xrightarrow{\sim}K(\beta)
+\]
+使得 $\tau(\alpha)=\beta$。
+
+把 $f$ 视为 $K(\alpha)[x]$ 中的多项式后，可写成
+\[
+f(x)=(x-\alpha)g(x),\qquad g(x)\in K(\alpha)[x].
+\]
+同样，在 $K(\beta)[x]$ 中有
+\[
+f(x)=(x-\beta)g'(x),
+\]
+并且 $g'$ 正是由 $g$ 的系数经 $\tau$ 作用后得到的多项式。由于 $L$ 是 $f$ 的分裂域，故也是 $g$ 在 $K(\alpha)$ 上的分裂域；同理，$L'$ 是 $g'$ 在 $K(\beta)$ 上的分裂域。由归纳假设，$\tau$ 可进一步延拓为一个同构
+\[
+L\xrightarrow{\sim}L'
+\]
+且在 $K(\alpha)$ 上等于 $\tau$。特别地，它固定 $K$ 中每个元素。
+\end{proof}
+
+\begin{definition}
+一个域 $\Omega$ 称为\emph{代数闭域}，如果任意非常数多项式 $f(x)\in\Omega[x]$ 都在 $\Omega$ 中有根；等价地，任意非常数多项式都能在 $\Omega[x]$ 中完全分解成一次因子。
+
+若 $\Omega/K$ 是代数扩张，且 $\Omega$ 本身代数闭，则称 $\Omega$ 为 $K$ 的一个\emph{代数闭包}。
+\end{definition}
+
+\begin{remark}
+代数闭包把“添加足够多的代数根”这一过程一次性做到极致。分裂域只解决某一个多项式的根问题，而代数闭包同时容纳所有以 $K$ 为系数的代数方程的全部根。
+\end{remark}
+
+\begin{theorem}
+每个域都存在代数闭包；并且代数闭包在 $K$-同构意义下唯一。
+\end{theorem}
+
+\begin{remark}
+严格证明该定理通常要借助 Zorn 引理或等价的选择公理形式。一个常见思路是：先取一个包含 $K$ 的足够大的代数扩张，再在其中选取极大的代数扩张并证明它必然代数闭。由于这一步超出了本章的技术范围，我们把完整构造放到习题中作为挑战题的提纲练习。本章后续只使用代数闭包的存在性与唯一性。
+\end{remark}
+
+\begin{theorem}[代数学基本定理]
+复数域 $\C$ 是代数闭域。
+\end{theorem}
+
+\begin{remark}
+这一定理是分析与代数之间最深刻的桥梁之一。它说明每个复系数非常数多项式在 $\C$ 中都有根，因此 $\C$ 是 $\R$ 的一个代数闭包。由此可推出：每个实系数多项式都可以在 $\R[x]$ 中分解为一次因子与不可约二次因子的乘积。
+\end{remark}
+
+\section{有限域}
+
+有限域是域论中最为整齐、也最为重要的一类对象之一。它们在编码论、数论、代数几何与模形式中都大量出现。本节给出有限域的基本分类与结构定理。
+
+\begin{proposition}
+设 $E$ 是有限域。则存在素数 $p$ 与正整数 $n$，使得
+\[
+|E|=p^n.
+\]
+更确切地，$\Char E=p$，且 $E$ 作为其素域 $\F_p$ 上的向量空间维数为 $n$。
+\end{proposition}
+
+\begin{proof}
+域的特征不可能为 $0$，因为若 $\Char E=0$，则 $E$ 至少含有同构于 $\Z$ 的无限子环，与 $E$ 有限矛盾。故 $\Char E=p>0$。特征为正的域其特征必为素数，因此 $p$ 是素数。
+
+由此，$E$ 含有一个最小子域，与 $\F_p$ 同构，称为它的素域。把 $E$ 看成 $\F_p$ 上的向量空间。由于 $E$ 有限，这个向量空间必有限维，设维数为 $n$。有限维向量空间中元素个数等于底域大小的维数次幂，因此
+\[
+|E|=p^n.
+\]
+\end{proof}
+
+于是有限域的元素个数必是素数幂。下面说明反过来每个素数幂都能实现，而且实现方式唯一。
+
+\begin{theorem}[有限域的存在与唯一性]
+对任意素数 $p$ 与正整数 $n$，存在一个具有 $q=p^n$ 个元素的域；它在同构意义下唯一。我们把它记作 $\F_q$。
+\end{theorem}
+
+\begin{proof}
+记 $q=p^n$，并在某个 $\F_p$ 的代数闭包中考虑多项式
+\[
+F_q(x)=x^q-x.
+\]
+由于在特征 $p$ 下有 Freshman dream 公式 $(a+b)^p=a^p+b^p$，反复迭代得到 $(a+b)^q=a^q+b^q$，以及 $(ab)^q=a^qb^q$。设
+\[
+S=\{x\mid x^q=x\}
+\]
+是 $F_q(x)$ 的根集。若 $a,b\in S$，则
+\[
+(a+b)^q=a^q+b^q=a+b,
+\]
+故 $a+b\in S$；同理
+\[
+(-a)^q=-a,\qquad (ab)^q=a^qb^q=ab.
+\]
+若 $a\in S$ 且 $a\ne0$，则
+\[
+(a^{-1})^q=(a^q)^{-1}=a^{-1}.
+\]
+因此 $S$ 在四则运算下封闭，是一个子域。
+
+再看根的个数。导数为
+\[
+F_q'(x)=qx^{q-1}-1=-1,
+\]
+因为 $q=p^n$ 在特征 $p$ 下等于 $0$。故 $F_q'(x)$ 与 $F_q(x)$ 互素，所以 $F_q(x)$ 没有重根。既然 $F_q(x)$ 的次数为 $q$，它在分裂域中恰有 $q$ 个不同的根，因此 $|S|=q$。这就构造出了一个具有 $q$ 个元素的域。
+
+下面证唯一性。设 $E$ 是任意一个具有 $q$ 个元素的域。由上一个命题，$E$ 的特征为 $p$，并包含 $\F_p$。对任意 $a\in E$，若 $a\ne0$，则 $a\in E^*$，而乘法群 $E^*$ 的阶为 $q-1$。由 Lagrange 定理，$a^{q-1}=1$，故 $a^q=a$；对 $a=0$ 也显然成立。因此 $E$ 的每个元素都是 $x^q-x$ 的根。
+
+反之，多项式 $x^q-x$ 的次数为 $q$，而 $E$ 中已有 $q$ 个不同的根，所以它在 $E$ 上完全分裂。于是 $E$ 正是 $x^q-x$ 在 $\F_p$ 上的分裂域。分裂域在 $\F_p$-同构意义下唯一，因此具有 $q$ 个元素的域在同构意义下唯一。
+\end{proof}
+
+\begin{definition}
+具有 $q=p^n$ 个元素的有限域记作 $\F_q$。其中 $\F_p$ 是素域，$n=[\F_q:\F_p]$。
+\end{definition}
+
+\begin{proposition}[Frobenius 自同态]
+设 $K$ 是特征为 $p$ 的域。则映射
+\[
+\varphi:K\longrightarrow K,\qquad x\longmapsto x^p
+\]
+是一个单射环同态，称为 $K$ 上的\emph{Frobenius 同态}。若 $K$ 有限，则 $\varphi$ 是自同构。
+\end{proposition}
+
+\begin{proof}
+在特征 $p$ 下，由二项式定理可得
+\[
+(a+b)^p=a^p+b^p,
+\]
+因为中间二项式系数 $\binom{p}{k}$ 都被 $p$ 整除。又显然
+\[
+(ab)^p=a^pb^p,
+\qquad 1^p=1.
+\]
+故 $\varphi$ 是环同态。
+
+若 $\varphi(a)=\varphi(b)$，则 $a^p=b^p$，从而
+\[
+(a-b)^p=a^p-b^p=0.
+\]
+域中没有非零幂零元，因此 $a-b=0$，即 $a=b$。所以 $\varphi$ 为单射。
+
+若 $K$ 还是有限集，则从有限集到自身的单射必为满射，所以 $\varphi$ 为双射，即自同构。
+\end{proof}
+
+\begin{corollary}
+在有限域 $\F_{p^n}$ 上，$\varphi^n=\Id$。Frobenius 自同构的所有不动点恰为素域 $\F_p$。
+\end{corollary}
+
+\begin{proof}
+对任意 $x\in\F_{p^n}$，由上一条定理中的结论 $x^{p^n}=x$，故
+\[
+\varphi^n(x)=x^{p^n}=x,
+\]
+所以 $\varphi^n=\Id$。
+
+若 $x\in\F_p$，则显然 $x^p=x$，所以 $\F_p$ 中每个元素都是不动点。反过来，若 $x\in\F_{p^n}$ 满足 $x^p=x$，则它是多项式 $x^p-x$ 的根。该多项式次数为 $p$ 且导数为 $-1$，故有至多 $p$ 个根；而 $\F_p$ 中已有 $p$ 个根，因此它的全部根恰是 $\F_p$。所以 Frobenius 的不动点正好是 $\F_p$。
+\end{proof}
+
+\begin{theorem}
+有限域的乘法群 $\F_q^*=\F_q\setminus\{0\}$ 是循环群。
+\end{theorem}
+
+\begin{proof}
+设 $G=\F_q^*$，则 $|G|=q-1$。令
+\[
+m=\lcm\{\ord(g)\mid g\in G\}
+\]
+为群 $G$ 的指数。对任意 $g\in G$，都有 $g^m=1$，所以 $G$ 的每个元素都是多项式 $x^m-1$ 的根。由于域中次数为 $m$ 的多项式至多有 $m$ 个根，故
+\[
+|G|\le m.
+\]
+另一方面，任一元素的阶都整除 $|G|$，所以 $m\mid |G|$，从而 $m\le |G|$。两式合并得
+\[
+m=|G|=q-1.
+\]
+于是按 $m$ 的定义，存在某个 $g\in G$ 的阶等于 $m=q-1$。该元素便生成整个 $G$，故 $G$ 为循环群。
+\end{proof}
+
+\begin{example}
+设 $\F_4=\F_2[u]/(u^2+u+1)$，记 $\bar u$ 为 $u$ 的像。则
+\[
+\F_4=\{0,1,\bar u,\bar u+1\}.
+\]
+由关系 $\bar u^2+\bar u+1=0$ 得
+\[
+\bar u^2=\bar u+1,
+\qquad \bar u^3=1.
+\]
+所以 $\F_4^*=\{1,\bar u,\bar u+1\}$ 是 3 阶循环群，由 $\bar u$ 生成。
+\end{example}
+
+有限域的子域结构也极其整齐。
+
+\begin{theorem}[有限域的子域分类]
+设 $q=p^n$。则 $\F_q$ 的子域恰好是那些 $\F_{p^d}$，其中 $d\mid n$。并且对每个 $d\mid n$，这样的子域唯一。
+\end{theorem}
+
+\begin{proof}
+先设 $E$ 是 $\F_q$ 的任一子域。因为 $\F_p\subset E\subset \F_q$，由塔定律可知
+\[
+[\F_q:\F_p]=[\F_q:E][E:\F_p].
+\]
+左边等于 $n$，故 $d=[E:\F_p]$ 是 $n$ 的一个正因子。于是
+\[
+|E|=p^d,
+\qquad d\mid n.
+\]
+这说明任一子域的元素个数必为 $p^d$，其中 $d\mid n$。
+
+反过来，设 $d\mid n$。考虑集合
+\[
+E_d=\{x\in\F_q\mid x^{p^d}=x\}.
+\]
+与前面证明存在性时完全相同，$E_d$ 在加法、乘法与取逆下封闭，因此是 $\F_q$ 的子域。它恰好是多项式 $x^{p^d}-x$ 在 $\F_q$ 中的根集。
+
+由于 $d\mid n$，有 $p^d-1\mid p^n-1$。设 $x$ 是代数闭包中任意一个满足 $x^{p^d}=x$ 的根。若 $x\ne0$，则 $x^{p^d-1}=1$，于是由整除关系得 $x^{p^n-1}=1$，从而 $x^{p^n}=x$；若 $x=0$ 则同样成立。故 $x$ 也是多项式 $x^{p^n}-x$ 的根。按 $\F_q$ 的构造，$x^{p^n}-x$ 的全部根恰好组成 $\F_q$，因此 $x^{p^d}-x$ 的全部根都落在 $\F_q$ 中。另一方面，多项式 $x^{p^d}-x$ 在代数闭包中有恰好 $p^d$ 个不同根，所以
+\[
+|E_d|=p^d.
+\]
+因此 $E_d\cong \F_{p^d}$。
+
+唯一性来自有限域的唯一性：若 $E,E'\subset\F_q$ 都有 $p^d$ 个元素，则它们都是 $x^{p^d}-x$ 在 $\F_p$ 上的分裂域，故必须相等；或者更直接地说，它们都等于上面定义的根集 $E_d$。
+\end{proof}
+
+\begin{proposition}
+在 $\F_p[x]$ 中，
+\[
+x^{p^n}-x
+\]
+恰好分解为所有次数整除 $n$ 的首一不可约多项式的乘积，每个因子只出现一次。
+\end{proposition}
+
+\begin{proof}
+设 $f(x)\in\F_p[x]$ 是首一不可约多项式，次数为 $d$。若 $f$ 整除 $x^{p^n}-x$，则 $f$ 的任一根 $\alpha$ 都满足 $\alpha^{p^n}=\alpha$，即 $\alpha\in\F_{p^n}$。于是简单扩张 $\F_p(\alpha)$ 嵌入 $\F_{p^n}$，故
+\[
+d=[\F_p(\alpha):\F_p]
+\]
+必须整除 $n$。
+
+反过来，若 $d\mid n$，并设 $f$ 的一个根为 $\alpha$，则 $\F_p(\alpha)$ 是具有 $p^d$ 个元素的有限域，同构于 $\F_{p^d}$。由于 $d\mid n$，由子域分类定理知存在一个 $\F_p$-嵌入
+\[
+\iota:\F_p(\alpha)\hookrightarrow \F_{p^n}.
+\]
+于是 $\iota(\alpha)\in\F_{p^n}$，并且因为 $f$ 的系数都在 $\F_p$ 中，
+\[
+f(\iota(\alpha))=\iota(f(\alpha))=0.
+\]
+所以 $f$ 在 $\F_{p^n}$ 中有根。由于 $f$ 在 $\F_p$ 上不可约，它必为该根在 $\F_p$ 上的极小多项式，从而 $f$ 整除 $x^{p^n}-x$。
+
+最后，由
+\[
+\frac{d}{dx}(x^{p^n}-x)=-1
+\]
+可知该多项式没有重根，所以每个不可约因子只出现一次。
+\end{proof}
+
+\begin{corollary}
+设 $N_p(d)$ 表示 $\F_p[x]$ 中次数为 $d$ 的首一不可约多项式个数，则对每个正整数 $n$ 有
+\[
+p^n=\sum_{d\mid n} d\,N_p(d).
+\]
+\end{corollary}
+
+\begin{proof}
+由上一个命题，$x^{p^n}-x$ 是所有次数整除 $n$ 的首一不可约多项式的乘积。比较两边次数即可：左边次数为 $p^n$，右边中每个次数为 $d$ 的不可约因子贡献 $d$，而这类因子共有 $N_p(d)$ 个，因此得到所给恒等式。
+\end{proof}
+
+\section{Fourier 系数所在的数域}
+
+这一节解释为什么模形式中的 Fourier 系数自然落在一个有限扩张 $K/\Q$ 中。我们只使用本章的域扩张语言，不深入 Hecke 代数的抽象理论。
+
+设 $V$ 是一个有限维复向量空间，代表某个固定权、固定级的模形式空间。假设对每个 $n\ge1$ 都有一个 Hecke 算子
+\[
+T_n:V\to V,
+\]
+并且存在一个 $\Q$-向量空间 $V_{\Q}\subset V$，满足
+\[
+V\cong V_{\Q}\otimes_{\Q}\C,
+\]
+且每个 $T_n$ 都保持 $V_{\Q}$。换言之，在某组有理基下，$T_n$ 都由有理矩阵表示。这正是经典模形式空间的标准情形。
+
+设
+\[
+f(q)=\sum_{m\ge1} a_m q^m\in V
+\]
+是一个\emph{归一化 Hecke 本征形式}，即 $a_1=1$，并且对每个 $n$ 有
+\[
+T_n f=a_n f.
+\]
+这里把 $a_n$ 同时看作 $T_n$ 对应的本征值；在归一化条件下，这两个记号是一致的。
+
+\begin{theorem}
+上述归一化 Hecke 本征形式 $f$ 的每个 Fourier 系数 $a_n$ 都是代数数。由全部系数生成的域
+\[
+K_f=\Q(a_1,a_2,a_3,\dots)
+\]
+是 $\Q$ 的一个有限扩张，因而是一个数域。
+\end{theorem}
+
+\begin{proof}
+先证每个 $a_n$ 代数。由于 $T_n$ 保持 $V_{\Q}$，在 $V_{\Q}$ 的某组 $\Q$-基下，$T_n$ 可由矩阵 $A_n\in M_r(\Q)$ 表示，其中 $r=\dim_{\Q}V_{\Q}=\dim_{\C}V$。而 $f$ 是 $T_n$ 的本征向量，对应本征值 $a_n$，因此 $a_n$ 是特征多项式
+\[
+\det(xI-A_n)\in\Q[x]
+\]
+的一个根。故 $a_n$ 在 $\Q$ 上代数。
+
+接着证明由所有 $a_n$ 生成的域实际上是有限扩张。令
+\[
+\mathbb{T}_{\Q}\subset \End_{\Q}(V_{\Q})
+\]
+为由所有 $T_n$ 生成的 $\Q$-子代数。由于 $\End_{\Q}(V_{\Q})$ 的维数为 $r^2$，故 $\mathbb{T}_{\Q}$ 作为 $\Q$-向量空间是有限维的。
+
+定义 $\Q$-代数同态
+\[
+\lambda_f:\mathbb{T}_{\Q}\longrightarrow \C,
+\qquad T_n\longmapsto a_n,
+\]
+并按线性与乘法延拓。其像是 $\C$ 的一个有限维 $\Q$-子代数，而且包含所有 $a_n$，因此正好等于 $\Q[a_1,a_2,\dots]$。这又是 $\C$ 的子环，所以没有零因子。
+
+现在利用有限维性说明它其实是域。任取非零元 $u$ 属于 $\Ima\lambda_f$，考虑线性映射
+\[
+\mu_u:\Ima\lambda_f\longrightarrow \Ima\lambda_f,
+\qquad x\longmapsto ux.
+\]
+因为该环无零因子，$u\ne0$ 时 $\mu_u$ 为单射；而在有限维向量空间上，单射必为满射。故存在 $v$ 使 $uv=1$。于是每个非零元都有逆元，所以 $\Ima\lambda_f$ 是域。
+
+因此
+\[
+K_f=\Q(a_1,a_2,\dots)=\Ima\lambda_f
+\]
+是 $\Q$ 的有限维域扩张，也就是数域。
+\end{proof}
+
+\begin{proposition}
+对任意嵌入 $\sigma:K_f\hookrightarrow \C$，定义
+\[
+f^\sigma(q)=\sum_{n\ge1}\sigma(a_n)q^n.
+\]
+则 $f^\sigma$ 仍是同一空间中的归一化 Hecke 本征形式，并满足
+\[
+T_n f^\sigma=\sigma(a_n)f^\sigma.
+\]
+不同的嵌入给出不同的本征形式。因此 $f$ 的 Galois 共轭轨道
+\[
+\mathcal O(f)=\{f^\sigma\mid \sigma:K_f\hookrightarrow\C\}
+\]
+恰有 $[K_f:\Q]$ 个元素。
+\end{proposition}
+
+\begin{proof}
+Hecke 算子在 $q$-展开上的作用由有理数组成的公式给出，因此对系数施加 $\sigma$ 与施加 Hecke 算子可以交换。由
+\[
+T_n f=a_n f
+\]
+逐项作用 $\sigma$，得到
+\[
+T_n f^\sigma=\sigma(a_n)f^\sigma.
+\]
+并且因为 $a_1=1$，有 $\sigma(a_1)=1$，故 $f^\sigma$ 仍是归一化的。
+
+若 $\sigma\ne\tau$ 是两个不同嵌入，由于 $K_f$ 由全部 $a_n$ 生成，存在某个 $m$ 使得 $\sigma(a_m)\ne\tau(a_m)$。于是 $f^\sigma$ 与 $f^\tau$ 的第 $m$ 个 Fourier 系数不同，从而它们是不同的模形式。故嵌入到轨道元素的对应是单射。
+
+另一方面，数域 $K_f$ 到 $\C$ 的嵌入个数恰为 $[K_f:\Q]$。因此轨道元素个数也等于 $[K_f:\Q]$。特别地，若把轨道上的每个元素看成一个基向量所得到的置换表示，其维数就是 $[K_f:\Q]$。
+\end{proof}
+
+\begin{example}[Ramanujan 的 $\tau$ 函数]
+判别式模形式
+\[
+\Delta(q)=q\prod_{m\ge1}(1-q^m)^{24}=\sum_{n\ge1}\tau(n)q^n
+\]
+是权 $12$ 的归一化 Hecke 本征形式，而每个 $\tau(n)$ 都是整数。因此
+\[
+K_\Delta=\Q.
+\]
+这说明“本征形式的系数域”有时非常小；但在更一般的情形中，$K_f$ 常常是二次数域、三次数域乃至更高次的数域。
+\end{example}
+
+\begin{remark}
+从模形式到数域的这一步极其重要。Hecke 本征值既控制着 $L$-函数与 Euler 乘积，也决定了一个自然的数域 $K_f$。以后在讨论 Galois 表示时，系数域往往就是从这里出现的。
+\end{remark}
+
+\section*{习题}
+\addcontentsline{toc}{section}{习题}
+
+本章共有 $55$ 道习题，分为基础、进阶与挑战三个层次。除特别说明外，默认所有域扩张都在同一个代数闭包中讨论。
+
+\subsection*{基础题}
+
+\begin{enumerate}[label=\arabic*., leftmargin=2.5em]
+\item \textbf{\basic} 求扩张 $\Q(\sqrt2)/\Q$ 的次数，并写出一组 $\Q$-基。
+\item \textbf{\basic} 求扩张 $\Q(i)/\Q$ 的次数，并写出一组 $\Q$-基。
+\item \textbf{\basic} 证明 $[\C:\R]=2$。
+\item \textbf{\basic} 设 $\alpha=\sqrt2+\sqrt3$。求 $\alpha$ 在 $\Q$ 上的极小多项式。
+\item \textbf{\basic} 设 $\beta=(1+\sqrt5)/2$。求 $\beta$ 在 $\Q$ 上的极小多项式。
+\item \textbf{\basic} 证明 $\sqrt[3]{2}$ 在 $\Q$ 上代数，并求其极小多项式。
+\item \textbf{\basic} 证明 $i$ 在 $\R$ 上代数，并求其极小多项式。
+\item \textbf{\basic} 判断下列各数在 $\Q$ 上是代数还是超越：$\pi$，$e$，$\sqrt2+\pi$，$\pi^2$。
+\item \textbf{\basic} 证明 $\Q(\pi)/\Q$ 是无限扩张。
+\item \textbf{\basic} 求 $x^2-2\in\Q[x]$ 的分裂域及其在 $\Q$ 上的次数。
+\item \textbf{\basic} 求 $x^2+1\in\Q[x]$ 的分裂域及其在 $\Q$ 上的次数。
+\item \textbf{\basic} 求 $x^4-1\in\Q[x]$ 在 $\Q$ 上的分裂域。
+\item \textbf{\basic} 求 $x^3-2\in\Q[x]$ 在 $\Q$ 上的分裂域，并计算扩张次数。
+\item \textbf{\basic} 判断 $x^2+1$ 是否在 $\F_5$ 与 $\F_3$ 上完全分裂。
+\item \textbf{\basic} 求 $x^2+x+1\in\F_2[x]$ 的分裂域。
+\item \textbf{\basic} 证明多项式 $x^p-x\in\F_p[x]$ 在 $\F_p$ 上完全分裂。
+\item \textbf{\basic} 计算 $[\Q(\sqrt2,i):\Q]$。
+\item \textbf{\basic} 计算 $[\Q(\sqrt2,\sqrt3):\Q]$。
+\item \textbf{\basic} 证明 $\sqrt[3]{2}+\sqrt[3]{4}$ 在 $\Q$ 上代数，并求它满足的一个首一多项式。
+\item \textbf{\basic} 设 $\alpha=\sqrt2+\sqrt5$。求 $[\Q(\alpha):\Q]$。
+\item \textbf{\basic} 设 $\F_9$ 已知存在。求 $[\F_9:\F_3]$。
+\item \textbf{\basic} 设 $\F_{25}$ 已知存在。求 $[\F_{25}:\F_5]$。
+\item \textbf{\basic} 令 $\F_4=\F_2[u]/(u^2+u+1)$。写出 $\F_4$ 的全部元素，并计算 $u^2,u^3,u^4$ 在此商域中的值。
+\item \textbf{\basic} 求 $x^4-x\in\F_2[x]$ 的分裂域。
+\item \textbf{\basic} 写出扩张 $\F_4/\F_2$ 的全部中间子域。
+\end{enumerate}
+
+\subsection*{进阶题}
+
+\begin{enumerate}[label=\arabic*., leftmargin=2.5em, resume]
+\item \textbf{\medium} 不引用正文中的证明，重新证明有限扩张情形的塔定律。
+\item \textbf{\medium} 设 $[L:K]=p$，其中 $p$ 为素数。证明不存在真中间域 $K\subsetneq E\subsetneq L$。
+\item \textbf{\medium} 设 $\alpha,\beta$ 都在 $K$ 上代数。证明 $\alpha+\beta$ 与 $\alpha\beta$ 也在 $K$ 上代数。
+\item \textbf{\medium} 设 $\alpha$ 在 $K$ 上的次数为 $m$，且 $\beta\in K(\alpha)$。证明 $\beta$ 在 $K$ 上代数，且其次数不超过 $m$。
+\item \textbf{\medium} 用两种不同的方法证明 $[\Q(\sqrt2,\sqrt3):\Q]=4$：一种用塔定律，另一种先求一个生成元的极小多项式。
+\item \textbf{\medium} 证明 $\Q(\zeta_8)=\Q(i,\sqrt2)$，并求其在 $\Q$ 上的次数，其中 $\zeta_8=e^{2\pi i/8}$。
+\item \textbf{\medium} 证明 $x^3+x+1\in\F_2[x]$ 不可约，并据此构造 $\F_8\cong \F_2[x]/(x^3+x+1)$；写出其非零元的乘法循环。
+\item \textbf{\medium} 证明：在特征 $p$ 的任意域中，Frobenius 映射 $x\mapsto x^p$ 一定是单射。
+\item \textbf{\medium} 证明：在有限域上，Frobenius 映射必为自同构。
+\item \textbf{\medium} 设 $\varphi(x)=x^p$ 是 $\F_{p^n}$ 上的 Frobenius 自同构。证明其不动域恰为 $\F_p$。
+\item \textbf{\medium} 设 $G$ 是域 $K$ 的一个有限乘法子群。证明 $G$ 必为循环群。
+\item \textbf{\medium} 求 $\F_{16}$ 的全部子域，并画出它们按包含关系组成的 Hasse 图。
+\item \textbf{\medium} 证明 $x^{p^n}-x$ 等于 $\F_p[x]$ 中所有次数整除 $n$ 的首一不可约多项式之积。
+\item \textbf{\medium} 利用上题证明：$\F_p[x]$ 中次数为 $2$ 的首一不可约多项式个数为 $\dfrac{p^2-p}{2}$。
+\item \textbf{\medium} 利用次数比较证明：$\F_p[x]$ 中次数为 $3$ 的首一不可约多项式个数为 $\dfrac{p^3-p}{3}$。
+\item \textbf{\medium} 设 $d\mid n$。证明 $\F_{p^n}$ 中存在唯一的大小为 $p^d$ 的子域。
+\item \textbf{\medium} 证明：若 $E$ 是 $\F_{p^n}$ 的子域，则必存在 $d\mid n$ 使得 $E\cong \F_{p^d}$。
+\item \textbf{\medium} 设 $\alpha\in\F_{p^n}$，并记 $m$ 为满足 $\alpha^{p^m}=\alpha$ 的最小正整数。证明 $\alpha$ 在 $\F_p$ 上的极小多项式为
+\[
+\prod_{i=0}^{m-1}(x-\alpha^{p^i}).
+\]
+\item \textbf{\medium} 设 $f(x)\in\F_q[x]$ 为次数 $n$ 的不可约多项式。证明 $f$ 的分裂域有 $q^n$ 个元素。
+\item \textbf{\medium} 证明任意有限域扩张都是单扩张；也就是说，若 $E/F$ 是有限域之间的扩张，则存在 $\alpha\in E$ 使得 $E=F(\alpha)$。
+\end{enumerate}
+
+\subsection*{挑战题}
+
+\begin{enumerate}[label=\arabic*., leftmargin=2.5em, resume]
+\item \textbf{\hard} 给出“每个域都有代数闭包”的一个构造提纲：从一个包含 $K$ 的代数扩张偏序集出发，利用 Zorn 引理构造极大代数扩张，并说明为什么极大性推出代数闭性。
+\item \textbf{\hard} 证明原始元定理：若 $L/K$ 是有限可分扩张且 $K$ 为无限域，则存在 $\theta\in L$ 使得 $L=K(\theta)$。
+\item \textbf{\hard} 由上题推出：每个有限扩张 $L/\Q$ 都是单扩张。
+\item \textbf{\hard} 设
+\[
+\Delta(q)=q\prod_{m\ge1}(1-q^m)^{24}=\sum_{n\ge1}\tau(n)q^n.
+\]
+已知每个 $\tau(n)\in\Z$。证明其系数域 $K_\Delta$ 等于 $\Q$。
+\item \textbf{\hard} 对偶数 $k\ge4$，考虑 Eisenstein 级数
+\[
+E_k(q)=1-\frac{2k}{B_k}\sum_{n\ge1}\sigma_{k-1}(n)q^n.
+\]
+证明它的 Fourier 系数都在 $\Q$ 中，从而其系数域是 $\Q$。
+\item \textbf{\hard} 设 $f=\sum_{n\ge1}a_n q^n$ 是归一化 Hecke 本征形式，$\sigma:K_f\hookrightarrow\C$ 是一个嵌入。证明 $f^\sigma=\sum \sigma(a_n)q^n$ 仍是同一权与同一级上的归一化 Hecke 本征形式。
+\item \textbf{\hard} 在上题记号下，证明轨道 $\{f^\sigma\}$ 恰有 $[K_f:\Q]$ 个不同元素；进一步说明与此轨道对应的置换表示维数为何等于 $[K_f:\Q]$。
+\item \textbf{\hard} 设某个归一化本征形式 $f$ 的全部 Fourier 系数都属于 $\Q(\sqrt5)$，且 $a_2=(1+\sqrt5)/2$。证明只要这些系数确实生成整个 $\Q(\sqrt5)$，就有 $K_f=\Q(\sqrt5)$。
+\item \textbf{\hard} 设 $f(x)\in K[x]$ 不可约。证明任意两个 $f$ 的分裂域都可以嵌入到同一个代数闭包中并在其中重合，从而再次推出分裂域的唯一性。
+\item \textbf{\hard} 设 $N_p(n)$ 表示 $\F_p[x]$ 中次数为 $n$ 的首一不可约多项式个数。利用 Möbius 反演证明
+\[
+N_p(n)=\frac1n\sum_{d\mid n}\mu(d)p^{n/d}.
+\]
+\end{enumerate}
+

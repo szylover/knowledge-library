@@ -1,0 +1,1425 @@
+\chapter{矩阵群与群作用}
+
+本章进入与模形式最直接相关的一组代数对象：矩阵群、同余子群，以及它们在上半平面上的作用。对于模形式理论而言，$\SL_2(\Z)$ 及其各种子群并不是偶然出现的；它们一方面来自整数矩阵的代数结构，另一方面通过分式线性变换作用在 $\HH$ 上，从而把代数、几何与复分析联系起来。我们将从一般线性群与特殊线性群出发，证明 $\SL_2(\Z)$ 由两个基本矩阵生成，再引入合同子群、轨道与稳定子、Burnside 引理，以及标准基本域的构造。最后一节给出模曲线的几何直观图景，为后续模形式章节作准备。
+
+\section{一般线性群 $\GL_n$ 与特殊线性群 $\SL_n$}
+
+在线性代数中，$n\times n$ 可逆矩阵构成最基本的一类矩阵群。它们不仅本身重要，而且常常作为其他群的线性表示空间。
+
+\begin{definition}
+设 $F$ 是一个域，$n\ge 1$。定义
+\[
+\GL_n(F)=\{A\in M_n(F):\det A\ne 0\},
+\]
+称为 $F$ 上的\emph{一般线性群}。进一步定义
+\[
+\SL_n(F)=\{A\in \GL_n(F):\det A=1\},
+\]
+称为 $F$ 上的\emph{特殊线性群}。
+\end{definition}
+
+这里 $M_n(F)$ 表示所有 $n\times n$ 的 $F$-矩阵所成的集合。$\GL_n(F)$ 中的群运算就是矩阵乘法。
+
+\begin{proposition}
+对任意域 $F$ 与任意 $n\ge 1$，$\GL_n(F)$ 在矩阵乘法下构成一个群。
+\end{proposition}
+
+\begin{proof}
+我们逐条验证群公理。
+
+\begin{enumerate}
+  \item \textbf{封闭性：}若 $A,B\in \GL_n(F)$，则 $\det A\ne 0$ 且 $\det B\ne 0$。由行列式的乘法公式，
+  \[
+  \det(AB)=\det(A)\det(B)\ne 0,
+  \]
+  因而 $AB\in \GL_n(F)$。
+
+  \item \textbf{结合律：}矩阵乘法本身满足结合律，因此对 $\GL_n(F)$ 中的元素当然也成立。
+
+  \item \textbf{单位元：}$n\times n$ 单位矩阵 $I_n$ 满足 $\det(I_n)=1\ne 0$，故 $I_n\in \GL_n(F)$，并且 $I_nA=AI_n=A$。
+
+  \item \textbf{逆元：}若 $A\in \GL_n(F)$，则 $\det A\ne 0$。由伴随矩阵公式
+  \[
+  A^{-1}=\frac{1}{\det A}\operatorname{adj}(A),
+  \]
+  可知 $A$ 在 $M_n(F)$ 中可逆，因此 $A^{-1}\in \GL_n(F)$。事实上，
+  \[
+  \det(A^{-1})=(\det A)^{-1}\ne 0.
+  \]
+\end{enumerate}
+故 $\GL_n(F)$ 是群。
+\end{proof}
+
+\begin{proposition}
+行列式映射
+\[
+\det:\GL_n(F)\longrightarrow F^\times
+\]
+是群同态，其中 $F^\times=F\setminus\{0\}$ 在乘法下成群。
+\end{proposition}
+
+\begin{proof}
+对任意 $A,B\in \GL_n(F)$，有
+\[
+\det(AB)=\det(A)\det(B),
+\]
+这正是群同态的定义。又因 $A\in \GL_n(F)$ 当且仅当 $\det A\in F^\times$，所以该映射确实以 $F^\times$ 为值域。
+\end{proof}
+
+\begin{theorem}
+$\SL_n(F)$ 是 $\GL_n(F)$ 的正规子群，并且
+\[
+\GL_n(F)/\SL_n(F)\cong F^\times.
+\]
+\end{theorem}
+
+\begin{proof}
+由上一个命题，$\SL_n(F)=\ker(\det)$。任何群同态的核都是正规子群，因此 $\SL_n(F)\trianglelefteq \GL_n(F)$。又因为行列式映射是满射：对任意 $\lambda\in F^\times$，矩阵
+\[
+\operatorname{diag}(\lambda,1,\dots,1)\in \GL_n(F)
+\]
+满足 $\det=\lambda$。于是由群同态基本定理得
+\[
+\GL_n(F)/\ker(\det)\cong \operatorname{im}(\det)=F^\times,
+\]
+即
+\[
+\GL_n(F)/\SL_n(F)\cong F^\times.
+\]
+\end{proof}
+
+\begin{remark}
+这一结论告诉我们：$\GL_n(F)$ 与 $\SL_n(F)$ 的差别，恰好由“行列式这一一维信息”控制。换言之，若把行列式忽略掉，$\GL_n(F)$ 就被压缩为 $\SL_n(F)$。
+\end{remark}
+
+\begin{example}
+在实数域上，
+\[
+\GL_n(\R)=\{A:\det A\ne 0\}
+\]
+分成两部分：$\det A>0$ 与 $\det A<0$。因此
+\[
+\GL_n(\R)/\SL_n(\R)\cong \R^\times,
+\]
+但从连通性的角度看，$\GL_n(\R)$ 的两个连通分支对应于行列式的符号。
+\end{example}
+
+\begin{example}
+在复数域上，$\C^\times$ 是连通的，因此 $\GL_n(\C)$ 与 $\SL_n(\C)$ 的关系更像“一个连续的标量参数”的扩张。特别地，任何非零复数都可以作为某个可逆复矩阵的行列式。
+\end{example}
+
+\begin{example}
+在有限域 $\F_p$ 上，$\GL_n(\F_p)$ 与 $\SL_n(\F_p)$ 都是有限群。例如当 $n=1$ 时，
+\[
+\GL_1(\F_p)=\F_p^\times,
+\qquad
+\SL_1(\F_p)=\{1\}.
+\]
+当 $n=2$ 时，$\GL_2(\F_p)$ 是所有可逆 $2\times 2$ 模 $p$ 矩阵所成的有限群，而 $\SL_2(\F_p)$ 是其中行列式等于 $1$ 的子群。
+\end{example}
+
+\begin{proposition}
+设 $q$ 是素数幂。则
+\[
+|\GL_n(\F_q)|=(q^n-1)(q^n-q)\cdots(q^n-q^{n-1}).
+\]
+等价地，
+\[
+|\GL_n(\F_q)|=q^{n^2}\prod_{j=1}^n\left(1-q^{-j}\right).
+\]
+\end{proposition}
+
+\begin{proof}
+把一个 $n\times n$ 矩阵看成由 $n$ 个列向量组成。矩阵可逆当且仅当这 $n$ 个列向量在 $\F_q^n$ 中线性无关。
+
+第一列可以是任意非零向量，共有 $q^n-1$ 种取法。取定前 $k$ 列线性无关后，它们张成一个 $k$ 维子空间，其中共有 $q^k$ 个向量。因此第 $k+1$ 列必须避开这个子空间，所以有 $q^n-q^k$ 种取法。依次相乘，得到
+\[
+|\GL_n(\F_q)|=(q^n-1)(q^n-q)\cdots(q^n-q^{n-1}).
+\]
+
+把第 $j$ 个因子写成 $q^n(1-q^{-j})$ 的形式，便得到第二个表达式。更精确地，
+\[
+(q^n-1)(q^n-q)\cdots(q^n-q^{n-1})
+= q^{0+1+\cdots+(n-1)}\prod_{j=1}^n(q^j-1),
+\]
+再整理即可得到所述公式。
+\end{proof}
+
+\begin{corollary}
+对有限域 $\F_q$，有
+\[
+|\SL_n(\F_q)|=\frac{|\GL_n(\F_q)|}{q-1}.
+\]
+特别地，
+\[
+|\SL_2(\F_q)|=q(q^2-1).
+\]
+\end{corollary}
+
+\begin{proof}
+行列式映射
+\[
+\det:\GL_n(\F_q)\to \F_q^\times
+\]
+是满同态，而 $|\F_q^\times|=q-1$。所以
+\[
+|\GL_n(\F_q)|=|\SL_n(\F_q)|\cdot(q-1).
+\]
+当 $n=2$ 时，
+\[
+|\GL_2(\F_q)|=(q^2-1)(q^2-q)=q(q-1)(q^2-1),
+\]
+故
+\[
+|\SL_2(\F_q)|=q(q^2-1).
+\]
+\end{proof}
+
+\begin{example}
+取 $q=2$，则
+\[
+|\GL_2(\F_2)|=(2^2-1)(2^2-2)=3\cdot 2=6,
+\qquad
+|\SL_2(\F_2)|=6.
+\]
+这是因为 $\F_2^\times=\{1\}$，所以在 $\F_2$ 上行列式自动等于 $1$。
+
+取 $q=3$，则
+\[
+|\GL_2(\F_3)|=(9-1)(9-3)=8\cdot 6=48,
+\qquad
+|\SL_2(\F_3)|=24.
+\]
+\end{example}
+
+\section{$\SL_2(\Z)$ 的生成元}
+
+从本节开始，我们把注意力集中到
+\[
+\SL_2(\Z)=\left\{\mat{a&b\\ c&d}:a,b,c,d\in\Z,\ ad-bc=1\right\}.
+\]
+这是模形式理论中最核心的离散群。它有两个极其重要的元素：
+\[
+S=\mat{0&-1\\ 1&0},
+\qquad
+T=\mat{1&1\\ 0&1}.
+\]
+
+\begin{proposition}
+矩阵 $S,T$ 都属于 $\SL_2(\Z)$，并满足
+\[
+S^2=-I,
+\qquad
+S^4=I,
+\qquad
+(ST)^3=-I.
+\]
+因此在 $\PSL_2(\Z)=\SL_2(\Z)/\{\pm I\}$ 中有关系
+\[
+\bar S^2=\Id,
+\qquad
+(\bar S\bar T)^3=\Id.
+\]
+\end{proposition}
+
+\begin{proof}
+先算行列式：
+\[
+\det S=(0)(0)-(-1)(1)=1,
+\qquad
+\det T=(1)(1)-(1)(0)=1,
+\]
+故 $S,T\in \SL_2(\Z)$。
+
+直接计算得
+\[
+S^2=
+\mat{0&-1\\ 1&0}
+\mat{0&-1\\ 1&0}
+=
+\mat{-1&0\\ 0&-1}
+=-I,
+\]
+于是 $S^4=(-I)^2=I$。
+
+再算
+\[
+ST=
+\mat{0&-1\\ 1&0}
+\mat{1&1\\ 0&1}
+=
+\mat{0&-1\\ 1&1}.
+\]
+进而
+\[
+(ST)^2=
+\mat{0&-1\\ 1&1}
+\mat{0&-1\\ 1&1}
+=
+\mat{-1&-1\\ 1&0},
+\]
+以及
+\[
+(ST)^3=
+\mat{-1&-1\\ 1&0}
+\mat{0&-1\\ 1&1}
+=
+\mat{-1&0\\ 0&-1}
+=-I.
+\]
+在商群 $\PSL_2(\Z)$ 中，$-I$ 与 $I$ 同类，因此得到所述关系。
+\end{proof}
+
+\begin{example}
+矩阵 $T^m$ 的形式非常简单：
+\[
+T^m=\mat{1&m\\ 0&1}\qquad (m\in\Z).
+\]
+又因为 $S^{-1}=-S$，所以
+\[
+STS^{-1}=\mat{1&0\\ -1&1},
+\qquad
+ST^{-m}S^{-1}=\mat{1&0\\ m&1}.
+\]
+这说明 $S$ 与 $T$ 能产生上三角与下三角两类基本幺模矩阵。
+\end{example}
+
+\begin{theorem}
+$\SL_2(\Z)$ 由 $S$ 与 $T$ 生成。
+\end{theorem}
+
+\begin{proof}
+设
+\[
+A=\mat{a&b\\ c&d}\in \SL_2(\Z).
+\]
+我们对 $|c|$ 作归纳，证明 $A$ 可写成 $S,T$ 的字。
+
+\medskip
+\noindent\textbf{第一步：基例 $c=0$.}
+此时由 $ad-bc=1$ 得 $ad=1$，故 $a=d=\pm 1$。
+
+若 $a=d=1$，则
+\[
+A=\mat{1&b\\ 0&1}=T^b.
+\]
+若 $a=d=-1$，则
+\[
+A=\mat{-1&b\\ 0&-1}=-\mat{1&-b\\ 0&1}=S^2T^{-b}.
+\]
+因此当 $c=0$ 时，命题成立。
+
+\medskip
+\noindent\textbf{第二步：归纳步骤。}
+设命题对所有满足 $|c'|<|c|$ 的矩阵都成立，其中 $c\ne 0$。我们证明它也对 $A$ 成立。
+
+根据整数除法，可以取某个 $q\in\Z$，使得
+\[
+|a-qc|\le \frac{|c|}{2}.
+\]
+考虑左乘 $T^{-q}$：
+\[
+T^{-q}A=
+\mat{1&-q\\ 0&1}
+\mat{a&b\\ c&d}
+=
+\mat{a-qc&b-qd\\ c&d}.
+\]
+再左乘 $S$，得
+\[
+A_1\coloneqq ST^{-q}A
+=
+\mat{0&-1\\ 1&0}
+\mat{a-qc&b-qd\\ c&d}
+=
+\mat{-c&-d\\ a-qc&b-qd}.
+\]
+这是 $\SL_2(\Z)$ 中的矩阵，其左下角元素是 $a-qc$。由于它是整数且满足
+\[
+|a-qc|\le \frac{|c|}{2}<|c|,
+\]
+可知 $A_1$ 的左下角绝对值严格小于 $|c|$。由归纳假设，$A_1$ 可由 $S,T$ 生成。
+
+于是
+\[
+A=(ST^{-q})^{-1}A_1=T^qS^{-1}A_1.
+\]
+而 $S^{-1}=-S=S^3$ 属于由 $S$ 生成的子群，因此 $A$ 也可由 $S,T$ 生成。
+
+由数学归纳法，$\SL_2(\Z)=\langle S,T\rangle$。
+\end{proof}
+
+\begin{remark}
+上述证明本质上是欧几里得算法在矩阵上的表现。它不断把矩阵左下角的整数 $c$ 变小，直到降为 $0$，这与用初等整数变换求最大公因数完全同型。
+\end{remark}
+
+\begin{example}
+设
+\[
+A=\mat{2&1\\ 1&1}.
+\]
+因为
+\[
+ST^{-1}=
+\mat{0&-1\\ 1&-1},
+\qquad
+(ST^{-1})A=
+\mat{-1&-1\\ 1&0},
+\]
+再乘以 $T$ 就能进一步化简。实际上容易验证
+\[
+A=TS^{-1}T.
+\]
+读者可以把本节定理中的归纳步骤具体执行一遍，体会“把任意矩阵写成 $S,T$ 的字”的算法性。
+\end{example}
+
+\section{合同子群 $\Gamma(N)$, $\Gamma_0(N)$, $\Gamma_1(N)$}
+
+模形式通常不是对整个 $\SL_2(\Z)$ 而言，而是对它的某个有限指标子群而言。最重要的一类便是\emph{合同子群}。
+
+\begin{definition}
+设 $N\ge 1$。定义 $\SL_2(\Z)$ 的三个子集：
+\[
+\Gamma(N)=\left\{\mat{a&b\\ c&d}\in \SL_2(\Z):
+\mat{a&b\\ c&d}\equiv \mat{1&0\\ 0&1}\pmod N\right\},
+\]
+\[
+\GammaO(N)=\left\{\mat{a&b\\ c&d}\in \SL_2(\Z):c\equiv 0\pmod N\right\},
+\]
+\[
+\GammaI(N)=\left\{\mat{a&b\\ c&d}\in \SL_2(\Z):a\equiv d\equiv 1\pmod N,\ c\equiv 0\pmod N\right\}.
+\]
+其中 $\Gamma(N)$ 称为\emph{主合同子群}，$\GammaO(N)$ 称为\emph{Hecke 合同子群}，$\GammaI(N)$ 称为\emph{带一个截面的合同子群}。
+\end{definition}
+
+\begin{proposition}
+对每个 $N\ge 1$，$\Gamma(N)$、$\GammaO(N)$、$\GammaI(N)$ 都是 $\SL_2(\Z)$ 的子群，并且
+\[
+\Gamma(N)\trianglelefteq \SL_2(\Z),
+\qquad
+\Gamma(N)\subseteq \GammaI(N)\subseteq \GammaO(N).
+\]
+\end{proposition}
+
+\begin{proof}
+先证它们是子群。设
+\[
+A=\mat{a&b\\ c&d},\qquad B=\mat{a'&b'\\ c'&d'}.
+\]
+若 $A,B\in \GammaO(N)$，则
+\[
+AB=\mat{aa'+bc'&ab'+bd'\\ ca'+dc'&cb'+dd'}.
+\]
+其左下角是 $ca'+dc'$，显然仍被 $N$ 整除，所以 $AB\in \GammaO(N)$。又
+\[
+A^{-1}=\mat{d&-b\\ -c&a},
+\]
+其左下角为 $-c$，仍被 $N$ 整除，因此 $\GammaO(N)$ 是子群。
+
+同理，若 $A,B\in \GammaI(N)$，则它们的左下角仍被 $N$ 整除，且对角元模 $N$ 仍等于 $1$，逆矩阵的对角元也分别是 $d,a\equiv 1\pmod N$，故 $\GammaI(N)$ 是子群。
+
+对 $\Gamma(N)$，它是下面模 $N$ 约化映射的核，因此自动是正规子群。集合包含关系则从定义直接可见。
+\end{proof}
+
+\begin{definition}
+设 $N\ge 1$。把矩阵各个元素按模 $N$ 约化，得到映射
+\[
+\rho_N:\SL_2(\Z)\longrightarrow \SL_2(\Z/N\Z),
+\qquad
+\mat{a&b\\ c&d}\longmapsto \mat{\bar a&\bar b\\ \bar c&\bar d}.
+\]
+称为\emph{模 $N$ 约化映射}。
+\end{definition}
+
+\begin{proposition}
+$\rho_N$ 是群同态，且
+\[
+\ker(\rho_N)=\Gamma(N).
+\]
+\end{proposition}
+
+\begin{proof}
+矩阵乘法与模 $N$ 约化可交换，因此 $\rho_N(AB)=\rho_N(A)\rho_N(B)$，故 $\rho_N$ 是群同态。
+
+另一方面，$A\in \ker(\rho_N)$ 当且仅当 $A$ 的每个元素模 $N$ 与单位矩阵对应元素相同，即
+\[
+A\equiv I \pmod N.
+\]
+这正是 $A\in \Gamma(N)$ 的定义。所以 $\ker(\rho_N)=\Gamma(N)$。
+\end{proof}
+
+下面的满射性非常重要，它说明 $\SL_2(\Z)$ 在模 $N$ 的意义下已经“覆盖”了全部的 $\SL_2(\Z/N\Z)$。
+
+\begin{theorem}
+对任意 $N\ge 1$，约化映射
+\[
+\rho_N:\SL_2(\Z)\to \SL_2(\Z/N\Z)
+\]
+是满射。
+\end{theorem}
+
+\begin{proof}
+取任意矩阵
+\[
+\bar A=\mat{\bar a&\bar b\\ \bar c&\bar d}\in \SL_2(\Z/N\Z),
+\]
+即满足
+\[
+\bar a\bar d-\bar b\bar c=1
+\]
+于环 $\Z/N\Z$ 中成立。
+
+我们首先证明：可以选取整数 $c,d$，使得
+\[
+c\equiv \bar c\pmod N,
+\qquad d\equiv \bar d\pmod N,
+\qquad \gcd(c,d)=1.
+\]
+先任意取整数提升 $c_0,d_0$。由 $\bar a\bar d-\bar b\bar c=1$ 可知理想 $(\bar c,\bar d)$ 生成整个环 $\Z/N\Z$；等价地，对每个素数 $p\mid N$，$\bar c,\bar d$ 不可能同时被 $p$ 整除。因此当 $p\mid N$ 且 $p\mid c_0$ 时，必有 $p\nmid d_0$。
+
+现在只需通过替换 $d_0$ 为 $d_0+Nt$ 来消去 $\gcd(c_0,d_0)$ 中那些不整除 $N$ 的素因子。设 $p_1,\dots,p_r$ 是所有整除 $c_0$ 但不整除 $N$ 的不同素数。对每个 $p_i$，因为 $N$ 在模 $p_i$ 下可逆，所以同余式
+\[
+d_0+Nt\equiv 0\pmod{p_i}
+\]
+至多有一个解类。于是我们可以选取整数 $t$，使得对每个 $i$ 都有 $d_0+Nt\not\equiv 0\pmod{p_i}$。令
+\[
+d=d_0+Nt,
+\qquad c=c_0.
+\]
+则 $c\equiv \bar c$, $d\equiv \bar d\pmod N$，并且任何整除 $c,d$ 的素数都不能整除 $N$，又被我们排除掉，所以 $\gcd(c,d)=1$。
+
+既然 $\gcd(c,d)=1$，由 Bézout 等式存在整数 $a_0,b_0$，使得
+\[
+a_0d-b_0c=1.
+\]
+再任取整数提升 $\tilde a,\tilde b$，满足
+\[
+\tilde a\equiv \bar a\pmod N,
+\qquad \tilde b\equiv \bar b\pmod N.
+\]
+由于 $\tilde a d-\tilde b c\equiv 1\pmod N$，可得
+\[
+d(\tilde a-a_0)-c(\tilde b-b_0)\equiv 0\pmod N.
+\]
+取整数 $u,v$ 使 $uc+vd=1$。设
+\[
+t=u(\tilde a-a_0)+v(\tilde b-b_0).
+\]
+则
+\[
+ct\equiv \tilde a-a_0 \pmod N,
+\qquad
+dt\equiv \tilde b-b_0 \pmod N.
+\]
+于是令
+\[
+a=a_0+ct,
+\qquad b=b_0+dt.
+\]
+便有
+\[
+a\equiv \tilde a\equiv \bar a\pmod N,
+\qquad b\equiv \tilde b\equiv \bar b\pmod N,
+\]
+并且
+\[
+ad-bc=(a_0+ct)d-(b_0+dt)c=a_0d-b_0c=1.
+\]
+故
+\[
+A=\mat{a&b\\ c&d}\in \SL_2(\Z)
+\]
+且 $\rho_N(A)=\bar A$。满射性得证。
+\end{proof}
+
+\begin{remark}
+因此 $\Gamma(N)$ 的确是有限指标正规子群，而且
+\[
+\SL_2(\Z)/\Gamma(N)\cong \SL_2(\Z/N\Z).
+\]
+从模形式的观点看，$\Gamma(N)$ 对应“带完全 $N$ 级结构”的对象，而 $\GammaO(N),\GammaI(N)$ 则对应较弱的级结构。
+\end{remark}
+
+为了计算 $\GammaO(N)$ 的指标，我们引入射影直线。
+
+\begin{definition}
+记 $R=\Z/N\Z$。定义 $\mathbf{P}^1(R)$ 为所有\emph{原始对} $(x,y)\in R^2$ 的等价类集合，其中“原始”指 $x,y$ 生成整个环 $R$ 的单位理想；等价关系规定为
+\[
+(x,y)\sim (ux,uy)\qquad (u\in R^\times).
+\]
+我们把等价类记作 $[x:y]$。
+\end{definition}
+
+\begin{proposition}
+群 $\SL_2(\Z/N\Z)$ 作用在 $\mathbf{P}^1(\Z/N\Z)$ 上，并且该作用是传递的。点 $[1:0]$ 的稳定子恰好是上三角子群
+\[
+B(N)=\left\{\mat{a&b\\ 0&d}\in \SL_2(\Z/N\Z)\right\}.
+\]
+\end{proposition}
+
+\begin{proof}
+矩阵对列向量的左乘保持原始性，因此诱导出对射影类的作用。
+
+取任意原始类 $[x:y]$。因为 $(x,y)$ 原始，所以理想 $(x,y)=R$。按上面满射性证明中的同样方法，可构造矩阵
+\[
+\mat{x&*\\ y&*}\in \SL_2(R),
+\]
+于是该矩阵把 $[1:0]$ 送到 $[x:y]$，故作用传递。
+
+再看稳定子。若
+\[
+A=\mat{a&b\\ c&d}
+\]
+固定 $[1:0]$，则
+\[
+A\binom{1}{0}=\binom{a}{c}
+\]
+必须与 $\binom{1}{0}$ 成比例，因此必有 $c=0$。反过来，若 $c=0$，则
+\[
+A\binom{1}{0}=\binom{a}{0}
+\]
+与 $\binom{1}{0}$ 确实代表同一点。于是稳定子正是 $B(N)$。
+\end{proof}
+
+\begin{lemma}
+若 $N=p^r$ 是素数幂，则
+\[
+\bigl|\mathbf{P}^1(\Z/p^r\Z)\bigr|=p^r+p^{r-1}.
+\]
+\end{lemma}
+
+\begin{proof}
+设 $R=\Z/p^r\Z$。任取原始类 $[x:y]$。
+
+若 $y$ 是单位，则把它缩放为 $1$，可唯一写成 $[u:1]$，其中 $u\in R$，共 $p^r$ 个。
+
+若 $y$ 不是单位，则 $p\mid y$。由于 $(x,y)$ 原始，必有 $x$ 是单位，于是可缩放为 $[1:v]$。此时 $v$ 必须被 $p$ 整除；反之每个这样的 $v$ 都给出一个原始类。被 $p$ 整除的元素恰有 $p^{r-1}$ 个。
+
+这两类互不相交，因为第一类中第二坐标是单位，第二类中第二坐标不是单位。因此
+\[
+\bigl|\mathbf{P}^1(R)\bigr|=p^r+p^{r-1}.
+\]
+\end{proof}
+
+\begin{lemma}
+若 $N=\prod_{i=1}^t p_i^{r_i}$，则
+\[
+\bigl|\mathbf{P}^1(\Z/N\Z)\bigr|=N\prod_{p\mid N}\left(1+\frac1p\right).
+\]
+\end{lemma}
+
+\begin{proof}
+由中国剩余定理，
+\[
+\Z/N\Z\cong \prod_{i=1}^t \Z/p_i^{r_i}\Z.
+\]
+于是原始对、单位元与比例关系都按分量分解，从而得到集合分解
+\[
+\mathbf{P}^1(\Z/N\Z)
+\cong
+\prod_{i=1}^t \mathbf{P}^1(\Z/p_i^{r_i}\Z).
+\]
+故其基数相乘：
+\[
+\bigl|\mathbf{P}^1(\Z/N\Z)\bigr|
+=\prod_{i=1}^t\left(p_i^{r_i}+p_i^{r_i-1}\right)
+=\prod_{i=1}^t p_i^{r_i}\left(1+\frac1{p_i}\right)
+=N\prod_{p\mid N}\left(1+\frac1p\right).
+\]
+\end{proof}
+
+\begin{theorem}
+对任意 $N\ge 1$，有指标公式
+\[
+[\SL_2(\Z):\GammaO(N)]
+= N\prod_{p\mid N}\left(1+\frac1p\right).
+\]
+\end{theorem}
+
+\begin{proof}
+由约化映射的满射性，且 $\GammaO(N)=\rho_N^{-1}(B(N))$，可得
+\[
+[\SL_2(\Z):\GammaO(N)]
+=[\SL_2(\Z/N\Z):B(N)].
+\]
+另一方面，上一命题说明 $\SL_2(\Z/N\Z)$ 在 $\mathbf{P}^1(\Z/N\Z)$ 上的作用传递，而 $B(N)$ 正是点 $[1:0]$ 的稳定子。由轨道—稳定子思想，
+\[
+[\SL_2(\Z/N\Z):B(N)]
+=\bigl|\mathbf{P}^1(\Z/N\Z)\bigr|.
+\]
+再代入上一个引理即得
+\[
+[\SL_2(\Z):\GammaO(N)]
+= N\prod_{p\mid N}\left(1+\frac1p\right).
+\]
+\end{proof}
+
+\begin{corollary}
+有
+\[
+[\GammaO(N):\GammaI(N)]=\varphi(N),
+\qquad
+[\SL_2(\Z):\GammaI(N)]
+= N^2\prod_{p\mid N}\left(1-\frac1{p^2}\right).
+\]
+\end{corollary}
+
+\begin{proof}
+定义映射
+\[
+\GammaO(N)\longrightarrow (\Z/N\Z)^\times,
+\qquad
+\mat{a&b\\ c&d}\longmapsto \bar a.
+\]
+因为 $c\equiv 0\pmod N$ 且 $ad-bc=1$，所以 $\bar a\bar d=1$，从而 $\bar a\in (\Z/N\Z)^\times$。这是群同态，其核正是满足 $a\equiv d\equiv 1$ 且 $c\equiv 0$ 的那些矩阵，即 $\GammaI(N)$。该映射是满射，因为对任意单位 $u\in (\Z/N\Z)^\times$，可取整数提升 $a\equiv u$, $d\equiv u^{-1}\pmod N$，再用前述提升技巧构造出属于 $\GammaO(N)$ 的矩阵。故
+\[
+[\GammaO(N):\GammaI(N)]=|(\Z/N\Z)^\times|=\varphi(N).
+\]
+
+于是
+\[
+[\SL_2(\Z):\GammaI(N)]
+=[\SL_2(\Z):\GammaO(N)]\,[\GammaO(N):\GammaI(N)]
+=N\prod_{p\mid N}\left(1+\frac1p\right)\cdot N\prod_{p\mid N}\left(1-\frac1p\right),
+\]
+化简得
+\[
+[\SL_2(\Z):\GammaI(N)]
+=N^2\prod_{p\mid N}\left(1-\frac1{p^2}\right).
+\]
+\end{proof}
+
+\begin{example}
+对几个小的 $N$，指标 $[\SL_2(\Z):\GammaO(N)]$ 为
+\[
+\begin{array}{c|ccccc}
+N & 2 & 3 & 4 & 5 & 6 \\\hline
+[\SL_2(\Z):\GammaO(N)] & 3 & 4 & 6 & 6 & 12
+\end{array}
+\]
+例如 $N=6$ 时，
+\[
+[\SL_2(\Z):\GammaO(6)]
+=6\left(1+\frac12\right)\left(1+\frac13\right)=12.
+\]
+这些有限指标正是后面构造基本域与模曲线时出现的“有限片数”。
+\end{example}
+
+\section{群作用：轨道与稳定子}
+
+群作用把“抽象群元素”转化为“对对象的变换”。这是从代数进入几何与组合的桥梁。
+
+\begin{definition}
+设 $G$ 是一个群，$X$ 是一个集合。称 $G$ \emph{作用}在 $X$ 上，如果给定一个映射
+\[
+G\times X\longrightarrow X,
+\qquad (g,x)\longmapsto g\cdot x,
+\]
+满足以下两条公理：
+\begin{enumerate}
+  \item 对任意 $x\in X$，有 $\Id\cdot x=x$；
+  \item 对任意 $g,h\in G$ 与 $x\in X$，有 $(gh)\cdot x=g\cdot(h\cdot x)$。
+\end{enumerate}
+\end{definition}
+
+\begin{definition}
+设 $G$ 作用在 $X$ 上，$x\in X$。
+\begin{itemize}
+  \item $x$ 的\emph{轨道}定义为
+  \[
+  \Orb(x)=\{g\cdot x:g\in G\}.
+  \]
+  \item $x$ 的\emph{稳定子}定义为
+  \[
+  \Stab(x)=\{g\in G:g\cdot x=x\}.
+  \]
+  \item 对 $g\in G$，其不动点集定义为
+  \[
+  \Fix(g)=\{x\in X:g\cdot x=x\}.
+  \]
+\end{itemize}
+\end{definition}
+
+\begin{proposition}
+对任意 $x\in X$，稳定子 $\Stab(x)$ 是 $G$ 的子群。
+\end{proposition}
+
+\begin{proof}
+单位元显然固定 $x$，故 $\Id\in \Stab(x)$。若 $g,h\in \Stab(x)$，则
+\[
+(gh)\cdot x=g\cdot(h\cdot x)=g\cdot x=x,
+\]
+所以 $gh\in \Stab(x)$。若 $g\in \Stab(x)$，则
+\[
+x=\Id\cdot x=(g^{-1}g)\cdot x=g^{-1}\cdot(g\cdot x)=g^{-1}\cdot x,
+\]
+故 $g^{-1}\in \Stab(x)$。因此 $\Stab(x)$ 是子群。
+\end{proof}
+
+\begin{proposition}
+“属于同一轨道”在 $X$ 上定义了一个等价关系。其等价类恰好就是各个轨道。
+\end{proposition}
+
+\begin{proof}
+定义关系 $x\sim y$ 当且仅当存在 $g\in G$ 使 $y=g\cdot x$。验证等价关系：
+\begin{enumerate}
+  \item 自反性：$x=\Id\cdot x$，所以 $x\sim x$；
+  \item 对称性：若 $y=g\cdot x$，则 $x=g^{-1}\cdot y$，所以 $y\sim x$；
+  \item 传递性：若 $y=g\cdot x$ 且 $z=h\cdot y$，则 $z=(hg)\cdot x$，所以 $x\sim z$。
+\end{enumerate}
+因此它是等价关系。按定义，与 $x$ 等价的所有点恰好是 $\Orb(x)$。
+\end{proof}
+
+\begin{theorem}[轨道—稳定子定理]
+设有限群 $G$ 作用在集合 $X$ 上，且 $x\in X$。则
+\[
+|\Orb(x)|=[G:\Stab(x)].
+\]
+特别地，
+\[
+|G|=|\Orb(x)|\cdot |\Stab(x)|.
+\]
+\end{theorem}
+
+\begin{proof}
+考虑映射
+\[
+\Phi:G/\Stab(x)\longrightarrow \Orb(x),
+\qquad g\Stab(x)\longmapsto g\cdot x.
+\]
+先证其良定义。若 $g\Stab(x)=h\Stab(x)$，则 $h^{-1}g\in \Stab(x)$，从而
+\[
+(h^{-1}g)\cdot x=x.
+\]
+左乘 $h$，得到 $g\cdot x=h\cdot x$，故 $\Phi$ 良定义。
+
+再证单射。若 $\Phi(g\Stab(x))=\Phi(h\Stab(x))$，即 $g\cdot x=h\cdot x$，则
+\[
+(h^{-1}g)\cdot x=x,
+\]
+从而 $h^{-1}g\in \Stab(x)$，于是 $g\Stab(x)=h\Stab(x)$。
+
+满射性是显然的：轨道中的任意点都形如 $g\cdot x$。
+
+故 $\Phi$ 是双射，于是
+\[
+|\Orb(x)|=|G/\Stab(x)|=[G:\Stab(x)].
+\]
+若 $G$ 有限，则再乘以 $|\Stab(x)|$ 得到
+\[
+|G|=|\Orb(x)|\cdot |\Stab(x)|.
+\]
+\end{proof}
+
+\begin{example}
+令对称群 $S_3$ 作用在集合 $\{1,2,3\}$ 上。点 $1$ 的轨道是整个集合，因此
+\[
+|\Orb(1)|=3.
+\]
+稳定子是固定 $1$ 的置换，即
+\[
+\Stab(1)=\{\Id,(23)\},
+\qquad |\Stab(1)|=2.
+\]
+于是
+\[
+|S_3|=6=3\cdot 2,
+\]
+与轨道—稳定子定理一致。
+\end{example}
+
+\begin{theorem}[Burnside 引理]
+设有限群 $G$ 作用在有限集合 $X$ 上，记轨道个数为 $r$。则
+\[
+r=\frac{1}{|G|}\sum_{g\in G}|\Fix(g)|.
+\]
+\end{theorem}
+
+\begin{proof}
+考虑集合
+\[
+\Omega=\{(g,x)\in G\times X:g\cdot x=x\}.
+\]
+我们对它作双重计数。
+
+一方面，固定 $g\in G$，满足 $(g,x)\in\Omega$ 的 $x$ 的个数正是 $|\Fix(g)|$，所以
+\[
+|\Omega|=\sum_{g\in G}|\Fix(g)|.
+\]
+
+另一方面，固定 $x\in X$，满足 $(g,x)\in\Omega$ 的 $g$ 的个数正是 $|\Stab(x)|$，所以
+\[
+|\Omega|=\sum_{x\in X}|\Stab(x)|.
+\]
+把 $X$ 按轨道分解为不交并
+\[
+X=\Orb(x_1)\sqcup\cdots\sqcup\Orb(x_r).
+\]
+在同一轨道中，稳定子大小相同到共轭，因此每个轨道的贡献为
+\[
+\sum_{x\in \Orb(x_i)}|\Stab(x)|=|\Orb(x_i)|\cdot |\Stab(x_i)|=|G|,
+\]
+其中最后一步用轨道—稳定子定理。于是
+\[
+|\Omega|=r|G|.
+\]
+两式相等即得
+\[
+r=\frac{1}{|G|}\sum_{g\in G}|\Fix(g)|.
+\]
+\end{proof}
+
+\begin{remark}
+Burnside 引理的威力在于：它把“轨道个数”转化为“平均不动点个数”。在组合计数中，这往往比直接分类轨道容易得多；在模形式背景下，它也反映了“商空间”的点数受稳定子控制这一基本思想。
+\end{remark}
+
+\section{$\SL_2(\Z)$ 作用在上半平面 $\HH$}
+
+现在我们把代数群 $\SL_2(\Z)$ 送入复几何世界。记上半平面为
+\[
+\HH=\{z\in\C:\Im z>0\}.
+\]
+
+\begin{definition}
+对
+\[
+\gamma=\mat{a&b\\ c&d}\in \SL_2(\R),
+\qquad z\in \HH,
+\]
+定义
+\[
+\gamma\cdot z=\frac{az+b}{cz+d}.
+\]
+这称为\emph{Möbius 变换}或\emph{分式线性变换}。
+\end{definition}
+
+\begin{proposition}
+上述公式确实定义了 $\SL_2(\R)$ 对 $\HH$ 的一个群作用。
+\end{proposition}
+
+\begin{proof}
+先说明分母不为零。若 $cz+d=0$，则 $z=-d/c$（当 $c\ne 0$ 时）是实数；但 $z\in\HH$ 的虚部正，因此不可能。若 $c=0$，则 $d\ne 0$，分母同样不为零。
+
+再验证群作用公理。单位矩阵显然满足
+\[
+I\cdot z=z.
+\]
+若
+\[
+\gamma_1=\mat{a&b\\ c&d},
+\qquad
+\gamma_2=\mat{a'&b'\\ c'&d'},
+\]
+则直接代入可得
+\[
+\gamma_1\cdot(\gamma_2\cdot z)
+=\frac{a\frac{a'z+b'}{c'z+d'}+b}{c\frac{a'z+b'}{c'z+d'}+d}
+=\frac{(aa'+bc')z+(ab'+bd')}{(ca'+dc')z+(cb'+dd')}.
+\]
+而这正是 $(\gamma_1\gamma_2)\cdot z$。因此它是群作用。
+\end{proof}
+
+\begin{lemma}
+对任意
+\[
+\gamma=\mat{a&b\\ c&d}\in \SL_2(\R),\qquad z\in \HH,
+\]
+有
+\[
+\Im(\gamma\cdot z)=\frac{\Im z}{|cz+d|^2}.
+\]
+特别地，$\SL_2(\R)$ 保持上半平面 $\HH$。
+\end{lemma}
+
+\begin{proof}
+设 $w=\gamma\cdot z$。则
+\[
+w=\frac{az+b}{cz+d}=rac{(az+b)(c\bar z+d)}{|cz+d|^2}.
+\]
+因此
+\[
+w-\bar w
+=\frac{(az+b)(c\bar z+d)-(a\bar z+b)(cz+d)}{|cz+d|^2}.
+\]
+展开分子后，含 $z\bar z$ 与常数的项消去，只留下
+\[
+(ad-bc)(z-\bar z).
+\]
+由于 $ad-bc=1$，故
+\[
+w-\bar w=\frac{z-\bar z}{|cz+d|^2}.
+\]
+取虚部得
+\[
+\Im w=\frac{\Im z}{|cz+d|^2}>0.
+\]
+所以 $w\in\HH$。
+\end{proof}
+
+\begin{corollary}
+$\SL_2(\Z)$ 因而作用在 $\HH$ 上。
+\end{corollary}
+
+\begin{remark}
+矩阵 $-I$ 在 $\HH$ 上作用平凡，因为
+\[
+(-I)\cdot z=\frac{-z}{-1}=z.
+\]
+所以这个作用实际上通过商群 $\PSL_2(\Z)$ 实现。
+\end{remark}
+
+\begin{proposition}
+设
+\[
+\gamma=\mat{a&b\\ c&d}\in \SL_2(\R),\qquad \gamma\ne \pm I.
+\]
+则 $z\in\HH$ 是 $\gamma$ 的不动点当且仅当它满足二次方程
+\[
+cz^2+(d-a)z-b=0.
+\]
+\end{proposition}
+
+\begin{proof}
+方程 $\gamma\cdot z=z$ 等价于
+\[
+\frac{az+b}{cz+d}=z.
+\]
+移项得
+\[
+az+b=cz^2+dz,
+\]
+即
+\[
+cz^2+(d-a)z-b=0.
+\]
+反过来，若 $z$ 满足该方程且 $cz+d\ne 0$，则回代可知 $\gamma\cdot z=z$。而对 $z\in\HH$，分母本来就不为零。
+\end{proof}
+
+\begin{example}
+矩阵 $S$ 固定点 $i$，因为
+\[
+S\cdot i=-\frac{1}{i}=i.
+\]
+此外
+\[
+ST=\mat{0&-1\\ 1&1}.
+\]
+令
+\[
+\omega=e^{2\pi i/3}=\frac{-1+\sqrt{3}i}{2}.
+\]
+则
+\[
+(ST)\cdot \omega=\frac{-1}{\omega+1}.
+\]
+注意 $\omega^2+\omega+1=0$，因此
+\[
+\omega(\omega+1)=-1,
+\qquad
+\frac{-1}{\omega+1}=\omega.
+\]
+所以 $\omega$ 是 $ST$ 的不动点。
+\end{example}
+
+\begin{remark}
+点 $i$ 与 $\omega$ 在后文非常重要。它们分别是 $\PSL_2(\Z)$ 作用下的两个椭圆点，稳定子阶分别为 $2$ 与 $3$。模曲线的亏格公式中，正是这两类特殊点提供了修正项。
+\end{remark}
+
+\section{基本域与等价关系}
+
+由群作用自然得到等价关系：定义
+\[
+z\sim w
+\quad\Longleftrightarrow\quad
+\exists\,\gamma\in \SL_2(\Z)\text{ 使 }w=\gamma\cdot z.
+\]
+商集 $\SL_2(\Z)\backslash\HH$ 的几何表示依赖于一个基本域。标准基本域定义如下。
+
+\begin{definition}
+记
+\[
+\mathcal F=\left\{z\in\HH:|z|\ge 1,\ \bigl|\Re z\bigr|\le \frac12\right\}.
+\]
+称其为 $\SL_2(\Z)$ 在 $\HH$ 上作用的\emph{标准基本域}。
+\end{definition}
+
+\begin{theorem}
+对每个 $z\in\HH$，都存在 $\gamma\in\SL_2(\Z)$，使得 $\gamma\cdot z\in\mathcal F$。
+\end{theorem}
+
+\begin{proof}
+设 $z=x+iy\in\HH$，其中 $y>0$。
+
+对任意
+\[
+\gamma=\mat{a&b\\ c&d}\in \SL_2(\Z),
+\]
+由上一节引理，
+\[
+\Im(\gamma\cdot z)=\frac{y}{|cz+d|^2}.
+\]
+因此要让虚部尽可能大，只需让 $|cz+d|$ 尽可能小。考虑所有原始整数对 $(c,d)$（即 $\gcd(c,d)=1$）上的函数
+\[
+(c,d)\longmapsto |cz+d|^2.
+\]
+由于当 $|c|+|d|\to\infty$ 时，$|cz+d|\to\infty$，故该函数在这些原始对上取得最小值。取到最小值的一对仍记为 $(c,d)$。由 $\gcd(c,d)=1$，存在整数 $a,b$ 使 $ad-bc=1$，于是
+\[
+\gamma=\mat{a&b\\ c&d}\in \SL_2(\Z).
+\]
+对这个 $\gamma$，$w=\gamma\cdot z$ 的虚部在整个轨道中达到最大。
+
+接下来用平移调整实部。选取整数 $n$，使
+\[
+\left|\Re(w+n)\right|\le \frac12.
+\]
+因为 $T^n\cdot w=w+n$，而平移不改变虚部，所以 $T^n\cdot w$ 仍然具有轨道中的最大虚部。把它重新记作 $w$，于是可设
+\[
+\left|\Re w\right|\le \frac12.
+\]
+
+若 $|w|<1$，则
+\[
+\Im(S\cdot w)=\Im\left(-\frac1w\right)=\frac{\Im w}{|w|^2}>\Im w,
+\]
+这与 $w$ 的虚部在轨道中最大矛盾。因此必有 $|w|\ge 1$。
+
+综上，$w\in\mathcal F$，即每个 $z\in\HH$ 都与 $\mathcal F$ 中某点等价。
+\end{proof}
+
+\begin{theorem}
+设
+\[
+\mathcal F^\circ=\left\{z\in\HH:|z|>1,\ \bigl|\Re z\bigr|<\frac12\right\}
+\]
+为 $\mathcal F$ 的内部。若 $z,w\in \mathcal F^\circ$ 且 $w=\gamma\cdot z$ 对某个 $\gamma\in\SL_2(\Z)$ 成立，则 $w=z$。
+\end{theorem}
+
+\begin{proof}
+设
+\[
+\gamma=\mat{a&b\\ c&d}.
+\]
+我们先证明：若 $z\in\mathcal F^\circ$，则对任意整数 $c,d$ 不全为零，有
+\[
+|cz+d|>1,
+\]
+除非 $c=0$ 且 $d=\pm 1$。
+
+若 $c=0$，则 $|cz+d|=|d|\ge 1$，等号仅在 $d=\pm1$ 时成立。
+
+若 $|c|\ge 2$，由于 $|\Re z|<1/2$ 且 $|z|>1$，有
+\[
+(\Im z)^2=|z|^2-(\Re z)^2>1-\frac14=\frac34.
+\]
+于是
+\[
+|cz+d|^2=(c\Re z+d)^2+c^2(\Im z)^2>4\cdot \frac34=3>1.
+\]
+
+若 $|c|=1$，则
+\[
+|cz+d|=|z+n|
+\]
+对某个整数 $n$ 成立。若 $n=0$，则 $|z|>1$。若 $n=1$，则
+\[
+|z+1|^2=(\Re z+1)^2+(\Im z)^2
+> (\Re z+1)^2+1-(\Re z)^2
+=2+2\Re z>1,
+\]
+因为 $\Re z>-1/2$。同理 $|z-1|>1$。若 $|n|\ge 2$，则显然 $|z+n|>1$。故结论成立。
+
+现在若 $w=\gamma\cdot z$ 且 $z,w\in\mathcal F^\circ$，则
+\[
+\Im w=\frac{\Im z}{|cz+d|^2}.
+\]
+把同样的论证应用到 $\gamma^{-1}$，又得到 $\Im z\le \Im w$。因此必须有 $\Im z=\Im w$，从而
+\[
+|cz+d|=1.
+\]
+由上面的结论，只可能 $c=0$ 且 $d=\pm1$。这时 $\det\gamma=1$ 强迫 $a=d=\pm1$，于是
+\[
+\gamma=\pm\mat{1&n\\ 0&1}
+\]
+对某个 $n\in\Z$。在 $\HH$ 上，$-I$ 作用平凡，因此
+\[
+\gamma\cdot z=z+n.
+\]
+因为 $z$ 与 $w$ 都满足 $|\Re|<1/2$，只可能 $n=0$，故 $w=z$。
+\end{proof}
+
+\begin{corollary}
+标准基本域边界上的点只有以下两类非平凡识别：
+\begin{enumerate}
+  \item 直线边界 $\Re z=\pm 1/2$ 由平移 $T:z\mapsto z+1$ 识别；
+  \item 圆弧边界 $|z|=1$ 由反演 $S:z\mapsto -1/z$ 识别。
+\end{enumerate}
+特别地，$i$ 在 $S$ 下固定，$\omega$ 与 $\omega+1$ 在 $T$ 下对应，而 $\omega$ 又是 $ST$ 的不动点。
+\end{corollary}
+
+\begin{remark}
+为了避免边界重复，常常取半开基本域
+\[
+\mathcal F^{\ast}=
+\left\{z\in\HH:|z|>1,\ -\frac12<\Re z\le \frac12\right\}
+\cup
+\left\{z\in\HH:|z|=1,\ -\frac12\le \Re z\le 0\right\}.
+\]
+这样每个轨道与 $\mathcal F^{\ast}$ 恰好相交一次。
+\end{remark}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=3.1]
+  % axes
+  \draw[->, thin] (-1.2,0) -- (1.2,0) node[right] {$\Re z$};
+  \draw[->, thin] (0,0) -- (0,1.35) node[above] {$\Im z$};
+
+  % shaded region
+  \fill[blue!12] (-0.5,1.25) -- (-0.5,0.8660254)
+    arc[start angle=120,end angle=60,radius=1]
+    -- (0.5,1.25) -- cycle;
+
+  % boundaries
+  \draw[very thick, blue!70!black] (-0.5,0.15) -- (-0.5,1.25);
+  \draw[very thick, blue!70!black] (0.5,0.15) -- (0.5,1.25);
+  \draw[very thick, blue!70!black] ({cos(120)},{sin(120)}) arc[start angle=120,end angle=60,radius=1];
+
+  % dashed helper circle
+  \draw[dashed, gray] (0,0) circle (1);
+
+  % labels
+  \fill (0,1) circle (0.015) node[right] {$i$};
+  \fill (-0.5,0.8660254) circle (0.015) node[left] {$\omega$};
+  \fill (0.5,0.8660254) circle (0.015) node[right] {$\omega+1$};
+  \node at (0,0.62) {$\mathcal F$};
+  \node[below] at (-0.5,0) {$-\frac12$};
+  \node[below] at (0.5,0) {$\frac12$};
+  \node[below left] at (0,0) {$0$};
+  \node[below] at (1,0) {$1$};
+\end{tikzpicture}
+\caption{$\SL_2(\Z)$ 在上半平面上的标准基本域}
+\end{figure}
+
+\section{\texorpdfstring{$Y(\Gamma)$}{Y(Gamma)} 的直观理解}
+
+本节只给出几何直观，不追求所有解析细节。真正严格的构造涉及复流形、黎曼曲面与局部坐标，但基本思想并不复杂：把 $\HH$ 中属于同一轨道的点识别起来，就得到一个新的几何对象。
+
+\begin{definition}
+设 $\Gamma\subseteq \SL_2(\Z)$ 是一个有限指标子群。记
+\[
+Y(\Gamma)=\Gamma\backslash \HH
+\]
+为其在 $\HH$ 上的商空间。
+\end{definition}
+
+\begin{remark}
+直观上，$Y(\Gamma)$ 是把 $\HH$ 中所有由 $\Gamma$ 互相变换得到的点视为同一点所形成的空间。若 $\Gamma$ 没有有限阶非平凡元，则这个商空间局部看起来像开圆盘，因此是一个黎曼曲面；若有有限阶元，则会出现少数“锥点”，严格地说先得到一个一维复轨形（orbifold），但其底层拓扑空间仍可用黎曼曲面的语言描述。
+\end{remark}
+
+\begin{definition}
+$\mathbf P^1(\Q)=\Q\cup\{\infty\}$ 上的点称为 $\Gamma$ 的\emph{尖点候选}。$\Gamma$ 对 $\mathbf P^1(\Q)$ 的作用同样由分式线性变换给出；其轨道称为 $\Gamma$ 的\emph{尖点}（cusps）。
+\end{definition}
+
+\begin{example}
+对全模群 $\SL_2(\Z)$，所有有理点连同 $\infty$ 只形成一个尖点轨道。事实上，任意既约分数 $a/c$（$\gcd(a,c)=1$）都可由某个矩阵
+\[
+\mat{a&*\\ c&*}\in \SL_2(\Z)
+\]
+把 $\infty$ 送到 $a/c$。因此 $\SL_2(\Z)$ 只有一个尖点，通常记作 $\infty$。
+\end{example}
+
+\begin{remark}
+尖点之所以要加入，是因为当 $\Im z\to\infty$ 时，点会“跑到无穷远处”。在商空间中，这种无穷远方向常常应被补上一个点。例如对 $\SL_2(\Z)$，在坐标
+\[
+q=e^{2\pi i z}
+\]
+下，$z\to i\infty$ 对应于 $q\to 0$，于是加入尖点等价于在 $q$-坐标中把原点补进去。
+\end{remark}
+
+\begin{definition}
+把所有尖点加入 $Y(\Gamma)$，得到紧化空间
+\[
+X(\Gamma)=Y(\Gamma)\cup\{\text{尖点}\}.
+\]
+当 $\Gamma=\GammaO(N)$ 时，记
+\[
+Y_0(N)=\GammaO(N)\backslash \HH,
+\qquad
+X_0(N)=\GammaO(N)\backslash \HH^{\ast},
+\]
+其中 $\HH^{\ast}=\HH\cup \mathbf P^1(\Q)$。
+\end{definition}
+
+\begin{remark}
+在模形式与椭圆曲线理论中，$Y_0(N)$ 具有非常重要的模解释：它参数化带有一个循环阶 $N$ 子群的椭圆曲线。换言之，$Y_0(N)$ 的点可以直观理解为“椭圆曲线加上一条 $N$-级结构”。紧化后的 $X_0(N)$ 则把退化情形（尖点）也纳入其中。
+\end{remark}
+
+\begin{theorem}[亏格公式，陈述]
+设 $\Gamma\subseteq \SL_2(\Z)$ 是有限指标子群，记 $\bar\Gamma$ 为其在 $\PSL_2(\Z)$ 中的像，
+\[
+\mu=[\PSL_2(\Z):\bar\Gamma].
+\]
+再设 $\nu_2$、$\nu_3$ 分别为 $Y(\Gamma)$ 上椭圆点（稳定子阶分别为 $2$ 与 $3$）的个数，$\nu_{\infty}$ 为尖点个数。则紧化曲线 $X(\Gamma)$ 的亏格满足
+\[
+g\bigl(X(\Gamma)\bigr)=1+\frac{\mu}{12}-\frac{\nu_2}{4}-\frac{\nu_3}{3}-\frac{\nu_{\infty}}{2}.
+\]
+\end{theorem}
+
+\begin{remark}
+这条公式极其重要。它告诉我们：模曲线的拓扑复杂度（亏格）完全由有限个离散数据决定——指标、椭圆点个数、尖点个数。对于 $\GammaO(N)$，这些量都可以用算术方式计算，因此可以把一个高度几何的问题转化为纯代数与数论计算。
+\end{remark}
+
+\begin{example}
+对 $\Gamma=\SL_2(\Z)$，有 $\mu=1$，$\nu_2=1$，$\nu_3=1$，$\nu_{\infty}=1$，故
+\[
+g\bigl(X(1)\bigr)=1+\frac1{12}-\frac14-\frac13-\frac12=0.
+\]
+因此 $X(1)$ 是亏格 $0$ 的曲线，事实上同构于复射影直线。这正是经典模 $j$-不变量出现的几何背景。
+\end{example}
+
+\section*{本章小结}
+
+本章建立了模形式理论最核心的群论与几何背景：
+\begin{itemize}
+  \item $\GL_n(F)$ 与 $\SL_n(F)$ 通过行列式相联系；
+  \item $\SL_2(\Z)$ 由 $S,T$ 两个基本矩阵生成；
+  \item 合同子群 $\Gamma(N),\GammaO(N),\GammaI(N)$ 是研究不同级结构的自然对象；
+  \item 群作用的轨道、稳定子与 Burnside 引理为“取商”提供了一般框架；
+  \item $\SL_2(\Z)$ 通过 Möbius 变换作用在 $\HH$ 上，并拥有标准基本域；
+  \item 模曲线 $Y(\Gamma)$ 与 $X(\Gamma)$ 是把上述群作用几何化后的产物。
+\end{itemize}
+后续章节中，模形式将作为这些群作用下满足特定变换律的解析函数出现，而本章给出的基本域、尖点与合同子群语言将反复使用。
+
+\section*{习题}
+
+下列习题按难度分为基础（\basic）、进阶（\medium）与挑战（\hard）三级，共 $65$ 题。建议先完成基础题，再做进阶题；挑战题适合在掌握本章主线后深入思考。
+
+\subsection*{基础题（\basic）}
+
+\begin{enumerate}
+  \item[\basic 1.] 计算 $S^2$、$S^3$、$T^2$、$T^{-3}$，并验证它们都属于 $\SL_2(\Z)$。
+  \item[\basic 2.] 直接计算 $ST$ 与 $TS$，并说明它们不相等。
+  \item[\basic 3.] 设 $A=\mat{a&b\\ c&d}\in \SL_2(\Z)$。证明
+  \[
+  A^{-1}=\mat{d&-b\\ -c&a}.
+  \]
+  \item[\basic 4.] 对任意 $\lambda\in F^\times$，验证 $\operatorname{diag}(\lambda,1,\dots,1)\in \GL_n(F)$，且其行列式为 $\lambda$。
+  \item[\basic 5.] 写出 $\GL_1(\F_5)$ 与 $\SL_1(\F_5)$ 的全部元素。
+  \item[\basic 6.] 用列向量计数法计算 $|\GL_2(\F_2)|$。
+  \item[\basic 7.] 用列向量计数法计算 $|\GL_2(\F_3)|$ 与 $|\SL_2(\F_3)|$。
+  \item[\basic 8.] 证明 $\SL_n(F)$ 是 $\GL_n(F)$ 的正规子群。
+  \item[\basic 9.] 说明 $\GL_n(\R)$ 中行列式为正的矩阵与行列式为负的矩阵不能落在同一个左陪集 $A\SL_n(\R)$ 中。
+  \item[\basic 10.] 用 $S$ 的幂表示矩阵 $-I$。
+  \item[\basic 11.] 直接验证关系 $(ST)^3=-I$。
+  \item[\basic 12.] 计算 $ST^mS^{-1}$ 的显式矩阵形式，其中 $m\in\Z$。
+  \item[\basic 13.] 证明 $\GammaO(2)$ 是 $\SL_2(\Z)$ 的子群。
+  \item[\basic 14.] 判断下列矩阵分别是否属于 $\GammaO(3)$、$\GammaI(4)$、$\Gamma(5)$：
+  \[
+  \mat{1&2\\ 3&7},\qquad \mat{5&1\\ 4&1},\qquad \mat{6&5\\ 10&11}.
+  \]
+  \item[\basic 15.] 求矩阵 $\mat{7&4\\ 6&5}$ 在模 $3$ 与模 $5$ 下的约化像。
+  \item[\basic 16.] 令循环群 $C_3$ 作用在正三角形的三个顶点上。求每个顶点的轨道与稳定子。
+  \item[\basic 17.] 令正方形的对称群 $D_4$ 作用在四个顶点上。求某一固定顶点的稳定子大小。
+  \item[\basic 18.] 对 $S_3$ 在集合 $\{1,2,3\}$ 上的自然作用，求 $\Orb(1)$ 与 $\Stab(1)$。
+  \item[\basic 19.] 证明 $S$ 固定点 $i$，而 $T$ 在 $\HH$ 上没有不动点。
+  \item[\basic 20.] 设 $z\in\HH$。证明
+  \[
+  \Im(z+1)=\Im z,
+  \qquad
+  \Im\!\left(-\frac1z\right)=\frac{\Im z}{|z|^2}.
+  \]
+  \item[\basic 21.] 把点 $2i$ 用 $\SL_2(\Z)$ 的作用化到基本域 $\mathcal F$ 中，并写出所用矩阵。
+  \item[\basic 22.] 把点 $\frac{3+i}{2}$ 化到基本域 $\mathcal F$ 中。
+  \item[\basic 23.] 证明 $0$ 与 $\infty$ 在 $\SL_2(\Z)$ 的作用下属于同一尖点轨道。
+  \item[\basic 24.] 验证关系“$z\sim w$ 当且仅当存在 $\gamma\in\SL_2(\Z)$ 使 $w=\gamma\cdot z$”是等价关系。
+  \item[\basic 25.] 设 $G$ 为有限群作用在有限集合 $X$ 上。证明对任意 $x\in X$，$\Stab(x)$ 是 $G$ 的子群。
+\end{enumerate}
+
+\subsection*{进阶题（\medium）}
+
+\begin{enumerate}
+  \item[\medium 26.] 设 $A=\mat{a&b\\ 1&d}\in \SL_2(\Z)$。利用本章中的归纳思想，把 $A$ 写成 $S$ 与 $T$ 的乘积。
+  \item[\medium 27.] 完整证明：若
+  \[
+  A=\mat{a&b\\ c&d}\in \SL_2(\Z),
+  \]
+  则存在整数 $q$ 使得 $ST^{-q}A$ 的左下角绝对值严格小于 $|c|$。
+  \item[\medium 28.] 证明 $\bar S,\bar T$ 生成 $\SL_2(\Z/2\Z)$。
+  \item[\medium 29.] 证明 $\bar S,\bar T$ 生成 $\SL_2(\Z/3\Z)$。
+  \item[\medium 30.] 证明模 $N$ 约化映射 $\rho_N$ 的核恰为 $\Gamma(N)$。
+  \item[\medium 31.] 证明 $\Gamma(N)$ 是 $\SL_2(\Z)$ 的正规子群。
+  \item[\medium 32.] 用指标公式计算 $[\SL_2(\Z):\GammaO(2)]$。
+  \item[\medium 33.] 用指标公式计算 $[\SL_2(\Z):\GammaO(3)]$。
+  \item[\medium 34.] 用指标公式计算 $[\SL_2(\Z):\GammaO(4)]$。
+  \item[\medium 35.] 用指标公式计算 $[\SL_2(\Z):\GammaO(6)]$。
+  \item[\medium 36.] 证明
+  \[
+  [\SL_2(\Z):\GammaI(5)]=24.
+  \]
+  \item[\medium 37.] 证明一般公式
+  \[
+  [\GammaO(N):\GammaI(N)]=\varphi(N).
+  \]
+  \item[\medium 38.] 利用 Burnside 引理证明：若素数阶循环群 $C_p$ 作用在有限集合 $X$ 上，则
+  \[
+  |X|\equiv |\Fix(C_p)|\pmod p,
+  \]
+  其中 $\Fix(C_p)$ 表示被所有群元素固定的点集。
+  \item[\medium 39.] 研究 $\SL_2(\Z)$ 对原始整数向量集
+  \[
+  \{(m,n)\in\Z^2:\gcd(m,n)=1\}
+  \]
+  的作用，证明该作用是传递的。
+  \item[\medium 40.] 证明对任意 $z\in\HH$，存在整数 $n$ 使得 $|\Re(z+n)|\le 1/2$。
+  \item[\medium 41.] 设 $w\in\HH$ 且 $|\Re w|\le 1/2$。证明若 $|w|<1$，则 $\Im(S\cdot w)>\Im w$。
+  \item[\medium 42.] 结合前两题，重新证明每个 $z\in\HH$ 都与基本域 $\mathcal F$ 中某点等价。
+  \item[\medium 43.] 证明：若 $z,w\in\mathcal F^\circ$ 且 $w=\gamma\cdot z$，则 $z=w$。
+  \item[\medium 44.] 详细说明基本域 $\mathcal F$ 两侧边界与圆弧边界分别由哪些群元素配对。
+  \item[\medium 45.] 在 $\PSL_2(\Z)$ 中，证明点 $i$ 的稳定子阶为 $2$，点 $\omega$ 的稳定子阶为 $3$。
+  \item[\medium 46.] 求由子群 $\langle T\rangle$ 在 $\HH$ 上作用的一个基本域，并证明你的答案正确。
+  \item[\medium 47.] 求由子群 $\langle T^2\rangle$ 在 $\HH$ 上作用的一个基本域，并与上一题比较。
+  \item[\medium 48.] 用 $\mathbf{P}^1(\Z/N\Z)$ 上的群作用，重新推导
+  \[
+  [\SL_2(\Z):\GammaO(N)]
+  =N\prod_{p\mid N}\left(1+\frac1p\right).
+  \]
+  \item[\medium 49.] 计算 $\bigl|\mathbf{P}^1(\Z/8\Z)\bigr|$，并由此求 $[\SL_2(\Z):\GammaO(8)]$。
+  \item[\medium 50.] 查阅或自行构造 $\GammaO(2)$ 与 $\GammaO(3)$ 在 $\HH$ 上的基本域草图，并说明它们为何应由有限个 $\SL_2(\Z)$ 标准基本域拼接而成。
+\end{enumerate}
+
+\subsection*{挑战题（\hard）}
+
+\begin{enumerate}
+  \item[\hard 51.] 设
+  \[
+  \mathcal M=\left\{z\mapsto \frac{az+b}{cz+d}:a,b,c,d\in\R,\ ad-bc\ne 0\right\}.
+  \]
+  证明在复合运算下，$\mathcal M$ 形成一个群，并说明它与适当的矩阵商群同构。
+  \item[\hard 52.] 证明 $\SL_2(\R)$ 在 $\HH$ 上的作用通过 $\PSL_2(\R)$ 因子化，并讨论为何标量矩阵不改变 Möbius 变换。
+  \item[\hard 53.] 设 $\gamma\in\SL_2(\Z)$。证明：$\gamma$ 在 $\HH$ 中有不动点当且仅当 $|\operatorname{tr}(\gamma)|<2$。
+  \item[\hard 54.] 证明 $\SL_2(\Z)$ 中每个有限阶非平凡元素都共轭于 $S$ 或 $ST$（在 $\PSL_2(\Z)$ 中分别对应阶 $2$ 与阶 $3$ 的元素）。
+  \item[\hard 55.] 证明 $\GammaO(N)$ 的每个尖点都可由某个有理数 $a/c$ 表示，其中 $c\mid N$。
+  \item[\hard 56.] 证明 $\GammaO(N)$ 的尖点个数公式
+  \[
+  \nu_{\infty}(N)=\sum_{d\mid N}\varphi\bigl(\gcd(d,N/d)\bigr).
+  \]
+  \item[\hard 57.] 利用上一题的公式，求 $\GammaO(11)$ 的尖点个数，并给出一组代表元。
+  \item[\hard 58.] 通过对基本域作三角剖分，推导亏格公式
+  \[
+  g=1+\frac{\mu}{12}-\frac{\nu_2}{4}-\frac{\nu_3}{3}-\frac{\nu_{\infty}}{2}.
+  \]
+  \item[\hard 59.] 利用指标、椭圆点与尖点数据，计算 $X_0(11)$ 的亏格。
+  \item[\hard 60.] 证明并讨论：对哪些 $N$，曲线 $X_0(N)$ 没有来自 $i$ 的椭圆点（即没有阶 $2$ 椭圆点）？
+  \item[\hard 61.] 证明并讨论：对哪些 $N$，曲线 $X_0(N)$ 没有来自 $\omega$ 的椭圆点（即没有阶 $3$ 椭圆点）？
+  \item[\hard 62.] 研究 $\SL_2(\F_3)$ 对射影直线 $\mathbf P^1(\F_3)$ 的作用，证明其传递性并求稳定子大小。
+  \item[\hard 63.] 不借助本章推论，直接从定义出发证明
+  \[
+  |\SL_2(\F_q)|=q(q^2-1).
+  \]
+  \item[\hard 64.] 证明主合同子群 $\Gamma(N)$ 在 $N\ge 3$ 时无非平凡有限阶元；换言之，$\Gamma(N)$ 是无挠群。
+  \item[\hard 65.] 证明
+  \[
+  \PSL_2(\Z)\cong C_2\ast C_3,
+  \]
+  即它同构于一个阶 $2$ 循环群与一个阶 $3$ 循环群的自由积。
+\end{enumerate}
