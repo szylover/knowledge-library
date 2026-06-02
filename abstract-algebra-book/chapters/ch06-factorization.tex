@@ -1,0 +1,545 @@
+\chapter{整环与分解}
+
+在整数中，
+我们习惯于写出
+\[
+60=2^2\cdot 3\cdot 5.
+\]
+这一分解之所以有力量，
+不只是因为它存在，
+更因为它在单位与排列之外唯一。
+把这种现象推广到一般整环，
+就得到整除理论、UFD、PID、ED 与各种数环的算术。
+对模形式而言，
+Fourier 系数所在整数环的分解性质影响 Hecke 特征值、局部因子与同余理论；
+$p$-进完备化则把全局问题分解为逐个素数的局部问题。
+本章围绕几个经典样本展开：
+$\Z[i]$、$\Z[\omega]$ 与失效例子 $\Z[\sqrt{-5}]$。
+
+\section{整除与相伴}
+
+\begin{definition}
+设 $R$ 为整环，$a,b\in R$。
+若存在 $c\in R$ 使 $b=ac$，
+则称 $a$ \emph{整除} $b$，记为 $a\mid b$。
+若 $a\mid b$ 且 $b\mid a$，
+则称 $a,b$ \emph{相伴}，记作 $a\sim b$。
+\end{definition}
+
+在整环中，
+$a\sim b$ 当且仅当 $b=ua$，其中 $u$ 为单位。
+因此相伴表示“差一个可逆因子”。
+例如在 $\Z$ 中，
+$5$ 与 $-5$ 相伴；
+在 $\Z[i]$ 中，
+$a$ 的四个相伴元为 $a,-a,ia,-ia$。
+
+\begin{definition}
+非零非单位元 $p\in R$ 称为\emph{不可约}，
+若 $p=ab$ 蕴含 $a$ 或 $b$ 为单位。
+称 $p$ 为\emph{素元}，
+若 $p\mid ab$ 蕴含 $p\mid a$ 或 $p\mid b$。
+\end{definition}
+
+在任意整环中，
+素元必不可约；
+反过来未必成立。
+这一差异正是唯一分解是否成立的症结。
+
+\begin{proposition}
+在整环中，素元必不可约。
+\end{proposition}
+
+\begin{proof}
+设 $p$ 为素元且 $p=ab$。
+则 $p\mid ab$，故 $p\mid a$ 或 $p\mid b$。
+若 $p\mid a$，则 $a=pc$，代回得
+\[
+p=ab=pcb.
+\]
+因整环可消去 $p\ne0$，得 $1=cb$，故 $b$ 为单位。
+另一种情形同理。
+\end{proof}
+
+\begin{example}
+在 $\Z[\sqrt{-5}]$ 中，
+\[
+6=2\cdot 3=(1+\sqrt{-5})(1-\sqrt{-5}).
+\]
+可证明四个因子彼此都不相伴，且都不可约。
+因此这里唯一分解失败。
+这将成为贯穿本章的反例。
+\end{example}
+
+\section{唯一分解整环（UFD）}
+
+\begin{definition}
+整环 $R$ 称为\emph{唯一分解整环}，
+若每个非零非单位元都能表示为不可约元的乘积，
+且这种表示在相伴与顺序之外唯一。
+\end{definition}
+
+\begin{example}
+$\Z$ 是 UFD。
+这是算术基本定理。
+$\F[x]$ 也是 UFD，
+因为它甚至是 Euclid 环。
+在这两个例子中，
+不可约元与素元重合。
+\end{example}
+
+\begin{proposition}
+在 UFD 中，
+不可约元都是素元。
+\end{proposition}
+
+\begin{proof}
+设 $p$ 不可约，且 $p\mid ab$。
+把 $a,b$ 分解为不可约元乘积，
+则 $ab$ 的分解中出现 $p$。
+由唯一性，
+$p$ 必与 $a$ 或 $b$ 的某个不可约因子相伴，
+故 $p\mid a$ 或 $p\mid b$。
+\end{proof}
+
+\begin{remark}
+因此在 UFD 中，
+“不可约”与“素”没有区别。
+许多关于整数素数的论证，
+一旦只使用这一性质，
+就能原封不动推广到任何 UFD。
+\end{remark}
+
+\begin{proposition}
+域上的多项式环 $\F[x]$ 是 UFD。
+\end{proposition}
+
+\begin{proof}
+上一章已证 $\F[x]$ 是 PID，
+而下面会证明 PID 蕴含 UFD。
+也可直接用次数归纳和 Euclid 算法证明。
+\end{proof}
+
+\section{主理想整环（PID）与 $\mathrm{PID}\Rightarrow\mathrm{UFD}$}
+
+\begin{definition}
+整环 $R$ 称为\emph{主理想整环}，
+若其每个理想都由单个元素生成。
+\end{definition}
+
+PID 的核心优点在于：
+最大公因子与 Bezout 等式自动存在，
+进而不可约元能像整数素数一样工作。
+
+\begin{lemma}
+设 $R$ 为 PID，$a,b\in R$ 不全为零。
+则存在 $d\in R$ 使 $(a,b)=(d)$。
+此时 $d$ 是 $a,b$ 的一个最大公因子，
+并且存在 $x,y\in R$ 使
+\[
+d=ax+by.
+\]
+\end{lemma}
+
+\begin{proof}
+ 理想 $(a,b)$ 在 PID 中是主理想，设 $(a,b)=(d)$。
+则 $d\mid a,b$。
+若 $c\mid a,b$，则 $a,b\in(c)$，故 $(a,b)\subseteq(c)$，于是 $d\in(c)$，即 $c\mid d$。
+等式 $d=ax+by$ 只是 $d\in(a,b)$ 的展开。
+\end{proof}
+
+\begin{theorem}
+每个 PID 都是 UFD。
+\end{theorem}
+
+\begin{proof}
+先证存在性。
+若存在非零非单位不能分解为不可约元，
+取其生成的主理想中极小者 $(a)$。
+则 $a$ 不可约，否则 $a=bc$ 且 $b,c$ 非单位，
+于是 $(a)\subsetneq (b)$ 与 $(a)\subsetneq(c)$，
+由极小性，$b,c$ 可分解，故 $a$ 也可分解，矛盾。
+
+再证不可约元 $p$ 为素元。
+若 $p\mid ab$ 且 $p\nmid a$，则 $(p,a)=(d)$。
+因 $p$ 不可约，$d$ 只能与 $1$ 或 $p$ 相伴；
+后者会推出 $p\mid a$，矛盾，故 $(p,a)=R$。
+于是存在 $x,y$ 使 $px+ay=1$。
+乘以 $b$ 得
+\[
+pbx+aby=b.
+\]
+右边第一项显然被 $p$ 整除，第二项因 $p\mid ab$ 也被 $p$ 整除，故 $p\mid b$。
+因此不可约即素，唯一分解成立。
+\end{proof}
+
+\section{欧几里得整环（ED）}
+
+\begin{definition}
+整环 $R$ 称为\emph{欧几里得整环}，
+若存在函数
+\[
+\delta:R\setminus\{0\}\to \N
+\]
+使对任意 $a,b\in R$，$b\ne0$，存在 $q,r\in R$ 满足
+\[
+a=bq+r,
+\qquad r=0\ \text{或}\ \delta(r)<\delta(b).
+\]
+\end{definition}
+
+这一定义抽象了整数与多项式上的辗转相除法。
+一旦可以做带余除法，
+几乎所有 PID 证明都可算法化。
+
+\begin{theorem}
+每个欧几里得整环都是 PID，
+从而也是 UFD。
+\end{theorem}
+
+\begin{proof}
+设 $I\ne0$ 为理想，
+取 $0\ne b\in I$ 使 $\delta(b)$ 最小。
+对任意 $a\in I$，写成 $a=bq+r$，其中 $r=0$ 或 $\delta(r)<\delta(b)$。
+因 $r=a-bq\in I$，由最小性得 $r=0$。
+故 $a\in(b)$，于是 $I=(b)$。
+\end{proof}
+
+\begin{example}
+$\Z$ 是 ED，取 $\delta(n)=|n|$。
+$\F[x]$ 也是 ED，取 $\delta(f)=\deg f$。
+高斯整数 $\Z[i]$ 是 ED，取范数
+\[
+N(a+bi)=a^2+b^2.
+\]
+爱森斯坦整数 $\Z[\omega]$ 也是 ED，
+其中 $\omega=(-1+\sqrt{-3})/2$，
+范数为
+\[
+N(a+b\omega)=a^2-ab+b^2.
+\]
+\end{example}
+
+\begin{remark}
+证明 $\Z[i]$ 或 $\Z[\omega]$ 是 ED 的关键，
+是几何上把复平面中的一点近似到最近格点。
+这说明代数性质常与平面晶格的几何结构密切相关。
+\end{remark}
+
+\section{高斯整数与两个平方和}
+
+高斯整数的单位是 $\pm1,\pm i$。
+范数满足
+\[
+N(\alpha\beta)=N(\alpha)N(\beta),
+\qquad N(a+bi)=a^2+b^2.
+\]
+因为范数乘法性，
+高斯整数中的分解能反映整数表示成两个平方和的方式。
+
+\begin{proposition}
+若素数 $p\equiv1\pmod4$，
+则存在整数 $a,b$ 使
+\[
+p=a^2+b^2.
+\]
+\end{proposition}
+
+\begin{proof}[思路]
+由二次剩余理论，
+存在 $x$ 使 $x^2\equiv -1\pmod p$。
+于是 $p\mid x^2+1=(x+i)(x-i)$。
+在 $\Z[i]$ 中，
+$p$ 不能整除 $x\pm i$，
+故 $p$ 不再是素元。
+因 $\Z[i]$ 是 UFD，
+$p$ 必分解为非平凡共轭因子
+\[
+p=(a+bi)(a-bi),
+\]
+取范数即得 $p=a^2+b^2$。
+\end{proof}
+
+\begin{proposition}
+若奇素数 $p\equiv3\pmod4$，
+则 $p$ 不能表示为两个整数平方和。
+\end{proposition}
+
+\begin{proof}
+若 $p=a^2+b^2$，
+且 $p\nmid a,b$，则模 $p$ 有
+$a^2\equiv -b^2$，于是 $-1$ 是二次剩余，
+与 $p\equiv3\pmod4$ 矛盾。
+若 $p\mid a,b$ 则 $p^2\mid a^2+b^2$ 也不可能。
+\end{proof}
+
+\begin{remark}
+更完整的结论是：
+正整数 $n$ 可表示为两个平方和，
+当且仅当其所有 $\equiv3\pmod4$ 的素因子都以偶次出现。
+这完全由 $\Z[i]$ 中的唯一分解控制。
+\end{remark}
+
+\section{多项式环中的分解：Gauss 引理与 Eisenstein 判别法}
+
+若系数从域缩到整数，
+分解问题会复杂得多。
+例如一个有理系数多项式是否在整数系数下仍不可约？
+Gauss 引理给出桥梁。
+
+\begin{definition}
+设 $f\in \Z[x]$ 非零。
+其系数最大公因子称为 $f$ 的\emph{内容}，记为 $\mathrm{cont}(f)$。
+若内容为 $1$，则称 $f$ 为\emph{本原多项式}。
+\end{definition}
+
+\begin{lemma}[Gauss 引理]
+两个本原多项式的乘积仍是本原的。
+因此若 $f\in\Z[x]$ 在 $\Q[x]$ 中可约，
+则它可写成两个次数更低的 $\Z[x]$ 多项式之积。
+\end{lemma}
+
+\begin{proof}
+若 $fg$ 非本原，则某素数 $p$ 整除其所有系数。
+取 $f,g$ 中首个不被 $p$ 整除的系数，
+对应乘积系数不被 $p$ 整除，矛盾。
+第二部分把有理系数分母清除并提取内容即可。
+\end{proof}
+
+\begin{corollary}
+$\Z[x]$ 是 UFD。
+\end{corollary}
+
+\begin{proof}
+因 $\Z$ 是 UFD，
+本原部分在 $\Q[x]$ 中分解唯一，
+内容部分在 $\Z$ 中分解唯一，合并即得。
+\end{proof}
+
+\begin{theorem}[Eisenstein 判别法]
+设
+\[
+f(x)=a_nx^n+\cdots+a_0\in \Z[x].
+\]
+若存在素数 $p$ 满足
+\begin{enumerate}[label=(\arabic*)]
+\item $p\nmid a_n$；
+\item $p\mid a_0,a_1,\dots,a_{n-1}$；
+\item $p^2\nmid a_0$；
+\end{enumerate}
+则 $f$ 在 $\Q[x]$ 中不可约。
+\end{theorem}
+
+\begin{proof}
+若 $f=gh$ 在 $\Z[x]$ 中可约，
+由条件 (2) 可知模 $p$ 下有
+\[
+\bar f=a_nx^n,
+\]
+故 $\bar g,\bar h$ 都是某个单项式。
+于是除首项外，$g,h$ 的其余系数都被 $p$ 整除。
+因此常数项 $a_0=g(0)h(0)$ 被 $p^2$ 整除，
+与 (3) 矛盾。
+\end{proof}
+
+\begin{example}
+对素数 $p$，
+\[
+1+x+x^2+\cdots+x^{p-1}=\frac{x^p-1}{x-1}
+\]
+经代换 $x\mapsto x+1$ 后可对素数 $p$ 应用 Eisenstein，
+从而证明第 $p$ 个分圆多项式不可约。
+\end{example}
+
+\section{$p$-进整数初步}
+
+为研究整数在素数 $p$ 附近的局部性质，
+我们引入 $p$-进绝对值
+\[
+|x|_p=p^{-v_p(x)}
+\]
+以及相应完备化。
+与实数的构造类似，
+$\Z_p$ 可以看作关于 $p$-进距离的完备化；
+也可更代数地写成逆极限
+\[
+\Z_p=\varprojlim_n \Z/p^n\Z.
+\]
+
+\begin{definition}
+一个 $p$-进整数是一个兼容序列
+\[
+(a_1,a_2,a_3,\dots),
+\qquad a_n\in \Z/p^n\Z,
+\]
+满足 $a_{n+1}\equiv a_n\pmod{p^n}$。
+逐项相加与相乘使其成为环。
+\end{definition}
+
+\begin{example}
+整数 $m\in\Z$ 给出序列
+\[
+(m\bmod p,\ m\bmod p^2,\ m\bmod p^3,\dots),
+\]
+从而嵌入 $\Z\hookrightarrow \Z_p$。
+在 $\Z_5$ 中，
+序列 $(1,1,1,\dots)$ 是整数 $1$；
+而几何级数
+\[
+1+5+5^2+\cdots
+\]
+在 $5$-进意义下收敛到 $-\frac14$，
+因为 $(1-5)(1+5+5^2+\cdots)=1$。
+\end{example}
+
+\begin{proposition}
+每个 $x\in \Z_p$ 都唯一表示为
+\[
+x=a_0+a_1p+a_2p^2+\cdots,
+\qquad a_i\in\{0,1,\dots,p-1\}.
+\]
+\end{proposition}
+
+\begin{proof}
+由兼容序列逐层选取数字 $a_i$：
+先由 $a_1\in \Z/p\Z$ 选出 $a_0$；
+再从 $a_2-a_0$ 中提取 $a_1p$；
+归纳继续。
+唯一性来自模 $p^n$ 逐层比较系数。
+\end{proof}
+
+\begin{remark}
+$p$-进整数把“模 $p^n$ 的全部信息”统一编码为一个完备对象。
+在模形式理论中，
+Hecke 特征值常落在某个数域的 $p$-进完备化里；
+$p$-进模形式、Hida 理论与 Galois 表示的变形理论
+都建立在这种局部完备环之上。
+\end{remark}
+
+\section*{习题}
+
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 在整环中证明：若 $a\mid b$ 且 $b\mid c$，则 $a\mid c$。
+\item \basic 证明在整环中相伴关系是等价关系。
+\item \basic 求 $\Z$ 的单位群。
+\item \basic 求 $\Z[i]$ 的单位群。
+\item \basic 证明素元必不可约。
+\item \basic 在 $\Z$ 中说明不可约元就是素数及其相反数。
+\item \basic 证明 $6$ 在 $\Z[\sqrt{-5}]$ 中有两种分解。
+\item \basic 计算 $N(2+i)$ 与 $N(1+2i)$。
+\item \basic 证明高斯整数范数满足乘法性。
+\item \basic 判断 $1+i$ 是否整除 $2$ 于 $\Z[i]$ 中。
+\item \basic 写出 $5$ 在 $\Z[i]$ 中的一个非平凡分解。
+\item \basic 证明 $\Z$ 是 UFD。
+\item \basic 说明为什么 UFD 中不可约元一定是素元。
+\item \basic 证明 $\F[x]$ 的单位恰为非零常数。
+\item \basic 求 $\gcd(x^2-1,x^2-x)$ 于 $\Q[x]$ 中。
+\item \basic 证明 PID 中任意两个元素有 Bezout 等式。
+\item \basic 说明 ED 必为 PID。
+\item \basic 写出 $\Z[i]$ 的 Euclid 函数。
+\item \basic 写出 $\Z[\omega]$ 的范数公式。
+\item \basic 判断 $x^2+1$ 在 $\Q[x]$ 中是否可约。
+\end{enumerate}
+
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 设 $R$ 为 UFD，证明任意两个元素存在最小公倍数，定义到相伴为止。
+\item \medium 在 $\Z[\sqrt{-5}]$ 中证明 $2,3,1\pm\sqrt{-5}$ 都不可约。
+\item \medium 由上一题说明 $\Z[\sqrt{-5}]$ 不是 UFD。
+\item \medium 证明 PID 中每个非零素理想都是由一个不可约元生成。
+\item \medium 用带余除法证明 $\Z[i]$ 是 ED。
+\item \medium 用带余除法证明 $\Z[\omega]$ 是 ED。
+\item \medium 设 $p\equiv1\pmod4$ 为素数，说明为何 $-1$ 在 $\F_p$ 中是平方。
+\item \medium 设 $p\equiv3\pmod4$，证明 $p$ 在 $\Z[i]$ 中仍不可约。
+\item \medium 判定素数 $2$ 在 $\Z[i]$ 中的分解类型。
+\item \medium 证明正整数可表示为两个平方和，当且仅当其所有 $\equiv3\pmod4$ 的素因子指数都为偶数。
+\item \medium 证明 Gauss 引理：本原多项式之积仍本原。
+\item \medium 由 Gauss 引理推出 $\Z[x]$ 是 UFD。
+\item \medium 用 Eisenstein 判别法证明 $x^4+10x+5$ 在 $\Q[x]$ 中不可约。
+\item \medium 用 Eisenstein 判别法证明 $x^5-10x+20$ 在 $\Q[x]$ 中不可约。
+\item \medium 证明 $x^4+1$ 在 $\Q[x]$ 中不可约。
+\item \medium 设 $f\in\Z[x]$ 本原，若它在 $\F_p[x]$ 中的像不可约，则证明 $f$ 在 $\Q[x]$ 中不可约。
+\item \medium 证明 $\Z_p\cong \varprojlim \Z/p^n\Z$ 确实是一个环。
+\item \medium 求 $7$ 在 $\Z_3$ 中前四位 $3$-进展开。
+\item \medium 证明 $-1=\sum_{n\ge0} (p-1)p^n$ 在 $\Z_p$ 中成立。
+\item \medium 证明 $\Z$ 在 $p$-进度量下稠密于 $\Z_p$。
+\end{enumerate}
+
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 设 $R$ 为 PID，证明每个有限生成无挠 $R$-模都是自由模。
+\item \hard 证明：整环是 UFD 当且仅当每个非零非单位可分解且每个不可约元都是素元。
+\item \hard 在 $\Z[i]$ 中证明：若高斯素数 $\pi$ 整除一个整数 $n$，则 $N(\pi)$ 整除 $n$ 于 $\Z$ 中。
+\item \hard 证明奇素数 $p$ 在 $\Z[i]$ 中分解、惰性、分歧三种情形分别由 $p\equiv1,3\pmod4$ 与 $p=2$ 描述。
+\item \hard 在 $\Z[\omega]$ 中证明：素数 $p\equiv1\pmod3$ 可表示为 $a^2-ab+b^2$。
+\item \hard 设 $f\in\Z[x]$ 首一，证明若 $f(a)$ 对某素数 $p$ 满足 Eisenstein 条件的平移版本，则 $f(x+a)$ 不可约，从而 $f$ 也不可约。
+\item \hard 证明第 $p$ 个分圆多项式 $\Phi_p(x)=1+x+\cdots+x^{p-1}$ 在 $\Q[x]$ 中不可约。
+\item \hard 证明 $\Z_p$ 是局部环，其唯一极大理想为 $p\Z_p$。
+\item \hard 证明 $\Z_p/p^n\Z_p\cong \Z/p^n\Z$。
+\item \hard 证明 $\bigcap_{n\ge1} p^n\Z_p=0$。
+\item \hard 设 $u\in\Z_p^\times$，证明它恰当且仅当其常数位 $a_0\ne0$。
+\item \hard 设 $\alpha\in \Q_p$ 满足 $|\alpha|_p<1$，证明几何级数 $\sum_{n\ge0}\alpha^n$ 收敛且和为 $(1-\alpha)^{-1}$。
+\item \hard 解释为何 $p$-进完备化应视为“在素数 $p$ 处局部观察整数”，并将其与 Hecke 特征值的局部因子联系起来。
+\item \hard 设 $R=\Z[\sqrt{-5}]$，证明理想 $(2,1+\sqrt{-5})$ 的平方是主理想，但自身不是主理想。
+\item \hard 给出一个整环，它不是 UFD 也不是 PID，但其某些局部化却是 PID，并解释这对数论的意义。
+\end{enumerate}
+
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} 由 $b=ac$ 与 $c=bd$ 得 $c=(ac)d=a(cd)$，故 $a\mid c$。
+\item \textbf{解答.} 自反性由 $a=1\cdot a$；对称性直接；传递性由前题。故是等价关系。
+\item \textbf{解答.} $\Z$ 的单位只有 $\pm1$。
+\item \textbf{解答.} 若 $a+bi$ 可逆，则范数为 $1$，故单位为 $\pm1,\pm i$。
+\item \textbf{解答.} 见正文命题证明。
+\item \textbf{解答.} 在 $\Z$ 中非零非单位不可约当且仅当绝对值为素数。
+\item \textbf{解答.} 直接验算 $(1+\sqrt{-5})(1-\sqrt{-5})=1+5=6$。
+\item \textbf{解答.} $N(2+i)=5$，$N(1+2i)=5$。
+\item \textbf{解答.} $(a+bi)(c+di)=(ac-bd)+(ad+bc)i$，代入后得范数为 $(a^2+b^2)(c^2+d^2)$。
+\item \textbf{解答.} 有 $2=(1+i)(1-i)$，故 $1+i\mid2$。
+\item \textbf{解答.} $5=(2+i)(2-i)$。
+\item \textbf{解答.} 这是算术基本定理。
+\item \textbf{解答.} 在 UFD 中利用唯一分解，若不可约 $p\mid ab$，则 $p$ 必与 $a$ 或 $b$ 的某个不可约因子相伴。
+\item \textbf{解答.} 若 $f(x)g(x)=1$，则次数相加为 $0$，故 $f,g$ 都是非零常数。
+\item \textbf{解答.} $x^2-1=x(x-1)+(x-1)$，故最大公因子为 $x-1$。
+\item \textbf{解答.} 因 $(a,b)=(d)$，所以 $d=ax+by$。
+\item \textbf{解答.} ED 中任一非零理想取 Euclid 值最小元，即生成整个理想。
+\item \textbf{解答.} 可取 $\delta(a+bi)=a^2+b^2$。
+\item \textbf{解答.} $N(a+b\omega)=a^2-ab+b^2$。
+\item \textbf{解答.} 无有理根，若可约则为两个二次首一因子；比较系数可得矛盾，故不可约。也可把它视为第 $4$ 个分圆多项式。
+\item \textbf{解答.} 按各不可约素因子的指数取最大值即可定义 lcm；唯一性到相伴为止来自唯一分解。
+\item \textbf{解答.} 利用范数 $N(a+b\sqrt{-5})=a^2+5b^2$。若 $2=\alpha\beta$，则范数分解为 $4=N(\alpha)N(\beta)$，但不存在范数为 $2$ 的元素，故 $2$ 不可约；$3$ 同理。对 $1\pm\sqrt{-5}$，范数为 $6$，若可约则需范数为 $2,3$ 的因子，也不存在。
+\item \textbf{解答.} 因 $6=2\cdot3=(1+\sqrt{-5})(1-\sqrt{-5})$，且上题表明四因子都不可约且不相伴，故非 UFD。
+\item \textbf{解答.} 非零素理想在 PID 中为 $(a)$；若 $a=bc$，则 $bc\in(a)$，由素性得 $b\in(a)$ 或 $c\in(a)$，推出 $a$ 不可约。
+\item \textbf{解答.} 对 $z\in\C$ 取最近高斯整数 $q$，使每个坐标误差至多 $1/2$，则 $N(z-q)\le1/2<1$；令 $z=a/b$ 即得带余除法。
+\item \textbf{解答.} 在六角格上取最近点，误差落在基本平行四边形内，从而范数严格小于除数范数。
+\item \textbf{解答.} Euler 判别给出 $(-1)^{(p-1)/2}=1$，当 $p\equiv1\pmod4$ 时即 $-1$ 为平方。
+\item \textbf{解答.} 若 $p$ 在 $\Z[i]$ 中可约，则 $p=a^2+b^2$，从而 $-1\equiv (ab^{-1})^2\pmod p$，与 $p\equiv3\pmod4$ 矛盾。
+\item \textbf{解答.} 有 $2=(1+i)^2\cdot(-i)$，故在 $\Z[i]$ 中分歧。
+\item \textbf{解答.} 由高斯整数中的唯一分解：$p\equiv1\pmod4$ 的素数分裂为共轭对，$p\equiv3\pmod4$ 的素数保持素，故只有后一类素数的指数必须为偶数才能由共轭配对得到整数范数。
+\item \textbf{解答.} 反设素数 $p$ 整除所有系数，取 $f,g$ 中最早不被 $p$ 整除的系数，其乘积给出 $fg$ 的某个系数不被 $p$ 整除，矛盾。
+\item \textbf{解答.} 把任意 $f\in\Z[x]$ 写成内容乘以本原部分；内容在 $\Z$ 中唯一分解，本原部分在 $\Q[x]$ 中由 PID 性唯一分解，再用 Gauss 引理拉回 $\Z[x]$。
+\item \textbf{解答.} 取 $p=5$，除首项外其余系数都被 $5$ 整除，且常数项 $5$ 不被 $25$ 整除，故不可约。
+\item \textbf{解答.} 取 $p=2$ 即可。
+\item \textbf{解答.} 令 $y=x^2$，则 $x^4+1$ 无有理根；若分解为两个二次首一因子，比系数得形如 $(x^2+ax+1)(x^2-ax+1)$，从而常数项与 $x^2$ 系数不符，故不可约。亦可用 $x\mapsto x+1$ 后 Eisenstein。
+\item \textbf{解答.} 若 $f$ 在 $\Q[x]$ 中可约，则由 Gauss 引理在 $\Z[x]$ 中可约，模 $p$ 后也可约，矛盾。
+\item \textbf{解答.} 逐项加法乘法与兼容条件相容；乘法由模 $p^n$ 的逐层乘法定义，故得到环。
+\item \textbf{解答.} $7=1+2\cdot3+0\cdot3^2+0\cdot3^3+\cdots$，故前四位为 $1,2,0,0$。
+\item \textbf{解答.} 部分和为 $p^n-1$，而 $p^n\to0$ 于 $p$-进意义下，故极限为 $-1$。
+\item \textbf{解答.} 任意 $x=(a_n)$ 在模 $p^N$ 意义下由整数代表元 $m_N$ 逼近，故整数序列可在 $p$-进意义下逼近任意 $x$。
+\item \textbf{解答.} 这是结构定理的一个特例：PID 上有限生成模分解为自由部分与挠部分；无挠时仅剩自由部分。
+\item \textbf{解答.} 一边已知；反向若每个不可约都素，则任两种不可约分解可用素性逐个比较并归纳得到唯一性。
+\item \textbf{解答.} 若 $\pi\mid n$ 且 $n\in\Z$，则共轭 $\bar\pi\mid n$。于是 $N(\pi)=\pi\bar\pi$ 整除 $n^2$ 于 $\Z[i]$，更细致地比较相伴与范数可得 $N(\pi)\mid n$ 于 $\Z$。
+\item \textbf{解答.} $2=(1+i)^2(-i)$ 分歧；若 $p\equiv1\pmod4$，则 $-1$ 为平方，故 $p$ 分裂；若 $p\equiv3\pmod4$，则 $-1$ 非平方，故 $p$ 惰性。
+\item \textbf{解答.} 在 $\Z[\omega]$ 中利用 $N(a+b\omega)=a^2-ab+b^2$ 的 Euclid 性，与模 $p$ 下 $x^2-x+1$ 有根当且仅当 $p\equiv1\pmod3$ 的事实，可推出此表示。
+\item \textbf{解答.} 若 $f(x+a)$ 满足 Eisenstein，则 $f(x+a)$ 在 $\Q[x]$ 中不可约；代换 $x\leftrightarrow x-a$ 是环自同构，故 $f$ 也不可约。
+\item \textbf{解答.} 对 $\Phi_p(x+1)$，除首项外各系数都被 $p$ 整除，常数项为 $p$ 不被 $p^2$ 整除，故由 Eisenstein 不可约。
+\item \textbf{解答.} $\Z_p$ 中常数位非零的元素可逆，常数位为零的元素恰是 $p$ 的倍数，因此非单位恰为 $p\Z_p$，它是唯一极大理想。
+\item \textbf{解答.} 按逆极限定义，模去 $p^n$ 后只保留前 $n$ 层信息，正得到 $\Z/p^n\Z$。
+\item \textbf{解答.} 若 $x\in\bigcap p^n\Z_p$，则其 $p$-进赋值至少为任意大整数，只能是 $0$。
+\item \textbf{解答.} 若 $u=a_0+a_1p+\cdots$ 且 $a_0\ne0$，则模 $p$ 非零，故不在极大理想里，因而可逆；反之若 $a_0=0$，则 $u\in p\Z_p$，不可逆。
+\item \textbf{解答.} 因 $|\alpha|_p<1$，故 $\alpha^n\to0$。部分和满足 $(1-\alpha)\sum_{k=0}^{n}\alpha^k=1-\alpha^{n+1}$，令 $n\to\infty$ 即得结论。
+\item \textbf{解答.} $p$-进完备化只保留模 $p^n$ 的全部兼容信息，因此是在素数 $p$ 处放大观察整数。Hecke 特征值的 $p$-局部因子与 Frobenius 特征多项式常自然落在这类完备域中。
+\item \textbf{解答.} 记 $I=(2,1+\sqrt{-5})$。直接计算得 $I^2=(2)$：因为生成元平方与交叉项都落在 $(2)$，反过来 $2\in I^2$。若 $I$ 主，则上一章已述会出现范数为 $2$ 的元素，矛盾，故 $I$ 非主而其平方主。
+\item \textbf{解答.} 例如类数大于 $1$ 的 Dedekind 整环。局部化到任一非零素理想后成为 DVR，从而是 PID；这说明全局非主理想在局部都可能变主，正是数论里“局部好、全局坏”的典型现象。
+\end{enumerate}

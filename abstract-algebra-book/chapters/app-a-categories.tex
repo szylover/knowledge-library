@@ -1,0 +1,486 @@
+\chapter{范畴论基础}
+
+\section{范畴的定义}
+
+范畴论的基本立场是：
+数学对象不应只由其内部元素刻画，
+也应由它与其他对象之间的态射网络刻画。
+这个观点在抽象代数中尤其自然，
+因为群同态、环同态、线性映射、模同态本来就是结构保持的核心。
+
+\begin{definition}
+一个范畴 $\mathcal{C}$ 由以下数据组成：
+\begin{enumerate}[label=(\roman*), leftmargin=*]
+\item 一个对象类，元素记作 $A,B,C,\dots$；
+\item 对每对对象 $A,B$，一个态射集合 $\Hom_{\mathcal{C}}(A,B)$；
+\item 对可复合态射 $A\xrightarrow{f}B\xrightarrow{g}C$，给定复合 $g\circ f:A\to C$；
+\item 每个对象 $A$ 有恒等态射 $\Id_A:A\to A$。
+\end{enumerate}
+这些数据满足结合律与恒等律。
+\end{definition}
+
+\begin{example}
+典型例子有：
+$\mathbf{Set}$、$\mathbf{Grp}$、$\mathbf{Ring}$、$\mathbf{Mod}_R$、$\mathbf{Top}$、$\mathbf{Vec}_\F$。
+对象分别是集合、群、环、左 $R$-模、拓扑空间与向量空间；
+态射则分别为映射、群同态、保幺环同态、模同态、连续映射与线性映射。
+\end{example}
+
+\begin{remark}
+一个只有一个对象 $\ast$ 的范畴，
+其全部信息都在 $\End(\ast)$ 的复合中。
+因此它与一个幺半群等价。
+这表明范畴论并不是“抛弃代数”，
+而是把代数结构提升到对象之间的层面。
+\end{remark}
+
+\section{函子}
+
+\begin{definition}
+设 $\mathcal{C},\mathcal{D}$ 为范畴。
+一个协变函子 $F:\mathcal{C}\to\mathcal{D}$ 指派：
+每个对象 $A\in\mathcal{C}$ 对应一个对象 $F(A)$，
+每个态射 $f:A\to B$ 对应一个态射 $F(f):F(A)\to F(B)$，
+并满足
+\[
+F(\Id_A)=\Id_{F(A)},
+\qquad
+F(g\circ f)=F(g)\circ F(f).
+\]
+逆变函子则把 $f:A\to B$ 送到
+$F(f):F(B)\to F(A)$，
+并满足复合顺序反转。
+\end{definition}
+
+\begin{example}
+遗忘函子
+$U:\mathbf{Grp}\to\mathbf{Set}$
+忘记群结构而只保留底层集合。
+对固定对象 $A$，
+Hom 函子
+$\Hom_{\mathcal{C}}(A,-)$ 是协变函子，
+而 $\Hom_{\mathcal{C}}(-,A)$ 是逆变函子。
+在线性代数中，
+双对偶构造 $V\mapsto V^{**}$ 是协变函子，
+对偶构造 $V\mapsto V^*=\Hom(V,\F)$ 是逆变函子。
+\end{example}
+
+\section{自然变换}
+
+\begin{definition}
+设 $F,G:\mathcal{C}\to\mathcal{D}$ 是两个协变函子。
+一个自然变换 $\eta:F\Rightarrow G$ 是一族态射
+\[
+\eta_A:F(A)\to G(A)\qquad (A\in\mathcal{C})
+\]
+使得对任意 $f:A\to B$，交换图
+\[
+\begin{tikzcd}
+F(A) \arrow[r,"\eta_A"] \arrow[d,"F(f)"'] & G(A) \arrow[d,"G(f)"] \\
+F(B) \arrow[r,"\eta_B"'] & G(B)
+\end{tikzcd}
+\]
+成立。
+\end{definition}
+
+\begin{example}
+在有限维向量空间范畴中，
+映射
+\[
+\eta_V:V\to V^{**},\qquad
+\eta_V(v)(\varphi)=\varphi(v)
+\]
+组成从恒等函子到双对偶函子的自然变换。
+其自然性来自
+$T^{**}(\eta_V(v))=\eta_W(Tv)$。
+\end{example}
+
+自然性表达的是“与所有结构保持映射兼容”。
+这是一种比逐对象构造更强的相容性条件。
+许多看似偶然的同构，
+一旦被证明是自然同构，
+就说明它们并非依赖某个特定基或特定表示。
+
+\section{泛性质与可表函子}
+
+\begin{definition}
+对象常通过泛性质刻画。
+例如，$A$ 与 $B$ 的积是一个对象 $P$ 及态射
+$\pi_1:P\to A$、$\pi_2:P\to B$，
+使得对任意对象 $X$ 与态射 $f:X\to A$、$g:X\to B$，
+存在唯一态射 $u:X\to P$ 使
+$\pi_1\circ u=f$、$\pi_2\circ u=g$。
+\end{definition}
+
+同理可定义余积、等化子、核、余核。
+泛性质的关键优点是唯一性只差唯一同构，
+从而在不同范畴里提供统一定义。
+例如在 $\mathbf{Set}$ 中积是笛卡儿积，
+在 $\mathbf{Grp}$ 中积是直积，
+在 $R$-模范畴中核就是线性代数中的核。
+
+\begin{definition}
+设 $F:\mathcal{C}\to\mathbf{Set}$ 为函子。
+若存在对象 $A\in\mathcal{C}$ 使得
+\[
+F(-)\cong \Hom_{\mathcal{C}}(A,-)
+\]
+自然同构，
+则称 $F$ 为可表函子，
+并称 $A$ 表示 $F$。
+\end{definition}
+
+可表性意味着一个函子实质上由“从某个万能对象出发的态射”来描述。
+这与第 7 章张量积和第 8 章分裂域的泛性质精神完全一致。
+
+\section{伴随函子}
+
+\begin{definition}
+函子 $F:\mathcal{C}\to\mathcal{D}$ 与 $U:\mathcal{D}\to\mathcal{C}$ 称为一对伴随，
+若对所有 $C\in\mathcal{C}$、$D\in\mathcal{D}$ 有自然双射
+\[
+\Hom_{\mathcal{D}}(F(C),D)\cong \Hom_{\mathcal{C}}(C,U(D)).
+\]
+此时记 $F\dashv U$，
+称 $F$ 为左伴随，$U$ 为右伴随。
+\end{definition}
+
+\begin{example}
+自由群函子 $F:\mathbf{Set}\to\mathbf{Grp}$ 左伴随于遗忘函子
+$U:\mathbf{Grp}\to\mathbf{Set}$。
+也就是说，
+从自由群 $F(S)$ 到群 $G$ 的群同态，
+与从集合 $S$ 到底层集合 $U(G)$ 的映射一一对应。
+
+类似地，对固定环 $R$ 与固定左 $R$-模 $M$，
+函子 $-\otimes_R M$ 左伴随于 $\Hom_R(M,-)$。
+这就是张量--Hom 伴随。
+\end{example}
+
+伴随函子在代数中无处不在。
+“自由对象”的存在就是左伴随的表现；
+“忘记结构”常常是右伴随。
+左伴随保余极限，
+右伴随保极限，
+因此伴随关系能系统地解释哪些构造保持商、直和、积或核。
+
+\section{Yoneda引理}
+
+\begin{theorem}[Yoneda 引理]
+设 $\mathcal{C}$ 为局部小范畴，
+$F:\mathcal{C}\to\mathbf{Set}$ 为协变函子，
+$A\in\mathcal{C}$。
+则自然变换集合
+\[
+\mathrm{Nat}(\Hom_{\mathcal{C}}(A,-),F)
+\]
+与集合 $F(A)$ 之间有自然双射。
+该双射把自然变换 $\eta$ 送到元素 $\eta_A(\Id_A)$。
+\end{theorem}
+
+\begin{proof}
+给定自然变换 $\eta$，
+定义对应元素为 $x=\eta_A(\Id_A)\in F(A)$。
+反过来，
+给定 $x\in F(A)$，
+对每个对象 $B$ 定义映射
+\[
+\eta_B^x:\Hom(A,B)\to F(B),\qquad
+f\mapsto F(f)(x).
+\]
+由函子性可知这给出自然变换。
+两种构造互为逆：
+一方面，取 $f=\Id_A$ 恢复 $x$；
+另一方面，对任意 $f:A\to B$，
+自然性交换图给出
+$\eta_B(f)=F(f)(\eta_A(\Id_A))$。
+故双射成立。
+\end{proof}
+
+\begin{remark}
+Yoneda 引理说明：
+对象由它发出的全部态射完全编码。
+因此范畴论的“外部行为”事实上足以决定对象本身。
+很多抽象定义——泛性质、表示对象、伴随——都可看作 Yoneda 引理的不同展开。
+\end{remark}
+
+\section{正合函子}
+
+在阿贝尔范畴中，
+可以讨论短正合列在函子作用下如何变化。
+对本书读者而言，
+最重要的是 $R$-模范畴中的情形。
+
+\begin{definition}
+设 $F:\mathbf{Mod}_R\to\mathbf{Mod}_S$ 为协变加性函子。
+若对每个短正合列
+\[
+\ses{A}{B}{C}
+\]
+应用 $F$ 后得到
+\[
+0\to F(A)\to F(B)\to F(C)
+\]
+正合，
+则称 $F$ 左正合；
+若得到
+\[
+F(A)\to F(B)\to F(C)\to 0
+\]
+正合，
+则称 $F$ 右正合；
+若整个列都正合，
+则称 $F$ 正合。
+\end{definition}
+
+\begin{proposition}
+固定 $R$-模 $M$ 后，
+函子 $\Hom_R(M,-)$ 左正合；
+函子 $-\otimes_R M$ 右正合。
+若 $P$ 为投射模，
+则 $\Hom_R(P,-)$ 正合；
+若 $M$ 为平坦模，
+则 $-\otimes_R M$ 正合。
+\end{proposition}
+
+这些结论是同调代数的入口。
+在代数数论和模形式理论中，
+Hecke 模、Galois 模、群上同调都离不开“某函子不完全正合，于是产生导出函子”的思想。
+本附录只给出最基础的一层。
+
+\section*{习题}
+
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{A.\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 证明任一偏序集 $(P,\le)$ 都可看成一个范畴。
+\item \basic 证明范畴中的同构满足反身、对称、传递三条性质。
+\item \basic 说明为什么单对象范畴等同于一个幺半群。
+\item \basic 定义反范畴 $\mathcal{C}^{\mathrm{op}}$。
+\item \basic 证明遗忘函子 $\mathbf{Grp}\to\mathbf{Set}$ 是协变函子。
+\item \basic 说明 $\Hom_{\mathcal{C}}(A,-)$ 是协变函子，而 $\Hom_{\mathcal{C}}(-,A)$ 是逆变函子。
+\item \basic 写出双对偶映射 $\eta_V:V\to V^{**}$ 的定义。
+\item \basic 证明若 $V$ 有限维，则 $\eta_V$ 是线性同构。
+\item \basic 写出集合范畴中两个集合的积的泛性质。
+\item \basic 写出阿贝尔群范畴中核的泛性质。
+\item \basic 说明什么是可表函子。
+\item \basic 写出自由群函子与遗忘函子的伴随双射。
+\end{enumerate}
+
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{A.\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 证明集合范畴中的积由笛卡儿积 $A\times B$ 实现。
+\item \medium 证明群范畴中的余积是自由积。
+\item \medium 证明自然变换的复合仍是自然变换。
+\item \medium 证明 $V\mapsto V^{**}$ 与恒等函子之间的双对偶映射是自然变换。
+\item \medium 设 $R$ 为环。证明 $R$ 作为左 $R$-模表示忘记函子 $\Hom_R(R,-)$。
+\item \medium 证明左伴随函子保持余积。
+\item \medium 写出张量--Hom 伴随
+$\Hom_R(M\otimes_R N,P)\cong \Hom_R(M,\Hom_R(N,P))$
+中的双向构造。
+\item \medium 用 Yoneda 引理证明若 $\Hom(A,-)$ 与 $\Hom(B,-)$ 自然同构，则 $A\cong B$。
+\item \medium 证明 Yoneda 嵌入 $A\mapsto \Hom(A,-)$ 是忠实的。
+\item \medium 证明 $\Hom_R(M,-)$ 左正合。
+\item \medium 证明 $-\otimes_R M$ 右正合。
+\item \medium 设 $P$ 为投射模。证明 $\Hom_R(P,-)$ 正合。
+\end{enumerate}
+
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{A.\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 证明自然同构给出的“同一个构造”不依赖于基的选择，并以有限维向量空间与其双对偶为例说明。
+\item \hard 设 $\eta:\Id_{\mathbf{Vec}_\F}\Rightarrow \Id_{\mathbf{Vec}_\F}$ 是自然变换。证明存在唯一标量 $\lambda\in\F$，使得每个 $\eta_V=\lambda\Id_V$。
+\item \hard 设 $\ses{A}{B}{C}$ 为短正合列。证明对任意模 $M$，序列
+$0\to \Hom_R(M,A)\to \Hom_R(M,B)\to \Hom_R(M,C)$
+正合。
+\item \hard 设 $A\xrightarrow{f}B\xrightarrow{g}C$ 为模同态。证明 $\Ker(g)$ 可以通过一个泛性质刻画，并说明该刻画在任意阿贝尔范畴中都成立。
+\item \hard 给出 Yoneda 引理的一种“元素式”理解：解释为什么研究对象 $A$ 等价于研究所有从 $A$ 出发的广义元素。
+\end{enumerate}
+
+\section*{习题解答}
+
+\begin{enumerate}[label=\textbf{A.\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} 取对象为 $P$ 的元素。
+若且唯若 $x\le y$，令 $\Hom(x,y)$ 为单元素集，否则为空。
+复合由偏序的传递性给出，
+恒等态射对应 $x\le x$。
+
+\item \textbf{解答.} 反身性由 $\Id_A$ 给出。
+若 $f:A\to B$ 有逆 $g:B\to A$，则 $g$ 也是同构，故对称。
+若 $f,g$ 都是同构，则 $(g\circ f)^{-1}=f^{-1}\circ g^{-1}$，故传递。
+
+\item \textbf{解答.} 单对象范畴只有一个对象 $\ast$。
+全部态射构成集合 $\End(\ast)$，
+复合满足结合律，恒等态射是单位元，
+因此是幺半群。
+反之任一幺半群也给出这种范畴。
+
+\item \textbf{解答.} $\mathcal{C}^{\mathrm{op}}$ 与 $\mathcal{C}$ 有同样对象，
+但
+$\Hom_{\mathcal{C}^{\mathrm{op}}}(A,B)=\Hom_{\mathcal{C}}(B,A)$。
+复合顺序与 $\mathcal{C}$ 相反。
+
+\item \textbf{解答.} 对象层面把群送到底层集合。
+态射层面把群同态看成集合映射。
+恒等与复合在忘记结构后保持不变，
+故为协变函子。
+
+\item \textbf{解答.} 若 $f:B\to C$，则
+$\Hom(A,f):\Hom(A,B)\to\Hom(A,C)$，
+$u\mapsto f\circ u$，方向不变，故协变。
+而
+$\Hom(f,A):\Hom(C,A)\to\Hom(B,A)$，
+$v\mapsto v\circ f$，方向反转，故逆变。
+
+\item \textbf{解答.} 定义
+$\eta_V(v)\in V^{**}$ 为函数
+$\varphi\mapsto \varphi(v)$。
+这给出线性映射 $V\to V^{**}$。
+
+\item \textbf{解答.} 线性性显然。
+若 $\eta_V(v)=0$，则所有线性泛函都在 $v$ 上取零，故 $v=0$，所以单射。
+有限维时 $\dim V=\dim V^{**}$，故它也是满射，从而为同构。
+
+\item \textbf{解答.} 积是对象 $P$ 与投影 $\pi_1:P\to A$、$\pi_2:P\to B$，
+使对任意 $X$ 与映射 $f:X\to A$、$g:X\to B$，
+存在唯一 $u:X\to P$ 满足 $\pi_1u=f$、$\pi_2u=g$。
+
+\item \textbf{解答.} 设 $f:A\to B$ 为群同态。
+核是单态射 $i:K\to A$，满足 $fi=0$，且若 $u:X\to A$ 满足 $fu=0$，
+则存在唯一 $v:X\to K$ 使 $iv=u$。
+这就是泛性质。
+
+\item \textbf{解答.} 若某函子自然同构于 $\Hom(A,-)$，
+就称它由对象 $A$ 表示，
+亦称为可表函子。
+
+\item \textbf{解答.} 对集合 $S$ 与群 $G$，
+伴随双射为
+\[
+\Hom_{\mathbf{Grp}}(F(S),G)\cong \Hom_{\mathbf{Set}}(S,U(G)).
+\]
+左边给出自由群上的群同态，
+右边只需指定生成元在 $G$ 中的像。
+
+\item \textbf{解答.} 取 $P=A\times B$，投影为坐标投影。
+给定 $f:X\to A$、$g:X\to B$，
+定义 $u(x)=(f(x),g(x))$。
+唯一性显然，因为满足投影条件的映射只能这样定义。
+
+\item \textbf{解答.} 群范畴中的余积要满足：
+给定群同态 $A\to H$、$B\to H$，存在唯一同态从某对象到 $H$ 统一延拓。
+自由积 $A*B$ 正好满足这一性质，
+故是余积。
+
+\item \textbf{解答.} 设 $\eta:F\Rightarrow G$、$\theta:G\Rightarrow H$。
+定义 $(\theta\eta)_A=\theta_A\circ\eta_A$。
+对任意 $f:A\to B$，
+利用两者的自然性交换图，
+可验证
+$H(f)(\theta_A\eta_A)=\theta_B\eta_BF(f)$，故仍自然。
+
+\item \textbf{解答.} 对线性映射 $T:V\to W$，
+需证
+$T^{**}\circ \eta_V=\eta_W\circ T$。
+两边作用于 $v\in V$ 并再作用于任意 $\psi\in W^*$，
+都得到 $\psi(Tv)$，故交换。
+
+\item \textbf{解答.} 对任意左 $R$-模 $M$，
+映射
+\[
+\Hom_R(R,M)\to M,
+\qquad f\mapsto f(1)
+\]
+是双射。
+其逆把 $m\in M$ 送到 $r\mapsto rm$。
+该双射对 $M$ 自然，
+故 $R$ 表示函子 $\Hom_R(R,-)$。
+
+\item \textbf{解答.} 设 $F\dashv U$，且 $\{C_i\}$ 在 $\mathcal{C}$ 中有余积。
+对任意 $D\in\mathcal{D}$，
+\[
+\Hom(F(\coprod C_i),D)
+\cong \Hom(\coprod C_i,UD)
+\cong \prod \Hom(C_i,UD)
+\cong \prod \Hom(F(C_i),D).
+\]
+右端正是 $\coprod F(C_i)$ 的表示性质，
+故 $F(\coprod C_i)\cong \coprod F(C_i)$。
+
+\item \textbf{解答.} 若 $\Phi:M\otimes_R N\to P$，定义
+$\widetilde\Phi(m)(n)=\Phi(m\otimes n)$。
+双线性保证这是 $R$-线性映射。
+反过来，
+若 $\Psi:M\to\Hom_R(N,P)$，定义
+$\widehat\Psi(m\otimes n)=\Psi(m)(n)$。
+两者互逆并自然。
+
+\item \textbf{解答.} 若
+$\Hom(A,-)\cong \Hom(B,-)$ 自然同构，
+把它在对象 $B$ 上作用于 $\Id_B$，由 Yoneda 引理得到一个态射 $B\to A$；
+同理得 $A\to B$。
+再次利用自然性可知它们互为逆，故 $A\cong B$。
+
+\item \textbf{解答.} 对态射 $f:A\to B$，Yoneda 嵌入把它送到自然变换
+$\Hom(B,-)\Rightarrow \Hom(A,-)$，
+其在对象 $X$ 上为前合成。
+若两个态射诱导同一自然变换，
+特别在 $X=B$ 上作用于 $\Id_B$ 给出同一元素，
+故原态射相等。
+因此忠实。
+
+\item \textbf{解答.} 由短正合列
+$0\to A\xrightarrow{i}B\xrightarrow{p}C\to 0$。
+应用 $\Hom_R(M,-)$ 得
+$0\to \Hom(M,A)\xrightarrow{i_*}\Hom(M,B)\xrightarrow{p_*}\Hom(M,C)$。
+$i_*$ 单射因为 $i$ 单射。
+若 $p_*(f)=0$，则 $pf=0$，故 $f$ 的像落在 $\Ker p=\Ima i$ 中，
+于是唯一经 $A$ 因子分解，说明 $\Ker p_*=\Ima i_*$。
+
+\item \textbf{解答.} 取短正合列
+$A'\to A\to A''\to 0$。
+张量积由双线性泛性质构造，
+它保持上面的余核描述，
+因此
+$A'\otimes M\to A\otimes M\to A''\otimes M\to 0$
+正合。
+这就是右正合性。
+
+\item \textbf{解答.} 投射模的定义之一是：
+函子 $\Hom_R(P,-)$ 把满射送成满射。
+结合上一题的左正合性，
+即可得到中间项的满射，故整个序列正合。
+
+\item \textbf{解答.} 自然同构意味着构造与所有线性同构兼容。
+因此它不能依赖于某个具体基的坐标表达，
+否则换基后就不会与线性映射自然交换。
+双对偶同构 $V\to V^{**}$ 正是由求值定义，完全不需要选基；
+选不同基得到的矩阵表达虽不同，但同一个自然映射本身不变。
+
+\item \textbf{解答.} 先看一维空间 $\F$。
+任一天然变换在它上面给出某个标量乘法 $\lambda\Id_\F$。
+对任意向量空间 $V$ 与任意向量 $v\in V$，考虑线性映射
+$\iota_v:\F\to V$，$1\mapsto v$。
+自然性给出
+$\eta_V(v)=\eta_V\iota_v(1)=\iota_v\eta_\F(1)=\lambda v$。
+故 $\eta_V=\lambda\Id_V$，且 $\lambda$ 唯一。
+
+\item \textbf{解答.} 这是左正合性的具体写法。
+若 $f:M\to A$ 使复合到 $C$ 为零，
+则其像落在 $\Ker(B\to C)=A$ 中，
+于是唯一通过 $A$ 因子分解。
+因此中间的核正好等于左边的像，
+并且左端显然单射。
+
+\item \textbf{解答.} 令 $i:K\to B$ 满足 $gi=0$，并且若 $u:X\to B$ 也满足 $gu=0$，
+则存在唯一 $v:X\to K$ 使 $iv=u$。
+这正是核的泛性质。
+在模范畴中可取 $K=\{b\in B:g(b)=0\}$；
+但泛性质不依赖元素描述，因此在任意阿贝尔范畴中都成立。
+
+\item \textbf{解答.} Yoneda 引理告诉我们，
+从 $A$ 出发到任意对象 $X$ 的态射，
+就像 $A$ 在 $X$ 中的“$X$-值点”或“广义元素”。
+若知道所有这些广义元素如何自然地变化，
+就能恢复对象 $A$ 本身。
+因此研究对象并不一定要拆成内部元素，
+也可以研究它对所有测试对象的响应。
+\end{enumerate}

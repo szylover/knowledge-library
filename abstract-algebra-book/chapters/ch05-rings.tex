@@ -1,0 +1,431 @@
+\chapter{环与理想}
+从群进入环， 最大的变化是我们同时拥有加法与乘法。 许多算术现象——整除、同余、因式分解、局部化、完成—— 都需要这两个运算共同作用。 对于模形式而言， Fourier 展开系数形成的集合常落在某个数环中， Hecke 算子生成的 Hecke 代数又是一个交换环； 因此理想与商环不仅是抽象语言， 也是研究同余模形式、模 $p$ 现象与 Hecke 本征系的核心工具。 本章的风格仍然是具体优先： 从 $\Z$、$\Z[i]$、多项式环与矩阵环出发， 逐步引入理想、商环与中国剩余定理。
+\section{环的定义与例子}
+\begin{definition}
+一个\emph{环} $R$ 是一个集合，带有两种二元运算 $+$ 与 $\cdot$，满足：
+\begin{enumerate}[label=(\arabic*)]
+\item $(R,+)$ 是交换群；
+\item 乘法结合：$(ab)c=a(bc)$；
+\item 分配律成立：$a(b+c)=ab+ac$，$(a+b)c=ac+bc$。
+\end{enumerate}
+若存在乘法单位元 $1_R$，且 $1_Ra=a1_R=a$， 则称 $R$ 为有单位环。 本书默认环都有单位，且同态保单位。
+\end{definition}
+\begin{example}
+整数环 $\Z$ 是最基本的交换环。 其理想全为 $n\Z$ 的形式； 以后我们会看到， 这使得 $\Z$ 成为理解一般环最重要的模型。
+\end{example}
+\begin{example}
+高斯整数环
+\[
+\Z[i]=\{a+bi\mid a,b\in \Z\}
+\]
+是 $\C$ 的子环。 它保留了整数的大部分算术性质， 但同时允许我们把某些实二次型分解为复乘积。 例如
+\[
+5=(2+i)(2-i).
+\]
+这将在下一章用于两个平方和定理。
+\end{example}
+\begin{example}
+多项式环 $\F[x]$ 是交换环。 若 $\F$ 为域， 则 $\F[x]$ 具有 Euclid 算法， 故在整除理论上极像 $\Z$。 例如， 余式定理表明 $f(a)=0$ 当且仅当 $(x-a)\mid f(x)$。
+\end{example}
+\begin{example}
+矩阵环 $\Mat_n(\F)$ 一般不是交换环。 它提醒我们： “理想”“核”“商”这些概念并不依赖交换性而存在。 不过在非交换环中， 左右理想必须区分； 本章大部分内容聚焦交换环， 但核是理想、商环泛性质等结论在一般环中仍成立。
+\end{example}
+\begin{example}
+Hecke 代数提供模形式动机。 设 $\Gamma$ 为同余子群， 则 Hecke 算子 $T_n$ 在模形式空间上生成一个交换子环
+\[
+\mathbb{T}\subseteq \End_\C(\Mk_k(\Gamma)).
+\]
+研究本征模形式， 很大程度上就是研究这个交换环的同态、极大理想与商。 例如模 $\mathfrak m$ 同余来自把 Hecke 代数映到剩余域 $\mathbb{T}/\mathfrak m$。
+\end{example}
+\begin{remark}
+从范畴论角度看， 环是“带乘法的阿贝尔群”。 但在计算上， 我们更常从一个具体对象开始： 数字、多项式、矩阵、算子。 抽象定义的价值在于： 一旦发现这些例子满足同样公理， 很多证明便可以一次完成，处处适用。
+\end{remark}
+\section{环同态与理想}
+\begin{definition}
+设 $R,S$ 为环。 映射 $\varphi:R\to S$ 称为\emph{环同态}， 若对任意 $a,b\in R$ 有
+\[
+\varphi(a+b)=\varphi(a)+\varphi(b),\qquad
+\varphi(ab)=\varphi(a)\varphi(b),\qquad
+\varphi(1_R)=1_S.
+\]
+\end{definition}
+最重要的例子包括求值同态 $\F[x]\to \F$、 约化同态 $\Z\to \Z/n\Z$、 以及 Hecke 代数到本征值域的同态 $T_n\mapsto a_n(f)$。
+\begin{definition}
+交换环 $R$ 的子集 $I\subseteq R$ 称为\emph{理想}， 若
+\begin{enumerate}[label=(\arabic*)]
+\item $I$ 对加法构成子群；
+\item 对任意 $r\in R$ 与 $x\in I$，有 $rx\in I$。
+\end{enumerate}
+\end{definition}
+直观上， 理想是“对环内乘法吸收”的加法子群。 子环通常太小， 不能用来做商； 理想恰好是使商运算闭合的对象。 这与群论里正规子群的角色完全平行。
+\begin{proposition}
+若 $\varphi:R\to S$ 是环同态， 则其核
+\[
+\Ker\varphi=\{r\in R\mid \varphi(r)=0\}
+\]
+是 $R$ 的理想。
+\end{proposition}
+\begin{proof}
+若 $a,b\in \Ker\varphi$，则 $\varphi(a-b)=\varphi(a)-\varphi(b)=0$， 故对加法封闭。 又若 $r\in R$，$a\in\Ker\varphi$，则
+\[
+\varphi(ra)=\varphi(r)\varphi(a)=0,
+\]
+故 $ra\in\Ker\varphi$。
+\end{proof}
+\begin{example}
+求值同态
+\[
+\ev_a:\F[x]\to \F,
+\qquad f(x)\mapsto f(a)
+\]
+的核是所有在 $a$ 处取零的多项式， 由余式定理知其为主理想 $(x-a)$。 因此
+\[
+\F[x]/(x-a)\cong \F.
+\]
+这既是最基本的商环例子， 也是“点的代数化”雏形。
+\end{example}
+理想之间可以做和、交与乘积：
+\[
+I+J=\{a+b\mid a\in I,b\in J\},
+\qquad
+IJ=\Big\{\sum_k a_kb_k\mid a_k\in I,b_k\in J\Big\}.
+\]
+这些运算在数论中非常重要。 例如互素理想满足 $I+J=R$， 从而触发中国剩余定理。
+\begin{proposition}
+设 $I,J$ 为交换环 $R$ 的理想，则 $I\cap J$、$I+J$ 与 $IJ$ 都是理想，且 $IJ\subseteq I\cap J$。
+\end{proposition}
+\begin{proof}
+对 $I\cap J$ 与 $I+J$ 直接验证即可。 对 $IJ$，有限和的定义保证其对加法封闭， 而对 $r\in R$ 有
+\[
+r\Big(\sum a_kb_k\Big)=\sum (ra_k)b_k\in IJ.
+\]
+最后因每个 $a_kb_k\in I$ 且也在 $J$，故 $IJ\subseteq I\cap J$。
+\end{proof}
+\begin{definition}
+若存在 $a\in R$ 使 $I=(a)=Ra$， 则称 $I$ 为\emph{主理想}。 若 $R$ 的每个理想都是主理想， 则称 $R$ 为\emph{主理想环}。
+\end{definition}
+在 $\Z$ 中， 每个理想都是 $n\Z$； 在 $\F[x]$ 中， 每个理想都是 $(f)$。 这些事实看似普通， 但其后果极强： 整除理论、辗转相除法、唯一分解等都由此展开。
+\section{商环：构造与泛性质}
+\begin{definition}
+设 $I\triangleleft R$ 为理想。 在陪集集合
+\[
+R/I=\{a+I\mid a\in R\}
+\]
+上定义运算
+\[
+(a+I)+(b+I)=(a+b)+I,
+\qquad
+(a+I)(b+I)=ab+I.
+\]
+则 $R/I$ 成为环，称为 $R$ 对 $I$ 的\emph{商环}。
+\end{definition}
+乘法良定义正是理想条件的原因： 若 $a\equiv a'\pmod I$ 且 $b\equiv b'\pmod I$， 则
+\[
+ab-a'b'=(a-a')b+a'(b-b')\in I.
+\]
+因此商环中的乘法不依赖代表元。
+\begin{proposition}
+自然映射
+\[
+\pi:R\to R/I,
+\qquad a\mapsto a+I
+\]
+是满射环同态，且 $\Ker\pi=I$。
+\end{proposition}
+\begin{proof}
+满射显然。 核由 $a+I=I$ 等价于 $a\in I$ 给出。
+\end{proof}
+\begin{theorem}[第一同构定理]
+若 $\varphi:R\to S$ 为环同态， 则
+\[
+R/\Ker\varphi\cong \Ima\varphi.
+\]
+\end{theorem}
+\begin{proof}
+定义 $\bar\varphi(r+\Ker\varphi)=\varphi(r)$。 若 $r-r'\in\Ker\varphi$，则 $\varphi(r)=\varphi(r')$， 故良定义。 它显然是满射，且单射也由核为零得到。
+\end{proof}
+\begin{remark}
+商环的\emph{泛性质}是： 若 $\varphi:R\to S$ 满足 $I\subseteq\Ker\varphi$， 则存在唯一环同态 $\bar\varphi:R/I\to S$ 使得
+\[
+\varphi=\bar\varphi\circ \pi.
+\]
+这说明 $R/I$ 是“把 $I$ 中元素强行变成零”的最一般环。 在处理模形式同余时， 把 Hecke 代数对某极大理想取商， 正是在做这种普遍的零化。
+\end{remark}
+\begin{example}
+在 $\Z[x]$ 中取理想 $(2,x)$。 则 $x\equiv 0$ 且 $2\equiv 0$， 故
+\[
+\Z[x]/(2,x)\cong \F_2.
+\]
+这类同时模掉素数与变量的商环， 会在局部化与剩余域中反复出现。
+\end{example}
+\section{素理想与极大理想}
+\begin{definition}
+设 $R$ 为交换环，$P\ne R$ 为理想。 若 $ab\in P$ 蕴含 $a\in P$ 或 $b\in P$， 则称 $P$ 为\emph{素理想}。 若 $M\ne R$ 且不存在理想 $I$ 满足
+\[
+M\subsetneq I\subsetneq R,
+\]
+则称 $M$ 为\emph{极大理想}。
+\end{definition}
+这两个定义看似只差一点， 但意义不同： 素理想对应“商环无零因子”， 极大理想对应“商环成为域”。 这与整数中的素数与模素数域完全一致。
+\begin{theorem}
+设 $I\triangleleft R$，则：
+\begin{enumerate}[label=(\arabic*)]
+\item $I$ 为素理想 $\Longleftrightarrow R/I$ 是整环；
+\item $I$ 为极大理想 $\Longleftrightarrow R/I$ 是域。
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1) 若 $R/I$ 是整环，且 $ab\in I$，则 $(a+I)(b+I)=0$，故 $a+I=0$ 或 $b+I=0$，即 $a\in I$ 或 $b\in I$。 反之若 $I$ 素， $(a+I)(b+I)=0$ 即 $ab\in I$，从而 $a+I=0$ 或 $b+I=0$。 (2) 若 $R/I$ 是域，显然无更大真理想，故 $I$ 极大。 反之若 $I$ 极大，取 $a+I\ne 0$。 理想 $(I,a)$ 严格包含 $I$，故等于 $R$。 于是存在 $r\in R$ 与 $x\in I$ 使 $ra+x=1$， 即 $(r+I)(a+I)=1+I$，故每个非零元都可逆。
+\end{proof}
+\begin{corollary}
+每个极大理想都是素理想。
+\end{corollary}
+\begin{proof}
+因为每个域都是整环。
+\end{proof}
+\begin{example}
+在 $\Z$ 中， 素理想与极大理想都是 $(p)$，其中 $p$ 为素数； 而 $(0)$ 是素理想但不是极大理想， 因为 $\Z$ 是整环但不是域。
+\end{example}
+\begin{example}
+在 $\C[x,y]$ 中， $(x)$ 是素理想，因为商环同构于 $\C[y]$； 但它不是极大理想，因为 $\C[y]$ 不是域。 极大理想例如 $(x-a,y-b)$， 对应平面上的一点 $(a,b)$。
+\end{example}
+\section{多项式环}
+若系数环是域 $\F$， 则 $\F[x]$ 具有辗转相除法： 对任意 $f,g\in \F[x]$ 且 $g\ne 0$， 存在唯一 $q,r$ 使
+\[
+f=qg+r,
+\qquad
+\deg r<\deg g.
+\]
+这立刻带来大量算术后果。
+\begin{proposition}
+$\F[x]$ 的每个理想都是主理想， 故 $\F[x]$ 是主理想整环。
+\end{proposition}
+\begin{proof}
+设 $I\ne 0$ 为理想， 取 $0\ne f\in I$ 使 $\deg f$ 最小。 对任意 $g\in I$，作除法 $g=qf+r$，其中 $\deg r<\deg f$。 因 $r=g-qf\in I$，由最小性得 $r=0$。 故 $g\in (f)$，从而 $I=(f)$。
+\end{proof}
+\begin{definition}
+非零非常数多项式 $f\in \F[x]$ 称为\emph{不可约}， 若它不能写成两个更低次非常数多项式的乘积。
+\end{definition}
+与整数中的素数一样， 不可约多项式是分解理论的原子。 在 PID 中不可约与素元等价， 故 $\F[x]$ 中的不可约多项式控制了所有主理想与商域。
+\begin{example}
+在 $\R[x]$ 中， 不可约多项式只有一次多项式与判别式小于零的二次多项式。 在 $\C[x]$ 中， 代数基本定理说明不可约多项式全是一阶。 在 $\F_p[x]$ 中， 情形更丰富： 例如 $x^2+1$ 在 $\F_5[x]$ 中可约， 因为 $2^2+1=0$， 但在 $\F_3[x]$ 中不可约。
+\end{example}
+\begin{proposition}
+对域 $\F$ 与 $a\in \F$， $(x-a)$ 为极大理想，且
+\[
+\F[x]/(x-a)\cong \F.
+\]
+更一般地， 若 $f$ 不可约，则 $(f)$ 为极大理想， 商环 $\F[x]/(f)$ 是一个维数为 $\deg f$ 的域扩张。
+\end{proposition}
+\begin{proof}
+第一部分已见。 第二部分因 $\F[x]$ 为 PID， 不可约元生成极大理想。 商环中每个元素可唯一写为次数小于 $\deg f$ 的多项式类， 故其作为 $\F$-向量空间维数为 $\deg f$。
+\end{proof}
+\section{中国剩余定理}
+整数中的同余分解
+\[
+\Z/mn\Z\cong \Z/m\Z\times \Z/n\Z
+\qquad ((m,n)=1)
+\]
+只是更一般定理的一个特例。
+\begin{definition}
+设 $I,J\triangleleft R$。 若 $I+J=R$， 则称 $I,J$ \emph{互素}或\emph{余理想}。
+\end{definition}
+\begin{theorem}[中国剩余定理]
+若 $I_1,\dots,I_r$ 两两互素， 则自然同态
+\[
+R\to \prod_{k=1}^r R/I_k,
+\qquad
+x\mapsto (x+I_1,\dots,x+I_r)
+\]
+的核为 $\bigcap I_k=I_1\cdots I_r$， 并诱导环同构
+\[
+R/(I_1\cdots I_r)\cong \prod_{k=1}^r R/I_k.
+\]
+\end{theorem}
+\begin{proof}
+核显然是 $\bigcap I_k$。 对两两互素理想可证明 $\bigcap I_k=I_1\cdots I_r$。 剩下只证满射。 对 $r=2$，由 $I+J=R$ 取 $a\in I,b\in J$ 使 $a+b=1$。 给定 $\bar x\in R/I$、$\bar y\in R/J$， 取代表元 $x,y$，则
+\[
+z=xb+ya
+\]
+满足 $z\equiv x\pmod I$、$z\equiv y\pmod J$。 一般情形对 $r$ 归纳。
+\end{proof}
+\begin{example}
+若 $(m,n)=1$， 则在 $R=\Z$ 中取 $I=(m)$、$J=(n)$， 得到
+\[
+\Z/mn\Z\cong \Z/m\Z\times \Z/n\Z.
+\]
+例如
+\[
+\Z/12\Z\cong \Z/3\Z\times \Z/4\Z.
+\]
+解同余方程组时， 这允许我们分别模 $3$ 与模 $4$ 计算。
+\end{example}
+\begin{example}
+在多项式环中， 若 $f,g\in \F[x]$ 互素， 则
+\[
+\F[x]/(fg)\cong \F[x]/(f)\times \F[x]/(g).
+\]
+例如在 $\C[x]$ 中，
+\[
+\C[x]/((x-1)(x+1))\cong \C\times \C.
+\]
+这意味着在两个简单根处取值， 足以决定模去该二次多项式后的类。
+\end{example}
+\section{Hecke 代数的环结构}
+表示论中我们已把 Hecke 算子看成双陪集平均。 在环论语言下， 这些算子的线性组合构成一个环， 甚至在很多情形下是交换环。 这为定义本征值、极大理想与同余提供了代数舞台。 设 $V=\Mk_k(\Gamma)$ 或 $\Sk_k(\Gamma)$。 由经典理论， Hecke 算子 $T_n$ 彼此交换， 并与钻石算子等一起生成交换子环
+\[
+\mathbb{T}_{k}(\Gamma)\subseteq \End_\C(V).
+\]
+取一个本征模形式 $f$， 则映射
+\[
+\lambda_f:\mathbb{T}_{k}(\Gamma)\to \C,
+\qquad T_n\mapsto a_n(f)
+\]
+是环同态。 其核是极大理想当且仅当像是域。 若把系数放到整数环或有限域中， 则商环 $\mathbb{T}/\mathfrak m$ 记录模 $\mathfrak m$ 的 Hecke 本征系统。
+\begin{remark}
+从这个角度看， “两个本征模形式模 $p$ 同余” 可翻译为： 它们对应的 Hecke 同态在某个极大理想的剩余域中相同。 也就是说， 模形式中的同余本质上是环论中的取商。
+\end{remark}
+\section*{习题}
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 验证 $\Z$ 在通常加法与乘法下构成交换环。
+\item \basic 证明 $\Mat_2(\R)$ 是环但不是交换环。
+\item \basic 写出 $\Z[i]$ 中 $(1+i)(2-i)$ 的结果。
+\item \basic 证明任一环同态都满足 $\varphi(0)=0$。
+\item \basic 证明任一环同态都满足 $\varphi(-a)=-\varphi(a)$。
+\item \basic 设 $\varphi:\Z\to \Z/6\Z$ 为自然映射，求其核。
+\item \basic 设 $\ev_2:\Q[x]\to \Q$，求其核。
+\item \basic 证明一个理想必含零元。
+\item \basic 证明整个环 $R$ 与零理想 $(0)$ 都是理想。
+\item \basic 判断集合 $2\Z+1$ 是否是 $\Z$ 的理想。
+\item \basic 求 $\Z$ 中理想 $(4)+(6)$。
+\item \basic 求 $\Z$ 中理想 $(4)\cap(6)$。
+\item \basic 求 $\Z$ 中理想 $(4)(6)$。
+\item \basic 证明在交换环中 $(a)(b)=(ab)$。
+\item \basic 写出 $\Z[x]/(x)$ 的一个熟悉模型。
+\item \basic 写出 $\Z[x]/(2,x)$ 的一个熟悉模型。
+\item \basic 证明自然映射 $R\to R/I$ 是满射。
+\item \basic 说明为什么商环中 $a+I=b+I$ 当且仅当 $a-b\in I$。
+\item \basic 证明 $(x)\subset \Q[x]$ 是素理想。
+\item \basic 证明 $(x)\subset \Z[x]$ 不是极大理想。
+\item \basic 证明 $(x-1)\subset \Q[x]$ 是极大理想。
+\item \basic 求 $\Q[x]/(x^2+1)$ 的维数（作为 $\Q$-向量空间）。
+\item \basic 判断 $x^2+1$ 在 $\F_3[x]$ 中是否不可约。
+\item \basic 判断 $x^2+1$ 在 $\F_5[x]$ 中是否不可约。
+\item \basic 写出 $\Z/12\Z\cong \Z/3\Z\times \Z/4\Z$ 下 $5\bmod 12$ 的像。
+\end{enumerate}
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 证明环同态的像是子环。
+\item \medium 设 $I,J$ 为理想，证明 $I+J$ 是包含 $I,J$ 的最小理想。
+\item \medium 设 $I,J$ 为理想，证明 $I\cap J$ 是同时包含于二者的最大理想。
+\item \medium 对任意环同态 $\varphi:R\to S$，证明 $R/\Ker\varphi\cong \Ima\varphi$。
+\item \medium 设 $I\subseteq J\triangleleft R$，构造并证明 $(R/I)/(J/I)\cong R/J$。
+\item \medium 证明商环的泛性质。
+\item \medium 设 $I$ 为理想，证明 $R/I$ 的理想与包含 $I$ 的 $R$ 的理想一一对应。
+\item \medium 在 $\Z$ 中证明每个理想都形如 $(n)$。
+\item \medium 在 $\F[x]$ 中证明每个理想都形如 $(f)$。
+\item \medium 证明：在交换环中极大理想必为素理想。
+\item \medium 给出一个素理想但非极大理想的例子。
+\item \medium 设 $R=\Z[x]$，证明 $(2,x)$ 是极大理想。
+\item \medium 设 $R=\Z[x]$，判断 $(2,x^2+1)$ 是否极大。
+\item \medium 证明 $\F[x]/(f)$ 是域当且仅当 $f$ 不可约。
+\item \medium 证明不同的一次因子 $(x-a)$、$(x-b)$ 在 $\F[x]$ 中互素。
+\item \medium 用中国剩余定理证明：若 $(m,n)=1$，则方程组
+$x\equiv a\pmod m$，$x\equiv b\pmod n$ 有唯一模 $mn$ 解。
+\item \medium 求解同余方程组 $x\equiv 2\pmod 3$，$x\equiv 1\pmod 5$。
+\item \medium 证明：若 $I+J=R$，则 $I\cap J=IJ$。
+\item \medium 证明 $\Q[x]/((x-1)(x+1))\cong \Q\times \Q$。
+\item \medium 设 $f=x^2-1$，写出上题同构下 $x+(f)$ 的像。
+\item \medium 证明：若 $R_1,R_2$ 为交换环，则其直积中的极大理想形如 $M_1\times R_2$ 或 $R_1\times M_2$。
+\item \medium 设 $R$ 为有限交换环，证明每个素理想都是极大理想。
+\item \medium 设 $\mathbb{T}$ 是 Hecke 代数，说明本征模形式给出一个环同态 $\mathbb{T}\to \C$。
+\item \medium 解释为什么两个模形式模 $\mathfrak m$ 同余可由同一个剩余域值同态描述。
+\item \medium 设 $I=(6)$、$J=(10)$，求 $I+J$ 与 $I\cap J$。
+\end{enumerate}
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 设 $R$ 为交换环，证明 $R$ 的所有极大理想的交包含于所有零因子与幂零元的某种集合；并在有限维代数的情形下说明其与 Jacobson 根基的关系。
+\item \hard 证明：若 $R$ 为 PID，则每个非零素理想都是极大理想。
+\item \hard 设 $k$ 为域，证明 $k[x,y]/(x,y)\cong k$，并解释这是“原点”的函数环。
+\item \hard 设 $k$ 为代数闭域，证明 $k[x]/(f)\cong \prod_i k[x]/((x-a_i)^{e_i})$，其中 $f=\prod_i (x-a_i)^{e_i}$。
+\item \hard 设 $f,g\in \F[x]$ 互素，利用 Bezout 等式构造 CRT 同构的逆映射。
+\item \hard 证明：若 $I_1,\dots,I_r$ 两两互素，则存在幂等元 $e_i$ 满足 $e_i\equiv1\pmod{I_i}$、$e_i\equiv0\pmod{I_j}$（$j\ne i$），且 $1=\sum e_i$。
+\item \hard 设 $R$ 为交换环，证明 $\Spec(R_1\times R_2)=\Spec(R_1)\sqcup \Spec(R_2)$ 在集合层面成立。
+\item \hard 证明有限交换整环必为域。
+\item \hard 设 $R=\Z[i]$，证明理想 $(1+i)$ 是极大理想，并求商环大小。
+\item \hard 设 $R=\Z[\sqrt{-5}]$，证明理想 $I=(2,1+\sqrt{-5})$ 不是主理想。
+\item \hard 设 $\mathbb{T}$ 为作用在有限维复向量空间上的交换半单代数，证明其在某基下可同时对角化。
+\item \hard 从环论角度解释为什么 Hecke 代数的极大理想应被看作“模 $p$ 本征系统”。
+\item \hard 设 $R$ 为交换环，证明若每个极大理想都是主理想，则并不必然推出 $R$ 是 PID；给出反例思路。
+\item \hard 设 $R=\F[x,y]/(xy)$，求其零因子，并判断 $(x)$、$(y)$ 是否素理想。
+\item \hard 证明：若 $R/I\times R/J$ 由同一个 $R$ 诱导而来且 $I+J=R$，则幂等元对应于 CRT 分解中的投影。
+\end{enumerate}
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} $(\Z,+)$ 是交换群，整数乘法结合并满足分配律，且单位元为 $1$，故是交换环。
+\item \textbf{解答.} 加法与乘法由矩阵运算给出，环公理成立；但例如 $E_{12}E_{21}\ne E_{21}E_{12}$，故不交换。
+\item \textbf{解答.} $(1+i)(2-i)=2-i+2i-i^2=3+i$。
+\item \textbf{解答.} 因 $\varphi(0)=\varphi(0+0)=\varphi(0)+\varphi(0)$，两边相减得 $\varphi(0)=0$。
+\item \textbf{解答.} $0=\varphi(0)=\varphi(a+(-a))=\varphi(a)+\varphi(-a)$，故 $\varphi(-a)=-\varphi(a)$。
+\item \textbf{解答.} 核为所有被 $6$ 整除的整数，即 $(6)$。
+\item \textbf{解答.} 由余式定理，核为 $(x-2)$。
+\item \textbf{解答.} 理想对加法构成子群，而任意子群都含零元。
+\item \textbf{解答.} $(0)$ 与 $R$ 显然对加法封闭，且被任意环元乘后仍留在自身。
+\item \textbf{解答.} 不是，因为它不含 $0$，也不对加法封闭。
+\item \textbf{解答.} $(4)+(6)=(2)$，因为在 $\Z$ 中和理想由 $\gcd(4,6)$ 生成。
+\item \textbf{解答.} $(4)\cap(6)=(12)$，因为公共倍数恰为 $\mathrm{lcm}(4,6)=12$ 的倍数。
+\item \textbf{解答.} $(4)(6)=(24)$。
+\item \textbf{解答.} $(a)(b)$ 由有限和 $\sum r_iab s_i$ 生成；交换情形下就是所有 $rab$，故等于 $(ab)$。
+\item \textbf{解答.} 令 $x=0$，故 $\Z[x]/(x)\cong \Z$。
+\item \textbf{解答.} 同时有 $2=0$ 与 $x=0$，故商环同构于 $\F_2$。
+\item \textbf{解答.} 任一陪集都有代表元，故自然映射显然满射。
+\item \textbf{解答.} $a+I=b+I$ 等价于 $a-b\in I$，这是陪集相等的定义。
+\item \textbf{解答.} 商环 $\Q[x]/(x)\cong \Q$ 是整环，故 $(x)$ 为素理想。
+\item \textbf{解答.} 因 $\Z[x]/(x)\cong \Z$，而 $\Z$ 不是域，故 $(x)$ 不是极大理想。
+\item \textbf{解答.} $\Q[x]/(x-1)\cong \Q$ 是域，故 $(x-1)$ 极大。
+\item \textbf{解答.} 商环中每个类可唯一写成 $a+bx$，故维数为 $2$。
+\item \textbf{解答.} 在 $\F_3$ 中代入 $0,1,2$ 得值分别为 $1,2,2$，无根，故不可约。
+\item \textbf{解答.} 在 $\F_5$ 中 $2^2+1=0$，故 $x^2+1=(x-2)(x+2)$，可约。
+\item \textbf{解答.} 像为 $(2\bmod3,1\bmod4)$。
+\item \textbf{解答.} 若 $a=\varphi(r),b=\varphi(s)$，则 $a+b=\varphi(r+s)$，$ab=\varphi(rs)$，且 $1_S=\varphi(1_R)$，故像是子环。
+\item \textbf{解答.} $I+J$ 显然含 $I,J$；若 $K$ 是任意含 $I,J$ 的理想，则 $a+b\in K$，故 $I+J\subseteq K$。
+\item \textbf{解答.} $I\cap J$ 同时包含于二者；若 $K\subseteq I$ 且 $K\subseteq J$，则 $K\subseteq I\cap J$。
+\item \textbf{解答.} 第一同构定理见正文证明。
+\item \textbf{解答.} 自然映射 $R/I\to R/J$ 的核为 $J/I$，再用第一同构定理得证。
+\item \textbf{解答.} 若 $I\subseteq\Ker\varphi$，定义 $\bar\varphi(r+I)=\varphi(r)$；良定义与唯一性都由陪集表示立刻得到。
+\item \textbf{解答.} 对包含 $I$ 的理想 $J$，对应商环理想 $J/I$；反向把 $R/I$ 的理想 $K$ 拉回为 $\pi^{-1}(K)$，两过程互逆。
+\item \textbf{解答.} 取理想 $I\subseteq\Z$ 中最小正元 $n$，则 $I=(n)$；若无正元则 $I=(0)$。
+\item \textbf{解答.} 取非零理想中最小次数多项式，除法算法表明整个理想由它生成。
+\item \textbf{解答.} 极大理想商后为域，而域必是整环。
+\item \textbf{解答.} 例如 $\C[x]$ 中 $(0)$ 是素理想，因为商环是整环 $\C[x]$，但不是极大理想。
+\item \textbf{解答.} 因 $\Z[x]/(2,x)\cong \F_2$ 是域，故极大。
+\item \textbf{解答.} 有 $\Z[x]/(2,x^2+1)\cong \F_2[x]/((x+1)^2)$，不是域，故不极大。
+\item \textbf{解答.} 若 $f$ 不可约，则 $(f)$ 极大，故商为域；反之若商为域，则 $(f)$ 极大，从而 $f$ 不可约。
+\item \textbf{解答.} 若 $a\ne b$，则 $(x-a)-(x-b)=b-a$ 为单位，故二者生成整个环。
+\item \textbf{解答.} 由 CRT，$\Z/(mn)\to \Z/m\times \Z/n$ 为同构，故给定一对余类恰对应唯一模 $mn$ 的余类。
+\item \textbf{解答.} 设 $x=2+3t$，再模 $5$ 得 $3t\equiv -1\equiv4$，故 $t\equiv3$，于是 $x\equiv11\pmod{15}$。
+\item \textbf{解答.} 总有 $IJ\subseteq I\cap J$；若 $1=a+b$，$a\in I,b\in J$，则对 $x\in I\cap J$ 有 $x=x(a+b)=xa+xb\in IJ$。
+\item \textbf{解答.} 因 $(x-1)$ 与 $(x+1)$ 互素，CRT 给出同构；亦可把类映到 $(f(1),f(-1))$。
+\item \textbf{解答.} 因 $x$ 在两点 $1,-1$ 处的值分别是 $1,-1$，故像为 $(1,-1)$。
+\item \textbf{解答.} 设 $M\subset R_1\times R_2$ 极大。若投影到某一分量满射，则另一分量是极大理想；检验即可得到两种形式。
+\item \textbf{解答.} 设 $P$ 素，则 $R/P$ 为有限整环；有限整环必为域，故 $P$ 极大。
+\item \textbf{解答.} 对本征模形式 $f$，有 $T_nf=a_n(f)f$，故 $T\mapsto$ 其在 $f$ 上的标量作用给出环同态。
+\item \textbf{解答.} 若两个模形式在每个 Hecke 算子上本征值模 $\mathfrak m$ 相同，则对应同态复合到剩余域 $\mathbb{T}/\mathfrak m$ 后相等。
+\item \textbf{解答.} $(6)+(10)=(2)$，$(6)\cap(10)=(30)$。
+\item \textbf{解答.} 所有极大理想交称为 Jacobson 根基 $\Rad(R)$。它包含幂零元；在有限维代数中它正是所有极大理想之交，也是使商半单的最大幂零理想。
+\item \textbf{解答.} 在 PID 中非零素理想形如 $(p)$。若 $(p)\subseteq (a)\subsetneq R$，则 $p=ab$，由素性得 $p\mid a$ 或 $p\mid b$，推出 $(a)=(p)$ 或 $(a)=R$，故极大。
+\item \textbf{解答.} 商环中 $x=y=0$，故只剩常数类，与 $k$ 同构；几何上这表示在原点取值的函数。
+\item \textbf{解答.} 各因子幂两两互素，反复应用 CRT 即得分解。
+\item \textbf{解答.} 由 Bezout 等式取 $u,v$ 满足 $uf+vg=1$。给定 $(\bar a,\bar b)$，逆像可取为 $av g+b u f$ 的余类。
+\item \textbf{解答.} 令 $J_i=\prod_{j\ne i} I_j$，由互素性可取 $e_i\in J_i$ 满足 $e_i\equiv1\pmod{I_i}$。它们满足 $e_ie_j=0$、$e_i^2=e_i$ 且和为 $1$。
+\item \textbf{解答.} 由前述极大理想分类同理可得素理想也只来自某一分量，故谱集合分解为不交并。
+\item \textbf{解答.} 对非零 $a\in R$，乘法映射 $x\mapsto ax$ 在有限集上单射即满射，故存在 $x$ 使 $ax=1$；于是每个非零元可逆。
+\item \textbf{解答.} 因 $\Z[i]/(1+i)$ 中有 $i\equiv -1$，故每个类由整数模 $2$ 决定，商环有 $2$ 个元素，故为域，理想极大。
+\item \textbf{解答.} 若 $I=(\alpha)$，则范数应整除 $N(2,1+\sqrt{-5})=2$ 的适当候选；逐一检验 $N(a+b\sqrt{-5})=a^2+5b^2$ 无法给出所需生成元，可推出非主。更系统的证明可用商环大小为 $2$ 而无范数为 $2$ 元。
+\item \textbf{解答.} 交换半单代数同构于若干域的直积，故其作用分解为空间的公共特征子空间直和，从而可同时对角化。
+\item \textbf{解答.} 极大理想 $\mathfrak m$ 的商 $\mathbb{T}/\mathfrak m$ 是域；Hecke 算子模 $\mathfrak m$ 的本征值正落在此域中，因此 $\mathfrak m$ 编码一个模 $p$ 或模 $\ell$ 的本征系统。
+\item \textbf{解答.} 例如 Dedekind 整环中局部化后每个极大理想都主，但整体未必 PID；可取类数大于 $1$ 的整数环作为反例来源。
+\item \textbf{解答.} 在 $R$ 中有 $xy=0$，故含 $x$ 或 $y$ 的非零类都是零因子。商去 $(x)$ 后得到 $\F[y]$，故 $(x)$ 素；同理 $(y)$ 素。
+\item \textbf{解答.} CRT 同构下投影到第一、第二分量分别对应幂等元 $(1,0)$、$(0,1)$ 的原像；它们满足 $e^2=e$ 且决定两个直积因子。
+\end{enumerate}

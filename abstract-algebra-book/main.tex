@@ -1,0 +1,123 @@
+% ============================================================================
+% main.tex — 《抽象代数导论：面向模形式》
+% ============================================================================
+\documentclass[12pt, a4paper, openany]{book}
+
+\input{preamble}
+
+% ============================================================================
+\begin{document}
+
+\raggedbottom
+
+% --- 封面 ---
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[black!60] (current page.north west) rectangle
+      ([yshift=-0.6cm]current page.north east);
+    \fill[red!40!black] ([yshift=-2.5cm]current page.north west) rectangle
+      ([yshift=-7.5cm]current page.north east);
+    \fill[black!60] ([yshift=1.8cm]current page.south west) rectangle
+      ([yshift=2.2cm]current page.south east);
+  \end{tikzpicture}
+
+  \centering
+  \vspace*{2.2cm}
+
+  {\color{white}\fontsize{36}{44}\selectfont\bfseries 抽象代数导论\par}
+  \vspace{0.4cm}
+  {\color{white!90}\LARGE 面向模形式\par}
+  \vspace{0.3cm}
+  {\color{white!70}\large\itshape 具体、计算、有动机\par}
+
+  \vspace{3cm}
+
+  {\large\itshape 从群到 Galois 理论，以模形式应用为导向\par}
+  \vspace{0.3cm}
+  {\normalsize 每章含 50--80 道习题（含完整解答），分三级难度\par}
+
+  \vfill
+
+  {\Large\bfseries SZY\par}
+  \vspace{0.3cm}
+  {\normalsize \today\par}
+  \vspace{2.5cm}
+\end{titlepage}
+
+% --- 前言 ---
+\chapter*{前言}
+\addcontentsline{toc}{chapter}{前言}
+
+本书是模形式学习的抽象代数预备知识。我们的风格介于 Artin《Algebra》的
+几何直觉与 Dummit--Foote 的全面计算性之间，同时在适当的地方引入
+\textbf{universal property（泛性质）}的观点：
+
+\begin{itemize}
+  \item \textbf{具体优先}：每个抽象概念都从具体例子出发，特别是与模形式
+    相关的例子——$\SL_2(\Z)$、同余子群、Hecke 代数。
+  \item \textbf{计算性强}：大量显式计算——求 Sylow 子群、构造 Galois 群、
+    计算特征标表。证明固然重要，但能算是理解的基础。
+  \item \textbf{泛性质作为组织原则}：商群、张量积、局部化等构造
+    都同时给出具体构造和泛性质刻画，帮助理解其本质。
+  \item \textbf{面向模形式}：第 10 章专门讨论代数在模形式中的应用——
+    Hecke 代数的环结构、同余子群的群论、Galois 表示初步。
+\end{itemize}
+
+每章包含 50--80 道习题，分为基础（$\bigstar$）、进阶（$\bigstar\bigstar$）、
+挑战（$\bigstar\bigstar\bigstar$）三个难度级别，并附有完整解答。
+
+\vspace{1cm}
+\hfill SZY
+
+\hfill \today
+
+% --- 目录 ---
+\tableofcontents
+\newpage
+
+% ============================================================================
+% 第一部分：群论
+% ============================================================================
+\part{群论}
+
+\include{chapters/ch01-groups}
+\include{chapters/ch02-group-structure}
+\include{chapters/ch03-actions-matrix-groups}
+\include{chapters/ch04-representations}
+
+% ============================================================================
+% 第二部分：环与模
+% ============================================================================
+\part{环与模}
+
+\include{chapters/ch05-rings}
+\include{chapters/ch06-factorization}
+\include{chapters/ch07-modules}
+
+% ============================================================================
+% 第三部分：域论
+% ============================================================================
+\part{域论}
+
+\include{chapters/ch08-field-extensions}
+\include{chapters/ch09-galois}
+
+% ============================================================================
+% 第四部分：应用
+% ============================================================================
+\part{应用与专题}
+
+\include{chapters/ch10-modular-forms}
+
+% ============================================================================
+% 附录
+% ============================================================================
+\appendix
+
+\include{chapters/app-a-categories}
+\include{chapters/app-b-notation}
+
+% --- 索引 ---
+\printindex
+
+\end{document}

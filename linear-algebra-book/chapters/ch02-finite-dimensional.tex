@@ -1,0 +1,575 @@
+\chapter{有限维向量空间}
+
+本章讨论有限维向量空间的核心思想。本章特别强调如下观点：我们处理的是\textbf{列表}，而不是无序的集合。列表允许重复，也保留先后顺序。因此，当我们说“一个基”时，严格地说是指一个有序向量列表。同一批向量若交换顺序，通常就得到另一个基列表；它们张成同一空间，但给出的坐标次序不同。本章的全部论证都建立在线性组合、张成、线性无关与基之上。
+
+\section{张成与线性组合}
+
+在线性代数中，最基本的构造是把若干向量按标量加权并相加。这就是线性组合。一旦理解了线性组合，就自然得到“由一个列表张成的子空间”。
+
+\begin{definition} 设 $V$ 是域 $\F$ 上的向量空间，$(v_1,\dots,v_m)$ 是 $V$ 中的一个列表。形如
+\[ a_1v_1+\cdots+a_mv_m \]
+的向量称为该列表的一个\textbf{线性组合}，其中 $a_1,\dots,a_m\in\F$。若 $m=0$，则空和按约定等于零向量。
+\end{definition}
+
+\begin{definition} 设 $(v_1,\dots,v_m)$ 是 $V$ 中的一个列表。该列表全部线性组合组成的集合称为它的\textbf{张成}，记作
+\[ \spn(v_1,\dots,v_m). \]
+若 $m=0$，则 $\spn()=\{0\}$。
+\end{definition}
+
+\begin{remark} 这里使用列表而不是集合非常重要。例如 $(v_1,v_2)$ 与 $(v_2,v_1)$ 张成同一子空间，但它们作为列表并不相同。以后讨论基与坐标时，顺序会直接影响向量的坐标表示。
+\end{remark}
+
+\begin{proposition} 设 $(v_1,\dots,v_m)$ 是 $V$ 中的一个列表。则 $\spn(v_1,\dots,v_m)$ 是 $V$ 的子空间，并且它是包含 $v_1,\dots,v_m$ 的最小子空间。
+\end{proposition}
+
+\begin{proof} 首先证明它是子空间。零向量属于其中，因为取全部系数为 $0$ 即得 $0$。若 $u,w\in\spn(v_1,\dots,v_m)$，则存在标量 $a_1,\dots,a_m,b_1,\dots,b_m\in\F$ 使得
+\[ u=a_1v_1+\cdots+a_mv_m, \qquad w=b_1v_1+\cdots+b_mv_m. \]
+于是
+\[ u+w=(a_1+b_1)v_1+\cdots+(a_m+b_m)v_m, \]
+故 $u+w$ 仍在该集合中。再设 $\lambda\in\F$，则
+\[ \lambda u=(\lambda a_1)v_1+\cdots+(\lambda a_m)v_m, \]
+故 $\lambda u$ 也在该集合中。因此它是子空间。
+
+接着证明最小性。显然每个 $v_j$ 都属于 $\spn(v_1,\dots,v_m)$，因为令第 $j$ 个系数为 $1$、其余为 $0$ 即可。若 $U$ 是任一包含 $v_1,\dots,v_m$ 的子空间，那么由子空间对加法与数乘封闭可知，所有线性组合都在 $U$ 中，故 $\spn(v_1,\dots,v_m)\subseteq U$。这就说明它是最小的。
+\end{proof}
+
+\begin{example} 在 $\R^3$ 中取
+\[ v_1=(1,0,1),\qquad v_2=(0,1,1). \]
+则
+\[ \spn(v_1,v_2)=\{(a,b,a+b):a,b\in\R\}. \]
+这是过原点的一个平面。证明很直接：任意线性组合为
+\[ av_1+bv_2=(a,b,a+b), \]
+反过来任意形如 $(x,y,x+y)$ 的向量都等于 $xv_1+yv_2$。
+\end{example}
+
+\begin{example} 在多项式空间 $\poly_3(\R)$ 中，列表 $(1,x,x^2,x^3)$ 的张成就是整个空间。因为任意次数不超过 $3$ 的实系数多项式都可唯一写成
+\[ a_0+a_1x+a_2x^2+a_3x^3. \]
+因此
+\[ \spn(1,x,x^2,x^3)=\poly_3(\R). \]
+这个例子说明，抽象向量空间中的向量不必是箭头，也可以是函数或多项式。
+\end{example}
+
+\begin{example} 设 $V$ 为从 $\R$ 到 $\R$ 的全体函数构成的向量空间。则列表 $(1,x,x^2,\dots,x^m)$ 无法张成整个 $V$。例如函数 $e^x$ 不可能等于有限次多项式。所以有限个向量往往只能覆盖一个很小的部分。这正引出有限维与无限维的区分。
+\end{example}
+
+\begin{definition} 若某个有限列表能够张成向量空间 $V$，则称 $V$ 是\textbf{有限维}的。若不存在这样的有限列表，则称 $V$ 是\textbf{无限维}的。
+\end{definition}
+
+\begin{example} $\R^n$ 是有限维的，因为标准列表
+\[ (e_1,\dots,e_n) \]
+张成 $\R^n$。其中 $e_j$ 的第 $j$ 个分量是 $1$，其余分量是 $0$。任意向量 $(x_1,\dots,x_n)$ 都可写成
+\[ x_1e_1+\cdots+x_ne_n. \]
+\end{example}
+
+\begin{example} 多项式空间 $\poly(\R)$ 是无限维的。因为若它由某个长度为 $m$ 的列表张成，则该列表中每个多项式的次数都有上界，于是所有线性组合的次数也有共同上界。但 $x^{m+1}$ 的次数超过这一上界，矛盾。因此不存在有限张成列表。
+\end{example}
+
+\begin{proposition} 设 $U$ 是 $V$ 的子空间，$v_1,\dots,v_m\in U$。则 $\spn(v_1,\dots,v_m)\subseteq U$。
+\end{proposition}
+
+\begin{proof} 这是子空间封闭性的直接结论。因为 $U$ 对数乘与加法封闭，所以任意线性组合
+\[ a_1v_1+\cdots+a_mv_m \]
+都属于 $U$。于是全部线性组合组成的集合包含于 $U$。
+\end{proof}
+
+\begin{example} 在 $\R^4$ 中取
+\[ v_1=(1,1,0,0),\qquad v_2=(0,0,1,1). \]
+它们张成的子空间包含所有形如 $(a,a,b,b)$ 的向量。事实上
+\[ a v_1+b v_2=(a,a,b,b). \]
+反过来任意 $(a,a,b,b)$ 也由上式得到，故该张成恰为
+\[ \{(a,a,b,b):a,b\in\R\}. \]
+这个例子提醒我们：理解一个张成空间，常常就是找出其中向量满足的结构条件。
+\end{example}
+
+\section{线性无关}
+
+张成说明一个列表“足够多”；线性无关说明一个列表“没有冗余”。有限维理论的精华就在于同时控制这两件事。
+
+\begin{definition} 设 $(v_1,\dots,v_m)$ 是向量空间 $V$ 中的一个列表。若等式
+\[ a_1v_1+\cdots+a_mv_m=0 \]
+只在 $a_1=\cdots=a_m=0$ 时成立，则称该列表\textbf{线性无关}。否则称其\textbf{线性相关}。空列表按约定是线性无关的。
+\end{definition}
+
+\begin{proposition} 列表 $(v_1,\dots,v_m)$ 线性相关，当且仅当其中某个向量属于其余向量的张成。
+\end{proposition}
+
+\begin{proof} 先证必要性。若列表线性相关，则存在不全为零的标量 $a_1,\dots,a_m$ 使
+\[ a_1v_1+\cdots+a_mv_m=0. \]
+取某个 $a_j\neq 0$，则
+\[ v_j=-\sum_{k\neq j}\frac{a_k}{a_j}v_k, \]
+故 $v_j$ 属于其余向量的张成。
+
+再证充分性。若某个 $v_j$ 可写成其余向量的线性组合，即
+\[ v_j=\sum_{k\neq j}c_kv_k, \]
+则移项得
+\[ \sum_{k\neq j}(-c_k)v_k+1\cdot v_j=0. \]
+这里系数不全为零，故列表线性相关。
+\end{proof}
+
+\begin{proposition} 若 $v_j\in\spn(v_1,\dots,v_{j-1},v_{j+1},\dots,v_m)$，则
+\[ \spn(v_1,\dots,v_m)=\spn(v_1,\dots,v_{j-1},v_{j+1},\dots,v_m). \]
+\end{proposition}
+
+\begin{proof} 右边显然包含于左边。对反向包含，取任意 $u\in\spn(v_1,\dots,v_m)$，则
+\[ u=a_1v_1+\cdots+a_mv_m. \]
+又因为 $v_j$ 属于其余向量的张成，可写成
+\[ v_j=\sum_{k\neq j}c_kv_k. \]
+代回上式得到 $u$ 是其余向量的线性组合。故左边包含于右边。
+\end{proof}
+
+\begin{example} 在 $\R^3$ 中，列表
+\[ (1,0,0),\ (0,1,0),\ (1,1,0) \]
+线性相关，因为第三个向量等于前两个向量之和。按照上面的命题，删去第三个向量后张成不变。
+\end{example}
+
+\begin{example} 在 $\poly_2(\R)$ 中，列表 $(1,x,x+1)$ 线性相关，因为 $x+1=1+x$。但列表 $(1,x,x^2)$ 线性无关。事实上若
+\[ a+bx+cx^2=0 \]
+作为零多项式成立，则每个系数都必须为零，所以 $a=b=c=0$。
+\end{example}
+
+\begin{lemma}[替换引理] 设 $(v_1,\dots,v_m)$ 张成 $V$，且 $(u_1,\dots,u_n)$ 是 $V$ 中的线性无关列表。则 $n\le m$，并且可以从 $(v_1,\dots,v_m)$ 中删去 $n$ 个向量，再把 $u_1,\dots,u_n$ 依次放入，得到的长度仍为 $m$ 的列表依旧张成 $V$。
+\end{lemma}
+
+\begin{proof} 对 $n$ 作归纳。当 $n=0$ 时结论显然成立。假设结论对 $n-1$ 成立，现证明对 $n$ 成立。由归纳假设，存在长度为 $m$ 的张成列表
+\[ (u_1,\dots,u_{n-1},w_n,\dots,w_m) \]
+张成 $V$。由于它张成 $V$，向量 $u_n$ 可写成
+\[ u_n=a_1u_1+\cdots+a_{n-1}u_{n-1}+b_nw_n+\cdots+b_mw_m. \]
+若所有 $b_n,\dots,b_m$ 都为零，则 $u_n\in\spn(u_1,\dots,u_{n-1})$，这与 $(u_1,\dots,u_n)$ 线性无关矛盾。故至少有一个 $b_j\neq 0$。重新编号可设 $b_n\neq 0$。于是
+\[ w_n=b_n^{-1}u_n-b_n^{-1}a_1u_1-\cdots-b_n^{-1}a_{n-1}u_{n-1}-\sum_{k=n+1}^m b_n^{-1}b_kw_k. \]
+因此 $w_n$ 属于
+\[ \spn(u_1,\dots,u_n,w_{n+1},\dots,w_m). \]
+原列表中的每个向量都属于这个新张成，所以原来张成的整个空间 $V$ 也属于它的张成。故
+\[ (u_1,\dots,u_n,w_{n+1},\dots,w_m) \]
+仍张成 $V$。这完成归纳。
+
+最后，由于每一步都用一个 $u_j$ 替换一个原向量，总共只能替换 $m$ 次，故必有 $n\le m$。
+\end{proof}
+
+\begin{theorem} 若一个线性无关列表位于某个由 $m$ 个向量组成的张成列表所张成的空间中，则该线性无关列表的长度不超过 $m$。
+\end{theorem}
+
+\begin{proof} 这是替换引理的直接结论。设张成列表为 $(v_1,\dots,v_m)$，线性无关列表为 $(u_1,\dots,u_n)$。替换引理告诉我们必须有 $n\le m$。
+\end{proof}
+
+\begin{corollary} 在有限维向量空间中，任何长度严格大于某个张成列表长度的列表都线性相关。特别地，在 $\R^n$ 中，任何长度大于 $n$ 的列表都线性相关。
+\end{corollary}
+
+\begin{proof} 若该列表线性无关，则由上一定理，其长度不能超过张成列表的长度，矛盾。故它只能线性相关。对 $\R^n$，取标准列表作为长度为 $n$ 的张成列表即可。
+\end{proof}
+
+\begin{example} 在 $\R^2$ 中，任意三个向量都线性相关。这不是因为我们会做坐标消元，而是因为 $\R^2$ 已经由两个向量张成，所以任何线性无关列表长度至多为 $2$。
+\end{example}
+
+\begin{example} 在 $\poly_4(\R)$ 中，列表
+\[ (1,x,x^2,x^3,x^4) \]
+张成整个空间，所以任何线性无关列表长度至多为 $5$。例如 $(1,x+1,(x+1)^2,(x+1)^3,(x+1)^4)$ 也是长度为 $5$ 的线性无关列表，因为若其线性相关，就会违背后面即将证明的“基长度一致”。当然也可直接把变量换成 $y=x+1$ 来看。
+\end{example}
+
+\section{基}
+
+张成给出“足够覆盖”，线性无关排除“多余成分”。两者结合就得到基。基是有限维理论的支点。
+
+\begin{definition} 若列表 $(v_1,\dots,v_m)$ 同时满足：
+
+\begin{enumerate}[label=\textnormal{(\arabic*)}]
+\item 它张成 $V$；
+\item 它线性无关；
+\end{enumerate}
+
+则称其为 $V$ 的一个\textbf{基}。
+\end{definition}
+
+\begin{remark} 基是有序列表。因此 $(v_1,v_2,v_3)$ 与 $(v_2,v_1,v_3)$ 一般看作不同的基。它们张成同一空间，但同一向量在这两个基下的坐标顺序不同。这正是列表观点优于集合观点的地方。
+\end{remark}
+
+\begin{example} $\R^3$ 的标准列表
+\[ ((1,0,0),(0,1,0),(0,0,1)) \]
+是一个基。它显然张成 $\R^3$，并且若
+\[ a(1,0,0)+b(0,1,0)+c(0,0,1)=0, \]
+则得到 $(a,b,c)=0$，故线性无关。
+\end{example}
+
+\begin{example} 在 $\poly_2(\R)$ 中，列表 $(1,x,x^2)$ 是一个基。列表 $(1,1+x,(1+x)^2)$ 也是一个基。后者再次说明：一个空间通常有很多不同的基，我们真正关心的是基的长度而不是具体向量长什么样。
+\end{example}
+
+\begin{theorem} 每个有限张成列表都可以缩减为一个基。更准确地说，若 $(v_1,\dots,v_m)$ 张成 $V$，则通过反复删去仍被其余向量张成的向量，最终得到的列表是 $V$ 的一个基。
+\end{theorem}
+
+\begin{proof} 从列表 $(v_1,\dots,v_m)$ 开始。若它已经线性无关，则它本身就是一个基。若它线性相关，由前面的判别命题，其中某个向量属于其余向量的张成。由“删去冗余向量张成不变”的命题，删去该向量后得到的较短列表仍张成 $V$。
+
+若新列表仍线性相关，继续删去一个冗余向量。因为列表长度每次减少 $1$，这个过程在有限步后必定停止。停止时所得列表仍张成 $V$，且不能再删去任何向量。若它仍线性相关，又可再删去一个冗余向量，与停止相矛盾。故它线性无关。于是所得列表既张成 $V$ 又线性无关，即为一个基。
+\end{proof}
+
+\begin{corollary} 每个有限维向量空间都有基。零空间的一个基是空列表。
+\end{corollary}
+
+\begin{proof} 若 $V=\{0\}$，则空列表张成 $V$ 且线性无关，故为空基。若 $V\neq\{0\}$ 且有限维，按定义存在有限列表张成 $V$。由上一定理可把它缩减为一个基。
+\end{proof}
+
+\begin{theorem} 设 $V$ 是有限维向量空间，且 $(u_1,\dots,u_n)$ 是 $V$ 中的线性无关列表。则可以向其中加入若干个向量，把它扩充为 $V$ 的一个基。
+\end{theorem}
+
+\begin{proof} 取一个张成 $V$ 的有限列表 $(w_1,\dots,w_m)$。若 $(u_1,\dots,u_n)$ 已经张成 $V$，则它本身就是一个基。否则存在某个 $w_j$ 不属于 $\spn(u_1,\dots,u_n)$。把它接到列表末尾，得到
+\[ (u_1,\dots,u_n,w_j). \]
+该新列表仍线性无关。因为若
+\[ a_1u_1+\cdots+a_nu_n+bw_j=0, \]
+且 $b\neq 0$，则
+\[ w_j=-b^{-1}(a_1u_1+\cdots+a_nu_n), \]
+与 $w_j\notin\spn(u_1,\dots,u_n)$ 矛盾；故 $b=0$，再由原列表线性无关得 $a_1=\cdots=a_n=0$。
+
+若新列表仍不张成 $V$，继续从 $w_1,\dots,w_m$ 中挑出一个不在当前张成中的向量加入。每加入一次，列表长度增加 $1$ 且保持线性无关。但由长度定理，线性无关列表长度不能超过张成列表 $(w_1,\dots,w_m)$ 的长度 $m$。因此这个过程不能无限继续，有限步后必定得到一个张成 $V$ 的线性无关列表，也就是一个基。
+\end{proof}
+
+\begin{example} 在 $\R^3$ 中，列表 $((1,1,0))$ 线性无关但不是基。把 $(0,1,1)$ 加进去后得到长度为 $2$ 的线性无关列表。再加入 $(1,0,0)$，可得一个基。当然，加入的选择并不唯一。
+\end{example}
+
+\begin{example} 在子空间
+\[ U=\{(a,b,c,d)\in\R^4:a+b+c+d=0\} \]
+中，列表
+\[ (1,-1,0,0),\ (0,1,-1,0) \]
+线性无关。再加入 $(0,0,1,-1)$ 后得到 $U$ 的一个基。证明张成性的方法是：任取 $(a,b,c,d)\in U$，由 $d=-(a+b+c)$，可写成
+\[ a(1,0,0,-1)+b(0,1,0,-1)+c(0,0,1,-1), \]
+再把这三个向量改写为上面基向量的线性组合即可。
+\end{example}
+
+\section{维数}
+
+有限维空间可能有许多不同的基，但一个惊人的事实是：所有基的长度完全一样。这使得“维数”成为良定义的数。
+
+\begin{theorem} 设 $V$ 是有限维向量空间，则 $V$ 的任意两个基具有相同长度。
+\end{theorem}
+
+\begin{proof} 设 $(v_1,\dots,v_m)$ 与 $(u_1,\dots,u_n)$ 都是 $V$ 的基。因为 $(v_1,\dots,v_m)$ 张成 $V$，而 $(u_1,\dots,u_n)$ 线性无关，由长度定理得 $n\le m$。交换两组列表的角色，同理得到 $m\le n$。故 $m=n$。
+\end{proof}
+
+\begin{definition} 有限维向量空间 $V$ 的\textbf{维数}定义为任一基的长度，记作 $\dim V$。约定 $\dim\{0\}=0$。
+\end{definition}
+
+\begin{example} $\dim\R^n=n$，因为标准列表是长度为 $n$ 的基。
+\end{example}
+
+\begin{example} $\dim\poly_m(\F)=m+1$。一个基是
+\[ (1,x,x^2,\dots,x^m). \]
+长度为 $m+1$。
+\end{example}
+
+\begin{example} 设
+\[ U=\{(x_1,x_2,x_3,x_4)\in\R^4:x_1+x_2=0,\ x_3-x_4=0\}. \]
+则
+\[ U=\spn\bigl((-1,1,0,0),(0,0,1,1)\bigr), \]
+且这两个向量线性无关，故 $\dim U=2$。
+\end{example}
+
+\begin{proposition} 设 $V$ 是有限维向量空间，$U$ 是 $V$ 的子空间。则 $U$ 也是有限维的，且 $\dim U\le \dim V$。
+\end{proposition}
+
+\begin{proof} 若 $U=\{0\}$，结论显然。设 $U\neq\{0\}$。取 $U$ 的一个线性无关列表，不断扩充，最多只能扩充到长度 $\dim V$，因为任何线性无关列表长度都不超过 $\dim V$。若尚未张成 $U$，就可继续从 $U$ 中挑一个不在当前张成中的向量加入，这与“长度不能无限增长”矛盾。故有限步后得到 $U$ 的一个基，所以 $U$ 有限维。其基是 $V$ 中的线性无关列表，因此长度至多为 $\dim V$。于是 $\dim U\le\dim V$。
+\end{proof}
+
+\begin{theorem} 设 $U_1,U_2$ 是有限维向量空间 $V$ 的子空间。则
+\[ \dim(U_1+U_2)=\dim U_1+\dim U_2-\dim(U_1\cap U_2). \]
+\end{theorem}
+
+\begin{proof} 取 $U_1\cap U_2$ 的一个基
+\[ (w_1,\dots,w_r). \]
+把它扩充为 $U_1$ 的一个基
+\[ (w_1,\dots,w_r,u_1,\dots,u_p), \]
+再把同一个交空间基扩充为 $U_2$ 的一个基
+\[ (w_1,\dots,w_r,v_1,\dots,v_q). \]
+于是
+\[ \dim(U_1\cap U_2)=r, \quad \dim U_1=r+p, \quad \dim U_2=r+q. \]
+
+我们证明列表
+\[ (w_1,\dots,w_r,u_1,\dots,u_p,v_1,\dots,v_q) \]
+是 $U_1+U_2$ 的一个基。先证张成性。任取 $x\in U_1+U_2$，则 $x=x_1+x_2$，其中 $x_1\in U_1$，$x_2\in U_2$。因为上面两组分别是 $U_1,U_2$ 的基，所以 $x_1$ 可由 $w_i,u_j$ 线性表示，$x_2$ 可由 $w_i,v_k$ 线性表示。相加后得到 $x$ 可由整组列表线性表示，故它张成 $U_1+U_2$。
+
+再证线性无关。设
+\[ a_1w_1+\cdots+a_rw_r+b_1u_1+\cdots+b_pu_p+c_1v_1+\cdots+c_qv_q=0. \]
+把含 $u_j$ 的部分移到右边，得
+\[ c_1v_1+\cdots+c_qv_q = -\bigl(a_1w_1+\cdots+a_rw_r+b_1u_1+\cdots+b_pu_p\bigr). \]
+左边属于 $U_2$，右边属于 $U_1$，故这两个向量都属于 $U_1\cap U_2$。于是左边可由 $w_1,\dots,w_r$ 线性表示。但 $(w_1,\dots,w_r,v_1,\dots,v_q)$ 是 $U_2$ 的基，线性无关，因此 $c_1=\cdots=c_q=0$。原等式化为
+\[ a_1w_1+\cdots+a_rw_r+b_1u_1+\cdots+b_pu_p=0. \]
+又因为 $(w_1,\dots,w_r,u_1,\dots,u_p)$ 是 $U_1$ 的基，故 $a_1=\cdots=a_r=b_1=\cdots=b_p=0$。所以整组列表线性无关。
+
+因此它是 $U_1+U_2$ 的一个基，其长度为 $r+p+q$。代入上面的三个等式可得
+\[ \dim(U_1+U_2)=r+p+q=(r+p)+(r+q)-r. \]
+即
+\[ \dim(U_1+U_2)=\dim U_1+\dim U_2-\dim(U_1\cap U_2). \]
+\end{proof}
+
+\begin{corollary} 若 $U_1\cap U_2=\{0\}$，则
+\[ \dim(U_1+U_2)=\dim U_1+\dim U_2. \]
+\end{corollary}
+
+\begin{proof} 此时 $\dim(U_1\cap U_2)=0$，把它代入维数公式即可。
+\end{proof}
+
+\begin{example} 在 $\R^3$ 中取
+\[ U_1=\spn((1,0,0),(0,1,0)), \qquad U_2=\spn((0,1,0),(0,0,1)). \]
+则 $\dim U_1=2$，$\dim U_2=2$，且 $U_1\cap U_2=\spn((0,1,0))$，故交的维数为 $1$。于是
+\[ \dim(U_1+U_2)=2+2-1=3. \]
+确实，$U_1+U_2=\R^3$。
+\end{example}
+
+\begin{example} 在 $\poly_3(\R)$ 中设
+\[ U_1=\poly_1(\R), \qquad U_2=\spn(x,x^2,x^3). \]
+则 $\dim U_1=2$，$\dim U_2=3$，而交空间等于 $\spn(x)$，其维数为 $1$。因此
+\[ \dim(U_1+U_2)=2+3-1=4. \]
+事实上 $U_1+U_2=\poly_3(\R)$。
+\end{example}
+
+\section{子空间的维数与商空间}
+
+子空间的维数不超过母空间，这是有限维直觉最基本的形式。更进一步，商空间把某个子空间中的差别“压缩为零”，从而只保留与该子空间无关的方向数目。
+
+\begin{theorem} 设 $V$ 是有限维向量空间，$U$ 是其子空间。则存在 $U$ 的一个基，可以扩充为 $V$ 的一个基。特别地，$\dim U\le \dim V$。
+\end{theorem}
+
+\begin{proof} 取 $U$ 的一个基 $(u_1,\dots,u_m)$。它当然是 $V$ 中的线性无关列表。由“线性无关列表可扩充为基”定理，可向其中加入若干个向量 $v_1,\dots,v_n$，使得
+\[ (u_1,\dots,u_m,v_1,\dots,v_n) \]
+成为 $V$ 的一个基。于是
+\[ \dim U=m\le m+n=\dim V. \]
+\end{proof}
+
+\begin{definition} 设 $U$ 是向量空间 $V$ 的子空间，$v\in V$。集合
+\[ v+U=\{v+u:u\in U\} \]
+称为由 $v$ 决定的一个\textbf{陪集}。所有陪集组成的集合记为
+\[ V/U. \]
+它称为 $V$ 对 $U$ 的\textbf{商空间}。
+\end{definition}
+
+\begin{proposition} 对任意 $v,w\in V$，有
+\[ v+U=w+U \quad\Longleftrightarrow\quad v-w\in U. \]
+\end{proposition}
+
+\begin{proof} 若 $v+U=w+U$，则 $v\in v+U=w+U$，故存在 $u\in U$ 使 $v=w+u$，于是 $v-w=u\in U$。反之，若 $v-w\in U$，记 $v-w=u_0$。对任意 $u\in U$，有
+\[ v+u=w+(u_0+u)\in w+U, \]
+故 $v+U\subseteq w+U$。交换 $v,w$ 的角色同理得反向包含，于是两者相等。
+\end{proof}
+
+\begin{proposition} 在 $V/U$ 上定义
+\[ (v+U)+(w+U)=(v+w)+U, \qquad a(v+U)=av+U. \]
+则这些运算是良定义的，并使 $V/U$ 成为域 $\F$ 上的向量空间。
+\end{proposition}
+
+\begin{proof} 只需证明良定义。若 $v+U=v'+U$ 且 $w+U=w'+U$，则由上一命题可知 $v-v'\in U$ 与 $w-w'\in U$。因为 $U$ 是子空间，故
+\[ (v+w)-(v'+w')=(v-v')+(w-w')\in U. \]
+再用上一命题得到
+\[ (v+w)+U=(v'+w')+U. \]
+这说明加法良定义。同理，若 $v-v'\in U$，则
+\[ av-av'=a(v-v')\in U, \]
+故
+\[ av+U=av'+U, \]
+数乘也良定义。
+
+向量空间八条公理由 $V$ 中对应公理直接传到陪集上。例如
+\[ ((v+U)+(w+U))+(z+U)=(v+w+z)+U=(v+U)+((w+U)+(z+U)), \]
+其余完全类似。故 $V/U$ 成为向量空间。
+\end{proof}
+
+\begin{theorem} 设 $V$ 是有限维向量空间，$U$ 是其子空间。则
+\[ \dim(V/U)=\dim V-\dim U. \]
+\end{theorem}
+
+\begin{proof} 取 $U$ 的一个基 $(u_1,\dots,u_m)$，并把它扩充为 $V$ 的一个基
+\[ (u_1,\dots,u_m,v_1,\dots,v_n). \]
+于是
+\[ \dim U=m, \qquad \dim V=m+n. \]
+我们证明
+\[ (v_1+U,\dots,v_n+U) \]
+是商空间 $V/U$ 的一个基。
+
+先证张成性。任取 $x+U\in V/U$。因为上面列表是 $V$ 的基，存在唯一标量 $a_1,\dots,a_m,b_1,\dots,b_n$ 使
+\[ x=a_1u_1+\cdots+a_mu_m+b_1v_1+\cdots+b_nv_n. \]
+于是
+\[ x+U=(b_1v_1+\cdots+b_nv_n)+U=b_1(v_1+U)+\cdots+b_n(v_n+U), \]
+因为 $a_1u_1+\cdots+a_mu_m\in U$ 在商空间中代表零向量。故这些陪集张成 $V/U$。
+
+再证线性无关。设
+\[ b_1(v_1+U)+\cdots+b_n(v_n+U)=U. \]
+这等价于
+\[ (b_1v_1+\cdots+b_nv_n)+U=U, \]
+即
+\[ b_1v_1+\cdots+b_nv_n\in U. \]
+但 $U=\spn(u_1,\dots,u_m)$，所以存在 $a_1,\dots,a_m$ 使
+\[ b_1v_1+\cdots+b_nv_n=a_1u_1+\cdots+a_mu_m. \]
+移项得
+\[ a_1u_1+\cdots+a_mu_m-b_1v_1-\cdots-b_nv_n=0. \]
+由于
+\[ (u_1,\dots,u_m,v_1,\dots,v_n) \]
+是 $V$ 的基，线性无关，故所有系数都为零，特别是 $b_1=\cdots=b_n=0$。因此 $(v_1+U,\dots,v_n+U)$ 线性无关。
+
+所以它是 $V/U$ 的一个基，长度为 $n$。由 $\dim V=m+n$ 与 $\dim U=m$ 得
+\[ \dim(V/U)=n=\dim V-\dim U. \]
+\end{proof}
+
+\begin{example} 取 $V=\R^3$，$U=\spn((1,0,0),(0,1,0))$。则 $U$ 是由前两个坐标方向张成的平面，$V/U$ 只记录与该平面垂直的方向信息。由维数公式得
+\[ \dim(V/U)=3-2=1. \]
+实际上 $((0,0,1)+U)$ 是商空间的一个基。
+\end{example}
+
+\begin{example} 取 $V=\poly_3(\R)$，$U=\poly_1(\R)$。则两个多项式在商空间中相等，当且仅当它们相差一个一次以下多项式。因此只剩下二次项与三次项的信息。维数公式给出
+\[ \dim(V/U)=4-2=2, \]
+且 $(x^2+U,x^3+U)$ 构成一个基。
+\end{example}
+
+\begin{remark} 商空间的思想可以概括为：把 $U$ 中的向量都看成“没有贡献”。于是 $V/U$ 的维数恰好数出在忽略 $U$ 之后还剩多少独立方向。这与“把 $U$ 的基扩充为 $V$ 的基”完全一致。
+\end{remark}
+
+\section*{习题}
+
+\subsection*{基础题（20 题）}
+
+\begin{enumerate}[label=\textbf{\basic\ \arabic*.}, leftmargin=3em]
+\item 证明 $\spn(v)=\{av:a\in\F\}$。
+\item 求 $\spn((1,1),(1,-1))$ 在 $\R^2$ 中的描述。
+\item 判断 $(1,x,x^2)$ 在 $\poly_2(\R)$ 中是否线性无关。
+\item 判断 $(1,x,1+x)$ 在 $\poly_2(\R)$ 中是否线性无关。
+\item 证明空列表张成的空间是 $\{0\}$。
+\item 证明含有零向量的非空列表线性相关。
+\item 设 $v_3=v_1+v_2$，证明 $(v_1,v_2,v_3)$ 线性相关。
+\item 给出 $\R^3$ 的一个长度为 $2$ 的线性无关列表。
+\item 给出 $\R^3$ 的一个长度为 $4$ 的线性相关列表。
+\item 证明若 $(v_1,\dots,v_m)$ 张成 $V$，则任意 $v_j\in V$ 都属于该张成。
+\item 求子空间 $\spn((1,0,1),(0,1,1))$ 的一般元素形式。
+\item 证明 $\poly_1(\R)$ 是有限维的。
+\item 证明 $\poly(\R)$ 是无限维的。
+\item 判断 $((1,0),(0,1))$ 是否是 $\R^2$ 的基。
+\item 判断 $((1,1),(2,2))$ 是否是 $\R^2$ 的基。
+\item 求 $\dim\poly_4(\R)$。
+\item 求 $\dim\{(a,b,c)\in\R^3:a+b+c=0\}$。
+\item 设 $U=\spn((1,0,0))\subseteq\R^3$，求 $\dim(\R^3/U)$。
+\item 设 $U_1=\spn((1,0))$，$U_2=\spn((0,1))$，求 $\dim(U_1+U_2)$。
+\item 设 $U_1=U_2=\spn((1,0))$，求 $\dim(U_1+U_2)$ 与 $\dim(U_1\cap U_2)$。
+\end{enumerate}
+
+\subsection*{进阶题（25 题）}
+
+\begin{enumerate}[label=\textbf{\medium\ \arabic*.}, leftmargin=3em]
+\item 证明若 $(v_1,\dots,v_m)$ 线性无关，则 $(v_1,\dots,v_m,w)$ 线性相关当且仅当 $w\in\spn(v_1,\dots,v_m)$。
+\item 证明若 $(v_1,\dots,v_m)$ 是基，则每个向量在该基下的表示唯一。
+\item 证明若一个列表既张成 $V$ 又长度为 $\dim V$，则它是基。
+\item 证明若一个列表线性无关且长度为 $\dim V$，则它是基。
+\item 证明 $\dim U=0$ 当且仅当 $U=\{0\}$。
+\item 设 $U\subseteq W\subseteq V$，证明 $\dim U\le \dim W\le \dim V$。
+\item 在 $\R^4$ 中求子空间 $\{(a,b,c,d):a=b,\ c=d\}$ 的维数。
+\item 在 $\poly_3(\R)$ 中证明 $(1,x+1,(x+1)^2,(x+1)^3)$ 是一组基。
+\item 证明任意有限维空间中的任意列表都可以删去若干向量后变成线性无关列表。
+\item 设 $U=\spn((1,1,0),(0,1,1))\subseteq\R^3$，求 $\dim U$。
+\item 设 $U_1=\spn((1,0,0),(0,1,0))$，$U_2=\spn((1,1,0))$，求 $\dim(U_1+U_2)$。
+\item 设 $U_1,U_2\subseteq V$ 且 $U_1\cap U_2=\{0\}$，证明 $u_1+u_2=0$ 蕴含 $u_1=0,u_2=0$。
+\item 证明若 $U_1\cap U_2=\{0\}$，且 $B_1,B_2$ 分别是 $U_1,U_2$ 的基，则连接后的列表是 $U_1+U_2$ 的基。
+\item 证明若 $U\subseteq V$ 且 $\dim U=\dim V$，则 $U=V$。
+\item 设 $V=\poly_2(\R)$，$U=\spn(1+x)$，求 $\dim(V/U)$。
+\item 设 $V=\R^4$，$U=\spn((1,0,0,0),(0,1,0,0))$，给出 $V/U$ 的一个基。
+\item 证明商空间中的零向量是 $U$ 本身。
+\item 证明 $v+U=U$ 当且仅当 $v\in U$。
+\item 设 $v_1,\dots,v_m$ 线性无关，证明它们两两不同且都非零。
+\item 证明若 $U_1\subseteq U_2$，则 $U_1+U_2=U_2$ 且 $U_1\cap U_2=U_1$。
+\item 由上一题推出维数公式在包含关系下的特例。
+\item 设 $W=\{(a,b,c,d)\in\R^4:a+b+c+d=0\}$，求 $\dim W$。
+\item 设 $V=\poly_4(\R)$，$U=\poly_2(\R)$，求 $\dim(V/U)$。
+\item 证明若 $(u_1,\dots,u_m)$ 是 $U$ 的基，且 $U\subseteq V$，则该列表在 $V$ 中仍线性无关。
+\item 设 $U_1,U_2\subseteq V$，且 $\dim U_1+\dim U_2>\dim V$，证明 $U_1\cap U_2\neq\{0\}$。
+\end{enumerate}
+
+\subsection*{挑战题（15 题）}
+
+\begin{enumerate}[label=\textbf{\hard\ \arabic*.}, leftmargin=3em]
+\item 证明：若 $V$ 由长度为 $m$ 的列表张成，则任何长度大于 $m$ 的列表都可删去某个向量而不改变其张成。
+\item 证明：若 $V$ 有限维，且 $U$ 是真子空间，则存在 $v\in V\setminus U$。
+\item 证明：有限维空间中任意两个基之间存在一个双射对应，但不必保持任何向量本身。
+\item 设 $(v_1,\dots,v_n)$ 是基，证明对任意 $k$，把 $v_k$ 替换成 $v_k+\sum_{j<k}a_jv_j$ 仍得到一组基。
+\item 设 $U_1,U_2,U_3\subseteq V$，构造一个例子说明 $\dim(U_1+U_2+U_3)$ 不能只由三者维数与两两交的维数决定。
+\item 证明：若 $U$ 是有限维空间 $V$ 的子空间，则存在子空间 $W$ 使 $V=U+W$ 且 $U\cap W=\{0\}$。
+\item 设 $V=\poly_5(\R)$，$U=\{p\in V:p(0)=0\}$，求 $\dim U$ 与 $\dim(V/U)$。
+\item 设 $V=\R^5$，$U=\{x\in\R^5:x_1+\cdots+x_5=0\}$，求 $\dim U$。
+\item 设 $U_1,U_2\subseteq V$ 满足 $\dim U_1=\dim U_2$ 且 $U_1\subseteq U_2$，证明 $U_1=U_2$。
+\item 证明：若 $V/U$ 维数为 $1$，则 $U$ 是 $V$ 的真子空间，且任取 $v\notin U$，都有 $V=U+\spn(v)$。
+\item 设 $V=\poly_3(\R)$，$U=\{p\in V:p(1)=0\}$，求 $\dim U$ 并给出 $V/U$ 的一个基。
+\item 证明：若 $U_1\cap U_2=\{0\}$ 且 $U_1+U_2=V$，则每个 $v\in V$ 都可唯一写成 $v=u_1+u_2$。
+\item 设 $V$ 有限维，证明任意严格递增子空间链
+\[ U_0\subsetneq U_1\subsetneq\cdots\subsetneq U_m \]
+的长度满足 $m\le\dim V$。
+\item 证明：若 $U\subseteq V$，则 $V/U=\{U\}$ 当且仅当 $U=V$。
+\item 设 $U,W\subseteq V$ 且 $W\subseteq U$，证明 $(V/W)/(U/W)$ 与 $V/U$ 的维数相同。
+\end{enumerate}
+
+\section*{习题解答}
+
+\subsection*{基础题解答}
+
+\begin{enumerate}[label=\textbf{\basic\ \arabic*.}, leftmargin=3em]
+\item 按定义，$\spn(v)$ 由一切线性组合 $av$ 组成，因此正好是 $\{av:a\in\F\}$。
+\item 设 $a,b\in\R$，则 $a(1,1)+b(1,-1)=(a+b,a-b)$。任给 $(x,y)\in\R^2$，取 $a=\frac{x+y}{2},b=\frac{x-y}{2}$ 即得，所以张成为整个 $\R^2$。
+\item 是。若 $a+bx+cx^2=0$ 为零多项式，则各系数都为零，因此 $a=b=c=0$。
+\item 否。因为 $(1+x)-1-x=0$，存在非平凡线性关系，所以线性相关。
+\item 空列表只有空和，而空和定义为零向量，所以其张成恰为 $\{0\}$。
+\item 若列表含零向量 $0$，则 $1\cdot 0=0$ 给出非平凡线性关系，所以线性相关。
+\item 有 $v_1+v_2-v_3=0$，且系数不全为零，故线性相关。
+\item 例如 $((1,0,0),(0,1,0))$。若 $a(1,0,0)+b(0,1,0)=0$，则 $a=b=0$，故线性无关。
+\item 例如 $((1,0,0),(0,1,0),(0,0,1),(1,1,1))$。因为 $\R^3$ 中任意四个向量都线性相关。
+\item 因为张成列表的定义正是由这些向量的所有线性组合组成的集合，列表中的每个向量当然属于它。
+\item 一般元素为 $a(1,0,1)+b(0,1,1)=(a,b,a+b)$，故子空间是 $\{(x,y,x+y):x,y\in\R\}$。
+\item $\poly_1(\R)=\spn(1,x)$，故它由有限列表张成，所以有限维。
+\item 若它有限维，则由某个有限列表张成，所有张成多项式次数有共同上界；但高于该上界的幂次多项式不在其中，矛盾。
+\item 是。它张成 $\R^2$ 且线性无关，因此是基。
+\item 不是。因为 $(2,2)=2(1,1)$，列表线性相关，故不是基。
+\item 一组基为 $(1,x,x^2,x^3,x^4)$，故 $\dim\poly_4(\R)=5$。
+\item 该空间等于 $\spn((1,-1,0),(1,0,-1))$，且这两个向量线性无关，故维数为 $2$。
+\item $\dim U=1$，而 $\dim\R^3=3$，故 $\dim(\R^3/U)=2$。
+\item $U_1+U_2=\R^2$，所以维数为 $2$。
+\item 此时 $U_1+U_2=U_1$，且 $U_1\cap U_2=U_1$，因此两者维数都等于 $1$。
+\end{enumerate}
+
+\subsection*{进阶题解答}
+
+\begin{enumerate}[label=\textbf{\medium\ \arabic*.}, leftmargin=3em]
+\item 若加入 $w$ 后线性相关，则某个向量在其余向量张成中。原列表线性无关，所以只能是 $w$ 在前 $m$ 个向量张成中；反向显然。
+\item 设 $v=a_1v_1+\cdots+a_mv_m=b_1v_1+\cdots+b_mv_m$，相减得 $(a_1-b_1)v_1+\cdots+(a_m-b_m)v_m=0$。由线性无关知 $a_j=b_j$，故表示唯一。
+\item 长度等于 $\dim V$ 的张成列表若线性相关，可删去一个向量而仍张成，与维数定义矛盾。故必线性无关，所以是基。
+\item 若该列表不张成 $V$，可加入一个不在其张成中的向量而保持线性无关，得到更长的线性无关列表，这与长度已等于 $\dim V$ 矛盾。故它张成 $V$，于是是基。
+\item 若 $\dim U=0$，则 $U$ 的基是空列表，只能张成 $\{0\}$，故 $U=\{0\}$。反向显然。
+\item $U$ 的基可扩充为 $W$ 的基，故 $\dim U\le\dim W$；同理 $\dim W\le\dim V$。
+\item 该空间等于 $\spn((1,1,0,0),(0,0,1,1))$，二者线性无关，所以维数为 $2$。
+\item 设 $y=x+1$，则该列表化为 $(1,y,y^2,y^3)$，这是 $\poly_3(\R)$ 的标准基，因此原列表也是一组基。
+\item 若原列表线性无关则完成；若线性相关，则删去一个冗余向量且不改变张成。重复此过程，有限步后得到线性无关列表。
+\item 若 $a(1,1,0)+b(0,1,1)=0$，则比较分量得 $a=0,b=0$，故两向量线性无关，因此 $\dim U=2$。
+\item 因为 $U_2\subseteq U_1$，故 $U_1+U_2=U_1$，维数为 $2$。
+\item 若 $u_1+u_2=0$，则 $u_1=-u_2\in U_1\cap U_2$。交为零，只能 $u_1=0$，进而 $u_2=0$。
+\item 连接列表张成 $U_1+U_2$。若其线性组合为零，把 $U_1$ 部分移到一边，可见该向量同时在 $U_1$ 与 $U_2$ 中，只能为零，再由各自基的线性无关得全部系数为零。
+\item 由 $U\subseteq V$ 与上一章结论得 $\dim U\le\dim V$。若二者相等，则 $U$ 的基长度已等于 $\dim V$，故它也是 $V$ 的基，从而 $U=V$。
+\item $\dim V=3$，$\dim U=1$，故 $\dim(V/U)=2$。
+\item 可取 $((0,0,1,0)+U,(0,0,0,1)+U)$。因为前两个标准向量张成 $U$，后两个陪集张成商空间且线性无关。
+\item 商空间的零向量应满足 $x+0=x$。对任意陪集 $v+U$，有 $(v+U)+U=(v+0)+U=v+U$，故零向量就是 $U$。
+\item 由陪集判定命题，$v+U=U$ 当且仅当 $v-0=v\in U$。
+\item 若 $v_j=0$，则列表含零向量，线性相关。若 $v_i=v_j$ 且 $i\neq j$，则 $v_i-v_j=0$ 给出非平凡关系，所以线性无关列表中向量都非零且互异。
+\item 因 $U_1\subseteq U_2$，故任意 $u_1+u_2\in U_2$，反向包含显然，故和为 $U_2$；交中元素必须属于 $U_1$，而 $U_1\subseteq U_2$，故交为 $U_1$。
+\item 由上一题，$\dim(U_1+U_2)=\dim U_2$，$\dim(U_1\cap U_2)=\dim U_1$，这正是维数公式的包含关系特例。
+\item 取前三个坐标自由，第四个坐标由条件决定，所以该空间由三个独立方向张成，维数为 $3$。例如基可取 $(1,0,0,-1),(0,1,0,-1),(0,0,1,-1)$。
+\item $\dim\poly_4(\R)=5$，$\dim\poly_2(\R)=3$，故 $\dim(V/U)=2$。
+\item 若在 $V$ 中有 $a_1u_1+\cdots+a_mu_m=0$，这也是在 $U$ 中的线性关系。由于该列表是 $U$ 的基，故各系数都为零，所以在 $V$ 中仍线性无关。
+\item 若交为零，则维数公式给出 $\dim(U_1+U_2)=\dim U_1+\dim U_2>\dim V$，不可能，因为 $U_1+U_2\subseteq V$。故交非零。
+\end{enumerate}
+
+\subsection*{挑战题解答}
+
+\begin{enumerate}[label=\textbf{\hard\ \arabic*.}, leftmargin=3em]
+\item 长度大于 $m$ 的列表不可能线性无关，因此线性相关。于是某个向量属于其余向量的张成，删去它后张成不变。
+\item 若不存在这样的 $v$，则每个 $v\in V$ 都属于 $U$，于是 $V\subseteq U$。结合 $U\subseteq V$ 得 $U=V$，与真子空间矛盾。
+\item 设两组基长度都为 $n$。任取一个含 $n$ 个元素的集合 $\{1,\dots,n\}$，分别与两组基建立双射即可。这里说明只有长度这一不变量是必需保留的。
+\item 新列表显然张成旧列表中每个向量，因为 $v_k=(v_k+\sum_{j<k}a_jv_j)-\sum_{j<k}a_jv_j$。故它张成整个空间；长度不变且等于维数，所以是基。
+\item 可在 $\R^3$ 中取两组例子。第一组取 $U_1=\spn((1,0,0))$，$U_2=\spn((0,1,0))$，$U_3=\spn((0,0,1))$，则三者维数都为 $1$，两两交维数都为 $0$，而总和维数为 $3$。第二组取 $U_1=\spn((1,0,0))$，$U_2=\spn((0,1,0))$，$U_3=\spn((1,1,0))$，则三者维数仍都为 $1$，两两交维数仍都为 $0$，但总和维数只有 $2$。
+\item 取 $U$ 的一组基并扩充为 $V$ 的基，设新增向量张成 $W$。则扩充后的整组基张成 $V$，故 $V=U+W$；若 $x\in U\cap W$，则它既可由前半段基表示又可由后半段基表示，相减得基的非平凡关系，只能 $x=0$。
+\item 条件 $p(0)=0$ 等价于常数项为零，所以 $U=\spn(x,x^2,x^3,x^4,x^5)$，故 $\dim U=5$。又 $\dim V=6$，故 $\dim(V/U)=1$。
+\item 该条件给出一个线性约束，因此可由前四个坐标自由决定第五个坐标，故维数为 $4$。
+\item 由包含关系得 $\dim U_1\le\dim U_2$。已知二者维数相等，故 $U_1$ 的基也是 $U_2$ 的同长度线性无关列表，于是张成 $U_2$，从而 $U_1=U_2$。
+\item 若 $\dim(V/U)=1$，则 $U\neq V$，所以是严格子空间。任取 $v\notin U$，陪集 $v+U$ 非零，而商空间一维，所以任一非零向量都张成它。于是任意 $x+U$ 都等于 $a(v+U)$，故 $x-av\in U$，即 $x\in U+\spn(v)$。
+\item 由条件 $p(1)=0$ 可知 $U=\spn(x-1,x(x-1),x^2(x-1))$，故 $\dim U=3$。又 $\dim\poly_3(\R)=4$，所以商空间维数为 $1$，可取 $1+U$ 为其基。
+\item 存在性由 $U_1+U_2=V$ 给出。若 $v=u_1+u_2=u_1'+u_2'$，则 $(u_1-u_1')=-(u_2-u_2')$ 属于 $U_1\cap U_2=\{0\}$，故 $u_1=u_1',u_2=u_2'$，表示唯一。
+\item 每个严格包含都会使维数至少增加 $1$，故 $0\le\dim U_0<\dim U_1<\cdots<\dim U_m\le\dim V$，从而 $m\le\dim V$。
+\item 若 $V/U=\{U\}$，则任意 $v\in V$ 都满足 $v+U=U$，故 $v\in U$，于是 $V=U$。反向显然。
+\item 由维数公式，$\dim(V/W)=\dim V-\dim W$，$\dim(U/W)=\dim U-\dim W$。因此
+\[ \dim((V/W)/(U/W))=\dim(V/W)-\dim(U/W)=\dim V-\dim U=\dim(V/U). \]
+\end{enumerate}
+

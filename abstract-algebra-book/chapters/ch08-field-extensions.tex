@@ -1,0 +1,401 @@
+\chapter{域扩张}
+
+域论把“多项式方程有没有根、根落在哪个域里、这些根之间如何相互作用”组织成一套系统理论。对模形式而言，域扩张的重要性至少体现在两方面：其一，Hecke 特征值通常不必落在 $\Q$ 中，而是生成一个数域；其二，后续 Galois 理论与 Galois 表示都建立在域扩张语言之上。本章首先发展一般域扩张，再以有限域与模形式系数域作应用。
+
+\section{域扩张的定义}
+
+\begin{definition}
+若 $K\subseteq L$ 且 $K,L$ 都是域，则称 $L/K$ 为一个 \emph{域扩张}，$L$ 为 $K$ 的扩域，$K$ 为 $L$ 的子域。把 $L$ 看作 $K$-向量空间，其维数记为
+\[
+[L:K]:=\dim_K L,
+\]
+称为扩张度。
+\end{definition}
+
+\begin{example}
+$\C/\R$ 是二次扩张，因为 $\C=\R\oplus \R i$。$\Q(\sqrt2)/\Q$ 也是二次扩张，基可取 $1,\sqrt2$。
+\end{example}
+
+\begin{definition}
+设 $\alpha\in L$。若存在非零多项式 $f(x)\in K[x]$ 使 $f(\alpha)=0$，则称 $\alpha$ 对 $K$ \emph{代数}；否则称为 \emph{超越}。若 $L$ 中每个元素都对 $K$ 代数，则称 $L/K$ 为代数扩张。
+\end{definition}
+
+\begin{example}
+$\sqrt2$ 对 $\Q$ 代数，因为它满足 $x^2-2=0$；$\pi$ 与 $e$ 对 $\Q$ 超越。多项式域的分式域 $K(x)$ 是 $K$ 的超越扩张。
+\end{example}
+
+\begin{proposition}
+若 $[L:K]<\infty$，则 $L/K$ 为代数扩张。
+\end{proposition}
+
+\begin{proof}
+任取 $\alpha\in L$。由于 $1,\alpha,\dots,\alpha^{[L:K]}$ 是 $[L:K]+1$ 个向量，而 $L$ 作为 $K$-空间维数只有 $[L:K]$，故它们线性相关，得到某个非零多项式在 $\alpha$ 处为零。
+\end{proof}
+
+\section{最小多项式}
+
+\begin{definition}
+设 $\alpha$ 对 $K$ 代数。满足 $m_{\alpha,K}(\alpha)=0$ 的首一多项式中，次数最小者称为 $\alpha$ 在 $K$ 上的 \emph{最小多项式}。
+\end{definition}
+
+\begin{theorem}
+若 $\alpha$ 对 $K$ 代数，则最小多项式 $m_{\alpha,K}(x)$ 存在且唯一；它在 $K[x]$ 中不可约，并且若 $f(\alpha)=0$，则 $m_{\alpha,K}\mid f$。
+\end{theorem}
+
+\begin{proof}
+所有以 $\alpha$ 为根的非零多项式组成非空集合，取其中次数最小的首一元即得存在性。若 $m=gh$ 可约，则 $0=m(\alpha)=g(\alpha)h(\alpha)$，域中无零因子，故某因子在 $\alpha$ 处为零，违反极小性。对任意 $f$，用 Euclid 除法写 $f=qm+r$，$\deg r<\deg m$；代入 $\alpha$ 得 $r(\alpha)=0$，故 $r=0$。
+\end{proof}
+
+\begin{theorem}
+若 $\alpha$ 对 $K$ 代数，且其最小多项式为 $p(x)$，则
+\[
+ K(\alpha)\cong K[x]/(p(x)).
+\]
+特别地，$[K(\alpha):K]=\deg p$，而 $1,\alpha,\dots,\alpha^{d-1}$ 构成一组 $K$-基，其中 $d=\deg p$。
+\end{theorem}
+
+\begin{proof}
+定义评价同态 $\varphi:K[x]\to L$，$f\mapsto f(\alpha)$。其像是 $K[\alpha]$，对代数元而言 $K[\alpha]=K(\alpha)$。其核由所有以 $\alpha$ 为根的多项式组成，即主理想 $(p)$。由第一同构定理得结论。
+\end{proof}
+
+\begin{example}
+$\Q(\sqrt2)\cong \Q[x]/(x^2-2)$，而 $\Q(\omega)\cong \Q[x]/(x^2+x+1)$，其中 $\omega=e^{2\pi i/3}$。
+\end{example}
+
+\begin{example}
+设 $\alpha=\sqrt2+\sqrt3$。由
+\[
+ \alpha^2=5+2\sqrt6
+\]
+可推出 $(\alpha^2-5)^2=24$，故 $\alpha$ 满足四次方程
+\[
+ x^4-10x^2+1=0.
+\]
+因此 $\Q(\alpha)$ 至少是一个四次扩张；稍后我们会看到它事实上等于 $\Q(\sqrt2,\sqrt3)$。这类计算说明：最小多项式经常通过消去根式显式得到。
+\end{example}
+
+\section{代数扩张与塔律}
+
+\begin{proposition}[塔律]
+若 $K\subseteq L\subseteq M$ 且 $[L:K],[M:L]<\infty$，则
+\[
+ [M:K]=[M:L][L:K].
+\]
+\end{proposition}
+
+\begin{proof}
+设 $e_1,\dots,e_r$ 为 $L/K$ 的基，$f_1,\dots,f_s$ 为 $M/L$ 的基。则所有 $e_if_j$ 张成 $M$ 作为 $K$-空间；若
+\[
+ \sum_{i,j} a_{ij}e_if_j=0,\qquad a_{ij}\in K,
+\]
+把它看作关于 $f_j$ 的 $L$-线性关系，得每个 $\sum_i a_{ij}e_i=0$，再由 $e_i$ 的线性无关性得 $a_{ij}=0$。
+\end{proof}
+
+\begin{corollary}
+若 $\alpha,\beta$ 都对 $K$ 代数，则 $K(\alpha,\beta)/K$ 有限，因此仍为代数扩张。
+\end{corollary}
+
+\begin{proof}
+有 $[K(\alpha,\beta):K]\le [K(\alpha,\beta):K(\alpha)][K(\alpha):K]$，每一项都有限。
+\end{proof}
+
+\begin{proposition}
+若 $L/K$ 为代数扩张，$\alpha\in L$，则 $K(\alpha)=K[\alpha]$。
+\end{proposition}
+
+\begin{proof}
+由最小多项式关系，$\alpha$ 满足首一方程
+\[
+ \alpha^n+a_{n-1}\alpha^{n-1}+\cdots+a_0=0,
+\qquad a_0\ne 0,
+\]
+故 $\alpha^{-1}$ 是 $1,\alpha,\dots,\alpha^{n-1}$ 的 $K$-线性组合，于是 $K[\alpha]$ 对乘法与取逆封闭。
+\end{proof}
+
+\section{分裂域}
+
+许多问题并不只关心某一个根，而是关心一个多项式的全部根。于是出现分裂域。
+
+\begin{definition}
+设 $f(x)\in K[x]$。若域扩张 $L/K$ 满足：
+\begin{enumerate}[label=(\roman*)]
+\item $f$ 在 $L[x]$ 中分解为一次因子的乘积；
+\item $L$ 由 $f$ 的全部根生成，
+\end{enumerate}
+则称 $L$ 是 $f$ 在 $K$ 上的 \emph{分裂域}。
+\end{definition}
+
+\begin{theorem}[存在性]
+任意非零多项式 $f\in K[x]$ 都存在分裂域。
+\end{theorem}
+
+\begin{proof}[证明思路]
+对 $\deg f$ 归纳。若 $f$ 已完全分裂则取 $L=K$。否则令 $p$ 为一个不可约因子，取一根 $\alpha$ 在某扩域中，使 $K(\alpha)\cong K[x]/(p)$。在 $K(\alpha)$ 上，$f$ 至少少一个不可约因子，再归纳即可。
+\end{proof}
+
+\begin{theorem}[唯一性到同构]
+若 $L_1,L_2$ 都是 $f\in K[x]$ 在 $K$ 上的分裂域，则存在保持 $K$ 上元素不变的域同构 $L_1\cong L_2$。
+\end{theorem}
+
+\begin{proof}[证明思路]
+把 $L_1$ 写成由若干根逐次生成的简单扩张，用最小多项式在另一分裂域中也有根这一事实逐步延拓同构，最终得到全体同构。
+\end{proof}
+
+\begin{example}
+$x^3-2$ 在 $\Q$ 上的分裂域为 $\Q(\sqrt[3]{2},\omega)$，其扩张度为 $6$：先有 $[\Q(\sqrt[3]{2}):\Q]=3$，再 adjoin $\omega$ 给出一个二次扩张。
+\end{example}
+
+\section{有限域}
+
+有限域是后续 Galois 理论最干净的实验场，也是模形式模 $\ell$ 约化后自然出现的系数域。
+
+\begin{theorem}
+有限域的特征必为素数 $p$，且其元素个数必为 $p^n$ 的形式。
+\end{theorem}
+
+\begin{proof}
+有限域的素域不可能同构于 $\Q$，故只能是 $\F_p$。于是整个域是有限维 $\F_p$-向量空间，元素个数为 $p^n$。
+\end{proof}
+
+\begin{theorem}[有限域的存在与唯一性]
+对任意素数幂 $q=p^n$，存在唯一（到同构）含 $q$ 个元素的域，记为 $\F_q$。
+\end{theorem}
+
+\begin{proof}[证明思路]
+考虑多项式 $x^{q}-x\in \F_p[x]$。其在某分裂域中的全部根构成一个域，且恰有 $q$ 个元素，记为 $\F_q$。若 $E$ 是任意含 $q$ 个元素的域，则每个元素满足 $x^q-x=0$，故 $E$ 正是该多项式的根集，从而唯一。
+\end{proof}
+
+\begin{theorem}
+有限域 $\F_q^\times$ 是循环群。
+\end{theorem}
+
+\begin{proof}[证明要点]
+设 $n=q-1$。对每个 $d\mid n$，方程 $x^d=1$ 在域中最多有 $d$ 个根。由有限阿贝尔群结构，乘法群是若干循环群直和；若不是循环的，则某个 $d$ 会导致方程根数过多，矛盾。故必须循环。
+\end{proof}
+
+\begin{definition}
+在特征 $p$ 的域上，映射
+\[
+ \Frob_p:L\to L,\qquad a\mapsto a^p
+\]
+称为 \emph{Frobenius 映射}。
+\end{definition}
+
+\begin{proposition}
+在有限域 $\F_q$ 上，Frobenius 是自同构；其在 $\F_{q^n}/\F_q$ 中生成整个 Galois 群。
+\end{proposition}
+
+\begin{proof}
+由 Freshman dream，$(a+b)^q=a^q+b^q$，故 $a\mapsto a^q$ 为域同态；在有限集合上单射即满射。对 $\F_{q^n}$ 中元素有 $a^{q^n}=a$，故 $\Frob_q^n=\Id$；其不动域恰为 $\F_q$。
+\end{proof}
+
+\section{代数闭包}
+
+\begin{definition}
+域 $\Omega$ 称为 \emph{代数闭域}，若任意非常数多项式在 $\Omega[x]$ 中都有根；等价地，每个多项式都完全分裂。
+\end{definition}
+
+\begin{theorem}[存在性，叙述]
+每个域 $K$ 都嵌入某个代数闭域 $\overline K$ 中，且 $\overline K/K$ 代数；称 $\overline K$ 为 $K$ 的代数闭包，它在同构意义下唯一。
+\end{theorem}
+
+\begin{example}
+$\C$ 是 $\R$ 的代数闭包。事实上，代数学基本定理说明 $\C$ 代数闭，而 $\C/\R$ 代数且任一复数都可写为 $a+bi$。
+\end{example}
+
+\begin{remark}
+$\overline \Q$ 表示所有对 $\Q$ 代数的复数组成的域。它不是完备域，但在代数数论与模形式中是最自然的“总环境”。
+\end{remark}
+
+\section{可分扩张}
+
+\begin{definition}
+设 $f\in K[x]$。若在某个分裂域中 $f$ 没有重根，则称 $f$ \emph{可分}。等价地，$\gcd(f,f')=1$。
+\end{definition}
+
+\begin{proposition}
+不可约多项式 $f\in K[x]$ 可分，当且仅当 $f'\ne 0$。特别地，在特征 $0$ 域上所有不可约多项式都可分。
+\end{proposition}
+
+\begin{proof}
+若不可约 $f$ 与 $f'$ 有公共因子，则必有 $f\mid f'$。但 $\deg f'<\deg f$，除非 $f'=0$ 不可能。反过来若 $f'=0$，则在特征 $p$ 下 $f(x)=g(x^p)$，必有重根。
+\end{proof}
+
+\begin{definition}
+域 $K$ 称为 \emph{完美域}，若其每个代数扩张都可分。特征 $0$ 域与有限域都是完美域。
+\end{definition}
+
+\begin{proof}[有限域完美性的说明]
+设 $K=\F_q$，若 $f\in K[x]$ 不可约，则其根都在某个有限扩张中，而 Frobenius $x\mapsto x^q$ 在该扩张上是自同构，不能把一个根“压扁”为重根；等价地，有限域中每个元素都有 $p$ 次根，因此 Frobenius 为双射，故一切代数扩张可分。
+\end{proof}
+
+\section{模形式 Fourier 系数的代数性质}
+
+域扩张在模形式中的第一个入口，是 Hecke 特征值常常生成有限扩张域。
+
+\begin{theorem}[数域系数定理，基本形式]
+设
+\[
+ f(q)=\sum_{n\ge 1} a_n q^n\in \Sk_k(\GammaO(N))
+\]
+是归一化 Hecke 特征形式，即对每个 $(n,N)=1$ 有 $T_n f=a_n f$ 且 $a_1=1$。则所有 Hecke 特征值 $a_n$ 都是代数数，并且它们生成的域
+\[
+ K_f:=\Q(a_n:n\ge 1)
+\]
+是一个有限扩张域，即数域。
+\end{theorem}
+
+\begin{proof}[证明思路]
+空间 $\Sk_k(\GammaO(N))$ 是有限维复向量空间，而 Hecke 算子 $T_n$ 在某个整基下由整数矩阵表示，因此其特征值都是整系数特征多项式的根，从而是代数数。又该空间维数有限，可交换 Hecke 代数嵌入有限维代数，故由有限多个特征值即可生成全部特征值域，从而 $K_f/\Q$ 有限。
+\end{proof}
+
+\begin{remark}
+这一定理告诉我们：模形式中的“系数”并不漂浮在整个 $\C$ 中，而是落在很具体的数域里。后续的 $\ell$ 进与模 $\ell$ Galois 表示正是从这些数域出发构造的。
+\end{remark}
+
+\begin{example}
+Ramanujan 的 $\Delta$ 函数是权 $12$ 的归一化 cusp form，满足
+\[
+ \Delta(q)=q-24q^2+252q^3-1472q^4+\cdots.
+\]
+其 Fourier 系数 $\tau(n)$ 全为整数，因此其系数域就是 $\Q$。但一般新形式的系数域常常是真正的非平凡数域。
+\end{example}
+
+\section*{习题}
+
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 证明 $\C/\R$ 的扩张度是 $2$。
+\item \basic 证明 $\Q(\sqrt5)/\Q$ 的扩张度是 $2$。
+\item \basic 证明有限扩张一定代数。
+\item \basic 判断 $\pi$ 对 $\Q$ 是代数还是超越。
+\item \basic 设 $\alpha=\sqrt2$，求其在 $\Q$ 上的最小多项式。
+\item \basic 设 $\alpha=\sqrt[3]{2}$，求其在 $\Q$ 上的最小多项式。
+\item \basic 设 $\omega=e^{2\pi i/3}$，求其在 $\Q$ 上的最小多项式。
+\item \basic 证明代数元的最小多项式唯一。
+\item \basic 证明最小多项式必不可约。
+\item \basic 证明 $K(\alpha)\cong K[x]/(m_{\alpha,K})$。
+\item \basic 写出 $\Q(\sqrt2)$ 的一组 $\Q$-基。
+\item \basic 写出 $\Q(\sqrt2+\sqrt3)$ 的一个可能基。
+\item \basic 证明塔律 $[M:K]=[M:L][L:K]$。
+\item \basic 设 $[L:K]=5$ 且 $[M:L]=3$，求 $[M:K]$。
+\item \basic 设 $f(x)=x^2-2$，求其在 $\Q$ 上的分裂域。
+\item \basic 设 $f(x)=x^3-2$，写出其在 $\Q$ 上的分裂域生成元。
+\item \basic 证明有限域的特征是素数。
+\item \basic 证明含 $q$ 个元素的有限域是 $\F_p$ 上有限维向量空间。
+\item \basic 证明有限域的元素个数必为 $p^n$。
+\item \basic 求 $\F_4^\times$ 的阶。
+\item \basic 求 $\F_9^\times$ 的阶。
+\item \basic 证明 Frobenius 映射 $x\mapsto x^p$ 在特征 $p$ 域上是环同态。
+\item \basic 证明 $x^q-x$ 在 $\F_q$ 的每个元素处都为零。
+\item \basic 说明为什么 $\C$ 是 $\R$ 的代数闭包。
+\item \basic 证明特征 $0$ 域上的不可约多项式都可分。
+\item \basic 设 $f(x)=x^p-a$ 在特征 $p$ 域上，求其导数。
+\item \basic 写出 $\Q(\sqrt2,\sqrt3)$ 相对于 $\Q$ 的一组基。
+\item \basic 求 $[\Q(\sqrt2,\sqrt3):\Q]$。
+\item \basic 说明 Hecke 特征值为什么至少应当是代数数而不是任意复数。
+\item \basic 设新形式的所有 Fourier 系数都在 $\Q$ 中，说明其系数域是什么。
+\end{enumerate}
+
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 证明若 $\alpha$ 对 $K$ 代数，则 $K[\alpha]=K(\alpha)$。
+\item \medium 求 $\alpha=1+\sqrt2$ 在 $\Q$ 上的最小多项式。
+\item \medium 求 $\alpha=\sqrt2+\sqrt3$ 在 $\Q$ 上的最小多项式。
+\item \medium 设 $\alpha=\sqrt[4]{2}$，求 $[\Q(\alpha):\Q]$。
+\item \medium 设 $L=\Q(\sqrt2,\sqrt5)$，求 $[L:\Q]$。
+\item \medium 设 $f(x)=x^4-5$，求其在 $\Q$ 上的分裂域以及扩张度。
+\item \medium 设 $f(x)=x^4+1$，求其在 $\Q$ 上的分裂域。
+\item \medium 证明分裂域在同构意义下唯一。
+\item \medium 设 $E$ 为含 $16$ 个元素的域，证明其乘法群是循环群并给出阶。
+\item \medium 证明 $\F_{q^n}$ 恰是方程 $x^{q^n}-x=0$ 在代数闭包中的根集。
+\item \medium 证明 $\F_q^\times$ 的生成元个数为 $\varphi(q-1)$。
+\item \medium 设 $p$ 为素数，证明 $x^{p^n}-x$ 在 $\F_p$ 上无重根。
+\item \medium 证明有限域都是完美域。
+\item \medium 设 $K$ 为特征 $p$ 域，证明不可约多项式若不可分，则形如 $g(x^p)$。
+\item \medium 判断 $x^4-2$ 在 $\Q$ 上是否可分，并求其分裂域度数。
+\item \medium 设 $\alpha$ 的最小多项式次数为 $d$，证明 $1,\alpha,\dots,\alpha^{d-1}$ 线性无关。
+\item \medium 证明若 $L/K$ 与 $M/L$ 都代数，则 $M/K$ 代数。
+\item \medium 设 $f\in K[x]$ 为可分多项式，证明其任意因子也可分。
+\item \medium 设 $f\in K[x]$ 首一不可约，证明 $K[x]/(f)$ 的确是域。
+\item \medium 设 $K_f=\Q(a_n:n\ge1)$ 为 Hecke 特征形式的系数域，解释为什么它一定是有限生成的 $\Q$-代数，进而是数域。
+\end{enumerate}
+
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 设 $\alpha=\sqrt2+\sqrt5$，求 $\Q(\alpha)$ 与 $\Q(\sqrt2,\sqrt5)$ 是否相等，并说明理由。
+\item \hard 设 $f(x)=x^6-2$，求其在 $\Q$ 上的分裂域以及扩张度。
+\item \hard 证明：任一有限域的任一有限扩张仍是有限域，而且次数相乘。
+\item \hard 设 $K\subseteq L$ 为有限域扩张，证明 $L$ 中每个元素都满足 $x^{|L|}-x=0$。
+\item \hard 设 $f(x)=x^{p^n}-x$。证明它在任意包含 $\F_{p^n}$ 的域中分裂且导数恒为 $-1$。
+\item \hard 设 $K$ 为特征 $p$ 域。证明 $K$ 完美当且仅当 Frobenius 映射 $x\mapsto x^p$ 为满射。
+\item \hard 设 $L/K$ 有限且由一个可分多项式的所有根生成。证明 $L/K$ 可嵌入到某个代数闭包中的不同 $K$-嵌入数至多为 $[L:K]$，且等号成立当且仅当 $L/K$ 可分。
+\item \hard 设 $f$ 是归一化 Hecke 特征形式。证明若某一组 Hecke 算子 $T_{n_1},\dots,T_{n_r}$ 生成 Hecke 代数，则 $K_f=\Q(a_{n_1},\dots,a_{n_r})$。
+\item \hard 设 $K=\F_p(t)$，证明多项式 $x^p-t$ 在 $K[x]$ 中不可约但不可分。
+\item \hard 证明：若 $\alpha$ 与 $\beta$ 分别对 $K$ 代数，则 $K(\alpha+\beta)$ 与 $K(\alpha\beta)$ 仍是有限扩张，但一般不足以恢复 $K(\alpha,\beta)$；请给出例子。
+\end{enumerate}
+
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} $1,i$ 张成 $\C$ 作为 $\R$-向量空间，且若 $a+bi=0$，则 $a=b=0$，故它们线性无关，所以 $[\C:\R]=2$。
+\item \textbf{解答.} $1,\sqrt5$ 张成 $\Q(\sqrt5)$。若 $a+b\sqrt5=0$ 且 $a,b\in\Q$，则 $\sqrt5=-a/b\in\Q$ 矛盾，故线性无关。于是扩张度为 $2$。
+\item \textbf{解答.} 若 $[L:K]=n$，则对任意 $\alpha\in L$，$1,\alpha,\dots,\alpha^n$ 线性相关，从而 $\alpha$ 满足非零多项式，故代数。
+\item \textbf{解答.} $\pi$ 对 $\Q$ 是超越元。这是 Lindemann 定理的著名结论。
+\item \textbf{解答.} $\sqrt2$ 满足 $x^2-2=0$，而 $x^2-2$ 在 $\Q$ 上无有理根，故不可约，所以最小多项式是 $x^2-2$。
+\item \textbf{解答.} $\sqrt[3]{2}$ 满足 $x^3-2=0$。由 Eisenstein 判别法（素数 $2$）知 $x^3-2$ 在 $\Q$ 上不可约，故为最小多项式。
+\item \textbf{解答.} $\omega^2+\omega+1=0$ 且 $\omega\ne1$，故最小多项式为 $x^2+x+1$。
+\item \textbf{解答.} 若 $m,n$ 都是首一且次数最小的多项式并满足 $m(\alpha)=n(\alpha)=0$，则 $m-n$ 次数更小且也在 $\alpha$ 处为零，只能为零，所以 $m=n$。
+\item \textbf{解答.} 若最小多项式 $m=fg$ 可约，则 $0=f(\alpha)g(\alpha)$，从而某一因子在 $\alpha$ 处为零，次数更小，矛盾。
+\item \textbf{解答.} 评价映射 $K[x]\to K(\alpha)$ 的核是所有以 $\alpha$ 为根的多项式，即主理想 $(m_{\alpha,K})$。像为 $K[\alpha]=K(\alpha)$，由同构定理得结论。
+\item \textbf{解答.} 一组基为 $1,\sqrt2$。
+\item \textbf{解答.} 可取 $1,\sqrt2,\sqrt3,\sqrt6$。它们确实张成 $\Q(\sqrt2,\sqrt3)$，而 $\sqrt2+\sqrt3$ 属于该域并可由其生成整个域。
+\item \textbf{解答.} 见正文证明：取 $L/K$ 基 $e_i$ 与 $M/L$ 基 $f_j$，则 $e_if_j$ 构成 $M/K$ 基，故维数相乘。
+\item \textbf{解答.} $[M:K]=[M:L][L:K]=3\cdot5=15$。
+\item \textbf{解答.} 两根为 $\pm\sqrt2$，故分裂域就是 $\Q(\sqrt2)$。
+\item \textbf{解答.} 三个根为 $\sqrt[3]{2},\omega\sqrt[3]{2},\omega^2\sqrt[3]{2}$，故分裂域为 $\Q(\sqrt[3]{2},\omega)$。
+\item \textbf{解答.} 域的特征若不是 $0$ 就是素数；有限域不可能含同构于 $\Q$ 的无限素域，因此特征只能是素数 $p$。
+\item \textbf{解答.} 有限域 $E$ 含其素域 $\F_p$，故 $E$ 是 $\F_p$-向量空间；因为 $E$ 有限，所以维数有限。
+\item \textbf{解答.} 若 $\dim_{\F_p}E=n$，则每个坐标有 $p$ 种选择，总元素数为 $p^n$。
+\item \textbf{解答.} $|\F_4^\times|=4-1=3$。
+\item \textbf{解答.} $|\F_9^\times|=9-1=8$。
+\item \textbf{解答.} 在特征 $p$ 下，$(a+b)^p=a^p+b^p$，且 $(ab)^p=a^pb^p$，故是环同态。
+\item \textbf{解答.} 对 $a\in \F_q^\times$，乘法群阶为 $q-1$，故 $a^{q-1}=1$，于是 $a^q=a$；对 $a=0$ 也显然。
+\item \textbf{解答.} 代数学基本定理说明 $\C$ 代数闭；而 $\C/\R$ 是二次代数扩张，所以 $\C$ 是 $\R$ 的代数闭包。
+\item \textbf{解答.} 特征 $0$ 域中若不可约 $f$ 有重根，则 $f$ 与 $f'$ 有公共因子。但 $f'\ne0$ 且次数更低，这与不可约性矛盾，故可分。
+\item \textbf{解答.} $f'(x)=px^{p-1}=0$，因为特征是 $p$。
+\item \textbf{解答.} 一组基为 $1,\sqrt2,\sqrt3,\sqrt6$。
+\item \textbf{解答.} 由上一题的四个元素线性无关，得扩张度为 $4$。
+\item \textbf{解答.} Hecke 算子在有限维空间上由代数矩阵表示，其特征值是整系数特征多项式的根，因此是代数数，不可能是任意超越复数。
+\item \textbf{解答.} 若所有 $a_n\in \Q$，则系数域 $K_f=\Q(a_n:n\ge1)=\Q$。
+\item \textbf{解答.} 设最小多项式为 $m(x)=x^d+a_{d-1}x^{d-1}+\cdots+a_0$ 且 $a_0\ne0$，则
+$\alpha^{-1}=-(a_0^{-1})(\alpha^{d-1}+a_{d-1}\alpha^{d-2}+\cdots+a_1)$，故 $K[\alpha]$ 对取逆封闭，因而等于 $K(\alpha)$。
+\item \textbf{解答.} 令 $\alpha=1+\sqrt2$，则 $(\alpha-1)^2=2$，即 $\alpha^2-2\alpha-1=0$。该二次多项式无有理根，故最小多项式是 $x^2-2x-1$。
+\item \textbf{解答.} 设 $\alpha=\sqrt2+\sqrt3$，则 $\alpha^2=5+2\sqrt6$，故 $(\alpha^2-5)^2=24$，化简得 $\alpha^4-10\alpha^2+1=0$。该多项式在 $\Q$ 上不可约，故为最小多项式。
+\item \textbf{解答.} $x^4-2$ 由 Eisenstein（素数 $2$）不可约，因此次数为 $4$，即 $[\Q(\sqrt[4]{2}):\Q]=4$。
+\item \textbf{解答.} 先有 $[\Q(\sqrt2):\Q]=2$。因为 $\sqrt5\notin \Q(\sqrt2)$，再扩一次二次，故总次数为 $4$。
+\item \textbf{解答.} 根为 $\pm\sqrt[4]{5},\pm i\sqrt[4]{5}$，故分裂域为 $\Q(\sqrt[4]{5},i)$。前者次数为 $4$，且 $i$ 不在实域中，故总度数为 $8$。
+\item \textbf{解答.} $x^4+1$ 的根是 $\zeta_8,\zeta_8^3,\zeta_8^5,\zeta_8^7$，故分裂域为 $\Q(\zeta_8)=\Q(i,\sqrt2)$。
+\item \textbf{解答.} 逐个根延拓 $K$-嵌入即可。因为两个分裂域都由同一多项式的根生成，所以可以把一边的生成根送到另一边对应的根，最终得到同构。
+\item \textbf{解答.} $|E^\times|=15$。由有限域乘法群循环性，$E^\times\cong \Z/15\Z$。
+\item \textbf{解答.} 由有限域中每个元素满足 $a^{q^n}=a$，所以 $\F_{q^n}$ 中元素都是该方程根。反过来，方程在任意域中至多有 $q^n$ 个根，因此根集恰为该有限域。
+\item \textbf{解答.} 若 $\F_q^\times$ 为阶 $q-1$ 的循环群，则其生成元即原根个数为 Euler 函数 $\varphi(q-1)$。
+\item \textbf{解答.} 导数为 $p^n x^{p^n-1}-1=-1$，所以与原多项式互素，无重根。
+\item \textbf{解答.} 在有限域中 Frobenius 是双射，因此每个元素都是某个元素的 $p$ 次方。于是不可约多项式不可能出现 $f'=0$ 而不可分的现象，故有限域完美。
+\item \textbf{解答.} 若不可约 $f$ 不可分，则 $f'=0$。特征 $p$ 下这等价于所有指数均为 $p$ 的倍数，所以 $f(x)=g(x^p)$。
+\item \textbf{解答.} 在特征 $0$ 下当然可分。分裂域由 $\sqrt[4]{2}$ 与 $i$ 生成，度数如第 36 题相同为 $8$。
+\item \textbf{解答.} 若有关系 $\sum_{j=0}^{d-1}a_j\alpha^j=0$，则得到一个次数小于 $d$ 的非零多项式以 $\alpha$ 为根，矛盾。
+\item \textbf{解答.} 任取 $\gamma\in M$。它对 $L$ 代数，故满足某个 $L$ 系数多项式；这些系数又都对 $K$ 代数。把各系数所在有限扩张并入，可得 $\gamma$ 落在某个有限扩张中，于是对 $K$ 代数。
+\item \textbf{解答.} 若 $f=gh$ 且 $f$ 可分，则 $f$ 与 $f'$ 互素。若 $g$ 不可分，则 $g$ 与 $g'$ 有公共根，也会成为 $f$ 的重根，矛盾。
+\item \textbf{解答.} 因为 $f$ 不可约，所以理想 $(f)$ 极大。主理想整环中由不可约生成的理想在 PID 中极大，故商环是域。
+\item \textbf{解答.} Hecke 代数作用在有限维复空间上，因此作为 $\Q$-代数嵌入某个有限维矩阵代数。有限维交换代数由有限个算子生成，其特征值也只需有限多个即可决定，所以 $K_f$ 是有限生成代数且每个生成元代数，于是是数域。
+\item \textbf{解答.} 设 $\alpha=\sqrt2+\sqrt5$。由共轭可得 $\sqrt2=(\alpha^2-7)/(2\sqrt5)$，更直接地，从四个共轭值可算出最小多项式 $x^4-14x^2+9$，其根能恢复 $\sqrt2,\sqrt5$。因此 $\Q(\alpha)=\Q(\sqrt2,\sqrt5)$。
+\item \textbf{解答.} 六个根为 $\zeta_6^k\sqrt[6]{2}$。分裂域为 $\Q(\sqrt[6]{2},\zeta_6)=\Q(\sqrt[6]{2},\omega)$。因 $x^6-2$ 由 Eisenstein 不可约，先得次数 $6$；再 adjoining $\omega$ 给二次扩张，且不在实子域中，故总次数为 $12$。
+\item \textbf{解答.} 若 $|K|=q$、$[L:K]=n$，则 $L$ 是 $K$ 上 $n$ 维向量空间，故 $|L|=q^n$，于是仍是有限域。次数相乘即塔律。
+\item \textbf{解答.} 乘法群 $L^\times$ 阶为 $|L|-1$，故对 $a\ne0$ 有 $a^{|L|-1}=1$，从而 $a^{|L|}=a$；零元也满足，故全部元素满足该方程。
+\item \textbf{解答.} 在包含 $\F_{p^n}$ 的域中，$\F_{p^n}$ 每个元素都满足方程，而方程次数正是 $p^n$，故全部根恰为 $\F_{p^n}$。导数为 $p^n x^{p^n-1}-1=-1$。
+\item \textbf{解答.} 若 Frobenius 满射，则每个 $a\in K$ 有 $a=b^p$，从而特征 $p$ 下所有不可约多项式都不可能是 $g(x^p)$ 型，故可分；反之若 $K$ 完美，则对任意 $a$，多项式 $x^p-a$ 必可分，故有根，Frobenius 满射。
+\item \textbf{解答.} 不同 $K$-嵌入由生成元像决定，而每个生成元像必须是其最小多项式的根，所以个数至多是度数乘积，进而至多 $[L:K]$。若 $L/K$ 可分，则可逐步选择互异根延拓嵌入并达到上界；反之若有重根则达不到。
+\item \textbf{解答.} 若 $T_{n_1},\dots,T_{n_r}$ 生成 Hecke 代数，则任意 $T_n$ 都是它们的有理多项式表达。对特征形式 $f$，有 $T_n f=a_nf$，因此 $a_n$ 是 $a_{n_1},\dots,a_{n_r}$ 的同一有理多项式值，故 $K_f=\Q(a_{n_1},\dots,a_{n_r})$。
+\item \textbf{解答.} 在 $K=\F_p(t)$ 中，若 $x^p-t$ 可约，则它有一次因子，等价于 $t$ 是某个元素的 $p$ 次方。但分式域中次数比较表明 $t\notin K^p$，故不可约。其导数为 $0$，故不可分。
+\item \textbf{解答.} $\alpha+\beta$ 与 $\alpha\beta$ 都属于有限扩张 $K(\alpha,\beta)$，所以各自生成的域都是有限扩张。但它们一般不能恢复全域，例如取 $\beta=-\alpha\ne0$，则 $K(\alpha+\beta)=K$，显然不足以恢复 $K(\alpha)$；又可取 $\alpha=\sqrt2,\beta=-\sqrt2$ 作为具体例子。
+\end{enumerate}

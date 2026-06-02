@@ -1,0 +1,497 @@
+\chapter{线性映射}
+
+本章讨论向量空间之间保持加法与数乘结构的映射。 本章的主角始终是线性映射本身，而不是任何特定坐标系中的数组。 矩阵只是在选定基以后对线性映射进行记录的一种方式。
+本章的中心结果是秩--零化度定理：它揭示了零空间与值域的维数如何共同控制一个线性映射。
+
+\section{线性映射的定义与例子}
+
+\begin{definition} 设 $V,W$ 是定义在同一数域 $\F$ 上的向量空间。 映射 $T:V\to W$ 称为\emph{线性映射}，如果对任意
+$u,v\in V$ 与任意标量 $a\in\F$，都有 \[ T(u+v)=T(u)+T(v),\qquad T(av)=aT(v). \] 全体从 $V$ 到 $W$
+的线性映射记作 $\Lmap(V,W)$。 \end{definition}
+
+上面的两个条件分别说明：线性映射保持加法，线性映射保持数乘。 把这两个条件合在一起，也可以写成 \[ T(av+bw)=aT(v)+bT(w) \] 对任意 $v,w\in
+V$ 与任意 $a,b\in\F$ 都成立。 这正是线性映射最常用的检验方式。
+
+\begin{example} 设 $V=W=\R^2$，定义 \[ T(x,y)=(x+2y,3x-y). \] 对任意
+$(x_1,y_1),(x_2,y_2)\in\R^2$，有 \[ T\bigl((x_1,y_1)+(x_2,y_2)\bigr) =T(x_1+x_2,y_1+y_2)
+=(x_1+2y_1,3x_1-y_1)+(x_2+2y_2,3x_2-y_2), \] 故 $T(u+v)=T(u)+T(v)$。 再对任意 $a\in\R$，有 \[
+T\bigl(a(x,y)\bigr)=T(ax,ay)=(ax+2ay,3ax-ay)=a(x+2y,3x-y)=aT(x,y). \] 因此
+$T\in\Lmap(\R^2,\R^2)$。 \end{example}
+
+\begin{example} 设 $S:\R^2\to\R$ 定义为 \[ S(x,y)=x+y+1. \] 则 \[ S(0,0)=1\neq 0. \]
+任何线性映射都必须满足 $T(0)=0$，因为 \[ T(0)=T(0+0)=T(0)+T(0), \] 从而 $T(0)=0$。 故 $S$ 不是线性映射。
+这个例子说明：带有常数项的表达式通常不是线性的。 \end{example}
+
+\begin{definition} 设 $V,W$ 是向量空间。 把每个向量都送到 $0\in W$ 的映射称为从 $V$ 到 $W$ 的\emph{零映射}，记作 $0$。
+当 $V=W$ 时，把每个向量 $v$ 送到自身的映射称为 $V$ 上的\emph{恒等映射}，记作 $\Id$。 \end{definition}
+
+\begin{proposition} 零映射与恒等映射都是线性映射。 \end{proposition}
+
+\begin{proof} 对零映射，有 \[ 0(u+v)=0=0+0=0(u)+0(v),\qquad 0(av)=0=a0(v). \] 故零映射线性。 对恒等映射，有
+\[ \Id(u+v)=u+v=\Id(u)+\Id(v),\qquad \Id(av)=av=a\Id(v). \] 故恒等映射也线性。 \end{proof}
+
+\begin{example} 设 $V=\poly(\R)$ 为实系数多项式空间。 定义微分算子 $D:\poly(\R)\to\poly(\R)$ 为 $Dp=p'$。
+对任意多项式 $p,q$ 与标量 $a$，有 \[ D(p+q)=(p+q)'=p'+q'=Dp+Dq, \] 以及 \[ D(ap)=(ap)'=ap'=aDp. \]
+故微分是线性映射。 例如 \[ D(x^4-3x^2+7)=4x^3-6x. \] \end{example}
+
+\begin{example} 设 $I:\poly(\R)\to\poly(\R)$ 定义为 \[ (Ip)(x)=\int_0^x p(t)\,dt. \] 对任意多项式
+$p,q$ 与标量 $a$，利用积分对被积函数的线性，有 \[ I(p+q)(x)=\int_0^x (p(t)+q(t))\,dt=(Ip)(x)+(Iq)(x), \]
+以及 \[ I(ap)(x)=\int_0^x ap(t)\,dt=a(Ip)(x). \] 故积分算子 $I$ 线性。 例如当 $p(x)=1+2x$ 时， \[
+(Ip)(x)=\int_0^x (1+2t)\,dt=x+x^2. \] \end{example}
+
+\begin{example} 设 $P:\R^3\to\R^3$ 定义为 \[ P(x,y,z)=(x,y,0). \] 它把每个向量投影到 $xy$ 平面上。 容易验证
+\[ P(u+v)=P(u)+P(v),\qquad P(av)=aP(v), \] 所以 $P$ 是线性映射。 这个例子表明，几何中的投影常常是线性的。
+\end{example}
+
+\begin{remark} 检验线性时，最容易遗漏的是常数项与平移项。 例如 $v\mapsto v+u_0$ 一般不是线性映射，除非 $u_0=0$。
+相反，只要一个映射由向量的线性组合构成，就往往是线性的。 \end{remark}
+
+\section{线性映射的空间}
+
+本节说明：线性映射本身也能组成向量空间。 这使得我们不仅能研究单个映射，也能研究映射之间的代数运算。
+
+\begin{definition} 设 $S,T\in\Lmap(V,W)$，标量 $a\in\F$。 定义 $S+T:V\to W$ 与 $aT:V\to W$ 为 \[
+(S+T)(v)=S(v)+T(v),\qquad (aT)(v)=aT(v). \] \end{definition}
+
+\begin{theorem} 设 $V,W$ 是向量空间，则 $\Lmap(V,W)$ 在上述加法与数乘下构成一个向量空间。 \end{theorem}
+
+\begin{proof} 先证封闭性。 若 $S,T\in\Lmap(V,W)$，则对任意 $u,v\in V$， \[
+(S+T)(u+v)=S(u+v)+T(u+v)=S(u)+S(v)+T(u)+T(v)=(S+T)(u)+(S+T)(v). \] 又对任意 $a\in\F$， \[
+(S+T)(av)=S(av)+T(av)=aS(v)+aT(v)=a(S+T)(v). \] 故 $S+T$ 线性。 类似地，若 $b\in\F$，则 \[
+(bT)(u+v)=bT(u+v)=bT(u)+bT(v),\qquad (bT)(av)=bT(av)=baT(v)=a(bT)(v), \] 故 $bT$ 线性。
+因此运算封闭。
+
+再验证向量空间公理。 这些公理逐点来自 $W$ 的向量空间公理。 例如对任意 $R,S,T\in\Lmap(V,W)$ 与 $v\in V$， \[
+((R+S)+T)(v)=(R+S)(v)+T(v)=R(v)+S(v)+T(v)=R(v)+(S+T)(v)=(R+(S+T))(v), \] 故加法结合律成立。
+同理可得交换律、零元存在、加法逆元存在、数乘分配律、数乘结合律与单位元性质。 其中零元正是零映射，$T$ 的加法逆元为 $(-1)T$。 于是 $\Lmap(V,W)$
+是向量空间。 \end{proof}
+
+\begin{definition} 若 $T\in\Lmap(V,W)$ 且 $S\in\Lmap(W,U)$，则复合映射 $ST:V\to U$ 定义为 \[
+(ST)(v)=S(T(v)). \] \end{definition}
+
+\begin{proposition} 复合保持线性：若 $T\in\Lmap(V,W)$，$S\in\Lmap(W,U)$，则 $ST\in\Lmap(V,U)$。
+\end{proposition}
+
+\begin{proof} 对任意 $u,v\in V$，有 \[
+(ST)(u+v)=S(T(u+v))=S(T(u)+T(v))=S(T(u))+S(T(v))=(ST)(u)+(ST)(v). \] 对任意 $a\in\F$，有 \[
+(ST)(av)=S(T(av))=S(aT(v))=aS(T(v))=a(ST)(v). \] 故 $ST$ 线性。 \end{proof}
+
+\begin{proposition} 复合满足结合律。 若 $R\in\Lmap(U,X)$，$S\in\Lmap(W,U)$，$T\in\Lmap(V,W)$，则 \[
+(RS)T=R(ST). \] 若还假设定义域与值域适合，则 \[ \Id\,T=T,\qquad T\Id=T. \] \end{proposition}
+
+\begin{proof} 对任意 $v\in V$，有 \[ ((RS)T)(v)=(RS)(T(v))=R(S(T(v)))=R((ST)(v))=(R(ST))(v),
+\] 故 $(RS)T=R(ST)$。 恒等映射的性质由 \[ (\Id\,T)(v)=\Id(T(v))=T(v),\qquad
+(T\Id)(v)=T(\Id(v))=T(v) \] 立即得到。 \end{proof}
+
+\begin{example} 在 $\poly(\R)$ 上，设 $D$ 为微分，$I$ 为从 $0$ 到 $x$ 的积分。 对任意
+$p\in\poly(\R)$，由微积分基本定理可得 \[ (DI)p=D(Ip)=\frac{d}{dx}\int_0^x p(t)\,dt=p. \] 因此
+$DI=\Id$。 但一般 $ID\neq\Id$，因为 \[ (ID)p(x)=\int_0^x p'(t)\,dt=p(x)-p(0). \] 例如取 $p(x)=1$，则
+$(ID)p=0\neq p$。 这说明复合通常不交换。 \end{example}
+
+\begin{example} 设 $T:\R^2\to\R^3$ 定义为 $T(x,y)=(x,y,x+y)$， 再设 $S:\R^3\to\R$ 定义为
+$S(a,b,c)=a-b+c$。 则 \[ (ST)(x,y)=S(x,y,x+y)=x-y+x+y=2x. \] 因此 $ST$ 是从 $\R^2$ 到 $\R$
+的线性映射，并且只依赖于第一个坐标。 \end{example}
+
+\begin{example} 设 $V$ 为任意向量空间，$u\in V$ 固定。 若定义 $T(v)=v+u$，则 $T$ 不是线性的，因而不属于
+$\Lmap(V,V)$，除非 $u=0$。 因此 $\Lmap(V,W)$ 这个记号只收集真正保持线性结构的映射。 \end{example}
+
+\begin{remark} 一旦把线性映射看成一个向量空间中的元素，许多熟悉的代数语言都能直接使用。 例如可以讨论线性映射的线性组合，也可以讨论它们生成的子空间。
+在后面的章节里，我们还要在 $\Lmap(V)$ 上讨论多项式。 \end{remark}
+
+\section{零空间与值域}
+
+零空间与值域描述了一个线性映射的两种最基本信息： 哪些向量被送到零，哪些向量能够作为像出现。
+
+\begin{definition} 设 $T\in\Lmap(V,W)$。 定义 $T$ 的\emph{零空间}与\emph{值域}分别为 \[ \nul T=\{v\in
+V:T(v)=0\},\qquad \range T=\{T(v):v\in V\}. \] \end{definition}
+
+\begin{proposition} 若 $T\in\Lmap(V,W)$，则 $\nul T$ 是 $V$ 的子空间，$\range T$ 是 $W$ 的子空间。
+\end{proposition}
+
+\begin{proof} 先证 $\nul T$。 显然 $0\in\nul T$，因为 $T(0)=0$。 若 $u,v\in\nul T$，则
+$T(u)=T(v)=0$，故 \[ T(u+v)=T(u)+T(v)=0+0=0, \] 所以 $u+v\in\nul T$。 若 $a\in\F$ 且 $u\in\nul
+T$，则 \[ T(au)=aT(u)=a\cdot 0=0, \] 故 $au\in\nul T$。 因此 $\nul T$ 是子空间。
+
+再证 $\range T$。 因为 $T(0)=0$，故 $0\in\range T$。 若 $x,y\in\range T$，则存在 $u,v\in V$ 使得
+$x=T(u)$，$y=T(v)$。 于是 \[ x+y=T(u)+T(v)=T(u+v)\in\range T. \] 若 $a\in\F$，则 \[
+ax=aT(u)=T(au)\in\range T. \] 故 $\range T$ 也是子空间。 \end{proof}
+
+\begin{theorem} 设 $T\in\Lmap(V,W)$。 则 $T$ 为单射，当且仅当 $\nul T=\{0\}$。 \end{theorem}
+
+\begin{proof} 先设 $T$ 为单射。 若 $v\in\nul T$，则 $T(v)=0=T(0)$。 由单射性得 $v=0$。 因此 $\nul
+T=\{0\}$。
+
+反过来，设 $\nul T=\{0\}$。 若 $T(u)=T(v)$，则 \[ 0=T(u)-T(v)=T(u-v). \] 故 $u-v\in\nul T$。 由假设得
+$u-v=0$，即 $u=v$。 因此 $T$ 为单射。 \end{proof}
+
+\begin{example} 设 $T:\R^3\to\R^2$ 定义为 \[ T(x,y,z)=(x+y,y+z). \] 求零空间。 由 $T(x,y,z)=(0,0)$
+得 \[ x+y=0,\qquad y+z=0. \] 于是 $x=-y$，$z=-y$，故 \[ \nul
+T=\{(-t,t,-t):t\in\R\}=\spn\{(-1,1,-1)\}. \] 因此零空间是一维的。 \end{example}
+
+\begin{example} 继续上例，求值域。 对任意 $(a,b)\in\R^2$，取 $(x,y,z)=(a,0,b)$，则 \[ T(a,0,b)=(a,b). \]
+故每个 $\R^2$ 中的向量都在值域中，于是 \[ \range T=\R^2. \] 这个例子说明：线性映射可以同时具有非平凡零空间与整个值域。 \end{example}
+
+\begin{example} 设微分算子 $D:\poly(\R)\to\poly(\R)$ 为 $Dp=p'$。 则 \[ \nul
+D=\{\text{常数多项式}\}=\spn\{1\}. \] 另一方面，每个多项式 $q$ 都是某个多项式的导数，因为可以取 \[ p(x)=\int_0^x
+q(t)\,dt. \] 于是 $Dp=q$，从而 \[ \range D=\poly(\R). \] 因此 $D$ 不是单射，但它是满射。 \end{example}
+
+\begin{example} 设积分算子 $I:\poly(\R)\to\poly(\R)$ 为 \[ (Ip)(x)=\int_0^x p(t)\,dt. \] 若
+$Ip=0$，则对两边求导得到 $p=0$，故 $\nul I=\{0\}$。 再看值域，由定义知每个 $(Ip)(0)=0$。 因此所有值域中的多项式在 $x=0$
+处都取值为 $0$。 反过来，若 $q(0)=0$，令 $p=q'$，则 \[ (Ip)(x)=q(x)-q(0)=q(x). \] 故 \[ \range
+I=\{q\in\poly(\R):q(0)=0\}. \] \end{example}
+
+\begin{remark} 零空间衡量了信息丢失的程度；值域衡量了输出能够覆盖多大的子空间。 秩--零化度定理正是把这两者联系起来的桥梁。 \end{remark}
+
+\section{秩--零化度定理}
+
+本节是本章的核心。 它说明：一个有限维空间上的线性映射，其零空间维数与值域维数之和恰好等于定义域维数。 这是一条关于维数的基本定理。
+它不依赖行变换，而是直接来自基与线性无关的论证。
+
+\begin{definition} 设 $T\in\Lmap(V,W)$ 且 $V$ 有限维。 定义 \[ \nullity T=\dim \nul T, \qquad
+\rank T=\dim \range T. \] 分别称为 $T$ 的\emph{零化度}与\emph{秩}。 \end{definition}
+
+\begin{theorem}[秩--零化度定理] 设 $V$ 是有限维向量空间，$W$ 是向量空间，且 $T\in\Lmap(V,W)$。 则 \[ \dim V=\dim
+\nul T+\dim \range T. \] 也就是说， \[ \dim V=\nullity T+\rank T. \] \end{theorem}
+
+\begin{proof} 设 $\dim \nul T=m$，取 $\nul T$ 的一组基 \[ u_1,\dots,u_m. \] 由于 $V$ 有限维，可把这组基扩充为
+$V$ 的一组基 \[ u_1,\dots,u_m,v_1,\dots,v_n. \] 于是 \[ \dim V=m+n. \] 我们将证明 \[
+T(v_1),\dots,T(v_n) \] 是 $\range T$ 的一组基。
+
+先证它们张成 $\range T$。 任取 $y\in\range T$，存在 $v\in V$ 使得 $y=T(v)$。 把 $v$ 按上述基展开为 \[
+v=a_1u_1+\cdots+a_mu_m+b_1v_1+\cdots+b_nv_n. \] 对 $T$ 作用得 \[
+y=T(v)=a_1T(u_1)+\cdots+a_mT(u_m)+b_1T(v_1)+\cdots+b_nT(v_n). \] 由于每个 $u_j\in\nul T$，所以
+$T(u_j)=0$。 因此 \[ y=b_1T(v_1)+\cdots+b_nT(v_n). \] 故 $T(v_1),\dots,T(v_n)$ 张成 $\range
+T$。
+
+再证它们线性无关。 设 \[ c_1T(v_1)+\cdots+c_nT(v_n)=0. \] 由线性得 \[ T(c_1v_1+\cdots+c_nv_n)=0. \] 所以
+\[ c_1v_1+\cdots+c_nv_n\in\nul T. \] 因为 $u_1,\dots,u_m$ 是 $\nul T$ 的一组基，存在标量
+$d_1,\dots,d_m$ 使得 \[ c_1v_1+\cdots+c_nv_n=d_1u_1+\cdots+d_mu_m. \] 移项得 \[
+d_1u_1+\cdots+d_mu_m-c_1v_1-\cdots-c_nv_n=0. \] 而 \[ u_1,\dots,u_m,v_1,\dots,v_n \] 是
+$V$ 的一组基，故线性无关。 于是 \[ d_1=\cdots=d_m=c_1=\cdots=c_n=0. \] 特别地，$c_1=\cdots=c_n=0$，所以
+$T(v_1),\dots,T(v_n)$ 线性无关。
+
+因此 $T(v_1),\dots,T(v_n)$ 是 $\range T$ 的一组基，故 \[ \dim \range T=n. \] 于是 \[ \dim
+V=m+n=\dim \nul T+\dim \range T. \] 定理得证。 \end{proof}
+
+\begin{corollary} 设 $V$ 有限维，$T\in\Lmap(V,W)$。 若 $T$ 为单射，则 \[ \dim \range T=\dim V. \]
+\end{corollary}
+
+\begin{proof} 由单射当且仅当 $\nul T=\{0\}$，得 $\dim \nul T=0$。 代入秩--零化度定理可得 \[ \dim V=0+\dim
+\range T. \] 故 $\dim \range T=\dim V$。 \end{proof}
+
+\begin{corollary} 设 $V,W$ 都有限维且 $\dim V=\dim W$，$T\in\Lmap(V,W)$。 则以下命题等价：
+\begin{enumerate}[label=(\arabic*)] \item $T$ 是单射； \item $T$ 是满射； \item $T$ 可逆。
+\end{enumerate} \end{corollary}
+
+\begin{proof} 若 $T$ 可逆，则显然既单射又满射。 下面证单射推出满射。 若 $T$ 单射，则 $\nul T=\{0\}$，故由秩--零化度定理得 \[
+\dim \range T=\dim V=\dim W. \] 而 $\range T$ 是 $W$ 的子空间，与 $W$ 维数相同，只能等于 $W$。 故 $T$ 满射。
+反过来，若 $T$ 满射，则 $\range T=W$，所以 \[ \dim \range T=\dim W=\dim V. \] 由秩--零化度定理得 $\dim \nul
+T=0$，于是 $\nul T=\{0\}$，故 $T$ 单射。 因此单射与满射等价。 在两者成立时，$T$ 为双射，于是可逆。 \end{proof}
+
+\begin{example} 设 $T:\R^4\to\R^3$ 定义为 \[ T(x_1,x_2,x_3,x_4)=(x_1+x_2,x_2+x_3,x_3+x_4).
+\] 解齐次方程 $T(x_1,x_2,x_3,x_4)=0$ 得 \[ x_1=-x_2,\qquad x_3=-x_2,\qquad x_4=x_2. \] 因此 \[
+\nul T=\spn\{(-1,1,-1,1)\}, \] 故 $\nullity T=1$。 由秩--零化度定理可得 $\rank T=4-1=3$。 于是 $\range
+T$ 是 $\R^3$ 的三维子空间，只能等于 $\R^3$。 \end{example}
+
+\begin{example} 设 $D:\poly_4(\R)\to\poly_4(\R)$ 为微分算子。 这里 $\poly_4(\R)$ 表示次数不超过 $4$
+的多项式空间，故其维数为 $5$。 微分的零空间是常数多项式空间，因此零化度为 $1$。 由秩--零化度定理得秩为 $4$。 确实，值域恰好是
+$\poly_3(\R)$，其维数正是 $4$。 \end{example}
+
+\begin{remark} 本定理的关键不是任何数组操作，而是： 先取零空间的基，再把它扩充为整个空间的基，然后观察新增基向量的像。 因此它从一开始就是关于子空间维数的定理。
+\end{remark}
+
+\section{线性映射的矩阵}
+
+在有限维情形下，一旦选定基，就可以把线性映射记录成矩阵。 必须强调：矩阵不是线性映射本身，它只是在给定基下对线性映射的编码。 换一组基，编码就会改变；映射本身并没有改变。
+
+\begin{definition} 设 $V,W$ 有限维， \[ \mathcal{B}=(v_1,\dots,v_n),\qquad
+\mathcal{C}=(w_1,\dots,w_m) \] 分别是 $V,W$ 的一组基。 对任意 $v\in V$，记 $[v]_{\mathcal{B}}$ 为 $v$
+关于基 $\mathcal{B}$ 的坐标列向量。 若 $T\in\Lmap(V,W)$，则 $T$ 关于基 $\mathcal{B},\mathcal{C}$
+的\emph{矩阵}记作 $M(T)$，其第 $j$ 列定义为 $[T(v_j)]_{\mathcal{C}}$。 \end{definition}
+
+\begin{theorem} 在上述记号下，对任意 $v\in V$，都有 \[ [T(v)]_{\mathcal{C}}=M(T)[v]_{\mathcal{B}}. \]
+并且满足这个等式的矩阵唯一。 \end{theorem}
+
+\begin{proof} 设 \[ v=a_1v_1+\cdots+a_nv_n. \] 则 \[ [v]_{\mathcal{B}}=\mat{a_1\\ \vdots
+\\ a_n}. \] 由线性性， \[ T(v)=a_1T(v_1)+\cdots+a_nT(v_n). \] 再把每个 $T(v_j)$ 用基 $\mathcal{C}$
+展开。 若 $M(T)$ 的第 $j$ 列恰为 $[T(v_j)]_{\mathcal{C}}$，则矩阵乘法的定义给出 \[
+M(T)[v]_{\mathcal{B}}=a_1[T(v_1)]_{\mathcal{C}}+\cdots+a_n[T(v_n)]_{\mathcal{C}}=[T(v)]_{\mathcal{C}}.
+\] 这证明了存在性。
+
+再证唯一性。 若另一个 $m\times n$ 矩阵 $A$ 也满足 \[ [T(v)]_{\mathcal{C}}=A[v]_{\mathcal{B}} \] 对所有
+$v\in V$ 都成立，则取 $v=v_j$，有 \[ [T(v_j)]_{\mathcal{C}}=A[v_j]_{\mathcal{B}}. \] 而
+$[v_j]_{\mathcal{B}}$ 是第 $j$ 个标准坐标列向量，所以 $A$ 的第 $j$ 列必为 $[T(v_j)]_{\mathcal{C}}$。 因此
+$A=M(T)$。 唯一性得证。 \end{proof}
+
+\begin{example} 设 $T:\R^2\to\R^2$ 为 \[ T(x,y)=(x+2y,3x-y). \] 取 $\R^2$ 的标准基
+$e_1=(1,0),e_2=(0,1)$ 作为定义域和值域的基。 则 \[ T(e_1)=(1,3),\qquad T(e_2)=(2,-1). \] 故 \[
+M(T)=\mat{1 & 2\\ 3 & -1}. \] 若 $v=(x,y)$，则 \[ [T(v)] = \mat{1 & 2\\ 3 & -1}\mat{x\\ y}=
+\mat{x+2y\\ 3x-y}, \] 与定义一致。 \end{example}
+
+\begin{example} 设 $D:\poly_2(\R)\to\poly_2(\R)$ 为微分算子。 取基 \[
+\mathcal{B}=\mathcal{C}=(1,x,x^2). \] 则 \[ D(1)=0,\qquad D(x)=1,\qquad D(x^2)=2x. \] 因此
+\[ M(D)=\mat{0 & 1 & 0\\ 0 & 0 & 2\\ 0 & 0 & 0}. \]
+这个矩阵没有告诉我们微分的本质，只告诉我们在这组基下微分如何作用在坐标上。 \end{example}
+
+\begin{example} 仍设 $V=\poly_2(\R)$，但改用基 \[ \mathcal{B}'=(1,1+x,1+x+x^2). \]
+微分算子的矩阵会发生变化。 这说明同一个线性映射在不同基下对应不同矩阵。 真正不变的是映射本身，而不是某个具体数组。 \end{example}
+
+\begin{theorem} 设 $T\in\Lmap(V,W)$，$S\in\Lmap(W,U)$，并在 $V,W,U$ 上分别选定基。 则 \[
+M(ST)=M(S)M(T). \] \end{theorem}
+
+\begin{proof} 任取 $v\in V$。 由前一定理， \[ [T(v)]_W=M(T)[v]_V. \] 再次应用前一定理于 $S$，得 \[
+[(ST)(v)]_U=[S(T(v))]_U=M(S)[T(v)]_W=M(S)M(T)[v]_V. \] 另一方面，$M(ST)$ 由定义满足 \[
+[(ST)(v)]_U=M(ST)[v]_V. \] 因此对所有 $v\in V$ 都有 \[ M(ST)[v]_V=M(S)M(T)[v]_V. \] 特别地，对 $V$
+的每个基向量都成立，于是两边矩阵的每一列都相同。 故 \[ M(ST)=M(S)M(T). \] \end{proof}
+
+\begin{remark} 这里应当反过来理解矩阵乘法： 我们之所以这样定义矩阵乘法，正是为了使复合映射满足 \[ M(ST)=M(S)M(T). \]
+因此复合是本质，矩阵乘法是对复合的坐标化记录。 \end{remark}
+
+\section{可逆性与同构}
+
+\begin{definition} 设 $T\in\Lmap(V,W)$。 若存在映射 $S:W\to V$ 使得 \[ ST=\Id_V,\qquad TS=\Id_W,
+\] 则称 $T$ 可逆，称 $S$ 为 $T$ 的逆映射，记作 $T^{-1}$。 若存在可逆线性映射 $T:V\to W$，则称 $V$ 与 $W$
+\emph{同构}，记作 $V\cong W$。 \end{definition}
+
+\begin{proposition} 若 $T\in\Lmap(V,W)$ 可逆，则逆映射 $T^{-1}$ 也是线性的。 \end{proposition}
+
+\begin{proof} 任取 $y_1,y_2\in W$ 与 $a\in\F$。 取 $x_1=T^{-1}(y_1)$，$x_2=T^{-1}(y_2)$，则
+$T(x_1)=y_1$，$T(x_2)=y_2$。 由于 $T$ 线性， \[ T(x_1+x_2)=y_1+y_2, \qquad T(ax_1)=ay_1. \]
+由逆映射的唯一性可知 \[ T^{-1}(y_1+y_2)=x_1+x_2=T^{-1}(y_1)+T^{-1}(y_2), \] 以及 \[
+T^{-1}(ay_1)=ax_1=aT^{-1}(y_1). \] 故 $T^{-1}$ 线性。 \end{proof}
+
+\begin{proposition} 设 $T\in\Lmap(V,W)$。 则 $T$ 可逆当且仅当 $T$ 同时单射且满射。 \end{proposition}
+
+\begin{proof} 若 $T$ 可逆，设逆映射为 $T^{-1}$。 若 $T(u)=T(v)$，则对两边作用 $T^{-1}$ 得 $u=v$，故 $T$ 单射。
+任取 $w\in W$，有 $w=T(T^{-1}(w))$，故 $T$ 满射。
+
+反过来，若 $T$ 单射且满射，则对每个 $w\in W$，由满射性存在 $v\in V$ 使得 $T(v)=w$； 由单射性，这样的 $v$ 唯一。 据此定义 $S:W\to
+V$ 为 $S(w)=v$。 则对任意 $v\in V$，有 $S(T(v))=v$；对任意 $w\in W$，有 $T(S(w))=w$。 故 \[
+ST=\Id_V,\qquad TS=\Id_W. \] 因此 $T$ 可逆。 \end{proof}
+
+\begin{theorem} 设 $V,W$ 是有限维向量空间。 则 \[ V\cong W \iff \dim V=\dim W. \] \end{theorem}
+
+\begin{proof} 先设 $V\cong W$。 取同构 $T:V\to W$。 由于 $T$ 可逆，所以它是双射。 由上一节推论，在有限维情形下双射必保持维数，故
+\[ \dim V=\dim W. \]
+
+反过来，设 $\dim V=\dim W=n$。 取 $V$ 的一组基 $v_1,\dots,v_n$ 与 $W$ 的一组基 $w_1,\dots,w_n$。 定义
+$T:V\to W$ 为 \[ T(a_1v_1+\cdots+a_nv_n)=a_1w_1+\cdots+a_nw_n. \]
+这个定义是良定的，因为向量关于一组基的坐标表示唯一。 由定义直接可见 $T$ 线性。 又若 \[ T(a_1v_1+\cdots+a_nv_n)=0, \] 则 \[
+a_1w_1+\cdots+a_nw_n=0. \] 由于 $w_1,\dots,w_n$ 线性无关，得 $a_1=\cdots=a_n=0$，故 $T$ 单射。 同理，对任意
+\[ w=b_1w_1+\cdots+b_nw_n\in W, \] 有 \[ w=T(b_1v_1+\cdots+b_nv_n), \] 故 $T$ 满射。 因此 $T$
+是同构。 \end{proof}
+
+\begin{example} 向量空间 $\R^3$ 与 $\poly_2(\R)$ 同构，因为二者维数都等于 $3$。 一个具体同构为 \[
+T(a,b,c)=a+bx+cx^2. \] 它把坐标三元组解释为一个二次以下多项式的系数。 \end{example}
+
+\begin{example} 积分算子 $I:\poly_2(\R)\to\{q\in\poly_3(\R):q(0)=0\}$ 是同构。 它在线性上显然成立。
+上一节已经证明 $\nul I=\{0\}$，所以单射。 而任何满足 $q(0)=0$ 的三次以下多项式都可写成 \[ q(x)=\int_0^x q'(t)\,dt, \]
+故满射。 因此 $I$ 可逆。 其逆映射就是微分在该值域上的限制。 \end{example}
+
+\begin{remark} 有限维向量空间按同构分类时，唯一重要的不变量就是维数。 因此从抽象角度看，所有 $n$ 维向量空间都一样；
+不同的只是我们选择了怎样的元素来作为基。 \end{remark}
+
+\section{算子}
+
+\begin{definition} 当定义域与值域相同时，线性映射称为该空间上的\emph{算子}。 全体算子记作 \[ \Lmap(V)=\Lmap(V,V). \]
+\end{definition}
+
+在 $\Lmap(V)$ 中，除了加法与数乘，还能进行复合。 因此算子比一般线性映射具有更丰富的代数结构。
+
+\begin{definition} 设 \[ p(z)=a_0+a_1z+\cdots+a_nz^n \] 是一个系数在 $\F$ 中的多项式，$T\in\Lmap(V)$。
+定义 \[ p(T)=a_0\Id+a_1T+\cdots+a_nT^n, \] 其中 $T^0=\Id$，$T^k$ 表示 $T$ 与自身复合 $k$ 次。
+\end{definition}
+
+\begin{proposition} 设 $p,q$ 是多项式，$T\in\Lmap(V)$。 则 \begin{enumerate}[label=(\arabic*)]
+\item $(p+q)(T)=p(T)+q(T)$； \item $(ap)(T)=a\,p(T)$； \item $(pq)(T)=p(T)q(T)$。
+\end{enumerate} \end{proposition}
+
+\begin{proof} 前两条直接由定义逐项整理即可。 下面证明第三条。 设 \[ p(z)=\sum_{i=0}^m a_iz^i, \qquad
+q(z)=\sum_{j=0}^n b_jz^j. \] 则 \[ p(T)q(T)=\left(\sum_{i=0}^m
+a_iT^i\right)\left(\sum_{j=0}^n b_jT^j\right). \] 利用分配律与复合的结合律，得 \[
+p(T)q(T)=\sum_{i=0}^m\sum_{j=0}^n a_ib_jT^{i+j}. \] 另一方面，多项式乘积满足 \[
+(pq)(z)=\sum_{k=0}^{m+n}\left(\sum_{i+j=k}a_ib_j\right)z^k. \] 故 \[
+(pq)(T)=\sum_{k=0}^{m+n}\left(\sum_{i+j=k}a_ib_j\right)T^k= \sum_{i=0}^m\sum_{j=0}^n
+a_ib_jT^{i+j}=p(T)q(T). \] 命题得证。 \end{proof}
+
+\begin{example} 设 $P:\R^3\to\R^3$ 为投影 \[ P(x,y,z)=(x,y,0). \] 则再投影一次不会产生新变化，所以 \[ P^2=P.
+\] 因此多项式 $p(z)=z^2-z$ 满足 \[ p(P)=P^2-P=0. \] 也就是说，算子可能满足某些非平凡多项式关系。 \end{example}
+
+\begin{example} 设 $N:\F^3\to\F^3$ 定义为 \[ N(x_1,x_2,x_3)=(0,x_1,x_2). \] 则 \[
+N^2(x_1,x_2,x_3)=(0,0,x_1), \qquad N^3(x_1,x_2,x_3)=(0,0,0). \] 所以 $N^3=0$。 故多项式
+$p(z)=z^3$ 满足 $p(N)=0$。 这个算子是后续研究幂零算子的基本模型。 \end{example}
+
+\begin{example} 设 $D$ 为 $\poly(\R)$ 上的微分算子，$I$ 为积分算子。 我们已经知道 $DI=\Id$，但 $ID\neq\Id$。
+因此在算子世界里，复合一般不交换。 于是对算子代入多项式时，要格外注意复合的顺序。 不过同一个算子的不同幂总是彼此交换，因为它们都来自同一个 $T$ 的复合。
+\end{example}
+
+\begin{remark} 本章的思想可以概括为三点： 第一，矩阵只是相对于基的记录，并非线性映射本身； 第二，矩阵乘法是为了忠实反映复合；
+第三，秩--零化度定理描述的是零空间与值域的维数关系，而不是某种坐标算法。 掌握这三点，本章的核心精神就把握住了。 \end{remark}
+
+\section*{习题}
+
+\subsection*{基础题（20题）}
+
+\begin{enumerate}[label=\basic\ \arabic*., leftmargin=*] \item 证明任意线性映射 $T$ 都满足
+$T(0)=0$。 \item 设 $T:\R^2\to\R^2$，$T(x,y)=(2x-y,x+3y)$。证明 $T$ 线性。 \item 设
+$S:\R^2\to\R$，$S(x,y)=x-2y+5$。判断是否线性，并说明理由。 \item 写出从任意向量空间 $V$ 到任意向量空间 $W$ 的零映射。 \item
+证明恒等映射 $\Id\in\Lmap(V)$。 \item 设 $D:\poly(\R)\to\poly(\R)$ 为微分。求 $D(x^3-2x+1)$。 \item 设
+$I:\poly(\R)\to\poly(\R)$ 为 $(Ip)(x)=\int_0^x p(t)\,dt$。求 $I(1+x)$。 \item 设
+$T:\R^3\to\R^2$，$T(x,y,z)=(x+z,y-z)$。求 $T(1,2,3)$。 \item 设
+$T:\R^2\to\R^2$，$T(x,y)=(x+y,x+y)$。求 $\nul T$。 \item 设 $T:\R^2\to\R^2$，$T(x,y)=(x,0)$。求
+$\range T$。 \item 设 $T:\R\to\R$，$T(x)=3x$。判断 $T$ 是否单射。 \item 设
+$T:\R^2\to\R$，$T(x,y)=x-y$。求 $\nul T$ 的一组基。 \item 设 $P:\R^3\to\R^3$，$P(x,y,z)=(x,0,0)$。求
+$P^2$。 \item 设 $T:\R^2\to\R^3$，$T(x,y)=(x,y,0)$，$S:\R^3\to\R$，$S(a,b,c)=a+b+c$。求 $ST$。
+\item 设 $V$ 有限维且 $T\in\Lmap(V,W)$ 满足 $\nul T=\{0\}$。用定理判断 $T$ 是否单射。 \item 设 $V$
+有限维，$T\in\Lmap(V,W)$，且 $\dim V=5$，$\dim \nul T=2$。求 $\dim \range T$。 \item 设
+$T:\R^2\to\R^2$，$T(x,y)=(x+y,y)$。写出标准基下的 $M(T)$。 \item 设
+$D:\poly_2(\R)\to\poly_2(\R)$。写出基 $(1,x,x^2)$ 下的 $M(D)$。 \item 设
+$T:\R^2\to\R^2$，$T(x,y)=(y,x)$。判断 $T$ 是否可逆。 \item 设 $N:\F^2\to\F^2$，$N(x,y)=(0,x)$。求
+$N^2$。 \end{enumerate}
+
+\subsection*{进阶题（30题）}
+
+\begin{enumerate}[label=\medium\ \arabic*., leftmargin=*, start=1] \item 证明：若
+$T\in\Lmap(V,W)$，则对任意有限个向量 $v_1,\dots,v_n\in V$ 与标量 $a_1,\dots,a_n$，有 \[
+T(a_1v_1+\cdots+a_nv_n)=a_1T(v_1)+\cdots+a_nT(v_n). \] \item 设
+$T:\R^2\to\R^2$，$T(x,y)=(x-y,2x+y)$。证明 $T$ 为单射。 \item 设
+$T:\R^3\to\R^2$，$T(x,y,z)=(x+y+z,x-y)$。求 $\nul T$ 与 $\range T$ 的维数。 \item 证明：若
+$S,T\in\Lmap(V,W)$，则 $S+T\in\Lmap(V,W)$。 \item 证明：若 $T\in\Lmap(V,W)$，$a\in\F$，则
+$aT\in\Lmap(V,W)$。 \item 证明：若 $T\in\Lmap(V,W)$，$S\in\Lmap(W,U)$，则 $ST\in\Lmap(V,U)$。
+\item 设 $T:\R^3\to\R^3$，$T(x,y,z)=(x,y,0)$。证明 $T^2=T$。 \item 设 $D,I$ 如正文所述。证明 $DI=\Id$。
+\item 用具体多项式说明 $ID\neq\Id$。 \item 设 $T:\R^3\to\R^3$，$T(x,y,z)=(x+y,y+z,z)$。求 $\nul T$。
+\item 设 $T:\R^3\to\R^2$，$T(x,y,z)=(x+y,y+z)$。证明 $\range T=\R^2$。 \item 设
+$T:\poly_3(\R)\to\poly_3(\R)$ 为微分。求 $\nul T$ 与 $\range T$。 \item 设
+$I:\poly_2(\R)\to\poly_3(\R)$ 为积分算子。证明它是单射。 \item 设 $V$ 有限维，$T\in\Lmap(V,W)$。证明若 $\range
+T=\{0\}$，则 $T=0$。 \item 设 $V$ 有限维，$T\in\Lmap(V,W)$，且 $\dim V=7$，$\rank T=4$。求 $\nullity
+T$。 \item 设 $T:\R^4\to\R^4$ 的零空间维数为 $1$。若 $T$ 满射，是否可能？说明理由。 \item 设
+$T:\R^3\to\R^3$，$T(x,y,z)=(x+y,y+z,x+z)$。证明 $T$ 单射当且仅当 $\nul T=\{0\}$ 的结论在此例成立。 \item 设
+$V,W$ 有限维且 $\dim V=\dim W$。证明：若 $T\in\Lmap(V,W)$ 为单射，则 $T$ 满射。 \item 设 $V,W$ 有限维且 $\dim
+V=\dim W$。证明：若 $T\in\Lmap(V,W)$ 为满射，则 $T$ 单射。 \item 设
+$T:\R^2\to\R^2$，$T(x,y)=(x+2y,3x-y)$。求标准基下的矩阵。 \item 设
+$T:\poly_2(\R)\to\poly_2(\R)$，$T(p)=xp$ 在截断到 $\poly_2(\R)$ 的意义下并不定义。解释为什么这不是该空间上的线性映射。
+\item 设 $T:\poly_2(\R)\to\poly_3(\R)$，$T(p)=xp$。写出基 $(1,x,x^2)$ 与 $(1,x,x^2,x^3)$ 下的
+$M(T)$。 \item 设 $T:\R^2\to\R^2$，$T(x,y)=(x+y,x-y)$，$S:\R^2\to\R^2$，$S(x,y)=(2x,y)$。验证
+$M(ST)=M(S)M(T)$。 \item 设 $T:\R^2\to\R^2$，$T(x,y)=(x,y)$。说明在不同基下 $M(T)$ 可以不同。 \item
+构造一个从 $\R^3$ 到 $\poly_2(\R)$ 的同构。 \item 构造一个从 $\poly_2(\R)$ 到 $\R^3$ 的逆同构。 \item 设
+$T:\R^2\to\R^2$，$T(x,y)=(y,x)$。求 $T^{-1}$。 \item 设 $P:\R^3\to\R^3$ 为投影
+$P(x,y,z)=(x,y,0)$。计算 $(P^2-P)(v)$。 \item 设
+$N:\F^3\to\F^3$，$N(x_1,x_2,x_3)=(0,x_1,x_2)$。求 $N^2,N^3$。 \item 设多项式 $p(z)=1+2z+z^2$，算子
+$T\in\Lmap(V)$。写出 $p(T)$ 的定义式。 \end{enumerate}
+
+\subsection*{挑战题（15题）}
+
+\begin{enumerate}[label=\hard\ \arabic*., leftmargin=*, start=1] \item 设
+$T\in\Lmap(V,W)$，$V$ 有限维。证明：若 $\dim \nul T=\dim V$，则 $T=0$。 \item 设 $T\in\Lmap(V,W)$，$V$
+有限维。证明：若 $\dim \range T=\dim V$，则 $T$ 单射。 \item 设 $T:\R^4\to\R^4$ 满足 $T^2=0$。证明 $\range
+T\subseteq \nul T$，并推出 $\rank T\leq \nullity T$。 \item 设 $P\in\Lmap(V)$ 满足 $P^2=P$。证明 \[
+V=\range P\oplus \nul P. \] \item 设 $T\in\Lmap(V,W)$，$S\in\Lmap(W,U)$。证明 \[
+\range(ST)\subseteq \range S. \] 并给出严格包含的例子。 \item 设
+$T\in\Lmap(V,W)$，$S\in\Lmap(W,U)$。证明 \[ \nul T\subseteq \nul(ST). \] 并给出严格包含的例子。 \item 设
+$T\in\Lmap(V)$ 可逆。证明对任意多项式 $p$，有 \[ T\,p(T)=p(T)\,T. \] \item 设 $V$ 有限维，$T\in\Lmap(V)$，且
+$T^2=T$。证明 $\nul T=\range(\Id-T)$。 \item 将上一题改写为不使用任何额外记号：证明若 $T^2=T$，则 $\dim V=\dim
+\range T+\dim \nul T$，并说明为何这只是秩--零化度定理的一个特例。 \item 设 $T:\poly_3(\R)\to\poly_3(\R)$ 为
+$Tp=p+p'$。证明 $T$ 可逆，并显式写出逆映射的构造思路。 \item 设 $T:\R^n\to\R^n$ 定义为 \[
+T(x_1,\dots,x_n)=(x_1,x_1+x_2,\dots,x_{n-1}+x_n). \] 证明 $T$ 可逆。 \item 设 $T:\R^n\to\R^n$
+定义为 \[ T(x_1,\dots,x_n)=(x_2,\dots,x_n,0). \] 求 $\nullity T$ 与 $\rank T$。 \item 设 $V,W$
+有限维且 $V\cong W$。证明 $\Lmap(V)\cong \Lmap(W)$。 \item 设 $T\in\Lmap(V)$，$p,q$ 为多项式且
+$p(T)=0$、$q(T)=0$。证明 $(p+q)(T)=0$，并进一步证明 $(pq)(T)=0$。 \item 设 $P,Q\in\Lmap(V)$ 满足
+$P^2=P$，$Q^2=Q$，且 $PQ=QP=0$。证明 $P+Q$ 也是投影，即 \[ (P+Q)^2=P+Q. \] \end{enumerate}
+
+\section*{习题解答}
+
+\subsection*{基础题解答}
+
+\begin{enumerate}[label=\basic\ \arabic*., leftmargin=*] \item
+由线性性，$T(0)=T(0+0)=T(0)+T(0)$，两边同时加上 $-T(0)$ 得 $T(0)=0$。 \item 直接计算： \[
+T((x_1,y_1)+(x_2,y_2))=(2x_1-y_1, x_1+3y_1)+(2x_2-y_2, x_2+3y_2), \] 且
+$T(a(x,y))=aT(x,y)$，故线性。 \item 不是线性，因为 $S(0,0)=5\neq 0$。 \item 零映射为 $0:V\to W$，定义
+$0(v)=0$ 对所有 $v\in V$。 \item 因为 $\Id(u+v)=u+v$，$\Id(av)=av=a\Id(v)$，所以 $\Id$ 线性。 \item
+$D(x^3-2x+1)=3x^2-2$。 \item \[ I(1+x)=\int_0^x (1+t)\,dt=x+\frac{x^2}{2}. \] \item \[
+T(1,2,3)=(1+3,2-3)=(4,-1). \] \item 由 $x+y=0$ 且 $x+y=0$，得 $y=-x$，故 \[ \nul
+T=\{(t,-t):t\in\R\}=\spn\{(1,-1)\}. \] \item 值域为所有形如 $(x,0)$ 的向量，所以 \[ \range
+T=\spn\{(1,0)\}. \] \item 是单射，因为 $T(x)=0$ 蕴含 $3x=0$，从而 $x=0$，即 $\nul T=\{0\}$。 \item
+$x-y=0$，故 $x=y$，于是 \[ \nul T=\{(t,t):t\in\R\}=\spn\{(1,1)\}. \] \item \[
+P^2(x,y,z)=P(x,0,0)=(x,0,0)=P(x,y,z). \] 故 $P^2=P$。 \item \[ (ST)(x,y)=S(x,y,0)=x+y. \]
+\item 由定理，$\nul T=\{0\}$ 当且仅当 $T$ 单射，所以它单射。 \item 由秩--零化度定理，$\dim \range T=5-2=3$。 \item
+$T(e_1)=(1,0)$，$T(e_2)=(1,1)$，故 \[ M(T)=\mat{1 & 1\\ 0 & 1}. \] \item 由
+$D(1)=0$，$D(x)=1$，$D(x^2)=2x$，故 \[ M(D)=\mat{0 & 1 & 0\\ 0 & 0 & 2\\ 0 & 0 & 0}. \]
+\item 是可逆的，因为 $T(T(x,y))=(x,y)$，故 $T^{-1}=T$。 \item \[ N^2(x,y)=N(0,x)=(0,0), \] 故
+$N^2=0$。 \end{enumerate}
+
+\subsection*{进阶题解答}
+
+\begin{enumerate}[label=\medium\ \arabic*., leftmargin=*] \item 对 $n$
+个向量可用线性性的两条规则反复应用，逐步把 $T$ 分配到和式与标量上，即得结论。 \item 若 $T(x,y)=(0,0)$，则 \[ x-y=0,\qquad
+2x+y=0. \] 由第一式得 $y=x$，代入第二式得 $3x=0$，故 $x=y=0$，所以 $\nul T=\{0\}$，故单射。 \item 解方程 \[
+x+y+z=0,\qquad x-y=0. \] 得 $x=y$，$z=-2x$，故 $\nul T$ 一维。 定义域维数为 $3$，所以值域维数为 $2$。 \item
+与正文定理相同：逐点验证 $(S+T)(u+v)=(S+T)(u)+(S+T)(v)$ 与 $(S+T)(av)=a(S+T)(v)$ 即可。 \item 逐点验证
+$(aT)(u+v)=aT(u)+aT(v)$ 与 $(aT)(bv)=b(aT)(v)$ 即可。 \item 与正文命题相同： \[
+(ST)(u+v)=S(T(u+v))=S(T(u))+S(T(v)), \] 且 $(ST)(av)=a(ST)(v)$。 \item 直接计算一次投影与二次投影都给
+$(x,y,0)$，故 $T^2=T$。 \item 对任意 $p$， \[ (DI)p=\frac{d}{dx}\int_0^x p(t)\,dt=p, \] 故
+$DI=\Id$。 \item 取常数多项式 $p(x)=1$，则 $(ID)p(x)=\int_0^x 0\,dt=0\neq 1$。 \item 若
+$T(x,y,z)=0$，则由第三个坐标得 $z=0$，第二个坐标得 $y=0$，第一个坐标得 $x=0$，故零空间只有 $0$。 \item 任取
+$(a,b)\in\R^2$，取 $(x,y,z)=(a,0,b)$，则 $T(x,y,z)=(a,b)$，故值域等于 $\R^2$。 \item
+零空间是常数多项式空间，值域是次数不超过 $2$ 的多项式空间，即 $\poly_2(\R)$。 \item 若 $Ip=0$，对两边求导得 $p=0$，故单射。 \item
+若 $\range T=\{0\}$，则对任意 $v\in V$，$T(v)\in\range T$，故 $T(v)=0$，于是 $T=0$。 \item $\nullity
+T=7-4=3$。 \item 不可能。满射意味着值域维数为 $4$，于是由秩--零化度定理得零化度为 $0$，与已知为 $1$ 矛盾。 \item 正向由一般定理立即成立。
+反向若 $\nul T=\{0\}$，则 $T$ 单射；若 $T$ 单射，则零空间只能是 $\{0\}$。 在此例中也完全适用。 \item 由单射得 $\nul
+T=\{0\}$，故 $\rank T=\dim V=\dim W$，于是值域等于 $W$，故满射。 \item 由满射得 $\range T=W$，故 $\rank
+T=\dim W=\dim V$，于是 $\nullity T=0$，故单射。 \item $T(e_1)=(1,3)$，$T(e_2)=(2,-1)$，故 \[
+M(T)=\mat{1 & 2\\ 3 & -1}. \] \item 因为 $xp$ 对 $\deg p=2$ 时可能达到 $3$ 次，不属于
+$\poly_2(\R)$，所以该规则并没有把空间映到自身，因而不是从 $\poly_2(\R)$ 到 $\poly_2(\R)$ 的映射。 \item 有 \[
+T(1)=x,\qquad T(x)=x^2,\qquad T(x^2)=x^3, \] 故 \[ M(T)=\mat{0 & 0 & 0\\ 1 & 0 & 0\\ 0 &
+1 & 0\\ 0 & 0 & 1}. \] \item \[ M(T)=\mat{1 & 1\\ 1 & -1},\qquad M(S)=\mat{2 & 0\\ 0 &
+1}. \] 故 \[ M(S)M(T)=\mat{2 & 2\\ 1 & -1}. \] 而 $ST(x,y)=(2x+2y,x-y)$，其矩阵正是 \[ \mat{2 &
+2\\ 1 & -1}. \] \item 若取标准基，则 $M(T)=\mat{1 & 0\\ 0 & 1}$。 若取基
+$((1,1),(1,-1))$，则恒等映射的矩阵仍是单位矩阵。 要得到不同矩阵，可把定义域和值域选成不同基；例如定义域用标准基，值域用
+$((1,1),(1,-1))$，则矩阵改变。 \item 例如 \[ T(a,b,c)=a+bx+cx^2. \] 它线性且把 $\R^3$ 的标准基送到
+$\poly_2(\R)$ 的基 $(1,x,x^2)$，故为同构。 \item 上题的逆为 \[
+S(p)=(\text{常数项},\text{一次项系数},\text{二次项系数}). \] 若 $p=a+bx+cx^2$，则 $S(p)=(a,b,c)$。 \item
+因为 $T$ 交换两个坐标，故再交换一次回到原向量，所以 $T^{-1}=T$。 \item 对任意 $v$，有 $(P^2-P)(v)=P(P(v))-P(v)=0$。
+\item \[ N^2(x_1,x_2,x_3)=(0,0,x_1),\qquad N^3(x_1,x_2,x_3)=(0,0,0). \] \item 由定义 \[
+p(T)=\Id+2T+T^2. \] \end{enumerate}
+
+\subsection*{挑战题解答}
+
+\begin{enumerate}[label=\hard\ \arabic*., leftmargin=*] \item 若 $\dim \nul T=\dim V$，又
+$\nul T\subseteq V$，故只能有 $\nul T=V$。 于是对任意 $v\in V$，$T(v)=0$，所以 $T=0$。 \item 由秩--零化度定理，
+\[ \dim V=\dim \nul T+\dim \range T. \] 若 $\dim \range T=\dim V$，则 $\dim \nul T=0$，故
+$\nul T=\{0\}$，所以 $T$ 单射。 \item 任取 $y\in\range T$，则 $y=T(x)$ 对某个 $x$ 成立。 于是 \[
+T(y)=T(T(x))=T^2(x)=0, \] 故 $y\in\nul T$，从而 $\range T\subseteq\nul T$。 取维数得 $\rank T\leq
+\nullity T$。 \item 对任意 $v\in V$，有 \[ v=P(v)+(v-P(v)). \] 其中 $P(v)\in\range P$，而 \[
+P(v-P(v))=P(v)-P^2(v)=P(v)-P(v)=0, \] 故 $v-P(v)\in\nul P$，于是 $V=\range P+\nul P$。 若
+$x\in\range P\cap\nul P$，则 $x=P(v)$ 且 $P(x)=0$。 但又 $P(x)=P(P(v))=P(v)=x$，故 $x=0$。
+因此和为直和。 \item 任取 $u\in\range(ST)$，则 $u=S(T(v))$ 对某个 $v$ 成立，因此 $u\in\range S$。 故
+$\range(ST)\subseteq\range S$。 严格包含例子：取 $T=0$，而 $S$ 非零，则 $\range(ST)=\{0\}$，而 $\range S\neq\{0\}$，
+故包含是严格的。 \item 若 $v\in\nul T$，则 $T(v)=0$，于是 \[ (ST)(v)=S(0)=0,
+\] 故 $v\in\nul(ST)$。 严格包含例子：取 $T=\Id_W$，令 $S$ 有非平凡零空间，则 $\nul T=\{0\}$，但 $\nul(ST)=\nul
+S$ 非零。 \item 设 $p(z)=\sum_{k=0}^n a_k z^k$。 则 \[ Tp(T)=\sum_{k=0}^n a_kT^{k+1}=p(T)T, \]
+因为同一个算子的各次幂按复合结合律自然交换顺序。 可逆性在此题中并非必要条件，但题设下结论当然成立。 \item 先证 $\nul T\subseteq\range(\Id-T)$。
+若 $v\in\nul T$，则 $T(v)=0$，从而
+\[ v=v-T(v)=(\Id-T)(v), \]
+故 $v\in\range(\Id-T)$。
+再证反向包含。若 $v\in\range(\Id-T)$，则存在 $u\in V$ 使得
+\[ v=(\Id-T)(u). \]
+于是
+\[ T(v)=T(u)-T^2(u)=T(u)-T(u)=0, \]
+故 $v\in\nul T$。
+因此 $\nul T=\range(\Id-T)$。 \item 由秩--零化度定理直接有 \[ \dim V=\dim \range T+\dim
+\nul T. \] 条件 $T^2=T$ 并不是证明该等式所必需的。 它只是说明这类算子还有额外结构，例如上一题所示的分解。 所以这确实只是秩--零化度定理的一个特例。
+\item 若 $(\Id+D)p=0$，则 $p'+p=0$。 对多项式比较次数可知只能有 $p=0$，故 $T=\Id+D$ 单射。 定义域与值域同为四维，所以 $T$
+也满射，从而可逆。 构造逆映射时，可对基 $(1,x,x^2,x^3)$ 逐个求原像，或直接按系数递推解 $p+p'=q$。 \item 设
+$T(x_1,\dots,x_n)=0$。 由第一个坐标得 $x_1=0$，再由第二个坐标得 $x_2=0$，依此递推得 $x_n=0$。 故 $\nul
+T=\{0\}$，所以 $T$ 单射。 定义域和值域维数相同，故 $T$ 可逆。 \item 零空间由 $x_2=\cdots=x_n=0$ 构成，因此 \[ \nul
+T=\{(x_1,0,\dots,0):x_1\in\R\}, \] 故 $\nullity T=1$。 于是 $\rank T=n-1$。 \item 取同构 $A:V\to
+W$。 定义 \[ \Phi:\Lmap(V)\to\Lmap(W),\qquad \Phi(T)=ATA^{-1}. \] 则 $\Phi$ 线性。 其逆映射为
+$S\mapsto A^{-1}SA$，故 $\Phi$ 是同构。 \item 由算子多项式的线性性质，
+\[
+(p+q)(T)=p(T)+q(T)=0+0=0.
+\]
+再由乘法性质，
+\[
+(pq)(T)=p(T)q(T)=0.
+\]
+两式都直接来自本章关于多项式作用于算子的定义与运算规则。 \item 由条件 $PQ=QP=0$，有 \[
+(P+Q)^2=P^2+PQ+QP+Q^2=P+0+0+Q=P+Q. \] 故 $P+Q$ 也是投影。 \end{enumerate}
+

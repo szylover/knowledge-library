@@ -1,0 +1,202 @@
+% ============================================================================
+% preamble.tex — 《线性代数：从向量空间到算子》
+% ============================================================================
+
+% --- 中文支持 (XeLaTeX) ---
+\usepackage{ctex}
+\usepackage{fontspec}
+
+% --- 页面布局 ---
+\usepackage[
+  a4paper,
+  top=2.5cm, bottom=2.5cm,
+  left=2.5cm, right=2.5cm
+]{geometry}
+
+% --- 数学 ---
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{enumitem}
+
+% --- 图表 ---
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+
+% --- 绘图 ---
+\usepackage{tikz}
+\usetikzlibrary{
+  positioning, calc, arrows.meta,
+  decorations.pathreplacing,
+  patterns, matrix,
+}
+\usepackage{tikz-cd}
+
+% --- 交叉引用与超链接 ---
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=green!40!black,
+  urlcolor=cyan!50!black,
+}
+\usepackage[nameinlink]{cleveref}
+
+% --- 索引 ---
+\usepackage{makeidx}
+\makeindex
+
+% --- 颜色 ---
+\usepackage{xcolor}
+
+% --- 彩色定理框 ---
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable, skins}
+
+% ============================================================================
+% 定理环境
+% ============================================================================
+
+\theoremstyle{plain}
+\newtheorem{theorem}{定理}[chapter]
+\newtheorem{proposition}[theorem]{命题}
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{corollary}[theorem]{推论}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{定义}
+\newtheorem{example}[theorem]{例}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{注}
+\newtheorem{notation}[theorem]{记号}
+
+% --- tcolorbox 包装 ---
+\tcolorboxenvironment{theorem}{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=blue!4, colframe=blue!40!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
+}
+\tcolorboxenvironment{proposition}{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=blue!4, colframe=blue!35!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
+}
+\tcolorboxenvironment{lemma}{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=blue!4, colframe=blue!35!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
+}
+\tcolorboxenvironment{corollary}{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=blue!4, colframe=blue!35!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
+}
+\tcolorboxenvironment{definition}{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=green!4, colframe=green!40!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
+}
+\tcolorboxenvironment{example}{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=orange!4, colframe=orange!50!black,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
+}
+\tcolorboxenvironment{remark}{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=gray!6, colframe=gray!40,
+  boxrule=0.6pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
+}
+
+% ============================================================================
+% 习题环境：三级难度标记
+% ============================================================================
+
+\newcommand{\basic}{$\bigstar$}
+\newcommand{\medium}{$\bigstar\bigstar$}
+\newcommand{\hard}{$\bigstar\bigstar\bigstar$}
+
+% ============================================================================
+% 常用数学命令
+% ============================================================================
+
+% 数域
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+
+% 上半平面
+\newcommand{\HH}{\mathbb{H}}
+
+% 矩阵群
+\newcommand{\SL}{\mathrm{SL}}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\PSL}{\mathrm{PSL}}
+\newcommand{\PGL}{\mathrm{PGL}}
+\newcommand{\Sp}{\mathrm{Sp}}
+\newcommand{\Mat}{\mathrm{Mat}}
+\newcommand{\Orth}{\mathrm{O}}
+\newcommand{\SO}{\mathrm{SO}}
+\newcommand{\Unit}{\mathrm{U}}
+\newcommand{\SU}{\mathrm{SU}}
+\newcommand{\diag}{\mathrm{diag}}
+
+% 模形式空间
+\newcommand{\Mk}{\mathcal{M}}
+\newcommand{\Sk}{\mathcal{S}}
+
+% 代数结构
+\newcommand{\Aut}{\mathrm{Aut}}
+\newcommand{\Gal}{\mathrm{Gal}}
+\newcommand{\Frob}{\mathrm{Frob}}
+\newcommand{\Hom}{\mathrm{Hom}}
+\newcommand{\End}{\mathrm{End}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\Nm}{\mathrm{Nm}}
+\providecommand{\Ann}{\mathrm{Ann}}
+\newcommand{\ord}{\mathrm{ord}}
+\newcommand{\Id}{\mathrm{Id}}
+\newcommand{\Ker}{\mathrm{Ker}}
+\newcommand{\Ima}{\mathrm{Im}}
+\newcommand{\Char}{\mathrm{char}}
+\newcommand{\Spec}{\mathrm{Spec}}
+
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\nullity}{nullity}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\Stab}{Stab}
+\DeclareMathOperator{\Orb}{Orb}
+\DeclareMathOperator{\Fix}{Fix}
+\DeclareMathOperator{\Syl}{Syl}
+\DeclareMathOperator{\Rad}{Rad}
+\DeclareMathOperator{\spn}{span}
+
+% 内积
+\newcommand{\inner}[2]{\langle #1, #2 \rangle}
+
+% 矩阵简写
+\newcommand{\mat}[1]{\begin{pmatrix} #1 \end{pmatrix}}
+\newcommand{\dmat}[1]{\begin{vmatrix} #1 \end{vmatrix}}
+
+% LADR 风格：算子
+\newcommand{\Lmap}{\mathcal{L}}  % L(V,W)
+\newcommand{\poly}{\mathcal{P}}  % 多项式空间
+\newcommand{\nul}{\mathrm{null}}
+\newcommand{\range}{\mathrm{range}}

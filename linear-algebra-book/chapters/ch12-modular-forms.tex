@@ -1,0 +1,472 @@
+\chapter{线性代数在模形式中的应用}
+
+
+
+
+\newcommand{\ctinf}{\mathrm{ct}_{\infty}}
+
+
+
+
+本章的目标不是把模形式“比喻”为线性代数， 而是说明： 模形式理论中许多最核心的结构， 本质上正是由线性代数组织起来的。 格的基变换、 模群在上半平面上的作用、 模形式空间的有限维性、 Petersson 内积、 Hecke 算子的自伴随性、 以及特征形式的同时对角化， 构成了一条清晰的逻辑链。
+
+
+
+
+在线性代数中， 我们研究有限维向量空间上的线性算子； 在模形式理论中， 固定权 $k$ 与群 $\Gamma$ 后， $\Mk_k(\Gamma)$ 与 $\Sk_k(\Gamma)$ 恰好给出有限维复向量空间， 而 Hecke 算子则给出一族彼此交换的线性算子。 因此， “选基”“求维数”“构造内积”“研究自伴随算子”“同时对角化” 不再只是形式上的类比， 而是进入模形式算术内容的真正工具。
+
+
+
+
+\section{格与基变换：$\Z^n$ 中的格，基变换矩阵属于 $\GL_n(\Z)$}
+
+
+
+
+线性代数里， 一个有限维实向量空间的基决定了坐标系。 在模形式理论里， 二维格的不同基之间的变换， 恰好由整数矩阵控制； 这正是模群出现的起点。
+
+
+
+
+\begin{definition}[$\Z^n$ 中的格] 设 $L\subseteq \R^n$。 若存在 $\R^n$ 的一组线性无关向量 $v_1,\dots,v_n$， 使得 \[ L=\Z v_1+\cdots+\Z v_n, \] 则称 $L$ 为一个秩为 $n$ 的格。 特别地， 若 $L\subseteq \Z^n$ 且作为 $\Z$-模自由秩为 $n$， 则称 $L$ 为 $\Z^n$ 的一个子格。 \end{definition} 把列向量 $v_1,\dots,v_n$ 排成矩阵 \[ B=(v_1\ \cdots\ v_n)\in \Mat_{n\times n}(\R), \] 则 \[ L=B\Z^n. \] 因此一个格可以看成“标准整数格 $\Z^n$ 经过一个可逆线性变换后的像”。
+
+
+
+
+\begin{proposition}[同一格的两组基只差一个整可逆矩阵] 设 \[ L=\Z v_1+\cdots+\Z v_n=\Z w_1+\cdots+\Z w_n \] 是同一个格的两组基。 若 \[ W=(w_1\ \cdots\ w_n),\qquad V=(v_1\ \cdots\ v_n), \] 则存在唯一的矩阵 $U\in \GL_n(\Z)$， 使得 \[ W=VU. \] \end{proposition}
+
+
+
+
+\begin{proof} 因为每个 $w_j\in L$， 故可唯一写成 \[ w_j=\sum_{i=1}^n u_{ij}v_i,\qquad u_{ij}\in \Z. \] 于是 $W=VU$， 其中 $U=(u_{ij})\in \Mat_{n\times n}(\Z)$。 同理， 每个 $v_i$ 也可由 $w_1,\dots,w_n$ 的整数线性组合表示， 所以存在 $U'\in \Mat_{n\times n}(\Z)$ 使 $V=WU'$。 代回得 \[ V=VUU'. \] 由于 $V$ 可逆， 故 $UU'=I_n$。 因此 $U$ 在整数矩阵环中可逆， 即 $U\in \GL_n(\Z)$。 唯一性来自坐标表示的唯一性。 \end{proof}
+
+
+
+
+\begin{proposition}[反过来，$\GL_n(\Z)$ 给出同一格的基变换] 设 $L=\Z v_1+\cdots+\Z v_n$， 记 $V=(v_1\ \cdots\ v_n)$。 若 $U\in \GL_n(\Z)$， 并令 \[ W=VU=(w_1\ \cdots\ w_n), \] 则 $w_1,\dots,w_n$ 仍是 $L$ 的一组 $\Z$-基。 \end{proposition}
+
+
+
+
+\begin{proof} 因为 $U$ 的各列是整数向量， 故每个 $w_j$ 都是 $v_i$ 的整数线性组合， 所以 $w_j\in L$， 从而 \[ \Z w_1+\cdots+\Z w_n\subseteq L. \] 另一方面， 由于 $U^{-1}\in \GL_n(\Z)$， 每个 $v_i$ 也可由 $w_j$ 的整数线性组合表示， 故有反向包含。 因此两者相等。 \end{proof} 这说明： \[ \boxed{\text{格的基变换群就是 }\GL_n(\Z).} \] 线性代数中“同一个向量空间的不同基”由 $\GL_n(\R)$ 联系； 而在格论中， “同一个格的不同整数基”则由 $\GL_n(\Z)$ 联系。
+
+
+
+
+\begin{example} 在 $\Z^2$ 中， 取 \[ v_1=\binom{1}{0},\qquad v_2=\binom{0}{1}, \] 这是标准基。 再取 \[ w_1=\binom{1}{1},\qquad w_2=\binom{0}{1}. \] 则 \[ (w_1\ w_2)= (v_1\ v_2) \begin{pmatrix} 1&0\\ 1&1 \end{pmatrix}, \] 而 \[ \begin{pmatrix} 1&0\\ 1&1 \end{pmatrix}\in \GL_2(\Z). \] 所以 $w_1,w_2$ 仍然张成整个 $\Z^2$。 \end{example}
+
+
+
+
+\begin{remark} 若 $L=B\Z^n$， 则平行多面体 \[ \left\{ \sum_{i=1}^n t_i v_i\;\middle|\;0\le t_i<1 \right\} \] 的体积为 $|\det B|$， 称为格的余体积。 若更换基 $B\mapsto BU$， 其中 $U\in \GL_n(\Z)$， 则 \[ |\det(BU)|=|\det B|\cdot |\det U|=|\det B|, \] 因为 $\det U=\pm1$。 故余体积与基的选择无关。 \end{remark} 对模形式而言， 最重要的是二维情形。 给定复数 $\tau\in\HH$， 二维格 \[ \Lambda_\tau=\Z\tau+\Z \] 就是模形式几何背景中的基本对象。 不同的整数基变换会改变 $\tau$ 的表示， 但不会改变格本身的同构类型。
+
+
+
+
+\section{$\Z^2$ 上的 $\SL_2(\Z)$ 作用：模群作为自同构群}
+
+
+
+
+把上一节专门压缩到二维， 就自然得到模群。 从线性代数观点看， $\SL_2(\Z)$ 不是突然出现的神秘群， 而是 $\Z^2$ 的“定向保持整数自同构群”。
+
+
+
+
+\begin{definition}[模群] 定义 \[ \SL_2(\Z)= \left\{ \begin{pmatrix} a&b\\ c&d \end{pmatrix} \;\middle|\; a,b,c,d\in\Z,\ ad-bc=1 \right\}. \] 它通过左乘作用在列向量空间 $\Z^2$ 上。 \end{definition} 在线性代数中， 二维向量空间上的交替型 \[ \omega\!\left( \binom{x_1}{y_1}, \binom{x_2}{y_2} \right)=x_1y_2-x_2y_1 \] 就是有向面积。 若 $A\in \Mat_{2\times2}(\R)$， 则 \[ \omega(Av,Aw)=\det(A)\,\omega(v,w). \] 因此当且仅当 $\det(A)=1$ 时， $A$ 保持有向面积。
+
+
+
+
+\begin{proposition} $\SL_2(\Z)$ 恰好是保持 $\omega$ 的整数自同构群， 即 \[ \SL_2(\Z)= \left\{ A\in \GL_2(\Z)\mid \omega(Av,Aw)=\omega(v,w)\ \forall\,v,w\in\Z^2 \right\}. \] \end{proposition}
+
+
+
+
+\begin{proof} 若 $A\in \SL_2(\Z)$， 则 $\det A=1$， 故 \[ \omega(Av,Aw)=\det(A)\omega(v,w)=\omega(v,w). \] 反之， 若 $A\in\GL_2(\Z)$ 保持 $\omega$， 取标准基 $e_1,e_2$， 则 \[ 1=\omega(e_1,e_2)=\omega(Ae_1,Ae_2)=\det(A), \] 故 $A\in\SL_2(\Z)$。 \end{proof} 因此， $\SL_2(\Z)$ 既可以看成矩阵群， 也可以看成“$\Z^2$ 的有向基变换群”。
+
+
+
+
+\begin{example}[两个基本生成元] 记 \[ S= \begin{pmatrix} 0&-1\\ 1&0 \end{pmatrix}, \qquad T= \begin{pmatrix} 1&1\\ 0&1 \end{pmatrix}. \] 它们都属于 $\SL_2(\Z)$。 在线性代数上， $S$ 把标准基变为 \[ e_1\mapsto e_2,\qquad e_2\mapsto -e_1, \] 而 $T$ 把标准基变为 \[ e_1\mapsto e_1,\qquad e_2\mapsto e_1+e_2. \] 前者像是“旋转加符号变换”， 后者像是一次整数剪切。 \end{example}
+
+
+
+
+\begin{theorem} $\SL_2(\Z)$ 由 $S$ 与 $T$ 生成。 \end{theorem}
+
+
+
+
+\begin{proof}[证明思路] 设 \[ \gamma= \begin{pmatrix} a&b\\ c&d \end{pmatrix}\in \SL_2(\Z). \] 若 $c=0$， 则 $a=d=\pm1$， 容易写成 $T$ 与 $S^2=-I$ 的乘积。 若 $c\ne0$， 对 $a$ 除以 $c$ 作 Euclid 带余除法： \[ a=qc+r,\qquad |r|<|c|. \] 则 \[ T^{-q}\gamma= \begin{pmatrix} a-qc&b-qd\\ c&d \end{pmatrix} = \begin{pmatrix} r&*\\ c&d \end{pmatrix}. \] 再左乘 $S$， 新矩阵左下角元素变为 $r$， 绝对值严格减小。 如此反复， 最终把问题化到 $c=0$ 的情形。 因此 $\gamma$ 可由 $S,T$ 表示。 \end{proof}
+
+
+
+
+\begin{remark} 这一定理极其重要。 因为模形式的变换律本来要求对所有 \[ \gamma= \begin{pmatrix} a&b\\ c&d \end{pmatrix}\in \SL_2(\Z) \] 都满足 \[ f(\gamma\tau)=(c\tau+d)^k f(\tau) \]。 但一旦知道 $\SL_2(\Z)$ 由 $S,T$ 生成， 只需验证 \[ f(\tau+1)=f(\tau), \qquad f(-1/\tau)=\tau^k f(\tau) \] 两条关系即可。 无穷多个条件被压缩成两个生成元上的条件， 这正是群表示与线性代数思想的体现。 \end{remark} 现在把格 $\Lambda_\tau=\Z\tau+\Z$ 看成由有序基 $(\tau,1)$ 生成。 若 \[ \gamma= \begin{pmatrix} a&b\\ c&d \end{pmatrix}\in \SL_2(\Z), \] 则新基 \[ (\tau',1')=(a\tau+b,\ c\tau+d) \] 仍然张成同一格。 把第二个基向量提出来， 得到 \[ \Lambda_\tau =(c\tau+d)\bigl(\Z\cdot \tfrac{a\tau+b}{c\tau+d}+\Z\bigr) =(c\tau+d)\Lambda_{\gamma\tau}. \] 所以 $\tau$ 与 $\gamma\tau$ 描述的是同一个格， 只差一个复数伸缩因子。 这就是模群作用与椭圆曲线模空间之间联系的线性代数起点。
+
+
+
+
+\section{上半平面上的线性分式变换：Möbius 变换，$\PSL_2(\R)$ 的作用}
+
+
+
+
+线性分式变换看似是复分析对象， 但本质上来自实二维线性代数中的矩阵作用。 矩阵
+
+
+
+
+\[ \begin{pmatrix} a&b\\ c&d \end{pmatrix} \]
+
+
+
+
+并不直接线性地作用在复数 $\tau$ 上， 而是通过投影坐标诱导出
+
+
+
+
+\[ \tau\longmapsto \frac{a\tau+b}{c\tau+d}. \]
+
+
+
+
+\begin{definition}[Möbius 变换] 对 \[ \gamma= \begin{pmatrix} a&b\\ c&d \end{pmatrix}\in \SL_2(\R), \] 定义其在上半平面 $\HH$ 上的作用为 \[ \gamma\tau=\frac{a\tau+b}{c\tau+d}. \] 这称为线性分式变换， 也称 Möbius 变换。 \end{definition}
+
+
+
+
+\begin{proposition} 若 $\gamma\in\SL_2(\R)$ 且 $\tau=x+iy\in\HH$， 则 \[ \mathrm{Im}(\gamma\tau)=\frac{y}{|c\tau+d|^2}>0. \] 特别地， $\SL_2(\R)$ 保持 $\HH$ 不变。 \end{proposition}
+
+
+
+
+\begin{proof} 直接计算 \[ \gamma\tau=\frac{a\tau+b}{c\tau+d} =\frac{(a\tau+b)(c\bar\tau+d)}{|c\tau+d|^2}. \] 分子虚部为 \[ \mathrm{Im}\bigl((a\tau+b)(c\bar\tau+d)\bigr) =(ad-bc)\,\mathrm{Im}(\tau) =\mathrm{Im}(\tau), \] 因为 $\det\gamma=ad-bc=1$。 所以 \[ \mathrm{Im}(\gamma\tau)=\frac{\mathrm{Im}(\tau)}{|c\tau+d|^2}. \] \end{proof}
+
+
+
+
+\begin{remark} 若允许 $\det\gamma=-1$， 则虚部会多出一个负号， 上半平面会被送到下半平面。 因此在模形式理论中， $\SL_2$ 而不是全部 $\GL_2$ 才是自然的作用群。 \end{remark}
+
+
+
+
+\begin{proposition} 矩阵 $-I$ 在 $\HH$ 上作用平凡， 因此 $\SL_2(\R)$ 的作用降到商群 \[ \PSL_2(\R)=\SL_2(\R)/\{\pm I\}. \] \end{proposition}
+
+
+
+
+\begin{proof} 因为 \[ (-I)\tau=\frac{-\tau}{-1}=\tau. \] 所以 $\gamma$ 与 $-\gamma$ 给出同一个 Möbius 变换。 \end{proof}
+
+
+
+
+\begin{proposition} $\PSL_2(\R)$ 在 $\HH$ 上作用是传递的。 \end{proposition}
+
+
+
+
+\begin{proof} 任取 $\tau=u+iv\in\HH$。 设 \[ g= \begin{pmatrix} \sqrt v & u/\sqrt v\\ 0&1/\sqrt v \end{pmatrix}\in \SL_2(\R). \] 则 \[ g(i)=\frac{\sqrt v\,i+u/\sqrt v}{1/\sqrt v}=u+iv=\tau. \] 故任意点都可由 $i$ 送到。 \end{proof}
+
+
+
+
+\begin{remark} $i$ 的稳定子是 \[ \SO(2)= \left\{ \begin{pmatrix} \cos\theta&-\sin\theta\\ \sin\theta&\cos\theta \end{pmatrix} \right\}, \] 因此 \[ \HH\simeq \SL_2(\R)/\SO(2). \] 这表明上半平面本身就是一个由线性代数群构造出的齐性空间。 \end{remark} 对模形式最关键的是 $\SL_2(\Z)\subset\SL_2(\R)$ 的离散子群作用。 例如 \[ S(\tau)=-1/\tau,\qquad T(\tau)=\tau+1. \] 其中 $T$ 是水平平移， $S$ 是单位圆反演与共轭几何的复合。 标准基本域可取为 \[ \mathcal F= \left\{ \tau\in\HH\;\middle|\; |\tau|\ge1,\ -\tfrac12\le\mathrm{Re}(\tau)\le\tfrac12 \right\}. \] 它为后面定义 Petersson 内积提供了积分区域。 从格的角度看， $\tau\in\HH$ 保证 $(\tau,1)$ 在 $\C\simeq\R^2$ 中给出正向基： \[ \det \begin{pmatrix} \mathrm{Re}(\tau)&1\\ \mathrm{Im}(\tau)&0 \end{pmatrix} =-\mathrm{Im}(\tau)<0, \] 等价地， $(1,\tau)$ 是正向基。 于是 “$\tau$ 位于上半平面” 正是 “二维实平面中的格带有一个正向复结构” 的坐标表达。
+
+
+
+
+\section{模形式空间的线性代数：$\Mk_k(\Gamma)$ 是有限维向量空间，维数公式}
+
+
+
+
+现在进入真正的模形式空间。 固定一个有限指标子群 $\Gamma\subseteq \SL_2(\Z)$ 与整数权 $k$， 全纯模形式组成复向量空间， 线性代数由此正式登场。
+
+
+
+
+\begin{definition}[模形式与尖点形式] 设 $\Gamma\subseteq \SL_2(\Z)$ 为有限指标子群。 若全纯函数 $f\colon\HH\to\C$ 满足 \[ f(\gamma\tau)=(c\tau+d)^k f(\tau) \qquad \left( \gamma= \begin{pmatrix} a&b\\ c&d \end{pmatrix}\in\Gamma \right), \] 并且在各尖点都全纯， 则称 $f$ 为 $\Gamma$ 上权 $k$ 的模形式。 全体此类函数构成的复向量空间记为 $\Mk_k(\Gamma)$。 若在各尖点的常数项都为 $0$， 则称为尖点形式， 其空间记为 $\Sk_k(\Gamma)$。 \end{definition} 线性结构是显然的： 若 $f,g\in\Mk_k(\Gamma)$， $\alpha,\beta\in\C$， 则 \[ (\alpha f+\beta g)(\gamma\tau) =\alpha(c\tau+d)^k f(\tau)+\beta(c\tau+d)^k g(\tau) =(c\tau+d)^k(\alpha f+\beta g)(\tau). \] 因此 $\Mk_k(\Gamma)$ 与 $\Sk_k(\Gamma)$ 都是复向量空间。 真正深刻的是有限维性。
+
+
+
+
+\begin{theorem}[有限维性] 若 $\Gamma\subseteq \SL_2(\Z)$ 有有限指标， 则对每个固定的整数 $k$， 空间 $\Mk_k(\Gamma)$ 与 $\Sk_k(\Gamma)$ 都是有限维复向量空间。 \end{theorem}
+
+
+
+
+\begin{proof}[证明思路] 这一结论可由模曲线的紧化、 线丛观点、 或 valence formula 与 Riemann--Roch 推出。 本章不证明分析与代数几何细节， 只强调其线性代数意义： 固定权与群后， 模形式不再形成无限维函数空间， 而是一个可由有限个基向量控制的空间。 因此任何线性算子， 特别是 Hecke 算子， 都可以用有限矩阵来研究。 \end{proof} 对全模群 $\SL_2(\Z)$， 维数公式尤其漂亮。
+
+
+
+
+\begin{theorem}[全模群的维数公式] 对 $\SL_2(\Z)$， 有 \[ \dim \Mk_k(\SL_2(\Z))=0 \quad\text{若 }k<0\text{ 或 }k\text{ 为奇数}, \] 且 \[ \dim \Mk_0(\SL_2(\Z))=1,\qquad \dim \Mk_2(\SL_2(\Z))=0. \] 若 $k\ge4$ 为偶数， 则 \[ \dim \Mk_k(\SL_2(\Z))= \begin{cases} \left\lfloor \dfrac{k}{12}\right\rfloor+1, & k\not\equiv2\pmod{12},\\[6pt] \left\lfloor \dfrac{k}{12}\right\rfloor, & k\equiv2\pmod{12}. \end{cases} \] 并且 \[ \dim \Sk_k(\SL_2(\Z))= \begin{cases} 0,&k=2,\\ \dim \Mk_k(\SL_2(\Z))-1,&k\ge4\text{ 为偶数}. \end{cases} \] \end{theorem}
+
+
+
+
+\begin{proof}[奇权消失的线性代数原因] 因为 \[ -I\in \SL_2(\Z) \] 且 $(-I)\tau=\tau$， 所以若 $f\in\Mk_k(\SL_2(\Z))$， 则 \[ f(\tau)=f((-I)\tau)=(-1)^k f(\tau). \] 若 $k$ 为奇数， 便得到 $f(\tau)=-f(\tau)$， 故 $f=0$。 这是一条极其典型的“群元素给出线性约束”的例子。 \end{proof}
+
+
+
+
+\begin{example}[小权空间] 由维数公式可得 \[ \Mk_4=\C E_4,\quad \Mk_6=\C E_6,\quad \Mk_8=\C E_4^2,\quad \Mk_{10}=\C E_4E_6, \] 而 \[ \Mk_{12}=\C E_{12}\oplus \C\Delta =\C E_4^3\oplus \C\Delta =\C E_6^2\oplus \C\Delta. \] 因此 \[ \Sk_{12}=\C\Delta \] 是一维空间。 \end{example}
+
+
+
+
+\begin{remark} 一维空间在线性代数里最简单， 因为每个线性算子都自动是标量。 这正解释了为什么 $\Delta$ 自动成为所有 Hecke 算子的特征向量： 不是因为 miracle， 而是因为 \[ \dim \Sk_{12}(\SL_2(\Z))=1. \] \end{remark} 全模群下还有一个分次环结构：
+
+
+
+
+\begin{proposition} 偶权模形式组成的分次环满足 \[ \Mk_*(\SL_2(\Z)) = \bigoplus_{k\ge0}\Mk_k(\SL_2(\Z)) = \C[E_4,E_6]. \] 并且 \[ \Sk_*(\SL_2(\Z))=\Delta\cdot \Mk_{*-12}(\SL_2(\Z)). \] \end{proposition} 这意味着求一组基的问题， 可以转化为求解整数方程 \[ 4a+6b=k. \] 例如当 $k=20$ 时， 解为 \[ (a,b)=(5,0),(2,2), \] 故 \[ \Mk_{20}=\C E_4^5\oplus \C E_4^2E_6^2. \] 这就是把模形式空间“线性代数化”的最直观方式。
+
+
+
+
+\section{Petersson 内积：模形式空间上的内积结构，尖形式作为正交补}
+
+
+
+
+有限维向量空间一旦带有内积， 就可以谈正交基、 伴随算子、 谱定理。 模形式理论中与之对应的自然内积， 就是 Petersson 内积。
+
+
+
+
+\begin{definition}[Petersson 内积] 设 $\Gamma\subseteq \SL_2(\Z)$ 为有限指标子群， $\mathcal F_\Gamma$ 是其一个基本域， $f,g\in \Sk_k(\Gamma)$。 定义 \[ \inner{f}{g} = \int_{\mathcal F_\Gamma} f(\tau)\overline{g(\tau)}\,(\mathrm{Im}\,\tau)^k \frac{dx\,dy}{y^2}, \qquad \tau=x+iy. \] \end{definition} 这里的测度 \[ d\mu(\tau)=\frac{dx\,dy}{y^2} \] 是双曲平面上的 $\SL_2(\R)$-不变测度。 而因子 $y^k$ 则刚好抵消模形式变换律中的权。
+
+
+
+
+\begin{proposition} 对 \[ F(\tau)=f(\tau)\overline{g(\tau)}\,(\mathrm{Im}\,\tau)^k, \] 有 \[ F(\gamma\tau)=F(\tau) \qquad(\gamma\in\Gamma). \] 因此上面的积分与基本域选择无关。 \end{proposition}
+
+
+
+
+\begin{proof} 由变换律 \[ f(\gamma\tau)=(c\tau+d)^k f(\tau),\qquad g(\gamma\tau)=(c\tau+d)^k g(\tau), \] 以及 \[ \mathrm{Im}(\gamma\tau)=\frac{y}{|c\tau+d|^2}, \] 得到 \[ f(\gamma\tau)\overline{g(\gamma\tau)}(\mathrm{Im}(\gamma\tau))^k = (c\tau+d)^k\overline{(c\tau+d)^k} \,f(\tau)\overline{g(\tau)} \frac{y^k}{|c\tau+d|^{2k}} = F(\tau). \] \end{proof}
+
+
+
+
+\begin{proposition} Petersson 内积在 $\Sk_k(\Gamma)$ 上是 Hermite 内积， 即共轭对称、线性且正定。 \end{proposition}
+
+
+
+
+\begin{proof} 共轭对称与线性由积分直接给出。 若 $f\ne0$， 则 \[ \inner{f}{f} = \int_{\mathcal F_\Gamma}|f(\tau)|^2 y^k \frac{dx\,dy}{y^2}>0. \] 之所以收敛， 关键是尖点形式在尖点处有指数衰减： 若 \[ f(\tau)=\sum_{n\ge1}a_n e^{2\pi in\tau}, \] 则当 $y\to\infty$ 时， \[ f(\tau)=O(e^{-2\pi y}), \] 故被积函数仍快速衰减。 \end{proof}
+
+
+
+
+\begin{remark} 严格说来， 通常的 Petersson 内积自然定义在尖点形式空间上， 因为非尖点模形式在无穷远处有常数项， 积分会发散。 若希望把内积扩展到整个 $\Mk_k$， 可采用正则化 Petersson 内积。 在全模群情形、 偶权 $k\ge4$ 时， 这给出分解 \[ \Mk_k(\SL_2(\Z)) = \C E_k \oplus \Sk_k(\SL_2(\Z)), \] 并且 \[ \Sk_k(\SL_2(\Z)) = (\C E_k)^\perp \] 相对于正则化内积成立。 因此“尖形式是 Eisenstein 方向的正交补”是准确的线性代数陈述。 \end{remark}
+
+
+
+
+\begin{example} 在权 $12$ 时， \[ \Mk_{12}=\C E_{12}\oplus \C\Delta. \] 由于 $\Sk_{12}=\C\Delta$， 正则化 Petersson 理论告诉我们 \[ \inner{\Delta}{E_{12}}_{\mathrm{reg}}=0. \] 所以整个空间被分成一个 Eisenstein 方向与一个 cusp 方向。 \end{example}
+
+
+
+
+\begin{remark} 一旦有了内积， 就可以对任意模形式做正交分解。 这与线性代数中的“沿子空间作正交投影”完全一致。 后面 Hecke 算子的自伴随性， 正是在这套内积结构上发生的。 \end{remark}
+
+
+
+
+\section{Hecke 算子的线性代数：$T_n$ 是 $\Mk_k$ 上的线性算子，$T_n$ 自伴随}
+
+
+
+
+模形式理论最重要的算子族就是 Hecke 算子。 从线性代数观点看， 它们是一族非常特殊的线性算子： 彼此交换， 并且在 Petersson 内积下自伴随。
+
+
+
+
+\begin{definition}[Hecke 算子] 对全模群情形， 设 \[ f\in \Mk_k(\SL_2(\Z)). \] 定义 \[ (T_n f)(\tau) = n^{k-1} \sum_{\substack{ad=n\\ d>0}} \sum_{b\,(\mathrm{mod}\, d)} d^{-k} f\!\left(\frac{a\tau+b}{d}\right). \] \end{definition} 这是一个线性定义， 所以 \[ T_n(\alpha f+\beta g)=\alpha T_n f+\beta T_n g. \] 因此 \[ T_n\colon \Mk_k(\SL_2(\Z))\to \Mk_k(\SL_2(\Z)) \] 是线性算子， 并且它保持尖点子空间： \[ T_n\colon \Sk_k(\SL_2(\Z))\to \Sk_k(\SL_2(\Z)). \]
+
+
+
+
+\begin{theorem}[$q$-展开公式] 若 \[ f(\tau)=\sum_{m=0}^\infty a_m q^m,\qquad q=e^{2\pi i\tau}, \] 则 \[ T_n f=\sum_{m=0}^\infty b_m q^m, \qquad b_m=\sum_{d\mid(m,n)} d^{k-1} a_{mn/d^2}. \] 特别地， 若 $p$ 为素数， 则 \[ b_m=a_{pm}+p^{k-1}a_{m/p}, \] 其中约定当 $p\nmid m$ 时 $a_{m/p}=0$。 \end{theorem} 这条公式非常重要， 因为它把抽象的双陪集定义 变成了可直接计算的系数变换。 从矩阵角度看， 它告诉我们： 一旦选定 $\Mk_k$ 或 $\Sk_k$ 的一个基， 每个 $T_n$ 都可以化成一个有限矩阵。
+
+
+
+
+\begin{example} 设 \[ \Delta(\tau)=\sum_{m=1}^\infty \tau(m)q^m. \] 在权 $12$ 下， \[ (T_2\Delta)(\tau)=\sum_{m\ge1}\bigl(\tau(2m)+2^{11}\tau(m/2)\bigr)q^m. \] 前几项为 \[ -24q+576q^2-6048q^3+\cdots. \] 稍后我们将看到 \[ T_2\Delta=-24\Delta. \] \end{example}
+
+
+
+
+\begin{proposition}[Hecke 关系] 在 $\Mk_k(\SL_2(\Z))$ 上， Hecke 算子满足 \[ T_mT_n=\sum_{d\mid(m,n)} d^{k-1}T_{mn/d^2}. \] 特别地， 若 $(m,n)=1$， 则 \[ T_mT_n=T_{mn}, \] 而对素数幂有递推 \[ T_pT_{p^r}=T_{p^{r+1}}+p^{k-1}T_{p^{r-1}} \qquad (r\ge1). \] \end{proposition} 这立刻推出： \[ T_mT_n=T_nT_m. \] 所以 Hecke 算子构成一族两两交换的线性算子。
+
+
+
+
+\begin{theorem}[自伴随性] 对任意 $n\ge1$， Hecke 算子 $T_n$ 在 $\Sk_k(\SL_2(\Z))$ 上关于 Petersson 内积自伴随， 即 \[ \inner{T_n f}{g}=\inner{f}{T_n g} \qquad (f,g\in \Sk_k(\SL_2(\Z))). \] \end{theorem}
+
+
+
+
+\begin{proof}[证明思路] Hecke 算子的定义来自双陪集分解。 把积分区域在双陪集代表之间重新拼接， 再利用双曲测度的 $\SL_2(\R)$-不变性， 可把左边化到右边。 完整证明需要对陪集分解进行细致 bookkeeping， 但其结构与有限维线性代数中的“伴随矩阵来自变量代换”完全同型。 \end{proof}
+
+
+
+
+\begin{remark} “交换”与“自伴随”是极强的条件。 在线性代数中， 单个自伴随算子可正交对角化； 一族彼此交换的自伴随算子可以同时正交对角化。 于是， Hecke 理论的核心问题自然变成： 找出 $\Sk_k$ 的一组公共特征向量基。 \end{remark}
+
+
+
+
+\section{Hecke 特征形式：同时对角化，特征值与 Fourier 系数的关系}
+
+
+
+
+现在把前面的线性代数结论全部合并。 由于 $\Sk_k$ 是有限维 Hermite 空间， 而 $\{T_n\}_{n\ge1}$ 是一族彼此交换的自伴随算子， 所以它们可以同时对角化。
+
+
+
+
+\begin{theorem}[同时对角化] 空间 $\Sk_k(\SL_2(\Z))$ 存在一组正交基 \[ f_1,\dots,f_d \qquad \bigl(d=\dim \Sk_k(\SL_2(\Z))\bigr), \] 使得对所有 $n\ge1$ 与所有 $i$， 都有 \[ T_n f_i=\lambda_n(f_i)\,f_i. \] 这组基称为 Hecke 特征形式基。 \end{theorem}
+
+
+
+
+\begin{proof} 有限维 Hermite 空间上的自伴随算子可正交对角化。 又因所有 $T_n$ 两两交换， 每个 $T_n$ 的特征子空间都被其余 $T_m$ 保持。 对维数作归纳， 即可构造一组公共正交特征向量基。 \end{proof}
+
+
+
+
+\begin{definition}[归一化 Hecke 特征形式] 若非零尖点形式 \[ f(\tau)=\sum_{m=1}^\infty a_m q^m \] 满足对所有 $n\ge1$ 都有 \[ T_n f=\lambda_n f, \] 则称 $f$ 为 Hecke 特征形式。 若进一步 \[ a_1=1, \] 则称为归一化 Hecke 特征形式。 \end{definition} 最重要的事实是： 特征值就是 Fourier 系数。
+
+
+
+
+\begin{proposition} 若 \[ f(\tau)=\sum_{m=1}^\infty a_m q^m \] 是归一化 Hecke 特征形式， 则对每个 $n\ge1$， 有 \[ T_n f=a_n f. \] 换言之， $T_n$ 在 $f$ 上的特征值恰为 $a_n$。 \end{proposition}
+
+
+
+
+\begin{proof} 设 $T_n f=\lambda_n f$。 由 Hecke 的 $q$-展开公式， $T_n f$ 的 $q^1$ 系数等于 $a_n$。 而右边 $\lambda_n f$ 的 $q^1$ 系数等于 $\lambda_n a_1=\lambda_n$， 因为 $a_1=1$。 比较系数得 \[ \lambda_n=a_n. \] \end{proof} 于是 Hecke 关系直接转化为 Fourier 系数的乘法性质。
+
+
+
+
+\begin{theorem}[乘性与素数幂递推] 设 \[ f(\tau)=\sum_{n=1}^\infty a_n q^n \] 是权 $k$ 的归一化 Hecke 特征形式。 则 \[ a_{mn}=a_ma_n\qquad \bigl((m,n)=1\bigr), \] 并且对任意素数 $p$ 与 $r\ge1$， 有 \[ a_{p^{r+1}}=a_p a_{p^r}-p^{k-1}a_{p^{r-1}}. \] \end{theorem}
+
+
+
+
+\begin{proof} 由 \[ T_mT_n=T_{mn}\qquad ((m,n)=1) \] 作用到 $f$ 上， 得到 \[ a_ma_n f=T_m(T_n f)=T_{mn}f=a_{mn}f. \] 因为 $f\ne0$， 故 \[ a_{mn}=a_ma_n. \] 素数幂递推同理由 \[ T_pT_{p^r}=T_{p^{r+1}}+p^{k-1}T_{p^{r-1}} \] 作用于 $f$ 得出。 \end{proof}
+
+
+
+
+\begin{example}[Ramanujan $\tau$ 函数] 因为 \[ \Sk_{12}(\SL_2(\Z))=\C\Delta \] 是一维， 所以 $\Delta$ 自动是归一化 Hecke 特征形式。 于是 \[ T_n\Delta=\tau(n)\Delta, \] 并且 \[ \tau(mn)=\tau(m)\tau(n)\qquad ((m,n)=1), \] \[ \tau(p^{r+1})=\tau(p)\tau(p^r)-p^{11}\tau(p^{r-1}). \] 这说明 Ramanujan $\tau$ 函数的算术性质， 本质上来自一族自伴随线性算子的谱分解。 \end{example}
+
+
+
+
+\begin{remark} 在线性代数里， 选到“好基”以后， 算子都变成对角矩阵， 结构会骤然清晰。 Hecke 特征形式正是模形式空间中的这种“好基”。 在这组基下， 每个 Hecke 算子都只由它的特征值序列决定； 而这些特征值又恰好就是 Fourier 系数。 因此谱理论与解析展开在这里完全接合。 \end{remark}
+
+
+
+
+\section{展望：从线性代数到模形式理论}
+
+
+
+
+回顾本章， 模形式理论中的若干核心对象都可以按线性代数语言重述：
+
+
+
+
+\begin{itemize} \item 格是 $\Z$-模， 不同基之间的变换由 $\GL_n(\Z)$ 控制； 二维定向基变换群就是 $\SL_2(\Z)$。 \item 上半平面是 $\PSL_2(\R)$ 的齐性空间， 模群则是其中的离散整数点。 \item 固定权与群以后， $\Mk_k(\Gamma)$、$\Sk_k(\Gamma)$ 是有限维复向量空间， 所以可以谈维数、基与矩阵表示。 \item Petersson 内积给尖点形式空间带来 Hermite 结构， 从而引入正交分解与伴随算子。 \item Hecke 算子是一族彼此交换的自伴随线性算子， 因而能同时对角化。 \item Hecke 特征形式构成公共特征向量基， 其特征值与 Fourier 系数一致， 由此导出乘性与 $L$-函数的 Euler 乘积。 \end{itemize} 因此， 线性代数并不是模形式理论的“预备知识”而已， 它直接给出了组织整个理论的框架。 很多深刻的算术现象， 例如 Ramanujan $\tau$ 函数的乘性、 新形式理论、 乃至模形式与 Galois 表示的联系， 都以“有限维空间上一族交换自伴随算子的谱理论”为起点。 再往前走， Hecke 代数会把这些算子打包成一个交换代数； 特征形式会对应于这代数的同时本征向量； 而在更深层次， 这些本征值系统还与椭圆曲线、 Galois 表示、 以及自守表示联系起来。 从这个意义上说， 本章只是展示了一扇门： 门后是现代数论的核心地带。
+
+
+
+
+\section*{习题}
+
+
+
+
+本章共有 50 道习题， 分为基础题、进阶题、挑战题三组。
+
+
+
+
+\subsection*{基础题}
+
+
+
+
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em] \item \basic\ 设 $L=\Z v_1+\Z v_2$，又有 $L=\Z w_1+\Z w_2$。 证明从基 $(v_1,v_2)$ 到基 $(w_1,w_2)$ 的变换矩阵属于 $\GL_2(\Z)$。 \item \basic\ 证明：若 $U\in \GL_n(\Z)$，则 $v_1,\dots,v_n$ 与 $w_1,\dots,w_n$ 满足 $W=VU$ 时生成同一个格。 \item \basic\ 求子格 \[ L=2\Z\oplus 3\Z\subseteq \Z^2 \] 的指数 $[\Z^2:L]$。 \item \basic\ 证明：整数矩阵 $A$ 属于 $\GL_n(\Z)$ 当且仅当 $A$ 可逆且 $A^{-1}$ 仍是整数矩阵。 \item \basic\ 验证 \[ S=\begin{pmatrix}0&-1\\1&0\end{pmatrix}, \qquad T=\begin{pmatrix}1&1\\0&1\end{pmatrix} \] 都属于 $\SL_2(\Z)$。 \item \basic\ 设 \[ \omega\!\left(\binom{x_1}{y_1},\binom{x_2}{y_2}\right)=x_1y_2-x_2y_1 \]。 证明：若 $A\in \SL_2(\Z)$，则 $\omega(Av,Aw)=\omega(v,w)$。 \item \basic\ 设 $\Lambda=\Z\omega_1+\Z\omega_2$。 证明： 若 \[ \gamma= \begin{pmatrix}a&b\\c&d\end{pmatrix}\in \SL_2(\Z), \] 则 \[ (a\omega_1+b\omega_2,\ c\omega_1+d\omega_2) \] 仍是 $\Lambda$ 的一组基。 \item \basic\ 计算 \[ S(i),\quad T(i),\quad S(\rho),\quad T(\rho), \qquad \rho=e^{2\pi i/3}. \] \item \basic\ 证明：若 \[ \gamma=\begin{pmatrix}a&b\\c&d\end{pmatrix}\in \SL_2(\R), \] 则 \[ \mathrm{Im}(\gamma\tau)=\frac{\mathrm{Im}(\tau)}{|c\tau+d|^2}. \] \item \basic\ 说明为什么 $-I$ 在 $\HH$ 上作用平凡。 \item \basic\ 证明：若 $k$ 为奇数，则 \[ \Mk_k(\SL_2(\Z))=0. \] \item \basic\ 利用维数公式求 \[ \dim \Mk_4,\ \dim \Mk_6,\ \dim \Mk_8,\ \dim \Mk_{10}. \] \item \basic\ 求 \[ \dim \Mk_{12}(\SL_2(\Z)), \qquad \dim \Sk_{12}(\SL_2(\Z)). \] \item \basic\ 分别写出 $\Mk_8(\SL_2(\Z))$ 与 $\Mk_{12}(\SL_2(\Z))$ 的一组基。 \item \basic\ 说明为什么 $\Delta$ 是尖点形式。 \item \basic\ 设 \[ f(\tau)=\sum_{n\ge1}a_n q^n\in \Sk_k(\Gamma). \] 说明为什么 Petersson 内积中的积分在无穷远处收敛。 \item \basic\ 写出素数 $p$ 时 Hecke 算子 $T_p$ 对 $q$-展开系数的作用公式。 \item \basic\ 设 \[ f=\sum_{n\ge1}a_n q^n \] 是归一化 Hecke 特征形式。 证明 $T_n$ 在 $f$ 上的特征值等于 $a_n$。 \item \basic\ 已知 $\tau(2)=-24$。 说明为什么 \[ T_2\Delta=-24\Delta. \] \item \basic\ 用一句线性代数定理解释： 为什么一族彼此交换的自伴随算子可以同时对角化？ \end{enumerate}
+
+
+
+
+\subsection*{进阶题}
+
+
+
+
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em] \item \medium\ 证明： \[ \SL_2(\Z)= \{A\in \GL_2(\Z)\mid \omega(Av,Aw)=\omega(v,w)\ \forall v,w\in\Z^2\}. \] \item \medium\ 用 Euclid 算法给出“$S,T$ 生成 $\SL_2(\Z)$”的证明框架。 \item \medium\ 设 \[ \Lambda_\tau=\Z\tau+\Z. \] 证明对 \[ \gamma=\begin{pmatrix}a&b\\c&d\end{pmatrix}\in \SL_2(\Z), \] 有 \[ \Lambda_\tau=(c\tau+d)\Lambda_{\gamma\tau}. \] \item \medium\ 证明 $\PSL_2(\R)$ 在 $\HH$ 上的作用是传递的。 \item \medium\ 求 $i$ 在 $\SL_2(\R)$ 作用下的稳定子， 并说明它与 $\SO(2)$ 的关系。 \item \medium\ 利用维数公式求 \[ \dim \Mk_{14},\ \dim \Mk_{16},\ \dim \Mk_{18},\ \dim \Sk_{24}. \] \item \medium\ 由 \[ \Mk_*(\SL_2(\Z))=\C[E_4,E_6] \] 求 $\Mk_{20}(\SL_2(\Z))$ 的一组基。 \item \medium\ 证明：对偶权 $k\ge4$， 空间 $\Sk_k(\SL_2(\Z))$ 是 $\Mk_k(\SL_2(\Z))$ 中常数项为 $0$ 的子空间。 \item \medium\ 证明：对全模群的偶权 $k\ge4$， $\Sk_k(\SL_2(\Z))$ 在 $\Mk_k(\SL_2(\Z))$ 中余维为 $1$。 \item \medium\ 证明 Petersson 内积在 $\Sk_k(\Gamma)$ 上满足 Hermite 对称性与正定性。 \item \medium\ 说明在正则化 Petersson 内积意义下， 为什么 \[ \Mk_k(\SL_2(\Z))=\C E_k\oplus \Sk_k(\SL_2(\Z)) \] 可视为正交分解。 \item \medium\ 由 Hecke 关系证明：若 $(m,n)=1$，则 $T_m$ 与 $T_n$ 交换。 \item \medium\ 从 Hecke 的 $q$-展开公式直接推出 $T_p$ 的系数公式 \[ b_m=a_{pm}+p^{k-1}a_{m/p}. \] \item \medium\ 证明 $T_n$ 保持尖点形式空间， 即 \[ T_n(\Sk_k)\subseteq \Sk_k. \] \item \medium\ 设 $T$ 为有限维 Hermite 空间上的自伴随算子。 证明：不同特征值对应的特征向量彼此正交。 \item \medium\ 说明为什么 Hecke 特征形式可以取成 $\Sk_k$ 的一组正交基。 \item \medium\ 设 $f=\sum a_n q^n$ 是归一化 Hecke 特征形式。 由 \[ T_mT_n=T_{mn}\qquad ((m,n)=1) \] 推出 \[ a_{mn}=a_ma_n. \] \item \medium\ 设 $f=\sum a_n q^n$ 是权 $k$ 的归一化 Hecke 特征形式。 由 \[ T_pT_{p^r}=T_{p^{r+1}}+p^{k-1}T_{p^{r-1}} \] 推出 \[ a_{p^{r+1}}=a_pa_{p^r}-p^{k-1}a_{p^{r-1}}. \] \item \medium\ 证明：若 $\dim \Sk_k(\SL_2(\Z))=1$， 则任一非零尖点形式都是 Hecke 特征形式。 \item \medium\ 说明为什么“先求维数，再选基，再写出 $T_n$ 的矩阵，再对角化” 构成研究模形式的一个自然线性代数流程。 \end{enumerate}
+
+
+
+
+\subsection*{挑战题}
+
+
+
+
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em] \item \hard\ 设 $L\subseteq \Z^n$ 是有限指数子格， 其一组基矩阵为 $B\in \Mat_{n\times n}(\Z)$。 证明 \[ [\Z^n:L]=|\det B|. \] \item \hard\ 证明： \[ \Lambda_{\tau+1}=\Lambda_\tau, \qquad \Lambda_{-1/\tau}=\tau^{-1}\Lambda_\tau. \] 并解释这两式如何对应 $T$ 与 $S$ 的作用。 \item \hard\ 证明：$\tau\in\HH$ 当且仅当 $(1,\tau)$ 在 $\C\simeq \R^2$ 中给出正向实基。 \item \hard\ 列出所有偶数 $k\le24$， 使得 \[ \Sk_k(\SL_2(\Z))=0 \] 以及使得 \[ \dim \Sk_k(\SL_2(\Z))=1. \] \item \hard\ 证明： \[ \Sk_{24}(\SL_2(\Z)) = \Delta\cdot \Mk_{12}(\SL_2(\Z)) \] 是二维空间， 并写出其一组显式基。 \item \hard\ 设 $f=\sum a_n q^n$ 是归一化 Hecke 特征形式。 若某素数 $p$ 满足 $a_p=0$， 证明所有奇次幂系数 \[ a_{p^{2r+1}} \] 都为 $0$。 \item \hard\ 设 $f,g\in \Sk_k(\SL_2(\Z))$ 是两个归一化 Hecke 特征形式。 若存在某个 $p$ 使 \[ a_p(f)\ne a_p(g), \] 证明 \[ \inner{f}{g}=0. \] \item \hard\ 给出“交换自伴随族可同时对角化”的归纳证明。 \item \hard\ 设 $\{f_1,\dots,f_d\}$ 是 $\Sk_k$ 的归一化 Hecke 特征形式基。 证明：在这组基下， 每个 $T_n$ 的矩阵都是对角矩阵， 并说明其迹为 \[ \Tr(T_n)=\sum_{i=1}^d a_n(f_i). \] \item \hard\ 用不少于四句话总结： 基、维数、内积、自伴随、同时对角化 分别如何在模形式理论中发挥作用。 \end{enumerate}
+
+
+
+
+\section*{习题解答}
+
+
+
+
+\subsection*{基础题解答}
+
+
+
+
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em] \item \textbf{解答.} 每个 $w_j$ 都能唯一写成 \[ w_j=u_{1j}v_1+u_{2j}v_2,\qquad u_{ij}\in\Z, \] 故 $W=VU$，其中 $U\in \Mat_{2\times2}(\Z)$。 同理 $V=WU'$，其中 $U'\in \Mat_{2\times2}(\Z)$。 于是 $V=VUU'$， 从而 $UU'=I$， 故 $U\in \GL_2(\Z)$。 \item \textbf{解答.} 由 $W=VU$ 且 $U$ 整系数， 知每个 $w_j$ 都是 $v_i$ 的整数线性组合， 所以 $\Z w_1+\cdots+\Z w_n\subseteq \Z v_1+\cdots+\Z v_n$。 又因为 $U^{-1}\in \GL_n(\Z)$， 每个 $v_i$ 也是 $w_j$ 的整数线性组合， 故反向包含也成立， 两格相同。 \item \textbf{解答.} 商群 \[ \Z^2/(2\Z\oplus3\Z)\cong (\Z/2\Z)\oplus(\Z/3\Z) \] 共有 $2\cdot3=6$ 个元素。 因此 \[ [\Z^2:L]=6. \] \item \textbf{解答.} 若 $A\in\GL_n(\Z)$， 按定义它在整数矩阵环中可逆， 故 $A^{-1}$ 仍是整数矩阵。 反之， 若 $A$ 可逆且 $A^{-1}$ 为整数矩阵， 则 $A$ 在整数矩阵环中可逆， 故 $A\in \GL_n(\Z)$。 \item \textbf{解答.} 直接算行列式： \[ \det S=0\cdot0-(-1)\cdot1=1, \qquad \det T=1\cdot1-1\cdot0=1. \] 因此 $S,T\in \SL_2(\Z)$。 \item \textbf{解答.} 对任意 $2\times2$ 实矩阵 $A$， 有 \[ \omega(Av,Aw)=\det(A)\omega(v,w). \] 若 $A\in \SL_2(\Z)$， 则 $\det(A)=1$， 故 \[ \omega(Av,Aw)=\omega(v,w). \] \item \textbf{解答.} 新向量显然都在 $\Lambda$ 中， 因为它们是 $\omega_1,\omega_2$ 的整数线性组合。 又由于 \[ \begin{pmatrix}\omega_1\\ \omega_2\end{pmatrix} = \gamma^{-1} \begin{pmatrix} a\omega_1+b\omega_2\\ c\omega_1+d\omega_2 \end{pmatrix} \] 且 $\gamma^{-1}\in \SL_2(\Z)$， 故旧基也可由新基整线性表示。 因此新向量组仍是格基。 \item \textbf{解答.} \[ S(i)=-1/i=i,\qquad T(i)=i+1. \] 又 \[ \rho=e^{2\pi i/3}=-\frac12+\frac{\sqrt3}{2}i, \quad \rho^2+\rho+1=0. \] 所以 \[ S(\rho)=-1/\rho=\rho+1=\frac12+\frac{\sqrt3}{2}i, \qquad T(\rho)=\rho+1. \] \item \textbf{解答.} 写 $\tau=x+iy$。 有 \[ \gamma\tau=\frac{a\tau+b}{c\tau+d} =\frac{(a\tau+b)(c\bar\tau+d)}{|c\tau+d|^2}. \] 分子虚部为 \[ (ad-bc)\,y=y, \] 因为 $\det\gamma=1$。 故 \[ \mathrm{Im}(\gamma\tau)=\frac{y}{|c\tau+d|^2}. \] \item \textbf{解答.} 因为 \[ (-I)\tau=\frac{-\tau}{-1}=\tau. \] 所以 $-I$ 对每个 $\tau\in\HH$ 都不改变点， 其作用平凡。 \item \textbf{解答.} 若 $f\in \Mk_k(\SL_2(\Z))$ 且 $k$ 为奇数， 则 \[ f(\tau)=f((-I)\tau)=(-1)^k f(\tau)=-f(\tau). \] 故 $f=0$。 因此 $\Mk_k(\SL_2(\Z))=0$。 \item \textbf{解答.} 对 $k=4,6,8,10$， 都满足 $k\ge4$ 为偶数且 $k\not\equiv2\pmod{12}$， 并且 $\lfloor k/12\rfloor=0$。 故 \[ \dim \Mk_4=\dim \Mk_6=\dim \Mk_8=\dim \Mk_{10}=1. \] \item \textbf{解答.} 因 $12\not\equiv2\pmod{12}$， 故 \[ \dim \Mk_{12}=\left\lfloor\frac{12}{12}\right\rfloor+1=2. \] 又 \[ \dim \Sk_{12}=\dim \Mk_{12}-1=1. \] \item \textbf{解答.} 因为 $\dim \Mk_8=1$， 而 $E_4^2$ 是权 $8$ 模形式且非零， 故 \[ \Mk_8=\C E_4^2. \] 又 $\dim \Mk_{12}=2$， 可取一组基为 \[ \{E_{12},\Delta\} \] 或 \[ \{E_4^3,\Delta\}, \] 因为 $E_4^3$ 与 $\Delta$ 线性无关。 \item \textbf{解答.} 由乘积展开 \[ \Delta(\tau)=q\prod_{n=1}^\infty(1-q^n)^{24} \] 可见其 $q$-展开首项为 $q$， 因此常数项为 $0$。 故 $\Delta$ 在尖点 $\infty$ 消失， 是尖点形式。 \item \textbf{解答.} 因为 \[ f(\tau)=\sum_{n\ge1}a_n e^{2\pi in\tau}, \] 当 $y\to\infty$ 时， 每项都含有因子 $e^{-2\pi ny}$， 故 \[ f(\tau)=O(e^{-2\pi y}). \] 于是 \[ |f(\tau)|^2 y^{k-2} \] 仍被指数衰减控制， 积分在无穷远处收敛。 \item \textbf{解答.} 若 \[ f=\sum_{m\ge0}a_m q^m, \] 则 \[ T_p f=\sum_{m\ge0} b_m q^m, \qquad b_m=a_{pm}+p^{k-1}a_{m/p}, \] 其中约定 $p\nmid m$ 时 $a_{m/p}=0$。 \item \textbf{解答.} 设 \[ T_n f=\lambda_n f. \] 比较两边的 $q^1$ 系数。 左边按 Hecke 公式为 $a_n$， 右边为 $\lambda_n a_1=\lambda_n$， 因为 $a_1=1$。 所以 \[ \lambda_n=a_n. \] \item \textbf{解答.} $\Delta$ 是 $\Sk_{12}$ 的非零元素， 而 $\dim \Sk_{12}=1$， 故 $T_2$ 在该空间上只能是某个标量。 此标量等于归一化特征形式的第二个 Fourier 系数， 即 $\tau(2)=-24$。 所以 \[ T_2\Delta=-24\Delta. \] \item \textbf{解答.} 所用定理是： 有限维 Hermite 空间上一族彼此交换的自伴随算子可以同时正交对角化。 \end{enumerate}
+
+
+
+
+\subsection*{进阶题解答}
+
+
+
+
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em] \item \textbf{解答.} 若 $A\in \SL_2(\Z)$， 则由面积公式知 \[ \omega(Av,Aw)=\det(A)\omega(v,w)=\omega(v,w). \] 反之， 若 $A\in\GL_2(\Z)$ 保持 $\omega$， 取 $v=e_1,w=e_2$， 得 \[ 1=\omega(e_1,e_2)=\omega(Ae_1,Ae_2)=\det(A). \] 故 $A\in \SL_2(\Z)$。 \item \textbf{解答.} 设 \[ \gamma=\begin{pmatrix}a&b\\c&d\end{pmatrix}\in\SL_2(\Z). \] 若 $c=0$ 直接完成。 若 $c\neq0$， 用 Euclid 算法写 $a=qc+r$，$|r|<|c|$。 则 $T^{-q}\gamma$ 的左上角变为 $r$， 再左乘 $S$ 后左下角变为 $r$， 绝对值变小。 不断重复， 最终化到 $c=0$， 故 $\gamma$ 由 $S,T$ 生成。 \item \textbf{解答.} 由 \[ \gamma\tau=\frac{a\tau+b}{c\tau+d} \] 得 \[ a\tau+b=(c\tau+d)\gamma\tau. \] 于是 \[ \Lambda_\tau=\Z\tau+\Z =(c\tau+d)\bigl(\Z\gamma\tau+\Z\bigr) =(c\tau+d)\Lambda_{\gamma\tau}. \] \item \textbf{解答.} 任取 $\tau=u+iv\in\HH$， 令 \[ g= \begin{pmatrix} \sqrt v&u/\sqrt v\\ 0&1/\sqrt v \end{pmatrix}\in\SL_2(\R). \] 则 \[ g(i)=u+iv=\tau. \] 故作用传递。 \item \textbf{解答.} 设 \[ g=\begin{pmatrix}a&b\\c&d\end{pmatrix}\in\SL_2(\R), \qquad g(i)=i. \] 则 \[ ai+b=i(ci+d), \] 比较实部与虚部可得 \[ b=-c,\qquad a=d. \] 再由 $\det g=1$ 得 \[ a^2+c^2=1. \] 故 \[ g= \begin{pmatrix} a&-c\\ c&a \end{pmatrix} \] 正是 $\SO(2)$ 的矩阵形式。 \item \textbf{解答.} \[ 14\equiv2\pmod{12}\Rightarrow \dim \Mk_{14}=1. \] \[ 16\not\equiv2\pmod{12}\Rightarrow \dim \Mk_{16}=2. \] \[ 18\not\equiv2\pmod{12}\Rightarrow \dim \Mk_{18}=2. \] 又 \[ \dim \Mk_{24}=\left\lfloor\frac{24}{12}\right\rfloor+1=3, \] 故 \[ \dim \Sk_{24}=2. \] \item \textbf{解答.} 解方程 \[ 4a+6b=20 \] 得 \[ (a,b)=(5,0),(2,2). \] 所以一组基为 \[ E_4^5,\qquad E_4^2E_6^2. \] \item \textbf{解答.} 全模群下， 尖点条件就是 $q$-展开常数项为 $0$。 因此 \[ \Sk_k(\SL_2(\Z)) = \{f\in \Mk_k(\SL_2(\Z))\mid \ctinf(f)=0\}. \] 这正是取常数项线性泛函的核。 \item \textbf{解答.} 对偶权 $k\ge4$， 存在 Eisenstein 级数 $E_k$， 且其常数项为 $1$， 故不属于 $\Sk_k$。 另一方面， 尖点条件只多出一个“常数项为零”的线性约束， 因此 \[ \Mk_k=\C E_k\oplus \Sk_k, \] 从而 $\Sk_k$ 的余维为 $1$。 \item \textbf{解答.} 共轭对称性来自 \[ \overline{\inner{f}{g}}=\inner{g}{f}. \] 线性来自积分的线性。 若 $f\ne0$， 则 \[ \inner{f}{f}=\int_{\mathcal F}|f(\tau)|^2y^k\frac{dx\,dy}{y^2}>0, \] 且因 cusp 衰减而收敛， 故正定。 \item \textbf{解答.} 在正则化 Petersson 内积下， Eisenstein 级数方向与 cusp 方向正交。 而对全模群偶权 $k\ge4$， 维数上已有 \[ \dim \Mk_k=\dim \Sk_k+1. \] 再取常数项为 $1$ 的 $E_k$， 便得 \[ \Mk_k=\C E_k\oplus \Sk_k, \] 并可视作正交直和。 \item \textbf{解答.} Hecke 关系给出 \[ T_mT_n=\sum_{d\mid(m,n)}d^{k-1}T_{mn/d^2}. \] 若 $(m,n)=1$， 只有 $d=1$， 故 \[ T_mT_n=T_{mn}. \] 交换 $m,n$ 同理得 \[ T_nT_m=T_{mn}, \] 于是两者交换。 \item \textbf{解答.} 在 \[ b_m=\sum_{d\mid(m,p)}d^{k-1}a_{mp/d^2} \] 中， 因 $p$ 为素数， $ d $ 只能取 $1$ 或 $p$。 若 $p\nmid m$， 只有 $d=1$， 得 $b_m=a_{pm}$。 若 $p\mid m$， 还有 $d=p$， 多出项 \[ p^{k-1}a_{m/p}. \] 故统一写为 \[ b_m=a_{pm}+p^{k-1}a_{m/p}. \] \item \textbf{解答.} 若 $f$ 是尖点形式， 则 $a_0(f)=0$。 对 $T_n f$， 其常数项为 \[ b_0=\sum_{d\mid(0,n)}d^{k-1}a_{0}=a_0\sum_{d\mid n}d^{k-1}=0. \] 故 $T_n f$ 的常数项仍为 $0$， 所以仍是尖点形式。 \item \textbf{解答.} 设 \[ Tv=\lambda v,\qquad Tw=\mu w, \qquad \lambda\ne\mu. \] 则 \[ \lambda \inner{v}{w} = \inner{Tv}{w} = \inner{v}{Tw} = \mu \inner{v}{w}. \] 故 \[ (\lambda-\mu)\inner{v}{w}=0, \] 从而 \[ \inner{v}{w}=0. \] \item \textbf{解答.} $\Sk_k$ 是有限维 Hermite 空间， 每个 $T_n$ 自伴随， 且彼此交换。 因此可同时正交对角化， 得到一组公共特征向量基。 把这些向量各自归一化， 便得到正交的 Hecke 特征形式基。 \item \textbf{解答.} 因为 $T_mf=a_mf$、$T_nf=a_nf$， 而 $(m,n)=1$ 时 \[ T_mT_n=T_{mn}, \] 所以 \[ a_ma_n f=T_m(T_nf)=T_{mn}f=a_{mn}f. \] $f\neq0$， 故 \[ a_{mn}=a_ma_n. \] \item \textbf{解答.} 由 \[ T_pT_{p^r}=T_{p^{r+1}}+p^{k-1}T_{p^{r-1}} \] 作用于 $f$， 得到 \[ a_p a_{p^r} f = a_{p^{r+1}}f+p^{k-1}a_{p^{r-1}}f. \] 消去 $f$ 即得 \[ a_{p^{r+1}}=a_pa_{p^r}-p^{k-1}a_{p^{r-1}}. \] \item \textbf{解答.} 若 $\dim \Sk_k=1$， 则任一线性算子在该空间上都等于某个标量。 Hecke 算子尤其如此。 因此任一非零向量同时是所有 $T_n$ 的特征向量， 故是 Hecke 特征形式。 \item \textbf{解答.} 维数告诉我们需要多少基向量； 选基后， Hecke 算子变成有限矩阵； 矩阵可用内积与自伴随性来研究； 最后再用同时对角化把所有 $T_n$ 化为对角矩阵。 这条流程正把“函数理论”转化为“有限维算子理论”。 \end{enumerate}
+
+
+
+
+\subsection*{挑战题解答}
+
+
+
+
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em] \item \textbf{解答.} 映射 \[ \phi\colon \Z^n\to \Z^n/L \] 的核就是 $L$。 若 $B$ 是 $L$ 的基矩阵， 则 $L=B\Z^n$。 由 Smith 标准形， 存在 $U,V\in\GL_n(\Z)$ 使 \[ UBV=\diag(d_1,\dots,d_n), \qquad d_1\mid d_2\mid\cdots\mid d_n. \] 于是 \[ \Z^n/L\cong \bigoplus_{i=1}^n \Z/d_i\Z, \] 故 \[ [\Z^n:L]=d_1\cdots d_n=|\det B|. \] \item \textbf{解答.} 有 \[ \Lambda_{\tau+1}=\Z(\tau+1)+\Z=\Z\tau+\Z=\Lambda_\tau. \] 又 \[ \Lambda_{-1/\tau} =\Z(-1/\tau)+\Z =\tau^{-1}(\Z(-1)+\Z\tau) =\tau^{-1}\Lambda_\tau. \] 第一式对应 $T(\tau)=\tau+1$， 表示同一格的基剪切； 第二式对应 $S(\tau)=-1/\tau$， 表示同一格只差一个复数伸缩。 \item \textbf{解答.} 把 $1,\tau$ 看成 $\R^2$ 中向量 \[ 1=(1,0),\qquad \tau=(\mathrm{Re}\,\tau,\mathrm{Im}\,\tau). \] 矩阵 \[ \begin{pmatrix} 1&\mathrm{Re}\,\tau\\ 0&\mathrm{Im}\,\tau \end{pmatrix} \] 的行列式为 $\mathrm{Im}\,\tau$。 因此 $(1,\tau)$ 为正向基当且仅当 \[ \mathrm{Im}\,\tau>0, \] 也即 $\tau\in\HH$。 \item \textbf{解答.} 由维数公式， 偶数 $k\le24$ 中： \[ \Sk_k=0 \] 当且仅当 \[ k=0,2,4,6,8,10,14. \] 而 \[ \dim \Sk_k=1 \] 当且仅当 \[ k=12,16,18,20,22,26\text{ 中截到 }k\le24\text{ 即 }12,16,18,20,22. \] 再算 $24$ 时有 $\dim \Sk_{24}=2$， 所以不在此列。 \item \textbf{解答.} 因为 \[ \Sk_{24}=\Delta\cdot \Mk_{12}. \] 而 \[ \dim \Mk_{12}=2, \] 故 $\dim \Sk_{24}=2$。 取 $\Mk_{12}$ 的基为 $\{E_{12},\Delta\}$， 则 $\Sk_{24}$ 的一组基可取 \[ \{\Delta E_{12},\ \Delta^2\}. \] \item \textbf{解答.} 递推式为 \[ a_{p^{r+1}}=a_p a_{p^r}-p^{k-1}a_{p^{r-1}}. \] 若 $a_p=0$， 则 \[ a_{p^2}=-p^{k-1}, \qquad a_{p^3}=-p^{k-1}a_p=0. \] 再归纳： 若 $a_{p^{2r-1}}=0$， 则 \[ a_{p^{2r+1}} =a_p a_{p^{2r}}-p^{k-1}a_{p^{2r-1}} =0. \] 故所有奇次幂系数都为零。 \item \textbf{解答.} 因为 $f,g$ 都是 $T_p$ 的特征向量， 且特征值分别为 \[ a_p(f),\qquad a_p(g), \] 并假设二者不同。 又 $T_p$ 自伴随， 故由“自伴随算子的不同特征值特征向量正交”可知 \[ \inner{f}{g}=0. \] \item \textbf{解答.} 对空间维数归纳。 取一个自伴随算子 $T_1$， 先把空间分解为其正交特征子空间直和。 因为其余算子都与 $T_1$ 交换， 所以保持每个 $T_1$ 的特征子空间。 在每个较低维的特征子空间上， 再对剩余算子应用归纳假设， 得到公共正交特征基。 把各子空间的基合并， 便得整个交换自伴随族的公共正交特征基。 \item \textbf{解答.} 由定义， 每个基向量 $f_i$ 满足 \[ T_n f_i=a_n(f_i)f_i. \] 因此在基 $\{f_1,\dots,f_d\}$ 下， $T_n$ 的矩阵为 \[ \diag\bigl(a_n(f_1),\dots,a_n(f_d)\bigr). \] 对角矩阵的迹等于对角元之和， 故 \[ \Tr(T_n)=\sum_{i=1}^d a_n(f_i). \] \item \textbf{解答.} 基使我们能把模形式空间中的元素写成坐标向量， 并把 Hecke 算子写成矩阵。 维数告诉我们这些空间是有限维的， 因此谱理论适用。 内积使我们能够讨论正交性与伴随算子， Petersson 内积正是这里的自然选择。 自伴随性保证 Hecke 算子可正交对角化， 而同时对角化则选出 Hecke 特征形式基。 在这组基下， Fourier 系数、特征值与算术乘性统一起来。 \end{enumerate}
+
+
+
+
+
+

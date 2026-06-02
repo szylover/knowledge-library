@@ -1,0 +1,538 @@
+\chapter{群作用与矩阵群}
+本章把抽象群论直接拉回模形式的几何背景。
+一方面，群作用把“代数对象”变成“几何对称性”；
+另一方面，矩阵群特别是 $\SL_2(\Z)$ 通过 Möbius 变换作用在上半平面 $\HH$ 上，
+从而产生模群、同余子群与模曲线。
+这正是模形式理论的入口。
+\section{群作用的形式化}
+\begin{example}[为什么还要重新讲群作用]
+上一章把群作用当作一种计数工具。
+本章我们要把它视为一个结构：
+给定群 $G$，作用在集合、向量空间、晶格、上半平面上，
+会产生不同层次的几何信息。
+例如 $\SL_2(\Z)$ 作用在 $\HH$ 上，
+而 $\SL_2(\Z/N\Z)$ 作用在 $(\Z/N\Z)^2$ 上。
+这两个作用之间通过“模 $N$ 约化”紧密耦合。
+\end{example}
+\begin{definition}
+左作用是映射 $G\times X\to X$，满足 $e\cdot x=x$ 与 $(gh)\cdot x=g\cdot(h\cdot x)$。
+右作用是映射 $X\times G\to X$，满足 $x\cdot e=x$ 与 $(x\cdot g)\cdot h=x\cdot(gh)$。
+\end{definition}
+\begin{definition}
+设 $G$ 左作用在 $X$ 上。
+\begin{enumerate}[label=\textnormal{(\arabic*)}, leftmargin=3em]
+  \item 若只有单位元在每个点上都作用平凡，则称作用\emph{忠实}；
+  \item 若对任意 $x,y\in X$ 都存在 $g\in G$ 使 $g\cdot x=y$，则称作用\emph{传递}；
+  \item 若传递且每个点稳定子平凡，则称作用\emph{自由且传递}，也称\emph{正则作用}。
+\end{enumerate}
+\end{definition}
+\begin{example}
+群 $G$ 对自身的左乘作用是正则作用。
+共轭作用一般既不自由也不传递；
+它的轨道是共轭类，稳定子是中心化子。
+\end{example}
+\begin{proposition}
+给定左作用 $G\curvearrowright X$，定义
+\[
+\rho:G\to \mathrm{Sym}(X),\qquad \rho(g)(x)=g\cdot x.
+\]
+则 $\rho$ 是群同态。
+反之，任意到置换群 $\mathrm{Sym}(X)$ 的同态都给出一个左作用。
+\end{proposition}
+\begin{proof}
+由作用公理，
+\[
+\rho(gh)(x)=(gh)\cdot x=g\cdot(h\cdot x)=\rho(g)(\rho(h)(x)),
+\]
+所以 $\rho(gh)=\rho(g)\rho(h)$。
+反向构造则取 $g\cdot x:=\rho(g)(x)$ 即可。
+\end{proof}
+\begin{remark}
+因此“群作用”与“置换表示”是同一件事的两种说法。
+对模形式而言，
+把 $\SL_2(\Z)$ 作用在陪集、晶格、尖点上，
+本质上都是在构造不同的置换表示。
+\end{remark}
+\section{轨道--稳定子定理}
+\begin{theorem}[轨道--稳定子]
+设有限群 $G$ 作用在集合 $X$ 上，$x\in X$。
+则映射
+\[
+G/\Stab(x)\to \Orb(x),\qquad g\Stab(x)\mapsto g\cdot x
+\]
+是双射。
+因此
+\[
+|\Orb(x)|=[G:\Stab(x)].
+\]
+\end{theorem}
+\begin{proof}
+若 $g\Stab(x)=h\Stab(x)$，则 $h^{-1}g\in\Stab(x)$，故 $g\cdot x=h\cdot x$，映射良定义。
+它显然满射。
+若 $g\cdot x=h\cdot x$，则 $h^{-1}g\cdot x=x$，即 $h^{-1}g\in\Stab(x)$，所以 $g\Stab(x)=h\Stab(x)$，故单射。
+\end{proof}
+\begin{corollary}[类方程]
+若有限群 $G$ 以共轭作用在自身上，则
+\[
+|G|=|Z(G)|+\sum_i [G:C_G(x_i)],
+\]
+其中 $x_i$ 取遍非中心共轭类代表。
+\end{corollary}
+\begin{proof}
+共轭轨道就是共轭类，稳定子是中心化子 $C_G(x)$。
+把群分成中心元素的一点轨道与非中心共轭类即可。
+\end{proof}
+\begin{example}[有限 $p$-群中心非平凡]
+若 $|G|=p^n$，则类方程右边每个非中心项都被 $p$ 整除，
+于是 $|Z(G)|\equiv |G|\equiv0\pmod p$，从而 $Z(G)$ 非平凡。
+这是许多 $p$-群结构结论的起点。
+\end{example}
+\section{Burnside 引理与 P\'olya 计数}
+\begin{definition}
+设有限群 $G$ 作用在有限集 $X$ 上。
+对 $g\in G$，记
+\[
+\Fix(g)=\{x\in X:g\cdot x=x\}.
+\]
+\end{definition}
+\begin{theorem}[Burnside 引理]
+轨道数满足
+\[
+|X/G|=\frac{1}{|G|}\sum_{g\in G}|\Fix(g)|.
+\]
+\end{theorem}
+\begin{proof}
+计算集合
+\[
+S=\{(g,x)\in G\times X:g\cdot x=x\}
+\]
+的大小。
+按 $g$ 计数，得
+\[
+|S|=\sum_{g\in G}|\Fix(g)|.
+\]
+按 $x$ 计数，得
+\[
+|S|=\sum_{x\in X}|\Stab(x)|.
+\]
+把后一式按轨道分组，并用轨道--稳定子定理
+\[
+|G|=|\Orb(x)|\,|\Stab(x)|,
+\]
+可知每个轨道对总和贡献恰为 $|G|$。
+因此 $|S|=|G|\cdot |X/G|$，整理即得公式。
+\end{proof}
+\begin{example}[给正方形顶点着色]
+令 $G=D_4$ 作用在四个顶点的二色着色集合上。
+Burnside 引理可算出本质不同的着色数。
+这是最经典的组合群作用例子。
+\end{example}
+\begin{proposition}[P\'olya 的基本版]
+若 $G\le S_n$ 作用在 $n$ 个位置上，允许用 $k$ 种颜色着色，
+则本质不同的着色数是
+\[
+\frac{1}{|G|}\sum_{g\in G}k^{c(g)},
+\]
+其中 $c(g)$ 是置换 $g$ 的循环个数。
+\end{proposition}
+\begin{proof}
+一个着色被 $g$ 固定，当且仅当 $g$ 的每个循环上颜色常值。
+若 $g$ 有 $c(g)$ 个循环，则固定着色数为 $k^{c(g)}$。
+代入 Burnside 引理即可。
+\end{proof}
+\section{矩阵群}
+\begin{definition}
+设 $F$ 为域。
+定义
+\[
+\GL_n(F)=\{A\in \Mat_n(F):\det A\ne0\},
+\qquad
+\SL_n(F)=\{A\in\GL_n(F):\det A=1\}.
+\]
+在 $F=\R,\C$ 时，再定义
+\[
+\Orth_n(\R)=\{A:A^tA=I\},\qquad
+\SO_n(\R)=\Orth_n(\R)\cap \SL_n(\R),
+\]
+\[
+\Unit_n(\C)=\{A:\bar A^tA=I\},\qquad
+\SU_n(\C)=\Unit_n(\C)\cap \SL_n(\C).
+\]
+\end{definition}
+\begin{proposition}
+上述集合都是群。
+\end{proposition}
+\begin{proof}
+$\GL_n$ 与 $\SL_n$ 的验证见第一章。
+若 $A^tA=I$ 与 $B^tB=I$，则
+\[
+(AB)^t(AB)=B^tA^tAB=B^tB=I,
+\]
+且 $A^{-1}=A^t$，故 $\Orth_n(\R)$ 成群。
+其余几类同理，单位ary 群中逆元为共轭转置 $A^{-1}=\bar A^t$。
+行列式条件再用乘法性检查即可。
+\end{proof}
+\begin{example}
+$\SO_2(\R)$ 中的矩阵恰为
+\[
+\mat{\cos\theta&-\sin\theta\\ \sin\theta&\cos\theta},
+\]
+它描述平面旋转。
+因此矩阵群确实统一了“线性代数的矩阵”与“几何中的对称变换”。
+\end{example}
+\begin{proposition}
+若 $q$ 是素数幂，则
+\[
+|\GL_n(\F_q)|=(q^n-1)(q^n-q)\cdots(q^n-q^{n-1}),
+\]
+且
+\[
+|\SL_n(\F_q)|=\frac{|\GL_n(\F_q)|}{q-1}.
+\]
+\end{proposition}
+\begin{proof}
+可逆矩阵等价于列向量线性无关。
+第一列可任取非零向量，共 $q^n-1$ 种；
+第二列需避开第一列张成的一维空间，共 $q^n-q$ 种；
+依此继续即可。
+行列式满射到 $\F_q^\times$，核为 $\SL_n(\F_q)$，所以第二式成立。
+\end{proof}
+\section{$\SL_2(\Z)$ 与模群}
+\begin{definition}
+模群是
+\[
+\PSL_2(\Z)=\SL_2(\Z)/\{\pm I\}.
+\]
+它由 $S,T$ 的像生成，其中
+\[
+S=\mat{0&-1\\1&0},\qquad T=\mat{1&1\\0&1}.
+\]
+\end{definition}
+\begin{proposition}
+在 $\SL_2(\Z)$ 中，
+\[
+S^2=-I,
+\qquad (ST)^3=-I.
+\]
+因此在 $\PSL_2(\Z)$ 中有关系
+\[
+\bar S^2=1,
+\qquad (\bar S\bar T)^3=1.
+\]
+\end{proposition}
+\begin{proof}
+直接相乘可得
+\[
+S^2=\mat{-1&0\\0&-1}=-I,
+\qquad
+ST=\mat{0&-1\\1&1}.
+\]
+再计算 $(ST)^2=\mat{-1&-1\\1&0}$，故 $(ST)^3=-I$。
+\end{proof}
+\begin{theorem}
+$\SL_2(\Z)$ 由 $S,T$ 生成。
+\end{theorem}
+\begin{proof}
+取任意 $A=\mat{a&b\\c&d}\in\SL_2(\Z)$。
+对向量 $(a,c)^t$ 用 Euclid 算法做整数消元，
+每一步对应左乘某个 $T^{\pm1}$ 或 $S$，
+最终把第一列化到 $(1,0)^t$。
+于是矩阵化为上三角幺模矩阵 $\mat{1&m\\0&1}=T^m$。
+逆向还原即可把 $A$ 写成 $S,T$ 的字。
+\end{proof}
+\begin{definition}
+标准基本域定义为
+\[
+\mathcal F=\{z\in\HH:|z|\ge1,\ |\Re z|\le 1/2\}.
+\]
+\end{definition}
+\begin{proposition}
+对任意 $z\in\HH$，存在 $\gamma\in\SL_2(\Z)$ 使 $\gamma z\in\mathcal F$。
+\end{proposition}
+\begin{proof}
+先用 $T^n:z\mapsto z+n$ 把实部移动到区间 $[-1/2,1/2]$。
+若此时 $|z|<1$，则应用 $S:z\mapsto -1/z$，其虚部变为 $\Im(z)/|z|^2$，严格增大。
+重复此过程不可能无限进行，因为虚部只能离散地增大到某个范围后停止。
+最终得到落在 $\mathcal F$ 中的点。
+\end{proof}
+\section{同余子群}
+\begin{definition}
+对正整数 $N$，定义
+\[
+\Gamma(N)=\left\{\mat{a&b\\c&d}\in\SL_2(\Z):
+\mat{a&b\\c&d}\equiv I\pmod N\right\},
+\]
+\[
+\GammaI(N)=\left\{\mat{a&b\\c&d}\in\SL_2(\Z):a\equiv d\equiv1,\ c\equiv0\pmod N\right\},
+\]
+\[
+\GammaO(N)=\left\{\mat{a&b\\c&d}\in\SL_2(\Z):c\equiv0\pmod N\right\}.
+\]
+\end{definition}
+\begin{proposition}
+有包含关系
+\[
+\Gamma(N)\trianglelefteq \GammaI(N)\trianglelefteq \GammaO(N)\le \SL_2(\Z).
+\]
+其中 $\Gamma(N)$ 还是 $\SL_2(\Z)$ 的正规子群。
+\end{proposition}
+\begin{proof}
+$\Gamma(N)$ 是约化同态 $\SL_2(\Z)\to \SL_2(\Z/N\Z)$ 的核，因此正规。
+其余包含关系由定义直接检查。
+对 $\GammaI(N)$ 在 $\GammaO(N)$ 中的正规性，
+可看作模 $N$ 下上三角群到对角元的同态之核。
+\end{proof}
+\begin{theorem}[指标公式]
+\[
+[\SL_2(\Z):\Gamma(N)]=N^3\prod_{p\mid N}\left(1-\frac1{p^2}\right),
+\]
+\[
+[\SL_2(\Z):\GammaI(N)]=N^2\prod_{p\mid N}\left(1-\frac1{p^2}\right),
+\]
+\[
+[\SL_2(\Z):\GammaO(N)]=N\prod_{p\mid N}\left(1+\frac1p\right).
+\]
+\end{theorem}
+\begin{proof}
+约化同态满到 $\SL_2(\Z/N\Z)$，故第一式等于该有限群的大小。
+由中国剩余定理，只需计算 $N=p^r$。
+而
+\[
+|\SL_2(\Z/p^r\Z)|=p^{3r}\left(1-\frac1{p^2}\right),
+\]
+于是得第一式。
+再看包含链。
+模 $N$ 下，$\GammaI(N)/\Gamma(N)$ 由右上角参数 $b\bmod N$ 描述，故大小为 $N$；
+而 $\GammaO(N)/\GammaI(N)$ 由对角元 $d\bmod N$ 描述，故大小为 $\varphi(N)$。
+把第一式分别除以 $N$ 与 $\varphi(N)$ 即得第二、三式。
+\end{proof}
+\begin{example}
+$N=2$ 时，
+\[
+[\SL_2(\Z):\Gamma(2)]=6,
+\qquad
+[\SL_2(\Z):\Gamma_1(2)]=3,
+\qquad
+[\SL_2(\Z):\Gamma_0(2)]=3.
+\]
+因此模 $2$ 的有限群与陪集作用可以完全显式列出。
+\end{example}
+\section{上半平面上的作用与基本域几何}
+\begin{definition}
+对 $\gamma=\mat{a&b\\c&d}\in \GL_2^+(\R)$，定义 Möbius 变换
+\[
+\gamma z=\frac{az+b}{cz+d}.
+\]
+当 $\gamma\in\SL_2(\Z)$ 时，这给出 $\HH$ 上的左作用。
+\end{definition}
+\begin{proposition}
+若 $\gamma\in\SL_2(\R)$ 且 $z\in\HH$，则
+\[
+\Im(\gamma z)=\frac{\Im z}{|cz+d|^2}>0.
+\]
+因此 $\SL_2(\R)$ 保持上半平面。
+\end{proposition}
+\begin{proof}
+写 $z=x+iy$，直接代入并有理化分母可得公式。
+分母为正数，故虚部仍为正。
+\end{proof}
+\begin{example}
+$T:z\mapsto z+1$ 是水平平移，
+$S:z\mapsto -1/z$ 把单位圆内外互换，并把虚轴反射到自己。
+由这两种基本变换就能生成模群的全部几何动作。
+\end{example}
+\begin{center}
+\begin{tikzpicture}[scale=2.0]
+  \draw[->] (-1.1,0) -- (1.1,0) node[right] {$\Re z$};
+  \draw[->] (0,0) -- (0,1.6) node[above] {$\Im z$};
+  \draw[thick, blue] (-0.5,0) -- (-0.5,1.45);
+  \draw[thick, blue] (0.5,0) -- (0.5,1.45);
+  \draw[thick, blue] (-0.5,0) arc[start angle=180,end angle=0,radius=0.5];
+  \fill (0.5,0) circle (0.02) node[below right] {$\tfrac12$};
+  \fill (-0.5,0) circle (0.02) node[below left] {$-\tfrac12$};
+  \fill (0,1) circle (0.02) node[right] {$i$};
+  \node at (0,0.42) {$\mathcal F$};
+  \draw[red,->] (0.68,1.1) arc[start angle=70,end angle=110,radius=0.55];
+  \node[red] at (0,1.45) {$S$ 配对圆弧};
+  \draw[red,->] (0.52,0.85) -- (0.82,0.85);
+  \node[red] at (0.72,0.95) {$T$ 配对边};
+\end{tikzpicture}
+\end{center}
+\begin{remark}
+基本域的两条竖边由 $T$ 配对，单位圆弧的两侧由 $S$ 配对。
+模形式满足的变换公式正是沿这些边粘合时的兼容条件。
+\end{remark}
+\section{模曲线初步}
+\begin{definition}
+若 $\Gamma\le \SL_2(\Z)$ 为有限指数子群，
+则商空间 $\Gamma\backslash\HH$ 称为一个\emph{开模曲线}。
+把有理数点及 $\infty$ 的 $\Gamma$-轨道补进去，
+得到紧化曲线 $X(\Gamma)$。
+这些额外点称为\emph{尖点}。
+\end{definition}
+\begin{example}
+对 $\Gamma=\SL_2(\Z)$，所有有理数尖点在模群作用下都与 $\infty$ 等价，
+所以 $X(1)$ 只有一个尖点。
+对 $\Gamma_0(N)$，尖点个数随 $N$ 增大而增加，
+这些尖点对应模形式 $q$-展开出现的不同局部坐标。
+\end{example}
+\begin{proposition}
+$\Gamma\backslash\HH$ 在自然商拓扑下是一个 Riemann 曲面的轨道空间，
+在椭圆点与尖点附近允许有限分歧与紧化。
+\end{proposition}
+\begin{proof}[几何说明]
+$\Gamma$ 在 $\HH$ 上作用不连续，
+所以每个点附近都可选小邻域，使其与非稳定子元素的像不相交。
+若稳定子平凡，则邻域直接下推成局部坐标盘；
+若稳定子有限，则得到有限分歧圆盘。
+尖点则借助局部参数 $q=e^{2\pi iz/h}$ 紧化。
+\end{proof}
+\begin{remark}
+从群论角度看，模曲线就是“由离散矩阵群作用得到的商空间”；
+从模形式角度看，模形式是这个商空间上的截面或函数。
+因此本章的群论与几何，
+正是后续分析与算术内容的共同舞台。
+\end{remark}
+\section*{习题}
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 证明群对自身左乘作用是忠实的。
+\item \basic 证明群对自身左乘作用是传递的。
+\item \basic 求共轭作用下单位元的轨道。
+\item \basic 求共轭作用下单位元的稳定子。
+\item \basic 说明共轭作用下的轨道就是共轭类。
+\item \basic 求 $S_3$ 共轭作用下三循环的轨道大小。
+\item \basic 求 $S_3$ 中换位 $(12)$ 的中心化子大小。
+\item \basic 写出 Burnside 引理公式。
+\item \basic 求恒等置换在任意作用中的固定点数。
+\item \basic 计算 $D_4$ 作用在正方形顶点集合上的轨道数。
+\item \basic 证明 $\GL_n(F)$ 是群。
+\item \basic 证明 $\SL_n(F)$ 是 $\GL_n(F)$ 的正规子群。
+\item \basic 说明 $\Orth_2(\R)$ 中矩阵的行向量是标准正交组。
+\item \basic 证明 $\SO_2(\R)$ 表示平面旋转。
+\item \basic 求 $|\GL_2(\F_2)|$。
+\item \basic 求 $|\SL_2(\F_3)|$。
+\item \basic 验证 $S^2=-I$。
+\item \basic 验证 $(ST)^3=-I$。
+\item \basic 写出 $T$ 对 $z\in\HH$ 的作用。
+\item \basic 写出 $S$ 对 $z\in\HH$ 的作用。
+\item \basic 计算 $T(i)$。
+\item \basic 计算 $S(i)$。
+\item \basic 证明 $\Im(z+1)=\Im z$。
+\item \basic 证明 $\Gamma(N)$ 是 $\SL_2(\Z)$ 的子群。
+\item \basic 写出 $\Gamma(2)$ 的同余条件。
+\item \basic 写出 $\Gamma_0(3)$ 的定义条件。
+\item \basic 写出 $\Gamma_1(4)$ 的定义条件。
+\item \basic 说明 $\Gamma(N)\trianglelefteq \SL_2(\Z)$。
+\item \basic 写出基本域 $\mathcal F$ 的定义。
+\item \basic 说明尖点 $\infty$ 在 $\SL_2(\Z)$ 下被 $T$ 固定。
+\end{enumerate}
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 证明任意群作用等价于到某个置换群的同态。
+\item \medium 证明轨道--稳定子定理。
+\item \medium 用类方程证明有限 $p$-群中心非平凡。
+\item \medium 用 Burnside 引理计算正方形顶点二色着色的本质不同方案数。
+\item \medium 用 P\'olya 公式计算正三角形顶点三色着色的本质不同方案数（旋转群作用）。
+\item \medium 证明 $\Orth_n(\R)$ 中每个元素的行列式为 $\pm1$。
+\item \medium 证明 $\SU_n(\C)$ 是 $\Unit_n(\C)$ 的正规子群。
+\item \medium 证明 $|\GL_n(\F_q)|$ 的公式。
+\item \medium 证明 $|\SL_2(\F_q)|=q(q^2-1)$。
+\item \medium 证明 $\SL_2(\Z)$ 由 $S,T$ 生成。
+\item \medium 证明每个 $z\in\HH$ 都与基本域中某点等价。
+\item \medium 证明若 $z\in\mathcal F$ 的内部，则其稳定子在 $\PSL_2(\Z)$ 中平凡。
+\item \medium 证明 $\Im(\gamma z)=\Im z/|cz+d|^2$。
+\item \medium 证明约化映射 $\SL_2(\Z)\to \SL_2(\Z/N\Z)$ 的核是 $\Gamma(N)$。
+\item \medium 证明 $[\SL_2(\Z):\Gamma(2)]=6$。
+\item \medium 证明 $[\SL_2(\Z):\Gamma_0(2)]=3$。
+\item \medium 证明 $[\SL_2(\Z):\Gamma_1(3)]=8$。
+\item \medium 证明 $\Gamma_1(N)\trianglelefteq \Gamma_0(N)$。
+\item \medium 证明 $\SL_2(\Z)$ 对尖点集合 $\Q\cup\{\infty\}$ 的作用是传递的。
+\item \medium 求 $\SL_2(\Z)$ 中点 $i$ 的稳定子。
+\item \medium 求 $\SL_2(\Z)$ 中点 $e^{2\pi i/3}$ 的稳定子。
+\item \medium 证明模群只有一个尖点轨道。
+\item \medium 证明 $\Gamma\backslash\HH$ 的自然投影在非椭圆点附近是局部同胚。
+\item \medium 证明对有限指数子群 $\Gamma$，尖点个数有限。
+\item \medium 解释为什么模形式在尖点处的 $q$-展开与 $T$ 的作用有关。
+\end{enumerate}
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 证明 $\PSL_2(\Z)\cong C_2*C_3$，其中 $C_m$ 表示 $m$ 阶循环群。
+\item \hard 证明 $\SL_2(\Z)$ 对原始向量集合 $\{(c,d)\in\Z^2:(c,d)=1\}$ 的作用传递。
+\item \hard 证明 $\Gamma(N)$ 的商 $\SL_2(\Z)/\Gamma(N)$ 同构于 $\SL_2(\Z/N\Z)$。
+\item \hard 利用 Burnside 引理计算正方形边着三色在二面体群作用下的本质不同着色数。
+\item \hard 证明 $\Gamma(2)$ 是自由群的有限指数扩张，并说明其基本域可由两个 ideal triangle 拼成。
+\item \hard 对 $N=p$ 素数，证明 $\P^1(\F_p)$ 上的自然作用给出 $\PSL_2(\F_p)$ 的一个三重传递之外的经典例子。
+\item \hard 证明 $\Gamma_0(N)$ 的尖点与某些分母整除 $N$ 的有理数等价类对应，并写出 $N=p$ 时的尖点数。
+\item \hard 设 $f$ 为满足 $f(z+1)=f(z)$ 的全纯函数，解释为何它局部可写成 $q=e^{2\pi iz}$ 的幂级数；再联系尖点 $\infty$。
+\item \hard 证明若 $\gamma\in\SL_2(\R)$ 固定 $\HH$ 中一点，则 $|\Tr(\gamma)|<2$ 当且仅当它是椭圆元。
+\item \hard 说明模曲线 $X(1)$ 拓扑上是球面，并解释这与权 $0$ 模函数 $j$ 的存在之间的关系。
+\end{enumerate}
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} 若左乘作用中 $g\cdot x=x$ 对所有 $x$ 都成立，取 $x=e$ 得 $g=e$，故忠实。
+\item \textbf{解答.} 对任意 $x,y\in G$，取 $g=yx^{-1}$，则 $g\cdot x=y$。
+\item \textbf{解答.} 共轭下 $geg^{-1}=e$，故轨道只有 $\{e\}$。
+\item \textbf{解答.} 所有元素都固定单位元，所以稳定子是整个群。
+\item \textbf{解答.} 轨道定义就是所有形如 $gxg^{-1}$ 的元素集合，即共轭类。
+\item \textbf{解答.} $S_3$ 中三循环只有两个，且彼此共轭，所以轨道大小为 $2$。
+\item \textbf{解答.} 中心化子为 $\{e,(12)\}$，大小为 $2$。
+\item \textbf{解答.} $|X/G|=\frac1{|G|}\sum_{g\in G}|\Fix(g)|$。
+\item \textbf{解答.} 恒等元固定所有点，所以固定点数为 $|X|$。
+\item \textbf{解答.} 二面体群对顶点作用传递，故轨道数为 $1$。
+\item \textbf{解答.} 可逆矩阵乘积仍可逆，单位矩阵在内，逆矩阵仍可逆，故成群。
+\item \textbf{解答.} $\SL_n(F)=\Ker(\det)$，所以是正规子群。
+\item \textbf{解答.} $A^tA=I$ 表示任意两行向量内积为 $\delta_{ij}$，故构成标准正交组。
+\item \textbf{解答.} $\SO_2(\R)$ 中矩阵既正交又行列式 $1$，解方程得形如旋转矩阵。
+\item \textbf{解答.} $(2^2-1)(2^2-2)=3\cdot2=6$。
+\item \textbf{解答.} $|\GL_2(\F_3)|=(9-1)(9-3)=48$，除以 $2$ 得 $|\SL_2(\F_3)|=24$。
+\item \textbf{解答.} 直接乘法得到 $S^2=\mat{-1&0\\0&-1}=-I$。
+\item \textbf{解答.} 先算 $ST=\mat{0&-1\\1&1}$，再连续相乘三次得 $-I$。
+\item \textbf{解答.} $Tz=z+1$。
+\item \textbf{解答.} $Sz=-1/z$。
+\item \textbf{解答.} $T(i)=i+1$。
+\item \textbf{解答.} $S(i)=-1/i=i$。
+\item \textbf{解答.} $\Im(z+1)=\Im z$，因为只改变实部。
+\item \textbf{解答.} 它是约化同态的核，核必为子群。
+\item \textbf{解答.} 条件是 $a\equiv d\equiv1,b\equiv c\equiv0\pmod2$。
+\item \textbf{解答.} 条件是左下角 $c\equiv0\pmod3$。
+\item \textbf{解答.} 条件是 $a\equiv d\equiv1,c\equiv0\pmod4$。
+\item \textbf{解答.} 因 $\Gamma(N)=\Ker(\SL_2(\Z)\to\SL_2(\Z/N\Z))$，故正规。
+\item \textbf{解答.} $\mathcal F=\{z\in\HH:|z|\ge1,\ |\Re z|\le1/2\}$。
+\item \textbf{解答.} 因 $T(\infty)=\infty$，所以 $\infty$ 被固定。
+\item \textbf{解答.} 由 $g\mapsto(x\mapsto g\cdot x)$ 得到到 $\mathrm{Sym}(X)$ 的同态；反过来由同态定义作用。
+\item \textbf{解答.} 映射 $g\Stab(x)\mapsto g\cdot x$ 良定义且双射，故结论成立。
+\item \textbf{解答.} 类方程给出 $|G|=|Z(G)|+\sum [G:C_G(x_i)]$，每个非中心项都被 $p$ 整除，故中心大小也被 $p$ 整除，从而非平凡。
+\item \textbf{解答.} 对 $D_4$ 八个元素计算固定着色数：恒等固定 $16$ 个，$90^\circ$ 与 $270^\circ$ 旋转各固定 $2$ 个，$180^\circ$ 旋转固定 $4$ 个，四个反射各固定 $8$ 个或 $4$ 个；总和为 $48$，除以 $8$ 得 $6$ 种。
+\item \textbf{解答.} 旋转群 $C_3$ 中，恒等有 $3^3=27$ 个固定着色，两个非平凡旋转各固定 $3$ 个，总数 $(27+3+3)/3=11$。
+\item \textbf{解答.} 若 $A^tA=I$，则取行列式得 $(\det A)^2=1$，故 $\det A=\pm1$。
+\item \textbf{解答.} $\SU_n(\C)=\Ker(\det:\Unit_n(\C)\to U(1))$，故正规。
+\item \textbf{解答.} 逐列选择线性无关向量即可得到公式。
+\item \textbf{解答.} 由前题知 $|\GL_2(\F_q)|=(q^2-1)(q^2-q)=q(q-1)(q^2-1)$，再除以 $q-1$ 即得。
+\item \textbf{解答.} 对第一列做 Euclid 消元，把矩阵化到上三角幺模矩阵，再写成 $T$ 的幂，故由 $S,T$ 生成。
+\item \textbf{解答.} 先用 $T^n$ 调整实部到 $[-1/2,1/2]$，若仍满足 $|z|<1$ 则施以 $S$ 提高虚部，有限步后落入基本域。
+\item \textbf{解答.} 若内部点被某非平凡元固定，则该元必须把基本域内部映回自身；由边界配对的唯一性可知只能是恒等元。
+\item \textbf{解答.} 直接对 $\gamma z=(az+b)/(cz+d)$ 有理化分母并取虚部即可。
+\item \textbf{解答.} 约化后等于单位矩阵恰好是 $\Gamma(N)$ 的定义，所以核即它。
+\item \textbf{解答.} 由指标公式：$2^3(1-1/4)=6$。
+\item \textbf{解答.} 指标公式给 $2(1+1/2)=3$。
+\item \textbf{解答.} 由公式 $3^2(1-1/9)=8$。
+\item \textbf{解答.} 在 $\Gamma_0(N)$ 中取模 $N$ 的右上角映射并检查其核，可知 $\Gamma_1(N)$ 为正规子群。
+\item \textbf{解答.} 任意有理数 $a/c$（约分后）可取矩阵 $\mat{a&b\\c&d}\in\SL_2(\Z)$ 使其把 $\infty$ 送到 $a/c$，故作用传递。
+\item \textbf{解答.} $i$ 被 $S$ 固定，且其稳定子在 $\PSL_2(\Z)$ 中由 $\bar S$ 生成，所以在 $\SL_2(\Z)$ 中为 $\{\pm I,\pm S\}$。
+\item \textbf{解答.} 点 $\rho=e^{2\pi i/3}$ 被 $ST$ 固定，稳定子在 $\PSL_2(\Z)$ 中是三阶循环群，在 $\SL_2(\Z)$ 中对应六个元素 $\{\pm I,\pm ST,\pm(ST)^2\}$。
+\item \textbf{解答.} 上题说明任意尖点都与 $\infty$ 等价，因此只有一个轨道。
+\item \textbf{解答.} 若点稳定子平凡，则足够小邻域与其非平凡像不交，商映射限制为同胚到其像，故局部同胚。
+\item \textbf{解答.} 有限指数意味着基本域可由有限多个模群基本域拼成，边界上有理点轨道也只有有限多个，因此尖点有限。
+\item \textbf{解答.} $T:z\mapsto z+1$ 固定尖点 $\infty$，因此在该尖点附近自然参数应对平移不变，正是 $q=e^{2\pi iz}$。
+\item \textbf{解答.} 在 $\PSL_2(\Z)$ 中已有关系 $\bar S^2=1,(\bar S\bar T)^3=1$。基本域边配对表明没有更多关系，可由 Poincar\'e 多边形定理得自由积描述。
+\item \textbf{解答.} 若 $(c,d)$ 原始，则由 Bézout 等式存在 $a,b$ 使 $ad-bc=1$，于是矩阵 $\mat{a&b\\c&d}\in\SL_2(\Z)$ 把 $(0,1)^t$ 送到 $(b,d)^t$，稍作调整即可把 $(1,0)^t$ 送到任意原始向量，故作用传递。
+\item \textbf{解答.} 约化映射满射且核为 $\Gamma(N)$，由第一同构定理得结论。
+\item \textbf{解答.} 用 Burnside 引理。恒等固定 $3^4=81$，$90^\circ$ 与 $270^\circ$ 旋转各固定 $3$，$180^\circ$ 旋转固定 $9$，沿边中点轴反射与沿顶点轴反射各两种，固定数分别为 $27$ 与 $9$。总和 $81+3+3+9+27+27+9+9=168$，除以 $8$ 得 $21$。
+\item \textbf{解答.} $\Gamma(2)$ 在 $\PSL_2(\Z)$ 中无有限阶元，其基本域可由模群基本域的两个拷贝沿边拼成一个理想四边形，再分成两个 ideal triangle。由 Poincar\'e 定理可视作自由群的有限指数子群。
+\item \textbf{解答.} $\PSL_2(\F_p)$ 自然作用在射影直线 $\P^1(\F_p)$ 上。它是高度对称但一般不全体置换的作用，提供一类经典有限群置换表示。对 $p>3$，作用是双传递而非任意三重传递。
+\item \textbf{解答.} 尖点是 $\Gamma_0(N)$ 在 $\Q\cup\{\infty\}$ 上的轨道，可由分母模 $N$ 的约化分类。若 $N=p$ 为素数，尖点只有 $\infty$ 与 $0$ 两类，所以有 $2$ 个。
+\item \textbf{解答.} 条件 $f(z+1)=f(z)$ 说明 $f$ 只依赖于 $q=e^{2\pi iz}$。在足够高的虚部区域，$q$ 是局部坐标且趋于 $0$，故 $f$ 可写为 $q$ 的幂级数，这就是尖点 $\infty$ 处的 $q$-展开。
+\item \textbf{解答.} 若固定一点，则与该点共轭到旋转矩阵，所以特征值为共轭单位复数 $e^{\pm i\theta}$，其迹为 $2\cos\theta$，故绝对值小于 $2$。反之若 $|\Tr(\gamma)|<2$，特征值为共轭单位复数，对应椭圆元并固定某内点。
+\item \textbf{解答.} 基本域加上边配对与一个尖点后得到 genus $0$ 的紧曲面，即球面。球面上的非常值亚纯函数由有理函数参数化，模群情形的标准生成元就是 $j$-不变量，因此 $X(1)\cong\mathbb P^1$。
+\end{enumerate}

@@ -1,0 +1,436 @@
+\chapter{复向量空间上的算子}
+
+从本章开始，底域固定为 $\C$。这意味着每个非零有限维复向量空间上的线性算子都有特征值，于是我们可以把前几章建立的“特征值—不变子空间—多项式作用于算子”的框架推进到极致。本章的主题是：每个复算子都能拆解成若干广义特征空间，在每个广义特征空间上，它等于“一个标量加一个幂零算子”；而幂零算子的结构正好给出 Jordan 标准形。
+
+LADR 风格在这里表现得尤其明显：我们不把特征多项式定义为 $\det(z\Id-T)$，而是把它\emph{定义}为广义特征空间维数所决定的乘积。这种定义更契合本章结构定理的内容，也能自然推出 Cayley--Hamilton 定理。
+
+\section{广义特征向量}
+
+设 $V$ 是非零有限维复向量空间，$T\in\Lmap(V)$，且 $\dim V=n$。
+
+\begin{definition}
+对 $\lambda\in\C$，定义
+\[
+G(\lambda,T)=\nul(T-\lambda\Id)^n.
+\]
+其中的向量称为 $T$ 关于特征值 $\lambda$ 的\emph{广义特征向量}；$G(\lambda,T)$ 称为\emph{广义特征空间}。
+\end{definition}
+
+选择指数 $n=\dim V$ 的原因很简单：在有限维空间中，核链
+\[
+\nul(T-\lambda\Id)\subseteq \nul(T-\lambda\Id)^2\subseteq\cdots
+\]
+至多增长 $n$ 次后稳定，因此用 $n$ 足以捕捉所有广义特征向量。
+
+\begin{proposition}
+$E(\lambda,T)=\nul(T-\lambda\Id)\subseteq G(\lambda,T)$。
+\end{proposition}
+
+\begin{proof}
+若 $(T-\lambda\Id)v=0$，则当然有 $(T-\lambda\Id)^nv=0$。
+\end{proof}
+
+\begin{proposition}
+$G(\lambda,T)$ 在 $T$ 下不变，并且 $T-\lambda\Id$ 在 $G(\lambda,T)$ 上是幂零算子。
+\end{proposition}
+
+\begin{proof}
+若 $v\in G(\lambda,T)$，则
+\[
+(T-\lambda\Id)^n(Tv)=T(T-\lambda\Id)^nv=0,
+\]
+故 $Tv\in G(\lambda,T)$。而在 $G(\lambda,T)$ 上，$(T-\lambda\Id)^n=0$，所以它的限制是幂零的。
+\end{proof}
+
+\begin{proposition}
+若 $\lambda\neq\mu$，则 $G(\lambda,T)\cap G(\mu,T)=\{0\}$ 不一定立即显然，但最终会由直和分解定理推出。
+\end{proposition}
+
+\begin{remark}
+普通特征向量是“第一层核”，广义特征向量则允许经过若干次作用后才进入核。Jordan 理论正是研究这种“差一点就是特征向量”的向量如何排成链。
+\end{remark}
+
+\begin{example}
+设
+\[
+T=\mat{2&1&0\\0&2&1\\0&0&2}
+\]
+作用于 $\C^3$。则 $2$ 是唯一特征值，
+\[
+T-2\Id=\mat{0&1&0\\0&0&1\\0&0&0},
+\]
+满足 $(T-2\Id)^3=0$，所以 $G(2,T)=\C^3$。这里真正的特征空间只有一维，但广义特征空间却是三维。
+\end{example}
+
+\section{幂零算子}
+
+\begin{definition}
+若 $N\in\Lmap(V)$ 满足 $N^n=0$，则称 $N$ 为\emph{幂零算子}。
+\end{definition}
+
+幂零算子的唯一特征值是 $0$。然而“只有一个特征值”并不意味着结构简单；真正的复杂性来自不同长度的 Jordan 链。
+
+\begin{lemma}
+若 $N$ 幂零，则存在向量 $v$ 使得
+\[
+v, Nv, N^2v,\dots,N^{k-1}v
+\]
+线性无关，其中 $k$ 是使 $N^k=0$ 的最小正整数。
+\end{lemma}
+
+\begin{proof}
+取满足 $N^{k-1}v\neq0$ 的向量 $v$。若有线性关系
+\[
+a_0v+a_1Nv+\cdots+a_{k-1}N^{k-1}v=0,
+\]
+对其作用 $N^{k-1}$ 得 $a_0N^{k-1}v=0$，故 $a_0=0$。继续依次作用 $N^{k-2},N^{k-3},\dots$，得全部系数为零。
+\end{proof}
+
+\begin{theorem}
+若 $N$ 幂零，则存在一组基，使得 $N$ 的矩阵是严格上三角矩阵。更准确地说，$V$ 有一组由若干 Jordan 链拼接而成的基。
+\end{theorem}
+
+\begin{proof}
+对 $\dim V$ 归纳。若 $N=0$，结论显然。否则取长度最大的链
+\[
+v,Nv,\dots,N^{k-1}v.
+\]
+令 $W=\spn\{v,Nv,\dots,N^{k-1}v\}$。它在 $N$ 下不变，且在这组基上 $N|_W$ 的矩阵是一个单 Jordan 块。再把 $N$ 诱导到商空间 $V/W$ 上，仍是幂零。由归纳假设，$V/W$ 有 Jordan 链基，拉回到 $V$ 后与 $W$ 的链合并，即得所求基。
+\end{proof}
+
+\begin{corollary}
+幂零算子的最小多项式形如 $z^m$；其 Jordan 块大小的最大值恰为该指数 $m$。
+\end{corollary}
+
+\begin{example}
+若 $N$ 在某组基下矩阵为
+\[
+\mat{0&1&0&0\\0&0&1&0\\0&0&0&0\\0&0&0&0},
+\]
+则 $N^3=0$ 但 $N^2\neq0$。这里有一个长度为 $3$ 的链和一个长度为 $1$ 的链。
+\end{example}
+
+\section{算子的分解}
+
+现在回到一般算子 $T$。本节证明：不同特征值的广义特征空间直和为整个空间。
+
+\begin{lemma}
+若多项式 $p_1,\dots,p_m$ 两两互素，则存在多项式 $q_1,\dots,q_m$ 使
+\[
+q_1p_1+\cdots+q_mp_m=1.
+\]
+\end{lemma}
+
+\begin{proof}
+这是多项式版 Bézout 恒等式。先对两个多项式使用欧几里得算法，再作归纳即可。
+\end{proof}
+
+\begin{theorem}[广义特征空间分解]
+设 $\lambda_1,\dots,\lambda_m$ 是 $T$ 的全部互异特征值。则
+\[
+V=G(\lambda_1,T)\oplus\cdots\oplus G(\lambda_m,T).
+\]
+\end{theorem}
+
+\begin{proof}
+由上一章可知，存在正整数 $r_j$ 使
+\[
+(T-\lambda_1\Id)^{r_1}\cdots(T-\lambda_m\Id)^{r_m}=0.
+\]
+令 $p_j(z)=(z-\lambda_j)^n$。它们两两互素。由 Bézout 恒等式，存在多项式 $q_j$ 满足
+\[
+q_1(z)p_1(z)+\cdots+q_m(z)p_m(z)=1.
+\]
+把 $z$ 换成 $T$，得
+\[
+q_1(T)p_1(T)+\cdots+q_m(T)p_m(T)=\Id.
+\]
+对任意 $v\in V$，令
+\[
+v_j=q_j(T)\prod_{k\neq j}(T-\lambda_k\Id)^n v.
+\]
+则 $v=v_1+\cdots+v_m$，且 $(T-\lambda_j\Id)^n v_j=0$，故 $v_j\in G(\lambda_j,T)$，从而 $V$ 是这些空间之和。
+
+若 $v$ 落在交集 $G(\lambda_j,T)\cap\sum_{k\neq j}G(\lambda_k,T)$ 中，对等式
+\[
+q_1(T)p_1(T)+\cdots+q_m(T)p_m(T)=\Id
+\]
+作用于 $v$，利用在对应广义特征空间上的消失性，可得 $v=0$。故和是直和。
+\end{proof}
+
+\begin{corollary}
+在 $G(\lambda,T)$ 上，算子 $T$ 可写成
+\[
+T=\lambda\Id+N,
+\]
+其中 $N$ 幂零。
+\end{corollary}
+
+\begin{proof}
+取 $N=(T-\lambda\Id)|_{G(\lambda,T)}$。由定义，$N^n=0$。
+\end{proof}
+
+\begin{remark}
+这说明一般算子的全部复杂性都被分成两层：不同特征值之间相互独立；而每个特征值内部的复杂性则完全由一个幂零算子控制。
+\end{remark}
+
+\section{Jordan 标准形}
+
+\begin{definition}
+对 $\lambda\in\C$ 与正整数 $k$，定义 Jordan 块
+\[
+J(\lambda,k)=\mat{
+\lambda&1&0&\cdots&0\\
+0&\lambda&1&\cdots&0\\
+\vdots&\vdots&\ddots&\ddots&\vdots\\
+0&0&\cdots&\lambda&1\\
+0&0&\cdots&0&\lambda
+}.
+\]
+\end{definition}
+
+\begin{theorem}[Jordan 标准形]
+每个有限维复向量空间上的线性算子都存在一组基，使其矩阵为若干 Jordan 块的分块对角矩阵。
+\end{theorem}
+
+\begin{proof}
+先用广义特征空间分解把 $V$ 写成各 $G(\lambda_j,T)$ 的直和。对每个 $G(\lambda_j,T)$，令 $N_j=(T-\lambda_j\Id)|_{G(\lambda_j,T)}$，则 $N_j$ 幂零。由幂零算子的结构定理，$G(\lambda_j,T)$ 有一组 Jordan 链基，使 $N_j$ 的矩阵为若干个 $J(0,k)$。于是 $T|_{G(\lambda_j,T)}=\lambda_j\Id+N_j$ 的矩阵为若干个 $J(\lambda_j,k)$。把各部分基拼接起来，即得整个 $V$ 的 Jordan 基。
+\end{proof}
+
+\begin{corollary}
+$T$ 可对角化，当且仅当每个 Jordan 块的大小都为 $1$；等价地，当且仅当每个广义特征空间都等于对应特征空间。
+\end{corollary}
+
+\begin{proof}
+Jordan 块 $J(\lambda,k)$ 在 $k=1$ 时才是对角块。另一方面，$G(\lambda,T)=E(\lambda,T)$ 正好意味着该特征值内部不存在长度大于 $1$ 的 Jordan 链。
+\end{proof}
+
+\begin{example}
+矩阵
+\[
+\mat{3&1&0&0\\0&3&0&0\\0&0&-1&1\\0&0&0&-1}
+\]
+已经处于 Jordan 标准形：它有两个特征值 $3$ 与 $-1$，每个都对应一个大小为 $2$ 的 Jordan 块。
+\end{example}
+
+\section{特征多项式与 Cayley--Hamilton 定理}
+
+现在采用 LADR 风格的定义。
+
+\begin{definition}
+设 $\lambda_1,\dots,\lambda_m$ 是 $T$ 的全部互异特征值。定义 $T$ 的\emph{特征多项式}为
+\[
+\chi_T(z)=(z-\lambda_1)^{d_1}\cdots(z-\lambda_m)^{d_m},
+\]
+其中
+\[
+d_j=\dim G(\lambda_j,T).
+\]
+\end{definition}
+
+这一定义的次数恰为
+\[
+d_1+\cdots+d_m=\dim V,
+\]
+因为广义特征空间直和分解为整个空间。它与 Jordan 标准形完全一致：$d_j$ 就是特征值 $\lambda_j$ 的全部 Jordan 块大小之和。
+
+\begin{theorem}[Cayley--Hamilton]
+对任意 $T\in\Lmap(V)$，都有
+\[
+\chi_T(T)=0.
+\]
+\end{theorem}
+
+\begin{proof}
+把 $V$ 分解为广义特征空间直和。只需验证 $\chi_T(T)$ 在每个 $G(\lambda_j,T)$ 上都为零。在该空间上，因 $\chi_T$ 包含因子 $(z-\lambda_j)^{d_j}$，且 $d_j=\dim G(\lambda_j,T)$，所以
+\[
+(T-\lambda_j\Id)^{d_j}=0
+\]
+在 $G(\lambda_j,T)$ 上成立。于是 $\chi_T(T)$ 在 $G(\lambda_j,T)$ 上为零。对全部 $j$ 都成立，所以 $\chi_T(T)=0$。
+\end{proof}
+
+\begin{corollary}
+若 $p(T)=0$，则 $\chi_T$ 的每个根都是 $p$ 的根。
+\end{corollary}
+
+\begin{proof}
+若 $\lambda$ 是 $T$ 的特征值，取特征向量 $v$，则 $0=p(T)v=p(\lambda)v$，故 $p(\lambda)=0$。
+\end{proof}
+
+\section{最小多项式}
+
+\begin{definition}
+$T$ 的\emph{最小多项式}是使 $p(T)=0$ 的首一非零多项式中次数最小者，记为 $m_T$。
+\end{definition}
+
+\begin{proposition}
+最小多项式存在且唯一；并且若 $p(T)=0$，则 $m_T$ 整除 $p$。
+\end{proposition}
+
+\begin{proof}
+存在性来自 Cayley--Hamilton 定理。设 $p=q m_T+r$，其中 $\deg r<\deg m_T$。代入 $T$ 得 $0=p(T)=q(T)m_T(T)+r(T)=r(T)$。由最小性知 $r=0$，故 $m_T\mid p$。唯一性随之成立。
+\end{proof}
+
+\begin{theorem}
+若 $T$ 的互异特征值为 $\lambda_1,\dots,\lambda_m$，则
+\[
+m_T(z)=(z-\lambda_1)^{s_1}\cdots(z-\lambda_m)^{s_m},
+\]
+其中 $s_j$ 是特征值 $\lambda_j$ 的最大 Jordan 块大小。
+\end{theorem}
+
+\begin{proof}
+在 $G(\lambda_j,T)$ 上，$T=\lambda_j\Id+N_j$，其中 $N_j$ 幂零。使 $(T-\lambda_j\Id)^r$ 在该空间上为零的最小指数，恰是 $N_j$ 的最大 Jordan 块大小。各广义特征空间相互独立，所以最小多项式正是这些因子的乘积。
+\end{proof}
+
+\begin{corollary}
+$T$ 可对角化，当且仅当最小多项式分解为互异线性因子的乘积。
+\end{corollary}
+
+\begin{proof}
+这等价于所有 $s_j=1$，也等价于所有 Jordan 块大小均为 $1$。
+\end{proof}
+
+\begin{remark}
+特征多项式记录“每个特征值总共占了多少维”，最小多项式记录“每个特征值内部最坏的 Jordan 块有多大”。前者测量总体大小，后者测量最深层次的非对角化程度。
+\end{remark}
+
+\section*{习题}
+
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 证明 $E(\lambda,T)\subseteq G(\lambda,T)$。
+\item \basic 设 $v\in G(\lambda,T)$。证明 $Tv\in G(\lambda,T)$。
+\item \basic 设 $N$ 幂零。证明 $0$ 是它唯一的特征值。
+\item \basic 若 $N^3=0$，证明 $N^4=0$。
+\item \basic 若 $N$ 幂零且可逆，证明 $V=\{0\}$。
+\item \basic 设 $T$ 在某基下为单个 Jordan 块 $J(\lambda,3)$。写出 $T-\lambda\Id$ 的矩阵。
+\item \basic 设 $T=J(5,2)$。求 $E(5,T)$ 的维数。
+\item \basic 设 $T=J(5,2)$。求 $G(5,T)$ 的维数。
+\item \basic 设 $T=\diag(2,2,3)$。求 $G(2,T)$ 与 $G(3,T)$。
+\item \basic 若 $T$ 可对角化，证明 $G(\lambda,T)=E(\lambda,T)$。
+\item \basic 证明：若 $v\in G(\lambda,T)$，则存在 $k$ 使 $(T-\lambda\Id)^kv=0$。
+\item \basic 设 $T$ 只有一个特征值 $\lambda$。证明 $T-\lambda\Id$ 幂零。
+\item \basic 设 $N$ 幂零。证明其最小多项式形如 $z^m$。
+\item \basic 写出 Jordan 块 $J(-1,4)$。
+\item \basic 设 $T=J(2,1)\oplus J(2,2)$。写出其特征值集合。
+\item \basic 设 $T=J(2,1)\oplus J(2,2)$。求 $\dim G(2,T)$。
+\item \basic 设 $T=J(2,1)\oplus J(2,2)$。求 $\dim E(2,T)$。
+\item \basic 证明：若 $T$ 的特征值互异且个数为 $\dim V$，则 $T$ 可对角化。
+\item \basic 设 $p(T)=0$ 且 $Tv=\lambda v$。证明 $p(\lambda)=0$。
+\item \basic 设 $T=J(0,3)$。求满足 $T^kv=0$ 的最小 $k$ 的可能取值。
+\item \basic 证明：Jordan 块 $J(\lambda,k)$ 的特征空间是一维的。
+\item \basic 证明：若 $T$ 只有一个 Jordan 块，则其广义特征空间就是整个空间。
+\end{enumerate}
+
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 设 $N$ 幂零。证明存在基使 $N$ 的矩阵严格上三角。
+\item \medium 设 $T$ 的互异特征值为 $\lambda_1,\lambda_2$。证明 $G(\lambda_1,T)\cap G(\lambda_2,T)=\{0\}$。
+\item \medium 证明广义特征空间分解定理。
+\item \medium 设 $T$ 在某基下矩阵为 $J(3,2)\oplus J(3,1)\oplus J(-1,2)$。求其特征多项式。
+\item \medium 对上一题求其最小多项式。
+\item \medium 设 $T=J(0,2)\oplus J(0,2)$。求其最小多项式与特征多项式。
+\item \medium 设 $T=J(1,3)\oplus J(1,1)$。判断 $T$ 是否可对角化。
+\item \medium 设 $T$ 的最小多项式为 $(z-2)^2(z+1)$。列出它可能的 Jordan 块类型。
+\item \medium 证明：若 $T$ 的最小多项式没有重根，则 $T$ 可对角化。
+\item \medium 证明：若 $T$ 可对角化，则其最小多项式没有重根。
+\item \medium 设 $T$ 只有一个特征值 $\lambda$，且 $\dim E(\lambda,T)=\dim V-1$。描述其 Jordan 形。
+\item \medium 设 $T$ 有两个互异特征值，且每个广义特征空间维数都为 $2$。写出所有可能的 Jordan 形。
+\item \medium 设 $T$ 的 Jordan 形含有大小分别为 $4,2,2$ 的同特征值块。求该特征值在最小多项式中的指数。
+\item \medium 设 $T$ 的 Jordan 形含有 $3$ 个关于 $\lambda$ 的 Jordan 块。求 $\dim E(\lambda,T)$。
+\item \medium 设 $T$ 的 Jordan 形含有大小分别为 $3,1$ 的 $\lambda$-块。求 $\dim G(\lambda,T)$ 与 $\dim E(\lambda,T)$。
+\item \medium 证明：$\chi_T(T)=0$。
+\item \medium 证明：最小多项式整除特征多项式。
+\item \medium 设 $T$ 与 $S$ 相似。证明它们有相同的特征多项式与最小多项式。
+\item \medium 设 $T$ 的最小多项式为 $(z-1)^3$。说明 $T-\Id$ 是幂零算子。
+\item \medium 设 $T$ 的特征多项式为 $(z-2)^4(z+1)^2$ 且最小多项式为 $(z-2)^2(z+1)$。写出可能的 Jordan 形。
+\item \medium 设 $T$ 的特征多项式与最小多项式相同，均为 $(z-3)^2(z+1)$。写出 Jordan 形。
+\item \medium 证明：$T$ 可对角化当且仅当 $V$ 是各特征空间的直和。
+\item \medium 设 $W$ 在 $T$ 下不变。证明 $T|_W$ 的每个特征值也是 $T$ 的特征值。
+\item \medium 设 $T$ 的 Jordan 形为 $J(2,3)\oplus J(2,2)$。求 $(T-2\Id)^2$ 的秩。
+\end{enumerate}
+
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 设 $N$ 幂零。证明可以选择基使得 $N$ 的矩阵恰为若干个 $J(0,k)$ 的分块对角矩阵。
+\item \hard 仅用幂零算子的结构定理证明 Jordan 标准形定理。
+\item \hard 设 $T$ 的 Jordan 形中关于 $\lambda$ 的块大小为 $n_1\ge\cdots\ge n_r$。证明 $\dim\nul(T-\lambda\Id)^k=\sum_{j=1}^r \min\{k,n_j\}$。
+\item \hard 由上一题推出：$\dim\nul(T-\lambda\Id)^k$ 决定并且仅决定关于 $\lambda$ 的 Jordan 块大小。
+\item \hard 设 $T$ 满足 $(T-\Id)^2(T+2\Id)=0$。证明 $V=G(1,T)\oplus G(-2,T)$，并说明在 $G(-2,T)$ 上 $T$ 可对角化。
+\item \hard 设 $T$ 的最小多项式为 $(z-1)^2(z-2)^3$。构造一个 $5$ 维或 $6$ 维例子使每个指数都真正出现。
+\item \hard 设 $T$ 与 $S$ 交换。证明每个广义特征空间 $G(\lambda,T)$ 在 $S$ 下不变。
+\item \hard 设 $T$ 可对角化且与 $N$ 交换，其中 $N$ 幂零。证明 $T+N$ 的特征值与 $T$ 相同。
+\item \hard 设 $T$ 的最小多项式为 $(z-\lambda)^m$。证明 $T=\lambda\Id+N$，其中 $N$ 幂零且 $N^m=0$。
+\item \hard 设 $T$ 的所有 Jordan 块大小都不超过 $2$。证明 $(T-\lambda\Id)^2$ 在每个广义特征空间上为零。
+\item \hard 设 $T$ 满足 $T^2=0$。描述其所有可能的 Jordan 形。
+\item \hard 设 $T^3=T^2$。证明 $T$ 的 Jordan 块只能来自特征值 $0$ 与 $1$，并判断 $T$ 是否必可对角化。
+\item \hard 用本章的特征多项式定义重新证明：若 $T$ 可逆，则 $0$ 不是 $\chi_T$ 的根。
+\item \hard 设 $T$ 的最小多项式为 $z^2(z-1)$，特征多项式为 $z^4(z-1)^2$。列出所有可能的 Jordan 形。
+\item \hard 设 $T$ 在某基下上三角，且对角元依次为 $\lambda_1,\dots,\lambda_n$。证明 $T$ 的特征值正是这些对角元中出现的互异数，并解释 Jordan 理论为何是这种现象的强化版。
+\end{enumerate}
+
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} 若 $(T-\lambda\Id)v=0$，则重复再作用 $n-1$ 次仍得 $0$，故 $v\in G(\lambda,T)$。
+\item \textbf{解答.} 因为 $(T-\lambda\Id)^n(Tv)=T(T-\lambda\Id)^nv=0$，所以 $Tv\in G(\lambda,T)$。
+\item \textbf{解答.} 若 $Nv=\lambda v$，则 $0=N^kv=\lambda^kv$。对 $v\neq0$ 只能有 $\lambda=0$。
+\item \textbf{解答.} $N^4=N\cdot N^3=0$。
+\item \textbf{解答.} 若 $N$ 可逆且 $N^m=0$，则左乘 $N^{-m}$ 得 $\Id=0$，故只能是零空间。
+\item \textbf{解答.} $T-\lambda\Id=\mat{0&1&0\\0&0&1\\0&0&0}$。
+\item \textbf{解答.} 单个 Jordan 块只有一个真正特征向量，因此 $\dim E(5,T)=1$。
+\item \textbf{解答.} 整个二维块都属于广义特征空间，所以维数为 $2$。
+\item \textbf{解答.} 因为 $T$ 已对角化，$G(2,T)=E(2,T)=\spn\{e_1,e_2\}$，$G(3,T)=E(3,T)=\spn\{e_3\}$。
+\item \textbf{解答.} 在特征基上 $T-\lambda\Id$ 仍对角化，其零空间与高次幂零空间相同，所以两者相等。
+\item \textbf{解答.} 由定义 $(T-\lambda\Id)^nv=0$，取 $k=n$ 即可；更小的 $k$ 也许已经成立。
+\item \textbf{解答.} 设唯一特征值为 $\lambda$，则整个空间都是 $G(\lambda,T)$，故 $(T-\lambda\Id)^n=0$。
+\item \textbf{解答.} 因为某个最小 $m$ 满足 $N^m=0$，而次数更小的首一多项式不可能湮灭 $N$，故最小多项式为 $z^m$。
+\item \textbf{解答.} $J(-1,4)=\mat{-1&1&0&0\\0&-1&1&0\\0&0&-1&1\\0&0&0&-1}$。
+\item \textbf{解答.} 特征值只有 $2$。
+\item \textbf{解答.} 关于 $2$ 的广义特征空间就是整个三维空间，所以维数为 $3$。
+\item \textbf{解答.} 每个 Jordan 块贡献一个真正特征向量，因此维数为 $2$。
+\item \textbf{解答.} 互异特征值对应特征向量线性无关，已有 $n$ 个，便构成一组基。
+\item \textbf{解答.} $0=p(T)v=p(\lambda)v$，而 $v\neq0$，故 $p(\lambda)=0$。
+\item \textbf{解答.} 可能为 $1,2,3$。例如分别取 $e_1,e_2,e_3$ 或其适当线性组合即可。
+\item \textbf{解答.} 对单个 Jordan 块，$T-\lambda\Id$ 的核只由链顶向量张成，所以是一维。
+\item \textbf{解答.} 单个 Jordan 块只对应一个特征值，且块的全部向量在足够高次后都会被 $(T-\lambda\Id)$ 消掉，因此广义特征空间就是整个空间。
+\item \textbf{解答.} 取最长 Jordan 链，再对商空间归纳，便得严格上三角表示；详见正文幂零算子结构定理。
+\item \textbf{解答.} 因为分解定理给出直和，所以交集只能是 $\{0\}$；也可用 Bézout 恒等式直接证明。
+\item \textbf{解答.} 用互素多项式的 Bézout 恒等式写出恒等算子的分解，把每个向量分解到各个高次核中；再验证交集为零。
+\item \textbf{解答.} $d_3=3$，$d_{-1}=2$，故 $\chi_T(z)=(z-3)^3(z+1)^2$。
+\item \textbf{解答.} 最大 $3$-块大小为 $2$，最大 $-1$-块大小也为 $2$，故 $m_T(z)=(z-3)^2(z+1)^2$。
+\item \textbf{解答.} 特征多项式是 $z^4$，最小多项式是 $z^2$。
+\item \textbf{解答.} 不可对角化，因为存在大小为 $3$ 的 Jordan 块。
+\item \textbf{解答.} 关于 $2$ 必须至少有一个大小为 $2$ 的块；关于 $-1$ 只能有大小为 $1$ 的块。故可为 $J(2,2)\oplus J(-1,1)$ 再加任意个 $J(2,1)$ 与 $J(-1,1)$，但不能再有更大块。
+\item \textbf{解答.} 若最小多项式无重根，则每个最大 Jordan 块大小都为 $1$，故全部块大小为 $1$，于是可对角化。
+\item \textbf{解答.} 若 $T$ 已可对角化，则全部 Jordan 块大小为 $1$，故最小多项式只含互异线性因子。
+\item \textbf{解答.} 只可能是一个大小为 $2$ 的 Jordan 块加上其余 $n-2$ 个大小为 $1$ 的块；否则特征空间维数不会恰好是 $n-1$。
+\item \textbf{解答.} 每个二维广义特征空间要么是一个大小为 $2$ 的块，要么是两个大小为 $1$ 的块；两种特征值独立组合即可。
+\item \textbf{解答.} 指数等于最大块大小，所以为 $4$。
+\item \textbf{解答.} 每个 Jordan 块贡献一个真正特征向量，因此维数为 $3$。
+\item \textbf{解答.} 总维数为 $3+1=4$，故 $\dim G(\lambda,T)=4$；块数为 $2$，故 $\dim E(\lambda,T)=2$。
+\item \textbf{解答.} 在每个 $G(\lambda_j,T)$ 上，$(T-\lambda_j\Id)^{d_j}=0$，而 $\chi_T$ 含有此因子，所以 $\chi_T(T)$ 在各广义特征空间上都为零，故整体为零。
+\item \textbf{解答.} 因为 $\chi_T(T)=0$ 而最小多项式整除任何湮灭多项式，所以 $m_T\mid\chi_T$。
+\item \textbf{解答.} 相似不改变在各广义特征空间上的 Jordan 块数据，因此不改变特征多项式与最小多项式。
+\item \textbf{解答.} 把 $z$ 换成 $T$ 得 $(T-\Id)^3=0$，所以 $T-\Id$ 幂零。
+\item \textbf{解答.} 关于 $2$ 的总维数为 $4$ 且最大块大小为 $2$，故可能是 $2+2$ 或 $2+1+1$；关于 $-1$ 的总维数为 $2$ 且指数为 $1$，只能是 $1+1$。组合即可。
+\item \textbf{解答.} 因为总次数表明 $3$ 对应两维、$-1$ 对应一维；最小多项式相同意味着 $3$ 有一个大小为 $2$ 的块，$-1$ 有一个大小为 $1$ 的块，所以 Jordan 形唯一：$J(3,2)\oplus J(-1,1)$。
+\item \textbf{解答.} 若 $V$ 是各特征空间直和，则特征向量张成全空间，故可对角化；反向显然。
+\item \textbf{解答.} 若 $w\in W$ 且 $T|_W w=\lambda w$，则同一等式在整个 $V$ 中也成立，因此 $\lambda$ 是 $T$ 的特征值。
+\item \textbf{解答.} 在 $J(2,3)$ 上，$(T-2\Id)^2$ 的秩为 $1$；在 $J(2,2)$ 上秩为 $0$。因此总秩为 $1$。
+\item \textbf{解答.} 取各链的首向量并延伸成最长链，再对补空间重复操作，即得到若干个 $J(0,k)$ 的分块对角表示。
+\item \textbf{解答.} 先把空间分解为各广义特征空间，在每个部分上把 $T$ 写成 $\lambda\Id+N$，再对幂零部分用上一题的分块定理，即得 Jordan 形。
+\item \textbf{解答.} 每个大小为 $n_j$ 的块对 $\nul(T-\lambda\Id)^k$ 的贡献是前 $k$ 个链向量，即 $\min\{k,n_j\}$ 维；把各块贡献相加即可。
+\item \textbf{解答.} 由上一题，核维数序列的增量恰好记录“至少有多少块长度不小于 $k$”，从而可反推出所有块大小；反过来块大小显然决定该序列。
+\item \textbf{解答.} 由互素因子 $(z-1)^2$ 与 $z+2$ 的分解定理，空间分成两个广义特征空间的直和。在 $G(-2,T)$ 上最小多项式整除 $z+2$，因此 $T$ 就是 $-2\Id$，当然可对角化。
+\item \textbf{解答.} 例如取 $J(1,2)\oplus J(2,3)$（五维）或再添一个 $J(2,1)$（六维）。其最小多项式正是所给多项式。
+\item \textbf{解答.} 因为 $S$ 与 $T$ 交换，也与任意多项式 $p(T)$ 交换。若 $v\in G(\lambda,T)$，则 $(T-\lambda\Id)^nSv=S(T-\lambda\Id)^nv=0$，故 $Sv\in G(\lambda,T)$。
+\item \textbf{解答.} 在 $T$ 的特征空间直和分解下，$N$ 保持每个特征空间不变，因为它与 $T$ 交换。于是 $T+N$ 在每个特征空间上等于常数 $\lambda$ 加幂零，所以特征值仍是那些 $\lambda$。
+\item \textbf{解答.} 令 $N=T-\lambda\Id$。给定最小多项式说明 $N^m=0$，故 $N$ 幂零且 $T=\lambda\Id+N$。
+\item \textbf{解答.} 若所有块大小都不超过 $2$，则在每个关于 $\lambda$ 的 Jordan 块上 $(T-\lambda\Id)^2=0$，所以在整个广义特征空间上也为零。
+\item \textbf{解答.} 因为最小多项式整除 $z^2$，只可能出现大小为 $1$ 或 $2$ 的零块，所以 Jordan 形是若干个 $J(0,2)$ 与 $J(0,1)$ 的直和。
+\item \textbf{解答.} 多项式 $z^3-z^2=z^2(z-1)$ 的根只有 $0,1$，故 Jordan 块只可能对应这两个特征值。由于根 $1$ 无重根，关于 $1$ 的块都为大小 $1$；但关于 $0$ 仍可能出现大小 $2$ 的块，因此未必可对角化。
+\item \textbf{解答.} $T$ 可逆等价于 $0$ 不是特征值；而本章定义下特征多项式的根恰是特征值，所以 $0$ 不是 $\chi_T$ 的根。
+\item \textbf{解答.} 关于 $0$ 的总维数为 $4$ 且最大块大小为 $2$，故可为 $2+2$ 或 $2+1+1$；关于 $1$ 的总维数为 $2$ 且指数为 $1$，只能为 $1+1$。组合后得到两种 Jordan 形。
+\item \textbf{解答.} 上三角矩阵的特征向量方程沿对角读取，因此特征值只能来自对角元；而每个对角元若出现，便在某个不变子空间商上成为真正特征值。Jordan 理论进一步说明：不仅知道哪些数出现，还能精确描述每个对角元附近非对角化的链结构。
+\end{enumerate}

@@ -1,0 +1,533 @@
+\chapter{对偶空间与多线性代数}
+
+
+
+
+\begin{notation} 除特别说明外，本章中的向量空间都定义在同一域 $\F$ 上。 若 $V$ 是向量空间，则记 \[ V'=\Lmap(V,\F) \] 为 $V$ 的\textbf{对偶空间}。 若 $U\subseteq V$ 是子空间，则记 \[ U^0=\{\varphi\in V' : \varphi(u)=0\ \text{对所有 }u\in U\} \] 为 $U$ 的\textbf{零化子}。 \end{notation} 本章把第 10 章的行列式观点向前推进一步。 在那里，行列式被解释为线性算子的一个内在数量； 在这里，我们将看到，行列式实际上来自最高次交替多线性结构。 对偶、张量与外代数共同提供了一种“坐标自由”的语言， 使得矩阵、转置、行列式、双线性形式等概念都可以统一处理。
+
+
+
+
+\section{对偶空间：$V'=\Lmap(V,\F)$，对偶基，$\dim V'=\dim V$}
+
+
+
+
+\begin{definition} 设 $V$ 是 $\F$ 上的向量空间。 从 $V$ 到 $\F$ 的线性映射称为 $V$ 上的\textbf{线性泛函}。 所有线性泛函构成的向量空间称为 $V$ 的对偶空间，记作 $V'$。 \end{definition} 对偶空间中的向量不是“点”或“箭头”， 而是把向量送到标量的测量规则。 在很多问题中，先研究“如何测量向量”， 再回头研究“向量本身”，往往更自然。
+
+
+
+
+\begin{example} 取 $V=\F^n$。 对每个 $1\leq j\leq n$，定义 \[ \varepsilon_j(x_1,\dots,x_n)=x_j. \] 则每个 $\varepsilon_j$ 都是线性泛函， 而且任意线性泛函 $\varphi:\F^n\to\F$ 都可唯一写成 \[ \varphi=a_1\varepsilon_1+\cdots+a_n\varepsilon_n, \] 其中 $a_j=\varphi(e_j)$，$e_j$ 是标准基。 因此 $(\F^n)'$ 与 $\F^n$ 有完全相同的维数。 \end{example}
+
+
+
+
+\begin{definition} 设 $e_1,\dots,e_n$ 是有限维向量空间 $V$ 的一组基。 若线性泛函 $e_1',\dots,e_n'\in V'$ 满足 \[ e_i'(e_j)= \begin{cases} 1,& i=j,\\ 0,& i\neq j, \end{cases} \] 则称 $e_1',\dots,e_n'$ 为基 $e_1,\dots,e_n$ 的\textbf{对偶基}。 \end{definition} 对偶基的意义在于： 它把“向量的坐标”直接读出来。
+
+
+
+
+\begin{proposition} 设 $e_1,\dots,e_n$ 是 $V$ 的一组基。 对每个 $i$，定义 \[ e_i'\Big(\sum_{j=1}^n a_j e_j\Big)=a_i. \] 则 $e_i'$ 是线性泛函， 且 $e_1',\dots,e_n'$ 是 $e_1,\dots,e_n$ 的对偶基。 \end{proposition}
+
+
+
+
+\begin{proof} 每个向量 $v\in V$ 都有唯一表示 \[ v=\sum_{j=1}^n a_j e_j, \] 故上式确实给出一个良定义的函数。 若 \[ v=\sum_{j=1}^n a_j e_j,\qquad w=\sum_{j=1}^n b_j e_j, \] 则 \[ e_i'(v+w)=a_i+b_i=e_i'(v)+e_i'(w), \] 且对任意 $\lambda\in\F$， \[ e_i'(\lambda v)=\lambda a_i=\lambda e_i'(v), \] 故 $e_i'$ 线性。 再由定义立即得到 $e_i'(e_j)=\delta_{ij}$。 \end{proof}
+
+
+
+
+\begin{theorem} 有限维向量空间的每组基都有唯一的对偶基。 \end{theorem}
+
+
+
+
+\begin{proof} 存在性已由上一个命题给出。 若 $f_1',\dots,f_n'$ 也是一组满足 \[ f_i'(e_j)=\delta_{ij} \] 的泛函，则对任意 \[ v=\sum_{j=1}^n a_j e_j \] 有 \[ f_i'(v)=\sum_{j=1}^n a_j f_i'(e_j)=a_i=e_i'(v) \]。 故 $f_i'=e_i'$，唯一性成立。 \end{proof}
+
+
+
+
+\begin{theorem} 设 $V$ 是有限维向量空间，$\dim V=n$。 则对偶基 $e_1',\dots,e_n'$ 构成 $V'$ 的一组基， 从而 \[ \dim V'=\dim V=n. \] \end{theorem}
+
+
+
+
+\begin{proof} 先证张成。 任取 $\varphi\in V'$。 令 $a_i=\varphi(e_i)$。 对任意 \[ v=\sum_{i=1}^n x_i e_i \] 有 \[ \varphi(v)=\sum_{i=1}^n x_i\varphi(e_i) =\sum_{i=1}^n a_i e_i'(v) \]。 故 \[ \varphi=\sum_{i=1}^n a_i e_i'. \] 再证线性无关。 若 \[ c_1e_1'+\cdots+c_ne_n'=0, \] 把两边作用于 $e_j$，得 \[ c_j=0. \] 故 $e_1',\dots,e_n'$ 线性无关。 因此它们是 $V'$ 的一组基。 \end{proof}
+
+
+
+
+\begin{corollary} 设 $e_1,\dots,e_n$ 是 $V$ 的一组基，$e_1',\dots,e_n'$ 是其对偶基。 则每个向量 $v\in V$ 都可唯一写成 \[ v=\sum_{i=1}^n e_i'(v)e_i, \] 每个泛函 $\varphi\in V'$ 都可唯一写成 \[ \varphi=\sum_{i=1}^n \varphi(e_i)e_i'. \] \end{corollary}
+
+
+
+
+\begin{example} 设 $V=\R^2$，取 \[ e_1=(1,1),\qquad e_2=(1,-1). \] 设对偶基为 $e_1',e_2'$。 若 \[ (x,y)=a e_1+b e_2, \] 则 \[ x=a+b,\qquad y=a-b. \] 因此 \[ a=\frac{x+y}{2},\qquad b=\frac{x-y}{2}. \] 故 \[ e_1'(x,y)=\frac{x+y}{2},\qquad e_2'(x,y)=\frac{x-y}{2}. \] 这说明对偶基通常不是“坐标投影”， 而是与原基相匹配的坐标读取器。 \end{example}
+
+
+
+
+\begin{remark} 若 $V$ 不是有限维，$V'$ 往往比 $V$ 大得多。 不过本章主要关注有限维情形， 因为这正是线性代数教材中最稳定、最有结构的一部分。 \end{remark}
+
+
+
+
+\section{对偶映射：$T'\in \Lmap(W',V')$，$\nul T'=(\range T)^0$，$\range T'=(\nul T)^0$}
+
+
+
+
+\begin{definition} 设 $T\in\Lmap(V,W)$。 定义映射 \[ T':W'\to V' \] 如下： 对每个 $\varphi\in W'$，令 \[ T'(\varphi)=\varphi\circ T. \] 此映射称为 $T$ 的\textbf{对偶映射}。 \end{definition} 注意方向发生了反转： $T$ 从 $V$ 到 $W$， 而 $T'$ 从 $W'$ 到 $V'$。 这正是“先作用，再测量”和“先测量，再拉回”的区别。
+
+
+
+
+\begin{proposition} 若 $T\in\Lmap(V,W)$，则 $T'\in\Lmap(W',V')$。 并且若 $S\in\Lmap(W,X)$，则 \[ (S\circ T)'=T'\circ S'. \] 此外， \[ (\Id_V)'=\Id_{V'}. \] \end{proposition}
+
+
+
+
+\begin{proof} 对 $\varphi,\psi\in W'$ 与 $\lambda\in\F$， \[ T'(\varphi+\lambda\psi) =(\varphi+\lambda\psi)\circ T =\varphi\circ T+\lambda(\psi\circ T) =T'(\varphi)+\lambda T'(\psi), \] 故 $T'$ 线性。 又对任意 $\eta\in X'$， \[ (S\circ T)'(\eta)=\eta\circ S\circ T=T'(\eta\circ S)=T'(S'(\eta)), \] 故 $(S\circ T)'=T'\circ S'$。 恒等映射的情形显然。 \end{proof}
+
+
+
+
+\begin{theorem} 设 $T\in\Lmap(V,W)$。 则 \[ \nul T'=(\range T)^0. \] \end{theorem}
+
+
+
+
+\begin{proof} 取 $\varphi\in W'$。 则 \[ \varphi\in\nul T' \iff T'(\varphi)=0 \iff \varphi\circ T=0. \] 这等价于对所有 $v\in V$ 都有 \[ \varphi(Tv)=0. \] 而所有 $Tv$ 正好构成 $\range T$， 故这又等价于 $\varphi$ 在 $\range T$ 上恒为零， 即 \[ \varphi\in(\range T)^0. \] 因此 $\nul T'=(\range T)^0$。 \end{proof}
+
+
+
+
+\begin{theorem} 设 $T\in\Lmap(V,W)$。 则 \[ \range T'=(\nul T)^0. \] \end{theorem}
+
+
+
+
+\begin{proof} 先证 \[ \range T'\subseteq(\nul T)^0. \] 任取 $\psi\in\range T'$， 则存在 $\varphi\in W'$ 使得 $\psi=T'(\varphi)=\varphi\circ T$。 若 $v\in\nul T$，则 $Tv=0$， 故 \[ \psi(v)=\varphi(Tv)=\varphi(0)=0. \] 于是 $\psi\in(\nul T)^0$。 再证反向包含。 任取 $\psi\in(\nul T)^0$。 在子空间 $\range T\subseteq W$ 上定义函数 $\varphi_0$： 若 $w=Tv$，令 \[ \varphi_0(w)=\psi(v). \] 这一定义是良好的。 因为若 $Tv_1=Tv_2$，则 $v_1-v_2\in\nul T$， 故 \[ \psi(v_1-v_2)=0, \] 从而 $\psi(v_1)=\psi(v_2)$。 显然 $\varphi_0$ 在 $\range T$ 上线性。 把 $\varphi_0$ 延拓为某个 $\varphi\in W'$。 则对任意 $v\in V$， \[ T'(\varphi)(v)=\varphi(Tv)=\varphi_0(Tv)=\psi(v). \] 故 $\psi=T'(\varphi)\in\range T'$。 因此 $\range T'=(\nul T)^0$。 \end{proof}
+
+
+
+
+\begin{corollary} 若 $V,W$ 有限维，则 \[ \rank T'=\rank T. \] \end{corollary}
+
+
+
+
+\begin{proof} 由秩零度定理， \[ \rank T'=\dim W'-\dim\nul T'. \] 结合 $\dim W'=\dim W$ 以及上一条定理， \[ \dim\nul T'=\dim(\range T)^0=\dim W-\dim\range T. \] 故 \[ \rank T'=\dim\range T=\rank T. \] \end{proof}
+
+
+
+
+\begin{example} 设 $T:\R^2\to\R^3$ 在标准基下的矩阵为 \[ A=\mat{1&2\\0&1\\3&-1}. \] 若 $\varphi\in(\R^3)'$ 在对偶标准基下写为列向量 \[ \mat{a\\b\\c}, \] 则 \[ T'(\varphi)=\varphi\circ T \] 在 $(\R^2)'$ 中对应的坐标为 \[ \mat{a+3c\\2a+b-c}. \] 这正是矩阵乘法 \[ A^{\mathrm t}\mat{a\\b\\c} =\mat{1&0&3\\2&1&-1}\mat{a\\b\\c}. \] 因此“矩阵转置”本质上就是“对偶映射的矩阵表示”。 \end{example}
+
+
+
+
+\section{零化子：$U^0$ 的定义与性质}
+
+
+
+
+\begin{definition} 设 $U$ 是 $V$ 的子空间。 定义 \[ U^0=\{\varphi\in V' : \varphi(u)=0\ \text{对所有 }u\in U\}. \] 称 $U^0$ 为 $U$ 在 $V'$ 中的\textbf{零化子}。 \end{definition} 零化子由“在 $U$ 上看不见任何东西”的泛函组成。 因此它描述了子空间 $U$ 的“正交补”式的代数替代物， 只不过这里没有内积，只有泛函。
+
+
+
+
+\begin{example} 在 $V=\R^3$ 中取 \[ U=\spn\{(1,1,0)\}. \] 若 $\varphi(x,y,z)=ax+by+cz$，则 \[ \varphi(1,1,0)=a+b. \] 故 \[ U^0=\{(a,b,c)\in(\R^3)' : a+b=0\} =\spn\{(1,-1,0),(0,0,1)\}, \] 这里把泛函与其系数向量对应起来。 \end{example}
+
+
+
+
+\begin{proposition} 设 $U,W$ 是 $V$ 的子空间。 则有：
+
+
+
+
+\begin{enumerate}[label=\textnormal{(\arabic*)}] \\item \basic 若 $U\subseteq W$，则 $W^0\subseteq U^0$； \\item \basic \[ (U+W)^0=U^0\cap W^0; \] \\item \basic 总有 \[ U^0+W^0\subseteq (U\cap W)^0. \] \end{enumerate} \end{proposition}
+
+
+
+
+\begin{proof} (1) 若 $\varphi\in W^0$，则 $\varphi$ 在 $W$ 上恒为零， 特别在较小的子空间 $U$ 上恒为零，故 $\varphi\in U^0$。 (2) 若 $\varphi\in(U+W)^0$， 则它在 $U$ 与 $W$ 上都为零，故 $\varphi\in U^0\cap W^0$。 反之，若 $\varphi$ 在 $U$ 与 $W$ 上都为零， 则对任意 $u+w\in U+W$， \[ \varphi(u+w)=\varphi(u)+\varphi(w)=0, \] 故 $\varphi\in(U+W)^0$。 (3) 若 $\varphi=\varphi_1+\varphi_2$，其中 $\varphi_1\in U^0,\ \varphi_2\in W^0$， 则对任意 $x\in U\cap W$， \[ \varphi(x)=\varphi_1(x)+\varphi_2(x)=0+0=0. \] 故 $\varphi\in(U\cap W)^0$。 \end{proof}
+
+
+
+
+\begin{theorem} 设 $V$ 有限维，$U\subseteq V$。 则 \[ \dim U^0=\dim V-\dim U. \] \end{theorem}
+
+
+
+
+\begin{proof} 考虑限制映射 \[ R:V'\to U',\qquad R(\varphi)=\varphi|_U. \] 显然 $R$ 线性， 且任意 $U$ 上的线性泛函都能延拓到 $V$ 上， 故 $R$ 满射。 另一方面， \[ \nul R=U^0. \] 因此由秩零度定理， \[ \dim V'=\dim\nul R+\dim\range R=\dim U^0+\dim U'. \] 再用 $\dim V'=\dim V,\ \dim U'=\dim U$，得 \[ \dim U^0=\dim V-\dim U. \] \end{proof}
+
+
+
+
+\begin{corollary} 设 $V$ 有限维，$U,W\subseteq V$。 则 \[ (U\cap W)^0=U^0+W^0. \] \end{corollary}
+
+
+
+
+\begin{proof} 前面已知 \[ U^0+W^0\subseteq(U\cap W)^0. \] 比较维数即可。 由维数公式， \[ \dim(U^0+W^0)=\dim U^0+\dim W^0-\dim(U^0\cap W^0). \] 又由 $(U+W)^0=U^0\cap W^0$， \[ \dim(U^0\cap W^0)=\dim(U+W)^0=\dim V-\dim(U+W). \] 代入并化简得 \[ \dim(U^0+W^0)=\dim V-\dim(U\cap W)=\dim (U\cap W)^0. \] 于是两者相等。 \end{proof}
+
+
+
+
+\begin{corollary} 设 $V$ 有限维，$U\subseteq V$。 则 \[ (U^0)^0=U, \] 这里右边把 $V$ 通过自然嵌入视为 $V''$ 的子空间。 \end{corollary}
+
+
+
+
+\begin{proof} 显然每个 $u\in U$ 都被 $U^0$ 中的每个泛函送到 $0$， 故 $U\subseteq(U^0)^0$。 又 \[ \dim(U^0)^0=\dim V-\dim U^0=\dim U. \] 包含加上维数相等，故结论成立。 \end{proof}
+
+
+
+
+\begin{example} 设 $V=\R^4$，$U=\spn\{e_1,e_2\}$，$W=\spn\{e_2,e_3\}$。 则 \[ U^0=\spn\{e_3',e_4'\},\qquad W^0=\spn\{e_1',e_4'\}. \] 所以 \[ U^0\cap W^0=\spn\{e_4'\}=(U+W)^0, \] 以及 \[ U^0+W^0=\spn\{e_1',e_3',e_4'\}=(U\cap W)^0. \] 这说明零化子把“和”变成交， 把“交”变成和。 \end{example}
+
+
+
+
+\section{双对偶与自然嵌入：$V\to V''$，有限维时是同构}
+
+
+
+
+\begin{definition} 设 $V$ 是向量空间。 定义映射 \[ \Gamma_V:V\to V'' \] 为 \[ \Gamma_V(v)(\varphi)=\varphi(v)\qquad (\varphi\in V'). \] 称 $\Gamma_V$ 为 $V$ 到双对偶 $V''$ 的\textbf{自然嵌入}。 \end{definition} 这里 $\Gamma_V(v)$ 是一个作用在 $V'$ 上的线性泛函， 即 $V''$ 的一个元素。 它所做的事情非常自然： “拿一个泛函来作用在 $v$ 上”。
+
+
+
+
+\begin{proposition} $\Gamma_V$ 是线性映射。 \end{proposition}
+
+
+
+
+\begin{proof} 对 $v,w\in V$ 与 $\lambda\in\F$， 任取 $\varphi\in V'$， \[ \Gamma_V(v+\lambda w)(\varphi)=\varphi(v+\lambda w)=\varphi(v)+\lambda\varphi(w) =\Gamma_V(v)(\varphi)+\lambda\Gamma_V(w)(\varphi). \] 故 $\Gamma_V(v+\lambda w)=\Gamma_V(v)+\lambda\Gamma_V(w)$。 \end{proof}
+
+
+
+
+\begin{theorem} 对任意向量空间 $V$，自然嵌入 $\Gamma_V$ 都是单射。 \end{theorem}
+
+
+
+
+\begin{proof} 设 $\Gamma_V(v)=0$。 这意味着对任意 $\varphi\in V'$， \[ \Gamma_V(v)(\varphi)=\varphi(v)=0. \] 若 $v\neq 0$， 可把 $\{v\}$ 扩充为一组基， 再定义一个线性泛函使其在 $v$ 上取值 $1$。 这与上式矛盾。 故 $v=0$， 所以 $\nul \Gamma_V=\{0\}$， $\Gamma_V$ 单射。 \end{proof}
+
+
+
+
+\begin{theorem} 若 $V$ 有限维，则 $\Gamma_V:V\to V''$ 是同构。 \end{theorem}
+
+
+
+
+\begin{proof} 由上一定理，$\Gamma_V$ 已知单射。 又 \[ \dim V''=\dim V'=\dim V. \] 有限维空间之间的单射必为满射， 故 $\Gamma_V$ 是同构。 \end{proof}
+
+
+
+
+\begin{proposition} 设 $T\in\Lmap(V,W)$。 则交换关系 \[ \Gamma_W\circ T=T''\circ \Gamma_V \] 成立。 \end{proposition}
+
+
+
+
+\begin{proof} 任取 $v\in V$ 与 $\varphi\in W'$， 有 \[ (\Gamma_W\circ T)(v)(\varphi)=\Gamma_W(Tv)(\varphi)=\varphi(Tv), \] 另一方面， \[ (T''\circ\Gamma_V)(v)(\varphi)=T''(\Gamma_V(v))(\varphi) =\Gamma_V(v)(T'(\varphi)) =T'(\varphi)(v) =\varphi(Tv). \] 两边相等。 \end{proof}
+
+
+
+
+\begin{example} 设 $V=\F^n$，标准基为 $e_1,\dots,e_n$， 对偶基为 $e_1',\dots,e_n'$。 再记 $e_1'',\dots,e_n''$ 为 $V''$ 中与 $e_1',\dots,e_n'$ 对应的对偶基。 则 \[ \Gamma_V(e_i)=e_i''. \] 因为对每个 $j$， \[ \Gamma_V(e_i)(e_j')=e_j'(e_i)=\delta_{ij}. \] 所以在有限维情形中， 自然嵌入把原来的基直接送到双对偶中的对偶基。 \end{example}
+
+
+
+
+\begin{remark} 无限维时，$\Gamma_V$ 一般不是满射。 因此“向量由所有线性泛函完全决定”总是对的， 但“每个双对偶元素都来自某个向量”却需要有限维假设。 \end{remark}
+
+
+
+
+\section{张量积：$V\otimes W$ 的泛性质定义与具体构造}
+
+
+
+
+\begin{definition} 设 $V,W,Z$ 是向量空间。 映射 $B:V\times W\to Z$ 称为\textbf{双线性}， 若对每个固定的 $w\in W$，映射 $v\mapsto B(v,w)$ 线性， 且对每个固定的 $v\in V$，映射 $w\mapsto B(v,w)$ 线性。 \end{definition} 我们希望构造一个向量空间， 使得“关于两个变量的双线性问题” 化成“关于一个变量的线性问题”。 这正是张量积的目标。
+
+
+
+
+\begin{definition} $V$ 与 $W$ 的\textbf{张量积}是一个向量空间 $V\otimes W$ 连同一个双线性映射 \[ \tau:V\times W\to V\otimes W \] 满足以下泛性质： 对任意向量空间 $Z$ 及任意双线性映射 $B:V\times W\to Z$， 都存在唯一的线性映射 \[ \widetilde{B}:V\otimes W\to Z \] 使得 \[ B=\widetilde{B}\circ\tau. \] 通常把 $\tau(v,w)$ 记作 $v\otimes w$。 \end{definition} 于是每个双线性映射都唯一对应一个线性映射： \[ \{\text{双线性 }V\times W\to Z\} \longleftrightarrow \Lmap(V\otimes W,Z). \]
+
+
+
+
+\begin{proposition} 若张量积存在，则它在同构意义下唯一。 \end{proposition}
+
+
+
+
+\begin{proof} 设 $(X,\tau_X)$ 与 $(Y,\tau_Y)$ 都满足张量积的泛性质。 由 $\tau_Y$ 的双线性性，存在唯一线性映射 \[ f:X\to Y \] 使得 \[ f(\tau_X(v,w))=\tau_Y(v,w). \] 同理存在唯一线性映射 \[ g:Y\to X \] 使得 \[ g(\tau_Y(v,w))=\tau_X(v,w). \] 于是 $g\circ f$ 与 $\Id_X$ 在所有生成元 $\tau_X(v,w)$ 上取值相同， 由唯一性知 $g\circ f=\Id_X$。 同理 $f\circ g=\Id_Y$。 故 $f$ 是同构。 \end{proof}
+
+
+
+
+\begin{theorem} 张量积确实存在。 一种具体构造如下： 取以 $V\times W$ 为基的自由向量空间 $F(V\times W)$， 其元素是有限和 \[ \sum_k a_k[(v_k,w_k)]. \] 令 $R$ 为由下列关系生成的子空间：
+
+
+
+
+\begin{align*} [(v_1+v_2,w)]-[(v_1,w)]-[(v_2,w)],\\ [(v,w_1+w_2)]-[(v,w_1)]-[(v,w_2)],\\ [(\lambda v,w)]-\lambda[(v,w)],\\ [(v,\lambda w)]-\lambda[(v,w)]. \end{align*} 定义 \[ V\otimes W=F(V\times W)/R, \] 并令 \[ v\otimes w=[(v,w)]+R. \] 则此构造满足张量积的泛性质。 \end{theorem}
+
+
+
+
+\begin{proof} 由 $R$ 的构造可知映射 $(v,w)\mapsto v\otimes w$ 自动双线性。 若 $B:V\times W\to Z$ 是双线性映射， 先定义自由空间上的线性映射 \[ L:F(V\times W)\to Z,\qquad L([(v,w)])=B(v,w). \] 双线性保证 $R\subseteq\nul L$， 因此 $L$ 下降为商空间上的线性映射 \[ \widetilde{B}:V\otimes W\to Z, \] 满足 $\widetilde{B}(v\otimes w)=B(v,w)$。 唯一性来自 $V\otimes W$ 由所有简单张量 $v\otimes w$ 生成。 \end{proof}
+
+
+
+
+\begin{proposition} 对任意 $v,v_1,v_2\in V$，$w,w_1,w_2\in W$，$\lambda\in\F$， 有
+
+
+
+
+\begin{align*} (v_1+v_2)\otimes w&=v_1\otimes w+v_2\otimes w,\\ v\otimes(w_1+w_2)&=v\otimes w_1+v\otimes w_2,\\ (\lambda v)\otimes w&=\lambda(v\otimes w)=v\otimes(\lambda w). \end{align*} \end{proposition}
+
+
+
+
+\begin{proof} 这些等式正是把张量积定义成双线性映射的代数反映， 由商空间构造中的关系直接得到。 \end{proof}
+
+
+
+
+\begin{theorem} 设 $V,W$ 有限维， $e_1,\dots,e_m$ 是 $V$ 的一组基， $f_1,\dots,f_n$ 是 $W$ 的一组基。 则 \[ e_i\otimes f_j\qquad (1\leq i\leq m,\ 1\leq j\leq n) \] 构成 $V\otimes W$ 的一组基。 特别地， \[ \dim(V\otimes W)=mn. \] \end{theorem}
+
+
+
+
+\begin{proof} 先证张成。 任取 $v=\sum_i a_i e_i,\ w=\sum_j b_j f_j$， 则 \[ v\otimes w=\sum_{i,j} a_i b_j(e_i\otimes f_j). \] 任意张量是简单张量的线性组合， 故由这些 $e_i\otimes f_j$ 张成。 再证线性无关。 对每对 $(p,q)$，定义双线性映射 \[ B_{pq}:V\times W\to\F,\qquad B_{pq}(e_i,f_j)= \begin{cases} 1,& (i,j)=(p,q),\\ 0,& \text{否则}. \end{cases} \] 由泛性质得到线性映射 \[ \widetilde{B}_{pq}:V\otimes W\to\F \] 使得 \[ \widetilde{B}_{pq}(e_i\otimes f_j)=\delta_{ip}\delta_{jq}. \] 若 \[ \sum_{i,j} c_{ij}(e_i\otimes f_j)=0, \] 对其作用 $\widetilde{B}_{pq}$ 即得 $c_{pq}=0$。 故线性无关。 \end{proof}
+
+
+
+
+\begin{example} 取 $V=\F^2,\ W=\F^3$。 则 $V\otimes W$ 维数为 $6$， 一组基可取为 \[ e_1\otimes f_1,\ e_1\otimes f_2,\ e_1\otimes f_3,\ e_2\otimes f_1,\ e_2\otimes f_2,\ e_2\otimes f_3. \] 若 \[ v=(a,b),\qquad w=(x,y,z), \] 则 \[ v\otimes w=ax(e_1\otimes f_1)+ay(e_1\otimes f_2)+az(e_1\otimes f_3) +bx(e_2\otimes f_1)+by(e_2\otimes f_2)+bz(e_2\otimes f_3). \] \end{example}
+
+
+
+
+\begin{example} 固定基后，$\F^m\otimes\F^n$ 可与 $m\times n$ 矩阵空间同构。 把 \[ e_i\otimes f_j\longmapsto E_{ij}, \] 其中 $E_{ij}$ 是第 $(i,j)$ 个单位矩阵。 于是简单张量 $v\otimes w$ 对应秩至多为 $1$ 的矩阵， 一般张量则对应这些矩阵的线性组合。 \end{example}
+
+
+
+
+\begin{remark} 张量积最重要的不是“符号 $\otimes$”， 而是它把多线性问题线性化。 后面的外代数正是从张量代数中再施加“交替性关系”得到的。 \end{remark}
+
+
+
+
+\section{外代数初步：$\Lambda^k(V)$，交替多线性形式，行列式作为最高次外幂中的结构}
+
+
+
+
+\begin{definition} 设 $k\in\N$。 映射 \[ \omega:V^k\to\F \] 称为\textbf{$k$ 线性形式}， 若它对每个变量分别线性。 若对任意有相同分量的输入 \[ v_i=v_j\quad (i\neq j) \] 都有 \[ \omega(v_1,\dots,v_k)=0, \] 则称 $\omega$ 为\textbf{交替的}。 \end{definition} 交替性意味着： 只要两个输入“碰撞”，结果立刻变成零。 这正是面积、体积、行列式等几何量的核心性质。
+
+
+
+
+\begin{proposition} 设 $\omega:V^k\to\F$ 为交替 $k$ 线性形式。 若交换其中两个变量，则值变号： \[ \omega(\dots,v_i,\dots,v_j,\dots) = -\omega(\dots,v_j,\dots,v_i,\dots). \] \end{proposition}
+
+
+
+
+\begin{proof} 只需考虑相邻交换的情形。 由交替性， \[ 0=\omega(\dots,v_i+v_j,v_i+v_j,\dots). \] 按双线性展开， \[ 0=\omega(\dots,v_i,v_i,\dots)+\omega(\dots,v_i,v_j,\dots) +\omega(\dots,v_j,v_i,\dots)+\omega(\dots,v_j,v_j,\dots). \] 首尾两项为零， 故 \[ \omega(\dots,v_i,v_j,\dots)=-\omega(\dots,v_j,v_i,\dots). \] \end{proof}
+
+
+
+
+\begin{definition} $\Lambda^k(V)$ 称为 $V$ 的\textbf{第 $k$ 外幂}， 它是一个向量空间， 连同一个交替 $k$ 线性映射 \[ \alpha:V^k\to\Lambda^k(V) \] 满足如下泛性质： 对任意向量空间 $Z$ 与任意交替 $k$ 线性映射 $B:V^k\to Z$， 存在唯一线性映射 \[ \widetilde{B}:\Lambda^k(V)\to Z \] 使得 \[ B=\widetilde{B}\circ\alpha. \] 通常记 \[ \alpha(v_1,\dots,v_k)=v_1\wedge\cdots\wedge v_k. \] \end{definition}
+
+
+
+
+\begin{remark} 当 $k=2$ 时，$\Lambda^2(V)$ 编码“有向面积元”； 当 $k=n=\dim V$ 时，$\Lambda^n(V)$ 编码“有向体积元”。 最高次外幂是一维空间， 行列式正是线性算子在这一维空间上的作用因子。 这与第 10 章从算子出发定义行列式的思路完全一致。 \end{remark}
+
+
+
+
+\begin{theorem} $\Lambda^k(V)$ 可由张量幂构造： \[ \Lambda^k(V)=V^{\otimes k}/N, \] 其中 $N$ 由所有形如 \[ v_1\otimes\cdots\otimes v_k \] 且某两个分量相等的张量所生成。 商映射下的像记作 \[ v_1\wedge\cdots\wedge v_k. \] \end{theorem}
+
+
+
+
+\begin{proof} 该商空间中的元素自动满足交替性， 因为一旦某两项相同，其像即落入被商掉的子空间。 任意交替 $k$ 线性映射先由张量积的泛性质对应于 $V^{\otimes k}$ 上的线性映射， 再因其在 $N$ 上为零而下降到商空间上。 故得到所需的泛性质。 \end{proof}
+
+
+
+
+\begin{proposition} 在 $\Lambda^k(V)$ 中有以下基本关系：
+
+
+
+
+\begin{align*} v_1\wedge\cdots\wedge(\lambda v_i+w_i)\wedge\cdots\wedge v_k &=\lambda(v_1\wedge\cdots\wedge v_i\wedge\cdots\wedge v_k)\\ &\quad +v_1\wedge\cdots\wedge w_i\wedge\cdots\wedge v_k,\\ v_1\wedge\cdots\wedge v_i\wedge\cdots\wedge v_j\wedge\cdots\wedge v_k &=-v_1\wedge\cdots\wedge v_j\wedge\cdots\wedge v_i\wedge\cdots\wedge v_k. \end{align*} 特别地，若 $v_i=v_j$ 且 $i\neq j$，则 \[ v_1\wedge\cdots\wedge v_k=0. \] \end{proposition}
+
+
+
+
+\begin{proof} 第一组等式来自各变量的线性性。 第二组等式来自交替性与上面的换位变号命题。 最后一句是交替性的直接表述。 \end{proof}
+
+
+
+
+\begin{theorem} 设 $\dim V=n$，$e_1,\dots,e_n$ 是 $V$ 的一组基。 则所有 \[ e_{i_1}\wedge\cdots\wedge e_{i_k} \qquad (1\leq i_1<\cdots<i_k\leq n) \] 构成 $\Lambda^k(V)$ 的一组基。 因此 \[ \dim\Lambda^k(V)=\binom{n}{k}. \] 若 $k>n$，则 $\Lambda^k(V)=\{0\}$。 \end{theorem}
+
+
+
+
+\begin{proof} 由多线性性，任意楔积都可展开为基向量楔积的线性组合。 若某个指标重复，则该项为零； 若指标未按升序排列，则可用交换次序并记录符号的方法化成升序项。 故这些升序楔积张成 $\Lambda^k(V)$。 线性无关性可由构造适当的交替 $k$ 线性形式检验： 对每个升序指标组 $(i_1,\dots,i_k)$， 定义一个交替形式在相应基向量组上取值 $1$，其他升序基向量组上取值 $0$， 再由交替性扩展。 利用泛性质得到线性函数，它们分别抽取对应系数， 故这些升序楔积线性无关。 \end{proof}
+
+
+
+
+\begin{example} 当 $\dim V=3$ 时， \[ \Lambda^2(V) \] 有基 \[ e_1\wedge e_2,\qquad e_1\wedge e_3,\qquad e_2\wedge e_3. \] 因此它是三维空间。 这与三维欧氏空间中的“有向面积元”非常接近， 但请注意：$\Lambda^2(V)$ 的定义不需要内积， 因此它比向量积更本质。 \end{example}
+
+
+
+
+\begin{theorem} 设 $\dim V=n$，$T\in\Lmap(V)$。 则存在唯一线性映射 \[ \Lambda^k(T):\Lambda^k(V)\to\Lambda^k(V) \] 满足 \[ \Lambda^k(T)(v_1\wedge\cdots\wedge v_k)=Tv_1\wedge\cdots\wedge Tv_k. \] 特别地，$\Lambda^n(V)$ 是一维空间， 故存在唯一标量 $\lambda$ 使得 \[ \Lambda^n(T)(\omega)=\lambda\omega \] 对所有 $\omega\in\Lambda^n(V)$ 成立。 该标量正是第 10 章定义的 $\det T$。 \end{theorem}
+
+
+
+
+\begin{proof} 映射 \[ (v_1,\dots,v_k)\longmapsto Tv_1\wedge\cdots\wedge Tv_k \] 显然是交替 $k$ 线性的， 故由 $\Lambda^k(V)$ 的泛性质诱导出唯一线性映射 $\Lambda^k(T)$。 当 $k=n$ 时，$\Lambda^n(V)$ 一维， 故任一线性算子都等于某个标量乘恒等映射。 取任一基 $e_1,\dots,e_n$ 并令 \[ \omega=e_1\wedge\cdots\wedge e_n, \] 则 \[ \Lambda^n(T)(\omega)=Te_1\wedge\cdots\wedge Te_n. \] 把 $Te_j$ 按基展开， 由楔积的多线性与交替性， 右边展开后只有无重复指标的项保留下来， 其系数正是矩阵的行列式。 因此该标量与第 10 章的行列式一致。 \end{proof}
+
+
+
+
+\begin{example} 设 $V$ 三维，$\omega=e_1\wedge e_2\wedge e_3$。 若 $T$ 在基 $e_1,e_2,e_3$ 下的矩阵为 $A$， 则 \[ Te_1\wedge Te_2\wedge Te_3=(\det A)\,\omega. \] 因此可以把“行列式”理解为算子在最高次体积元上的缩放因子。 这恰好解释了第 10 章中行列式的几何含义。 \end{example}
+
+
+
+
+\begin{remark} 严格地说，行列式作为函数属于 $\Lambda^n(V')$， 因为它是一个交替 $n$ 线性形式。 但在固定基后，$\Lambda^n(V)$ 与 $\Lambda^n(V')$ 都是一维， 于是也可以把“体积元” $e_1\wedge\cdots\wedge e_n$ 看作最高次外幂中的基向量， 而把行列式看作算子在这一维空间上的作用标量。 \end{remark}
+
+
+
+
+\section{矩阵的转置：转置作为对偶映射的矩阵}
+
+
+
+
+\begin{theorem} 设 $T\in\Lmap(V,W)$， $e_1,\dots,e_n$ 是 $V$ 的一组基， $f_1,\dots,f_m$ 是 $W$ 的一组基。 记对偶基分别为 $e_1',\dots,e_n'$ 与 $f_1',\dots,f_m'$。 若 $T$ 在原基下的矩阵为 \[ A=(a_{ij}), \qquad Te_j=\sum_{i=1}^m a_{ij}f_i, \] 则对偶映射 $T':W'\to V'$ 在对偶基下的矩阵为 \[ A^{\mathrm t}. \] \end{theorem}
+
+
+
+
+\begin{proof} 对每个 $i$ 与 $j$， \[ T'(f_i')(e_j)=f_i'(Te_j)=f_i'\Big(\sum_{r=1}^m a_{rj}f_r\Big)=a_{ij}. \] 另一方面， 若 \[ T'(f_i')=\sum_{j=1}^n b_{ji}e_j', \] 则 \[ b_{ji}=T'(f_i')(e_j)=a_{ij}. \] 故第 $i$ 个输入基向量 $f_i'$ 的像在 $e_j'$ 方向上的系数为 $a_{ij}$， 也就是 $A$ 的第 $i$ 行成为 $T'$ 矩阵的第 $i$ 列。 因此 $[T']=(A^{\mathrm t})$。 \end{proof}
+
+
+
+
+\begin{corollary} 矩阵转置满足 \[ (AB)^{\mathrm t}=B^{\mathrm t}A^{\mathrm t}, \qquad (I_n)^{\mathrm t}=I_n. \] \end{corollary}
+
+
+
+
+\begin{proof} 这是因为对偶映射满足 \[ (S\circ T)'=T'\circ S' \] 与 $(\Id)'=\Id$， 再翻译成矩阵即可。 \end{proof}
+
+
+
+
+\begin{example} 设 \[ A=\mat{1&2&0\\-1&3&4}. \] 则 $A$ 表示线性映射 $T:\F^3\to\F^2$。 在对偶标准基下， $T':(\F^2)'\to(\F^3)'$ 的矩阵为 \[ A^{\mathrm t}=\mat{1&-1\\2&3\\0&4}. \] 因此矩阵转置不只是“把行列互换”， 而是“改在对偶空间上写同一个线性过程”。 \end{example}
+
+
+
+
+\begin{remark} 行向量与列向量的区别， 本质上就是“向量”与“协向量”的区别。 把矩阵的转置放到对偶空间中理解之后， 很多坐标公式都会显得自然得多。 \end{remark}
+
+
+
+
+\section*{习题}
+
+
+
+
+\subsection*{基础题}
+
+
+
+
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em] \item \basic 设 $V=\F^3$，写出标准基的对偶基。 \item \basic 设 $V=\R^2$，基为 $(1,1),(1,-1)$，求其对偶基。 \item \basic 证明任一组对偶基线性无关。 \item \basic 设 $\dim V=n$，证明任意 $\varphi\in V'$ 可由对偶基唯一表示。 \item \basic 在 $\R^3$ 中求 $U=\spn\{(1,2,3)\}$ 的零化子。 \item \basic 在 $\R^4$ 中求 $U=\spn\{e_1,e_2\}$ 的零化子。 \item \basic 证明若 $U\subseteq W$，则 $W^0\subseteq U^0$。 \item \basic 证明 $(U+W)^0=U^0\cap W^0$。 \item \basic 设 $T:\R^2\to\R^2$ 的矩阵为 $\mat{1&2\\3&4}$，求 $T'$ 的矩阵。 \item \basic 设 $T:\R^3\to\R^2$ 的矩阵为 $\mat{1&0&1\\0&1&1}$，求 $\nul T'$。 \item \basic 直接验证 $\nul T'=(\range T)^0$ 于上题成立。 \item \basic 设 $T$ 可逆，证明 $T'$ 也可逆。 \item \basic 写出自然嵌入 $\Gamma_V:V\to V''$ 的定义，并证明其线性。 \item \basic 证明 $\Gamma_V$ 单射。 \item \basic 设 $\dim V=n$，证明 $\Gamma_V$ 为同构。 \item \basic 证明 $(v_1+v_2)\otimes w=v_1\otimes w+v_2\otimes w$。 \item \basic 证明 $v\otimes(w_1+w_2)=v\otimes w_1+v\otimes w_2$。 \item \basic 设 $V=\F^2,\ W=\F^2$，写出 $V\otimes W$ 的一组基。 \item \basic 设 $v=(1,2),\ w=(3,4)$，把 $v\otimes w$ 写成上题基的线性组合。 \item \basic 证明若 $v_1,\dots,v_k$ 中有两个相等，则 $v_1\wedge\cdots\wedge v_k=0$。 \item \basic 在 $\Lambda^2(\F^3)$ 中写出一组基。 \item \basic 求 $\dim\Lambda^2(\F^4)$。 \item \basic 求 $\dim\Lambda^3(\F^5)$。 \item \basic 设 $A=\mat{1&2\\0&3}$，求 $A^{\mathrm t}$，并说明它对应的对偶映射。 \end{enumerate}
+
+
+
+
+\subsection*{进阶题}
+
+
+
+
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em] \item \medium 证明子空间上的线性泛函总可延拓到整个空间。 \item \medium 用上题证明 $\range T'=(\nul T)^0$。 \item \medium 设 $V$ 有限维，证明 $\dim U^0=\dim V-\dim U$。 \item \medium 设 $V$ 有限维，证明 $(U\cap W)^0=U^0+W^0$。 \item \medium 设 $T\in\Lmap(V,W)$ 且 $V,W$ 有限维，证明 $\rank T'=\rank T$。 \item \medium 证明限制映射 $V'\to U'$ 的核恰为 $U^0$。 \item \medium 证明 $(V/U)'\cong U^0$。 \item \medium 证明 $U'\cong V'/U^0$。 \item \medium 证明 $\Gamma_W\circ T=T''\circ\Gamma_V$。 \item \medium 证明简单张量的表示一般不唯一。 \item \medium 证明若 $e_i$ 与 $f_j$ 分别是 $V,W$ 的基，则 $e_i\otimes f_j$ 线性无关。 \item \medium 构造同构 $\F^m\otimes\F^n\cong \Mat_{m,n}(\F)$。 \item \medium 证明双线性映射 $B:V\times W\to Z$ 与线性映射 $V\otimes W\to Z$ 一一对应。 \item \medium 证明 $v_1\wedge\cdots\wedge v_k$ 在 $v_1,\dots,v_k$ 线性相关时必为零。 \item \medium 设 $\dim V=n$，证明 $\Lambda^k(V)=\{0\}$ 当 $k>n$。 \item \medium 证明 $\dim\Lambda^k(V)=\binom{n}{k}$。 \item \medium 设 $T\in\Lmap(V)$，证明 $\Lambda^k(T)$ 定义良好。 \item \medium 设 $\dim V=n$，证明 $\Lambda^n(T)$ 是一维空间上的标量乘法。 \item \medium 用外幂观点证明 $\det(ST)=\det S\,\det T$。 \item \medium 设 $T:\F^3\to\F^3$ 的矩阵为 $\mat{1&0&0\\0&2&0\\0&0&3}$，求 $\Lambda^2(T)$ 在标准楔积基下的矩阵。 \item \medium 设 $A$ 是 $T$ 在某组基下的矩阵，证明 $A^{\mathrm t}$ 是 $T'$ 在对偶基下的矩阵。 \end{enumerate}
+
+
+
+
+\subsection*{挑战题}
+
+
+
+
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em] \item \hard 设 $W\subseteq U\subseteq V$，证明 $(U/W)'\cong W^0/U^0$。 \item \hard 设 $V,W$ 有限维，证明 $V\otimes W'\cong \Lmap(W,V)$。 \item \hard 证明双线性形式 $B:V\times W\to\F$ 等价于线性映射 $V\to W'$。 \item \hard 证明非零的最高次楔积 $v_1\wedge\cdots\wedge v_n$ 等价于 $v_1,\dots,v_n$ 线性无关。 \item \hard 证明有限维情形下 $\Lambda^k(V')\cong \Lambda^k(V)'$。 \item \hard 证明 $\Lambda^2(T)=0$ 当且仅当 $\rank T\leq 1$。 \item \hard 设 $\dim V=n$，证明 $\det T\neq 0$ 当且仅当 $\Lambda^n(T)\neq 0$。 \item \hard 用零化子语言证明：$T$ 单射当且仅当 $T'$ 满射。 \item \hard 用零化子语言证明：$T$ 满射当且仅当 $T'$ 单射。 \item \hard 设 $\Char\F\neq 2$，证明奇数维空间上的交替双线性形式必为奇异的。 \end{enumerate}
+
+
+
+
+\section*{习题解答}
+
+
+
+
+\subsection*{基础题解答}
+
+
+
+
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em] \item 标准基 $e_1,e_2,e_3$ 的对偶基为 $\varepsilon_1,\varepsilon_2,\varepsilon_3$，其中 $\varepsilon_i(x_1,x_2,x_3)=x_i$。 \item 由 $(x,y)=a(1,1)+b(1,-1)$ 得 $a=\frac{x+y}{2},\ b=\frac{x-y}{2}$，故对偶基为 $\varphi_1(x,y)=\frac{x+y}{2}$，$\varphi_2(x,y)=\frac{x-y}{2}$。 \item 若 $\sum c_i e_i'=0$，作用于 $e_j$ 得 $c_j=0$，故线性无关。 \item 若 $\varphi\in V'$，令 $a_i=\varphi(e_i)$，则 $\varphi=\sum a_i e_i'$；唯一性由上一题的线性无关性给出。 \item 设 $\varphi(x,y,z)=ax+by+cz$，则 $a+2b+3c=0$，故 $U^0=\{(a,b,c):a+2b+3c=0\}$。 \item $U=\spn\{e_1,e_2\}$，故零化子由在前两坐标上为零的泛函组成，即 $U^0=\spn\{e_3',e_4'\}$。 \item 若 $\varphi\in W^0$，则 $\varphi$ 在 $W$ 上为零，特别在 $U$ 上为零，因此 $\varphi\in U^0$。 \item $\varphi$ 在 $U+W$ 上为零当且仅当同时在 $U$ 和 $W$ 上为零，因此 $(U+W)^0=U^0\cap W^0$。 \item $T'$ 的矩阵是原矩阵转置，即 $\mat{1&3\\2&4}$。 \item $\range T=\R^2$，故由 $\nul T'=(\range T)^0$ 得 $\nul T'=\{0\}$。 \item 因为 $\range T=\R^2$，其零化子只有零泛函，所以确有 $\nul T'=(\range T)^0=\{0\}$。 \item 若 $S=T^{-1}$，则 $(S\circ T)'=T'\circ S'=\Id$，且 $(T\circ S)'=S'\circ T'=\Id$，故 $T'$ 可逆，逆为 $(T^{-1})'$。 \item $\Gamma_V(v)(\varphi)=\varphi(v)$。对任意 $v,w,\lambda$ 及 $\varphi\in V'$，有 $\Gamma_V(v+\lambda w)(\varphi)=\varphi(v)+\lambda\varphi(w)$，故线性。 \item 若 $\Gamma_V(v)=0$，则对所有 $\varphi\in V'$ 有 $\varphi(v)=0$。若 $v\neq 0$，可取某泛函使其在 $v$ 上取值 $1$，矛盾，故 $v=0$。 \item 已知 $\Gamma_V$ 单射，且 $\dim V''=\dim V'=\dim V$，有限维下单射即满射，故为同构。 \item 由张量积的双线性定义直接得到。 \item 同理，由双线性性直接得到。 \item 可取基 $e_1\otimes e_1,\ e_1\otimes e_2,\ e_2\otimes e_1,\ e_2\otimes e_2$。 \item \[ v\otimes w=(e_1+2e_2)\otimes(3e_1+4e_2) =3e_1\otimes e_1+4e_1\otimes e_2+6e_2\otimes e_1+8e_2\otimes e_2. \] \item 楔积是交替的；若有两个分量相等，则按定义结果为零。 \item 一组基为 $e_1\wedge e_2,\ e_1\wedge e_3,\ e_2\wedge e_3$。 \item \[ \dim\Lambda^2(\F^4)=\binom{4}{2}=6. \] \item \[ \dim\Lambda^3(\F^5)=\binom{5}{3}=10. \] \item \[ A^{\mathrm t}=\mat{1&0\\2&3}. \] 它表示对偶映射 $T':(\F^2)'\to(\F^2)'$ 在对偶标准基下的矩阵。 \end{enumerate}
+
+
+
+
+\subsection*{进阶题解答}
+
+
+
+
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em] \item 取 $U$ 的一组基并扩充为 $V$ 的一组基；先在 $U$ 的基上给定原泛函的值，再在补充基上任意指定值即可得到延拓。 \item 已知 $\range T'\subseteq(\nul T)^0$。若 $\psi\in(\nul T)^0$，在 $\range T$ 上定义 $\varphi_0(Tv)=\psi(v)$，它良定且线性，再延拓到 $W$ 上得 $\varphi\in W'$，满足 $T'(\varphi)=\psi$。 \item 考虑限制映射 $R:V'\to U'$。它满射，且 $\nul R=U^0$。由秩零度定理， \[ \dim V'=\dim U^0+\dim U', \] 故 $\dim U^0=\dim V-\dim U$。 \item 先有 $U^0+W^0\subseteq(U\cap W)^0$。再由维数公式与 $(U+W)^0=U^0\cap W^0$ 比较维数，可得等号成立。 \item 由 $\nul T'=(\range T)^0$， \[ \rank T'=\dim W'-\dim\nul T'=\dim W-(\dim W-\rank T)=\rank T. \] \item 限制映射 $R(\varphi)=\varphi|_U$ 的核就是在 $U$ 上恒为零的泛函，正是 $U^0$。 \item 定义 $\Phi:(V/U)'\to U^0$，令 $\Phi(\psi)=\psi\circ q$，其中 $q:V\to V/U$ 为商映射。它是线性双射。 \item 限制映射 $R:V'\to U'$ 满射，核为 $U^0$。由第一同构定理， \[ V'/U^0\cong U'. \] \item 对任意 $v\in V,\ \varphi\in W'$， \[ (\Gamma_W\circ T)(v)(\varphi)=\varphi(Tv)=T'(\varphi)(v)=(T''\circ\Gamma_V)(v)(\varphi). \] 故两者相等。 \item 在 $\F^2\otimes\F^2$ 中， \[ (e_1+e_2)\otimes e_1=e_1\otimes e_1+e_2\otimes e_1, \] 同一张量有不同表示。 \item 若 $\sum c_{ij}e_i\otimes f_j=0$，对每对 $(p,q)$ 取抽取系数的双线性函数并由泛性质降到张量积，即得 $c_{pq}=0$。 \item 定义 $\Phi(e_i\otimes f_j)=E_{ij}$，线性延拓。两边维数同为 $mn$，且像张成所有单位矩阵，因此是同构。 \item 给定 $B$，定义 $\widetilde{B}(v\otimes w)=B(v,w)$；反之给定 $L:V\otimes W\to Z$，令 $B(v,w)=L(v\otimes w)$。两过程互逆。 \item 若 $v_1,\dots,v_k$ 线性相关，可设 $v_k=\sum_{i<k} a_i v_i$。代入楔积并利用多线性展开，每项都出现重复向量，故为零。 \item 因为任何 $k$ 个向量中必有线性相关，所以上题给出所有 $k$ 重楔积都为零，故 $\Lambda^k(V)=\{0\}$。 \item 由升序指标的楔积构成一组基，其个数是从 $n$ 个基向量中选 $k$ 个的方式数，即 $\binom{n}{k}$。 \item 映射 $(v_1,\dots,v_k)\mapsto Tv_1\wedge\cdots\wedge Tv_k$ 是交替 $k$ 线性的，故由泛性质诱导唯一线性映射 $\Lambda^k(T)$。 \item 因为 $\Lambda^n(V)$ 一维，所以任何线性映射都是某个标量乘法，特别是 $\Lambda^n(T)$ 如此。 \item \[ \Lambda^n(ST)=\Lambda^n(S)\circ\Lambda^n(T). \] 在一维空间上，复合对应标量相乘，因此 $\det(ST)=\det S\,\det T$。 \item 取基 $e_1\wedge e_2,\ e_1\wedge e_3,\ e_2\wedge e_3$。则 \[ \Lambda^2(T) \] 的矩阵为 \[ \mat{2&0&0\\0&3&0\\0&0&6}, \] 因为对应特征值分别是 $1\cdot 2,\ 1\cdot 3,\ 2\cdot 3$。 \item 由 \[ T'(f_i')(e_j)=f_i'(Te_j)=a_{ij} \] 知 $T'$ 的矩阵第 $(j,i)$ 项为 $a_{ij}$，故为 $A^{\mathrm t}$。 \end{enumerate}
+
+
+
+
+\subsection*{挑战题解答}
+
+
+
+
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em] \item 由上一部分已知 $(V/W)'\cong W^0$。把它应用于商空间 $V/W$ 中的子空间 $U/W$，可得 \[ (U/W)'\cong W^0/U^0. \] \item 定义 \[ \Phi:V\otimes W'\to \Lmap(W,V),\qquad \Phi(v\otimes\varphi)(w)=\varphi(w)v. \] 它线性，且把基 $e_i\otimes f_j'$ 送到矩阵单位型映射。两边维数同为 $\dim V\dim W$，故为同构。 \item 给定双线性形式 $B$，定义 \[ T_B(v)(w)=B(v,w). \] 则 $T_B:V\to W'$ 线性。反之给定 $T:V\to W'$，令 $B_T(v,w)=T(v)(w)$。两过程互逆。 \item 若楔积非零，则向量不可能线性相关，否则由线性相关推出楔积为零。反之若 $v_1,\dots,v_n$ 线性无关，它们构成一组基，故其最高次楔积是 $\Lambda^n(V)$ 的一个基向量，必非零。 \item 交替 $k$ 线性形式在 $V$ 上由泛性质对应于 $\Lambda^k(V)$ 上的线性泛函，因此 \[ \Lambda^k(V)' \cong \mathrm{Alt}_k(V,\F). \] 同理 $\Lambda^k(V')$ 也表示同样维数的一类交替对象；在有限维下两者维数同为 $\binom{n}{k}$，并可通过基构造自然同构。 \item 若 $\rank T\leq 1$，则任意两个像向量线性相关，所以 \[ Tv\wedge Tw=0 \] 对所有 $v,w$ 成立，故 $\Lambda^2(T)=0$。反之若 $\Lambda^2(T)=0$，则任意 $Tv,Tw$ 的楔积为零，从而任意两个像向量线性相关，故 $\range T$ 至多一维。 \item $\Lambda^n(V)$ 一维，$\Lambda^n(T)$ 在其上等于乘以 $\det T$。因此 $\det T\neq 0$ 当且仅当该线性映射非零，也即为同构。 \item 由 $\range T'=(\nul T)^0$。若 $T$ 单射，则 $\nul T=\{0\}$，故 $(\nul T)^0=V'$，于是 $\range T'=V'$，即 $T'$ 满射。反之若 $T'$ 满射，则 $(\nul T)^0=V'$，只能有 $\nul T=\{0\}$。 \item 由 $\nul T'=(\range T)^0$。若 $T$ 满射，则 $\range T=W$，故 $\nul T'=W^0=\{0\}$，所以 $T'$ 单射。反之若 $T'$ 单射，则 $(\range T)^0=\{0\}$，有限维下推出 $\range T=W$。 \item 设 $B$ 是交替双线性形式，取一组基后其矩阵 $A$ 满足 $A^{\mathrm t}=-A$ 且对角元为零。若维数 $n$ 为奇数，则 \[ \det A=\det(A^{\mathrm t})=\det(-A)=(-1)^n\det A=-\det A. \] 因 $\Char\F\neq 2$，故 $\det A=0$，于是 $A$ 奇异，$B$ 奇异。 \end{enumerate}
+
+
+
+
+
+
+

@@ -1,0 +1,510 @@
+\chapter{迹与行列式}
+
+
+
+
+在本书前面的章节中，我们始终把线性代数的重心放在向量空间、线性算子、特征值、不变子空间与上三角化上， 而刻意不把行列式当作出发点。 这正是 Axler 风格的核心： 先理解算子的谱，再把迹与行列式视为谱数据的压缩。 这样做的好处是，迹与行列式一开始就是\emph{算子不变量}， 而不是依赖某一组基的神秘公式。
+
+
+
+
+本章遵循这一哲学。 我们先把迹定义为特征值之和，再证明它等于任意矩阵表示的对角线元素之和； 接着把行列式定义为特征值之积， 然后借助顶次外幂导出矩阵的置换展开公式， 并进一步得到多线性、交替性、乘法性、可逆性判据以及几何意义。 最后我们说明
+
+
+
+
+\[ p_T(z)=\det(z\Id-T), \]
+
+
+
+
+从而把本章的行列式观点与第 8 章的特征多项式观点统一起来。
+
+
+
+
+\begin{notation} 除 \cref{sec:det-geometry} 外， 本章默认 \(V\) 是 \(\C\) 上有限维向量空间， \(\dim V=n\)， \(T\in \End(V)\)。 由前面关于复向量空间上线性算子的上三角化结论可知， \(T\) 的特征值在 \(\C\) 中总可以按代数重数写成 \[ \lambda_1,\dots,\lambda_n. \] 若 \(A\in \Mat_n(\C)\) 是 \(T\) 在某组基下的矩阵， 则称 \(A\) 是 \(T\) 的一个矩阵表示。 \end{notation}
+
+
+
+
+\section{迹：定义为特征值之和}
+
+
+
+
+\begin{definition} 设 \(T\in \End(V)\)， 其特征值按代数重数记为 \(\lambda_1,\dots,\lambda_n\)。 定义 \(T\) 的\emph{迹}为 \[ \Tr(T)=\lambda_1+\cdots+\lambda_n. \] \end{definition} 这个定义从一开始就与基无关， 因为它只依赖于算子的特征值及其代数重数。 这正是“迹是算子不变量”的真正含义。
+
+
+
+
+\begin{example} 若 \(T\) 在某组基下由对角矩阵 \[ \mat{ \lambda_1&0&\cdots&0\\ 0&\lambda_2&\cdots&0\\ \vdots&\vdots&\ddots&\vdots\\ 0&0&\cdots&\lambda_n} \] 表示， 则其特征值恰为对角线上的元素， 故 \[ \Tr(T)=\lambda_1+\cdots+\lambda_n. \] \end{example}
+
+
+
+
+\begin{example} 设 \[ A=\mat{3&1&0\\0&3&0\\0&0&-2}. \] 这是上三角矩阵， 故其特征值为 \(3,3,-2\)。 于是 \[ \Tr(A)=3+3+(-2)=4. \] 这里的迹是按代数重数求和， 所以重根 \(3\) 要算两次。 \end{example} 为了把这个谱定义与熟悉的矩阵对角线求和联系起来， 我们先引入一个纯矩阵记号。
+
+
+
+
+\begin{definition} 若 \(A=(a_{ij})\in \Mat_n(\C)\)， 定义 \[ s(A)=a_{11}+\cdots+a_{nn}. \] 也就是说， \(s(A)\) 是 \(A\) 的对角线元素之和。 \end{definition}
+
+
+
+
+\begin{lemma}\label{lem:diag-sum-similarity} 若 \(A,B\in \Mat_n(\C)\) 相似， 即存在可逆矩阵 \(P\) 使 \(B=P^{-1}AP\)， 则 \[ s(B)=s(A). \] \end{lemma}
+
+
+
+
+\begin{proof} 设 \(P^{-1}=(q_{ij})\)， \(P=(p_{ij})\)， \(A=(a_{ij})\)。 则 \[ b_{ii}=\sum_{j=1}^n\sum_{k=1}^n q_{ij}a_{jk}p_{ki}. \] 因此 \[ s(B)=\sum_{i=1}^n b_{ii} =\sum_{i,j,k} q_{ij}a_{jk}p_{ki} =\sum_{j,k} a_{jk}\Bigl(\sum_i p_{ki}q_{ij}\Bigr). \] 而 \[ \sum_i p_{ki}q_{ij}=(PP^{-1})_{kj}=\delta_{kj}, \] 故 \[ s(B)=\sum_{j,k} a_{jk}\delta_{kj} =\sum_j a_{jj} =s(A). \] \end{proof}
+
+
+
+
+\begin{theorem}\label{thm:trace-diagonal-sum} 设 \(T\in \End(V)\)， \(A\) 是 \(T\) 在任意一组基下的矩阵表示。 则 \[ \Tr(T)=s(A)=a_{11}+\cdots+a_{nn}. \] 特别地， 迹等于任意矩阵表示的对角线元素之和。 \end{theorem}
+
+
+
+
+\begin{proof} 由复向量空间上线性算子的上三角化定理， 存在一组基使得 \(T\) 的矩阵表示 \(U\) 为上三角矩阵， 且其对角线元素正好是 \(\lambda_1,\dots,\lambda_n\)。 于是 \[ s(U)=\lambda_1+\cdots+\lambda_n=\Tr(T). \] 若 \(A\) 是 \(T\) 在另一组基下的矩阵， 则 \(A\) 与 \(U\) 相似。 由 \cref{lem:diag-sum-similarity}， \[ s(A)=s(U)=\Tr(T). \] \end{proof}
+
+
+
+
+\begin{corollary} 若 \(A\in \Mat_n(\C)\) 的特征值按代数重数为 \(\lambda_1,\dots,\lambda_n\)， 则 \[ \lambda_1+\cdots+\lambda_n=a_{11}+\cdots+a_{nn}. \] \end{corollary}
+
+
+
+
+\begin{proof} 把 \(A\) 看成 \(\C^n\) 上线性算子的矩阵表示， 应用 \cref{thm:trace-diagonal-sum} 即得。 \end{proof}
+
+
+
+
+\begin{proposition}\label{prop:trace-linearity} 对任意 \(S,T\in \End(V)\) 与 \(\alpha\in \C\)， 有 \[ \Tr(S+T)=\Tr(S)+\Tr(T),\qquad \Tr(\alpha T)=\alpha \Tr(T). \] \end{proposition}
+
+
+
+
+\begin{proof} 取同一组基下的矩阵表示 \(A,B\)。 由 \cref{thm:trace-diagonal-sum}， \[ \Tr(S+T)=s(A+B)=s(A)+s(B)=\Tr(S)+\Tr(T), \] 且 \[ \Tr(\alpha T)=s(\alpha A)=\alpha s(A)=\alpha\Tr(T). \] \end{proof}
+
+
+
+
+\begin{proposition}\label{prop:trace-cyclic} 对任意 \(S,T\in \End(V)\)， 有 \[ \Tr(ST)=\Tr(TS). \] 更一般地， 对任意 \(A\in \Mat_m(\C)\) 与 \(B\in \Mat_{m}(\C)\)， \[ \Tr(AB)=\Tr(BA). \] \end{proposition}
+
+
+
+
+\begin{proof} 设 \(A=(a_{ij})\)， \(B=(b_{ij})\)。 则 \[ \Tr(AB)=\sum_i (AB)_{ii} =\sum_i\sum_j a_{ij}b_{ji} =\sum_j\sum_i b_{ji}a_{ij} =\Tr(BA). \] 把 \(A,B\) 看成 \(S,T\) 的矩阵表示即可。 \end{proof}
+
+
+
+
+\begin{example} 设 \[ A=\mat{1&2\\3&4},\qquad B=\mat{0&5\\-1&2}. \] 则 \[ AB=\mat{-2&9\\-4&23},\qquad BA=\mat{15&20\\5&6}. \] 所以 \[ \Tr(AB)=-2+23=21,\qquad \Tr(BA)=15+6=21. \] \end{example}
+
+
+
+
+\begin{remark} 迹是“把所有特征值加起来”的结果， 因此它只记录谱的一级信息。 它不区分同样具有相同特征值和的不同算子， 但它在线性、交换子与不变量理论中极其重要。 尤其是 \[ \Tr(ST-TS)=0, \] 这条简单恒等式将在很多地方反复出现。 \end{remark}
+
+
+
+
+\section{行列式的算子定义：\(\det T\) 是特征值之积}
+
+
+
+
+\begin{definition} 设 \(T\in \End(V)\)， 其特征值按代数重数为 \(\lambda_1,\dots,\lambda_n\)。 定义 \(T\) 的\emph{行列式}为 \[ \det T=\lambda_1\cdots\lambda_n. \] 当 \(n=0\) 时， 按空积约定 \(\det T=1\)。 \end{definition} 这个定义与迹完全平行： 迹是特征值之和， 行列式是特征值之积。 因此行列式从一开始也是\emph{算子不变量}。
+
+
+
+
+\begin{example} 若 \(T=\Id\)， 则所有特征值都等于 \(1\)， 故 \[ \det T=1. \] 若 \(T=\alpha \Id\) 且 \(\dim V=n\)， 则所有特征值都等于 \(\alpha\)， 故 \[ \det(\alpha \Id)=\alpha^n. \] \end{example}
+
+
+
+
+\begin{example} 设 \[ A=\mat{2&1&0\\0&2&0\\0&0&-3}. \] 其特征值为 \(2,2,-3\)， 故 \[ \det A=2\cdot2\cdot(-3)=-12. \] 注意这里我们并没有把 \(-12\) 定义为某个置换和式， 而是直接把它看成特征值之积。 \end{example}
+
+
+
+
+\begin{proposition}\label{prop:det-triangular} 若 \(T\in \End(V)\) 在某组基下的矩阵为上三角矩阵 \[ U=\mat{ u_{11}&*&\cdots&*\\ 0&u_{22}&\cdots&*\\ \vdots&\vdots&\ddots&\vdots\\ 0&0&\cdots&u_{nn}}, \] 则 \[ \det T=u_{11}\cdots u_{nn}. \] \end{proposition}
+
+
+
+
+\begin{proof} 上三角矩阵的特征值恰为对角线元素， 按代数重数计算， 故 \[ \det T=u_{11}\cdots u_{nn}. \] \end{proof}
+
+
+
+
+\begin{definition} 设 \(\dim V=n\)。 记 \(\Lambda^n V\) 为 \(V\) 的顶次外幂。 它是一维向量空间。 若 \(e_1,\dots,e_n\) 是 \(V\) 的一组基， 则 \[ e_1\wedge\cdots\wedge e_n \] 是 \(\Lambda^n V\) 的一组基。 \end{definition}
+
+
+
+
+\begin{definition} 若 \(T\in \End(V)\)， 定义诱导算子 \[ \Lambda^n T:\Lambda^n V\to \Lambda^n V \] 为 \[ (\Lambda^n T)(v_1\wedge\cdots\wedge v_n) = Tv_1\wedge\cdots\wedge Tv_n. \] \end{definition}
+
+
+
+
+\begin{theorem}\label{thm:det-top-exterior} 对任意 \(T\in \End(V)\)， \(\Lambda^n T\) 在一维空间 \(\Lambda^n V\) 上恰是数量乘法 \[ \Lambda^n T=(\det T)\Id. \] \end{theorem}
+
+
+
+
+\begin{proof} 取一组基使 \(T\) 的矩阵表示为上三角矩阵 \(U=(u_{ij})\)。 则 \[ Te_j=u_{1j}e_1+\cdots+u_{jj}e_j. \] 于是 \[ Te_1\wedge\cdots\wedge Te_n = u_{11}\cdots u_{nn}\,e_1\wedge\cdots\wedge e_n, \] 因为凡是出现重复基向量的外积项都为 \(0\)。 由 \cref{prop:det-triangular}， \[ u_{11}\cdots u_{nn}=\det T. \] 故 \[ (\Lambda^n T)(e_1\wedge\cdots\wedge e_n) = (\det T)\,e_1\wedge\cdots\wedge e_n. \] 由于 \(\Lambda^n V\) 一维， 结论成立。 \end{proof}
+
+
+
+
+\begin{corollary}\label{cor:wedge-columns} 设 \(A=(a_{ij})\in \Mat_n(\C)\)， 其第 \(j\) 列记为 \(v_j\in \C^n\)， 标准基为 \(e_1,\dots,e_n\)。 则 \[ v_1\wedge\cdots\wedge v_n = (\det A)\,e_1\wedge\cdots\wedge e_n. \] \end{corollary}
+
+
+
+
+\begin{proof} 把 \(A\) 看成 \(\C^n\) 上的线性算子。 则 \(Ae_j=v_j\)。 由 \cref{thm:det-top-exterior}， \[ v_1\wedge\cdots\wedge v_n = Ae_1\wedge\cdots\wedge Ae_n = (\Lambda^n A)(e_1\wedge\cdots\wedge e_n) = (\det A)e_1\wedge\cdots\wedge e_n. \] \end{proof}
+
+
+
+
+\begin{remark} \cref{thm:det-top-exterior} 提供了行列式的另一种极其重要的解释： 行列式是算子对顶次定向体积元素的缩放因子。 这里仍然不是把行列式\emph{定义}为外幂中的比例系数， 而是证明这与“特征值之积”的定义完全一致。 \end{remark}
+
+
+
+
+\section{行列式的矩阵公式：置换展开公式，作为定理导出}
+
+
+
+
+现在我们从 \cref{cor:wedge-columns} 导出经典的 Leibniz 公式。 这一步是本章的重要转折点： 置换展开公式不再是定义， 而是从算子定义推出的定理。
+
+
+
+
+\begin{theorem}[置换展开公式]\label{thm:leibniz} 设 \(A=(a_{ij})\in \Mat_n(\C)\)。 则 \[ \det A = \sum_{\sigma} \sgn(\sigma)\, a_{1,\sigma(1)}a_{2,\sigma(2)}\cdots a_{n,\sigma(n)}, \] 其中求和遍历所有 \(n\) 个指标的置换 \(\sigma\)。 \end{theorem}
+
+
+
+
+\begin{proof} 把 \(A\) 的列向量写成 \[ v_j=a_{1j}e_1+\cdots+a_{nj}e_n. \] 由外积的多线性， \[ v_1\wedge\cdots\wedge v_n = \sum_{i_1,\dots,i_n} a_{i_1 1}\cdots a_{i_n n}\, e_{i_1}\wedge\cdots\wedge e_{i_n}. \] 若某两个指标相同， 则对应外积项为 \(0\)； 因此只有 \((i_1,\dots,i_n)\) 是 \(1,\dots,n\) 的一个排列时才可能非零。 于是 \[ v_1\wedge\cdots\wedge v_n = \sum_{\sigma} a_{\sigma(1),1}\cdots a_{\sigma(n),n}\, e_{\sigma(1)}\wedge\cdots\wedge e_{\sigma(n)}. \] 再利用 \[ e_{\sigma(1)}\wedge\cdots\wedge e_{\sigma(n)} = \sgn(\sigma)\,e_1\wedge\cdots\wedge e_n, \] 得到 \[ v_1\wedge\cdots\wedge v_n = \Bigl( \sum_{\sigma} \sgn(\sigma)\, a_{\sigma(1),1}\cdots a_{\sigma(n),n} \Bigr)e_1\wedge\cdots\wedge e_n. \] 与 \cref{cor:wedge-columns} 比较系数即得 \[ \det A = \sum_{\sigma} \sgn(\sigma)\, a_{\sigma(1),1}\cdots a_{\sigma(n),n}. \] 把置换改写为逆置换， 便得到更常见的形式 \[ \det A = \sum_{\sigma} \sgn(\sigma)\, a_{1,\sigma(1)}\cdots a_{n,\sigma(n)}. \] \end{proof}
+
+
+
+
+\begin{example} 当 \(n=2\) 时， \cref{thm:leibniz} 给出 \[ \det\mat{a&b\\c&d}=ad-bc. \] 这是最熟悉的二阶行列式公式， 但现在它是一个推论， 不是定义。 \end{example}
+
+
+
+
+\begin{example} 当 \(n=3\) 时， \[ \det\mat{ a&b&c\\ d&e&f\\ g&h&i} = aei+bfg+cdh-ceg-bdi-afh. \] 在教学上常见的“对角线法则” 只是这条公式在 \(3\times3\) 情形下的记忆方式， 而不是一般定义。 \end{example}
+
+
+
+
+\begin{remark} 从现在起， 我们可以自由地把 \(\det T\) 与任意矩阵表示 \(A\) 的 \(\det A\) 视为同一个数。 但逻辑顺序必须牢记： 先有算子定义， 后有矩阵公式。 这正是本章与传统教材的根本不同。 \end{remark}
+
+
+
+
+\section{行列式的性质：多线性、交替性、乘法性}
+
+
+
+
+\begin{proposition}[按列多线性]\label{prop:multilinear-columns} 把 \(\det A\) 看成 \(A\) 的列向量 \(v_1,\dots,v_n\) 的函数， 则它对每一列都线性。 更准确地说， 固定其余列后， \[ \det(v_1,\dots,\alpha u+\beta w,\dots,v_n) = \alpha \det(v_1,\dots,u,\dots,v_n) + \beta \det(v_1,\dots,w,\dots,v_n). \] \end{proposition}
+
+
+
+
+\begin{proof} 由 \cref{cor:wedge-columns}， \[ v_1\wedge\cdots\wedge(\alpha u+\beta w)\wedge\cdots\wedge v_n = (\det(\cdots,\alpha u+\beta w,\cdots))\,e_1\wedge\cdots\wedge e_n. \] 外积对每个变量线性， 故左边等于 \[ \alpha\,v_1\wedge\cdots\wedge u\wedge\cdots\wedge v_n + \beta\,v_1\wedge\cdots\wedge w\wedge\cdots\wedge v_n. \] 再比较 \(e_1\wedge\cdots\wedge e_n\) 的系数即可。 \end{proof}
+
+
+
+
+\begin{proposition}[交替性]\label{prop:alternating} 若矩阵 \(A\) 的两列相同， 则 \[ \det A=0. \] 若交换两列， 则行列式变号。 \end{proposition}
+
+
+
+
+\begin{proof} 若两列相同， 则对应的外积中有两个相同向量， 故 \[ v_1\wedge\cdots\wedge v_i\wedge\cdots\wedge v_i\wedge\cdots\wedge v_n=0. \] 由 \cref{cor:wedge-columns}， \(\det A=0\)。 若交换第 \(i\) 列与第 \(j\) 列， 则外积交换两个因子， 因此整体乘以 \(-1\)。 故行列式变号。 \end{proof}
+
+
+
+
+\begin{corollary}[初等列变换] 设 \(A\in \Mat_n(\C)\)。 则：
+
+
+
+
+\begin{enumerate}[label=(\arabic*), leftmargin=2.8em] \item 把某一列乘以 \(\alpha\)，行列式乘以 \(\alpha\)； \item 交换两列，行列式乘以 \(-1\)； \item 把一列加上另一列的标量倍，行列式不变。 \end{enumerate} \end{corollary}
+
+
+
+
+\begin{proof} 前两条由 \cref{prop:multilinear-columns} 与 \cref{prop:alternating} 立得。 对第三条， 设把第 \(j\) 列替换为 \(v_j+\alpha v_i\)。 由多线性， \[ \det(\dots,v_j+\alpha v_i,\dots) = \det(\dots,v_j,\dots)+\alpha\det(\dots,v_i,\dots). \] 第二项中有两列相同， 由交替性为 \(0\)， 故行列式不变。 \end{proof}
+
+
+
+
+\begin{theorem}[乘法性]\label{thm:det-multiplicative} 对任意 \(S,T\in \End(V)\)， 有 \[ \det(ST)=\det(S)\det(T). \] \end{theorem}
+
+
+
+
+\begin{proof} 由 \cref{thm:det-top-exterior}， \[ \Lambda^n S=(\det S)\Id,\qquad \Lambda^n T=(\det T)\Id. \] 因此 \[ \Lambda^n(ST)=\Lambda^n S\circ \Lambda^n T = (\det S)(\det T)\Id. \] 再由 \cref{thm:det-top-exterior} 对 \(ST\) 应用一次， \[ \Lambda^n(ST)=(\det(ST))\Id. \] 比较这两个一维空间上的数量乘法系数， 即得 \[ \det(ST)=\det(S)\det(T). \] \end{proof}
+
+
+
+
+\begin{corollary}[相似不变性] 若 \(A,B\in \Mat_n(\C)\) 相似， 则 \[ \det A=\det B. \] \end{corollary}
+
+
+
+
+\begin{proof} 若 \(B=P^{-1}AP\)， 则由 \cref{thm:det-multiplicative}， \[ \det B=\det(P^{-1})\det(A)\det(P)=\det A. \] \end{proof}
+
+
+
+
+\begin{corollary}[按行的相应性质] 行列式对行也满足多线性与交替性， 并且相同的初等行变换规律成立。 \end{corollary}
+
+
+
+
+\begin{proof} 把 \(\det A\) 记成 \(\det(A^\top)\) 的列行列式即可； 或者直接对 \cref{thm:leibniz} 观察也可。 \end{proof}
+
+
+
+
+\begin{example} 设 \[ A=\mat{ 1&2&1\\ 0&1&3\\ 2&5&4}. \] 用列变换 \(C_3\leftarrow C_3-C_1\)， \(C_2\leftarrow C_2-2C_1\)， 得 \[ \det A = \det\mat{ 1&0&0\\ 0&1&3\\ 2&1&2} = \det\mat{ 1&0&0\\ 0&1&3\\ 0&1&2}. \] 再作 \(R_3\leftarrow R_3-R_2\)， 得 \[ \det A = \det\mat{ 1&0&0\\ 0&1&3\\ 0&0&-1} =-1. \] \end{example}
+
+
+
+
+\section{行列式与可逆性：\(\det T\neq 0\iff T\) 可逆}
+
+
+
+
+\begin{theorem}\label{thm:det-invertible} 设 \(T\in \End(V)\)。 则下列命题等价：
+
+
+
+
+\begin{enumerate}[label=(\arabic*), leftmargin=2.8em] \item \(T\) 可逆； \item \(0\) 不是 \(T\) 的特征值； \item \(\det T\neq 0\)。 \end{enumerate} \end{theorem}
+
+
+
+
+\begin{proof} \((1)\Leftrightarrow(2)\)： \(0\) 是特征值当且仅当存在非零 \(v\) 使 \(Tv=0\)， 这等价于 \(\Ker T\neq \{0\}\)， 又等价于 \(T\) 不可逆。 \((2)\Leftrightarrow(3)\)： 设特征值为 \(\lambda_1,\dots,\lambda_n\)。 则 \[ \det T=\lambda_1\cdots\lambda_n. \] 该乘积非零当且仅当每个 \(\lambda_i\neq 0\)， 特别地当且仅当 \(0\) 不是特征值。 \end{proof}
+
+
+
+
+\begin{corollary} 若 \(T\) 可逆， 则 \[ \det(T^{-1})=(\det T)^{-1}. \] \end{corollary}
+
+
+
+
+\begin{proof} 由 \cref{thm:det-multiplicative}， \[ 1=\det(\Id)=\det(TT^{-1})=\det T\cdot \det(T^{-1}). \] \end{proof}
+
+
+
+
+\begin{corollary} 若 \(T\) 可逆， 则 \(T^{-1}\) 的特征值恰为 \(T\) 的特征值的倒数， 从而 \[ \det(T^{-1}) = \lambda_1^{-1}\cdots \lambda_n^{-1}. \] \end{corollary}
+
+
+
+
+\begin{proof} 若 \(Tv=\lambda v\) 且 \(\lambda\neq0\)， 则 \[ T^{-1}v=\lambda^{-1}v. \] 再按代数重数计数即可。 \end{proof}
+
+
+
+
+\begin{example} 设 \[ A_t=\mat{ 1&t&0\\ 0&1&t\\ 0&0&t-2}. \] 则 \[ \det A_t=1\cdot1\cdot(t-2)=t-2. \] 故 \(A_t\) 可逆当且仅当 \(t\neq2\)。 这比直接做消元更快， 因为上三角矩阵的行列式一眼可见。 \end{example}
+
+
+
+
+\begin{remark} 在传统教材里， “可逆当且仅当行列式非零”常被当作定义后的主要用途。 在本章中， 它只是特征值观点下的一个自然推论。 换言之， 行列式不再是为可逆性而生， 而是从谱中自动产生。 \end{remark}
+
+
+
+
+\section{行列式的几何意义：体积与定向}\label{sec:det-geometry}
+
+
+
+
+本节回到底域 \(\R\)。 设 \(T\in \End(\R^n)\)， 矩阵为 \(A\in \Mat_n(\R)\)。
+
+
+
+
+\begin{definition} 给定向量 \(v_1,\dots,v_n\in \R^n\)， 由它们张成的平行多面体记作 \[ P(v_1,\dots,v_n). \] 它的 Euclid 体积记作 \[ \operatorname{Vol}(v_1,\dots,v_n). \] \end{definition}
+
+
+
+
+\begin{theorem}[体积缩放]\label{thm:volume-scaling} 设 \(v_1,\dots,v_n\in \R^n\)， 则 \[ \operatorname{Vol}(Tv_1,\dots,Tv_n) = |\det T|\,\operatorname{Vol}(v_1,\dots,v_n). \] 特别地， 单位立方体在 \(T\) 下的像的体积等于 \(|\det T|\)。 \end{theorem}
+
+
+
+
+\begin{proof} 只需证明对标准基 \(e_1,\dots,e_n\) 成立， 一般情形对矩阵 \(B\) 的列向量应用即可。 设 \(A\) 是 \(T\) 的矩阵。 由 QR 分解， 存在正交矩阵 \(Q\) 与上三角矩阵 \(R\)（对角线取正）使 \[ A=QR. \] 正交变换保持长度、角度与体积， 故单位立方体先经 \(R\) 再经 \(Q\) 的像体积等于经 \(R\) 的像体积。 而上三角矩阵 \(R\) 把标准基向量依次送到 \[ r_{11}e_1,\quad *+r_{22}e_2,\quad \dots,\quad *+r_{nn}e_n. \] 这张成的平行多面体体积恰为 \[ r_{11}\cdots r_{nn}=\det R. \] 又 \[ |\det A|=|\det Q|\,\det R=\det R, \] 因为正交矩阵的行列式绝对值等于 \(1\)。 故单位立方体像的体积为 \(|\det A|\)。 一般平行多面体由列矩阵 \(B\) 给出， 其像的列矩阵为 \(AB\)， 于是 \[ \operatorname{Vol}(Tv_1,\dots,Tv_n) = |\det(AB)| = |\det A|\,|\det B|. \] 这正是所求结论。 \end{proof}
+
+
+
+
+\begin{definition} 若一组基 \(v_1,\dots,v_n\) 到标准基的变换矩阵行列式为正， 则称它与标准基有相同定向， 简称为\emph{正定向}； 若该行列式为负， 则称为\emph{负定向}。 \end{definition}
+
+
+
+
+\begin{theorem}[定向判别] 设 \(T\in \End(\R^n)\) 可逆。 则：
+
+
+
+
+\begin{enumerate}[label=(\arabic*), leftmargin=2.8em] \item 若 \(\det T>0\)，则 \(T\) 保持定向； \item 若 \(\det T<0\)，则 \(T\) 反转定向。 \end{enumerate} \end{theorem}
+
+
+
+
+\begin{proof} 设 \(A\) 是 \(T\) 在标准基下的矩阵。 标准基的像是 \(Te_1,\dots,Te_n\)。 它与标准基的定向关系恰由矩阵 \(A\) 的行列式符号决定。 若 \(\det A>0\)，则定向不变； 若 \(\det A<0\)，则定向翻转。 \end{proof}
+
+
+
+
+\begin{example} 在 \(\R^2\) 中， 反射 \[ (x,y)\mapsto (x,-y) \] 的矩阵为 \[ \mat{1&0\\0&-1}, \] 其行列式为 \(-1\)。 因此它保持面积大小， 但反转定向。 在 \(\R^3\) 中， 伸缩 \[ (x,y,z)\mapsto (2x,3y,\tfrac12 z) \] 的矩阵为 \[ \mat{2&0&0\\0&3&0\\0&0&1/2}, \] 其行列式为 \(3\)。 因此它把体积放大为原来的 \(3\) 倍， 并保持定向。 \end{example}
+
+
+
+
+\section{特征多项式（det 版本）：\(p(z)=\det(zI-T)\)}
+
+
+
+
+第 8 章中， 我们已经把特征多项式理解为
+
+
+
+
+\[ p_T(z)=\prod_{j=1}^n (z-\lambda_j), \]
+
+
+
+
+其中 \(\lambda_1,\dots,\lambda_n\) 是 \(T\) 的特征值， 按代数重数计数。 现在我们要说明， 这正好等于 \(\det(z\Id-T)\)。
+
+
+
+
+\begin{theorem}\label{thm:charpoly-det} 对任意 \(T\in \End(V)\)， 有 \[ p_T(z)=\det(z\Id-T). \] \end{theorem}
+
+
+
+
+\begin{proof} 设 \(T\) 的特征值为 \(\lambda_1,\dots,\lambda_n\)。 则算子 \(z\Id-T\) 的特征值是 \[ z-\lambda_1,\dots,z-\lambda_n, \] 因为若 \(Tv=\lambda_j v\)， 则 \[ (z\Id-T)v=(z-\lambda_j)v. \] 因此按本章行列式的定义， \[ \det(z\Id-T) = (z-\lambda_1)\cdots(z-\lambda_n) = p_T(z). \] \end{proof}
+
+
+
+
+\begin{corollary}\label{cor:charpoly-coeff} 若 \(\dim V=n\)， 则 \[ p_T(z)=z^n-(\Tr T)z^{n-1}+\cdots+(-1)^n\det T. \] \end{corollary}
+
+
+
+
+\begin{proof} 由 \[ p_T(z)=\prod_{j=1}^n (z-\lambda_j) \] 展开可知， \(z^{n-1}\) 的系数是 \[ -(\lambda_1+\cdots+\lambda_n)=-\Tr T, \] 常数项是 \[ (-1)^n\lambda_1\cdots\lambda_n=(-1)^n\det T. \] \end{proof}
+
+
+
+
+\begin{example} 设 \[ A=\mat{4&1\\2&3}. \] 则 \[ \Tr A=7,\qquad \det A=4\cdot3-2=10. \] 因此 \[ p_A(z)=z^2-7z+10=(z-5)(z-2). \] 这说明 \(A\) 的特征值为 \(5\) 与 \(2\)。 \end{example}
+
+
+
+
+\begin{remark} \cref{thm:charpoly-det} 与 \cref{cor:charpoly-coeff} 总结了本章的统一图景： \[ \text{特征多项式} \Longrightarrow \text{迹是倒数第二个系数的相反数} \Longrightarrow \text{行列式是常数项的符号修正}. \] 因此， 迹与行列式并非孤立概念， 而是特征多项式最重要的两个系数。 \end{remark}
+
+
+
+
+\section*{习题}
+
+
+
+
+\subsection*{基础题}
+
+
+
+
+\\begin{enumerate}[label=\\textbf{\\arabic*.}, leftmargin=*, itemsep=0.5em] \item \basic 设 \(A=\mat{2&0\\0&-5}\)。 求 \(\Tr A\) 与 \(\det A\)。 \item \basic 设 \(A=\mat{3&1\\0&3}\)。 求 \(\Tr A\)、\(\det A\) 与特征多项式。 \item \basic 设 \[ A=\mat{ 1&2&0\\ 0&-1&4\\ 0&0&3}. \] 直接由上三角矩阵求 \(\Tr A\) 与 \(\det A\)。 \item \basic 设 \(N=\mat{0&1\\0&0}\)。 说明 \(\Tr N=0\) 且 \(\det N=0\)。 \item \basic 若 \(\dim V=4\)，求 \(\Tr(7\Id)\) 与 \(\det(7\Id)\)。 \item \basic 设 \(A\) 的特征值为 \(2,2,-1\)。 求 \(\Tr A\) 与 \(\det A\)。 \item \basic 利用二阶公式求 \[ \det\mat{1&4\\2&3}. \] \item \basic 说明若矩阵有两列相同，则其行列式为 \(0\)。 \item \basic 说明交换矩阵的两列后，行列式变号。 \item \basic 说明把矩阵的一列乘以 \(5\)，行列式也乘以 \(5\)。 \item \basic 求置换矩阵 \[ P=\mat{0&1&0\\1&0&0\\0&0&1} \] 的行列式。 \item \basic 设 \(D=\mat{1&0&0\\0&2&0\\0&0&0}\)。 判断 \(D\) 是否可逆。 \item \basic 设 \(A\in \Mat_2(\C)\) 满足 \(\Tr A=6\)、\(\det A=8\)。 写出 \(p_A(z)\)。 \item \basic 设 \(A\) 是上三角矩阵，对角线为 \(4,4,-1,2\)。 写出 \(p_A(z)\)。 \item \basic 直接计算下列矩阵并验证 \(\Tr(AB)=\Tr(BA)\)： \[ A=\mat{1&1\\0&2},\qquad B=\mat{3&0\\4&-1}. \] \item \basic 在 \(\R^3\) 中， 伸缩 \((x,y,z)\mapsto (2x,3y,4z)\) 对体积的缩放倍数是多少？ \item \basic 在 \(\R^2\) 中， 反射 \((x,y)\mapsto (x,-y)\) 是否保持定向？ \item \basic 设 \(P\) 是秩为 \(2\) 的 \(\R^3\) 上投影。 求 \(\det P\)。 \item \basic 说明若 \(0\) 是 \(T\) 的特征值，则 \(\det T=0\)。 \item \basic 若 \(\det T=-1\)，说明 \(T\) 在 \(\R^n\) 上对定向有什么作用。 \end{enumerate}
+
+
+
+
+\subsection*{进阶题}
+
+
+
+
+\\begin{enumerate}[resume, label=\\textbf{\\arabic*.}, leftmargin=*, itemsep=0.5em] \item \medium 利用对角线求和证明 \(\Tr(S+T)=\Tr S+\Tr T\)。 \item \medium 设 \[ A=\mat{ 2&1&0\\ 0&3&5\\ 0&0&-1}. \] 求 \(\det A\)，并说明为什么它等于特征值之积。 \item \medium 设 \(\dim V=n\)。 证明 \[ \det(\alpha T)=\alpha^n\det T. \] \item \medium 若 \(N\) 幂零，证明 \(p_N(z)=z^n\)。 \item \medium 若 \(T\) 可逆，证明 \(T^{-1}\) 的特征值是 \(T\) 的特征值的倒数。 \item \medium 设 \[ A=\mat{ 1&3&0\\ 0&1&0\\ 0&0&1}. \] 求 \(\det A\)。 \item \medium 用列变换计算 \[ \det\mat{ 1&2&3\\ 1&1&1\\ 2&3&5}. \] \item \medium 证明相似矩阵有相同的迹与行列式。 \item \medium 证明矩阵列向量线性相关当且仅当行列式为 \(0\)。 \item \medium 设 \(P\in\End(V)\) 满足 \(P^2=P\)。 证明 \(\Tr P=\rank P\)。 \item \medium 设 \(N\) 幂零。 证明 \(\det(\Id+N)=1\)。 \item \medium 设 \(P^2=P\)。 证明 \(\det P\in\{0,1\}\)。 \item \medium 设 \(A\) 的特征值为 \(1,-2,4\)。 写出 \(p_A(z)\)。 \item \medium 设 \[ A=\mat{a&-b\\b&a},\qquad a,b\in\R. \] 求 \(\Tr A\) 与 \(\det A\)。 \item \medium 设 \(S,T\) 都可对角化且可交换。 说明 \(\det(ST)=\det S\det T\)。 \item \medium 证明 \[ p_T(0)=(-1)^n\det T. \] \item \medium 证明对任意 \(S,T\)，有 \[ \Tr(ST-TS)=0. \] \item \medium 设 \(A\in\Mat_2(\C)\) 满足 \[ p_A(z)=z^2-5z+6. \] 求 \(\Tr A\) 与 \(\det A\)。 \item \medium 在 \(\R^3\) 中， 两个反射的复合是否保持定向？ \item \medium 设 \(A\) 是上三角矩阵， 对角线为 \(2,2,2,2\)。 求 \(\Tr A\)、\(\det A\)。 \end{enumerate}
+
+
+
+
+\subsection*{挑战题}
+
+
+
+
+\\begin{enumerate}[resume, label=\\textbf{\\arabic*.}, leftmargin=*, itemsep=0.5em] \item \hard 用外积方法完整推出三阶行列式公式。 \item \hard 若 \(T\) 可对角化且所有特征值都等于 \(1\)，证明 \(T=\Id\)。 \item \hard 设 \(N\neq0\) 且 \(N^2=0\)。 证明 \(\Tr N=0\)、\(\det(\Id+N)=1\)。 \item \hard 设 \[ p_T(z)=z^n-c_1z^{n-1}+\cdots+(-1)^nc_n. \] 证明 \(c_1=\Tr T\)、\(c_n=\det T\)。 \item \hard 证明 \(\Tr T\) 等于 \(p_T(z)\) 的根之和。 \item \hard 设 \(T\) 的秩为 \(1\)。 证明 \[ \det(\Id+T)=1+\Tr T. \] \item \hard 设 \(A\) 为剪切矩阵 \[ A=\mat{ 1&t&0\\ 0&1&0\\ 0&0&1}. \] 说明它为什么保持体积与定向。 \item \hard 证明：若 \(T\) 可逆且 \(\det T=1\)，则 \(T\) 保持有向体积。 \item \hard 举例说明：迹一般不满足乘法性，行列式一般不满足加法性。 \item \hard 证明：若 \(W\subseteq V\) 为 \(T\)-不变子空间， 且 \(\dim W=k\)， 则在适当基下 \(T\) 的矩阵是分块上三角的。 \item \hard 在上一题基础上， 证明 \[ \det T=\det(T|_W)\det(T/W). \] \item \hard 证明：若 \(A\in\Mat_n(\R)\) 正交， 则 \(\det A=\pm1\)。 \item \hard 设 \(A\in\Mat_3(\R)\) 满足 \(\det A<0\)。 说明它不可能是两个旋转的复合。 \item \hard 证明：若矩阵 \(A\) 的每一列和都等于同一个数 \(c\)， 则向量 \((1,\dots,1)^\top\) 是 \(A^\top\) 的特征向量。 \item \hard 设 \(A\in\Mat_n(\C)\) 的特征值都为 \(0\)。 证明 \(A\) 不可逆且 \(\det A=0\)。 \item \hard 证明：若 \(A\) 与 \(B\) 相似， 则 \(p_A(z)=p_B(z)\)。 \item \hard 设 \(A\in\Mat_2(\R)\) 满足 \(\det A>0\)、\(\Tr A=0\)。 说明其特征值的可能情形。 \item \hard 设 \(T\in\End(\R^2)\) 把单位正方形变成面积为 \(7\) 的平行四边形， 且反转定向。 求 \(\det T\)。 \item \hard 设 \(A\) 为三角矩阵， 证明 \(p_A(z)=\prod_{j=1}^n(z-a_{jj})\)。 \item \hard 证明：函数 \(D:\Mat_n(\C)\to\C\) 若满足 按列多线性、交替性且 \(D(I)=1\)， 则 \(D=\det\)。 \end{enumerate}
+
+
+
+
+\section*{习题解答}
+
+
+
+
+\subsection*{基础题解答}
+
+
+
+
+\\begin{enumerate}[label=\\textbf{\\arabic*.}, leftmargin=*, itemsep=0.5em] \item \[ \Tr A=2+(-5)=-3,\qquad \det A=2\cdot(-5)=-10. \] \item 特征值为 \(3,3\)。 故 \[ \Tr A=6,\qquad \det A=9,\qquad p_A(z)=(z-3)^2=z^2-6z+9. \] \item 上三角矩阵的迹是对角线和， 行列式是对角线积， 故 \[ \Tr A=1+(-1)+3=3,\qquad \det A=1\cdot(-1)\cdot3=-3. \] \item \(N\) 的全部特征值都是 \(0\)。 因此 \[ \Tr N=0,\qquad \det N=0. \] \item \(7\Id\) 的四个特征值都等于 \(7\)。 故 \[ \Tr(7\Id)=4\cdot7=28,\qquad \det(7\Id)=7^4=2401. \] \item \[ \Tr A=2+2+(-1)=3,\qquad \det A=2\cdot2\cdot(-1)=-4. \] \item \[ \det\mat{1&4\\2&3}=1\cdot3-4\cdot2=-5. \] \item 两列相同则列向量线性相关， 外积为 \(0\)， 故行列式为 \(0\)。 \item 交换两列等于把外积中的两个因子互换， 因此整体乘以 \(-1\)。 \item 行列式对每一列线性， 故某一列乘以 \(5\) 时， 整体行列式也乘以 \(5\)。 \item 这是交换前两列的置换矩阵， 因此 \[ \det P=-1. \] \item \[ \det D=1\cdot2\cdot0=0. \] 由可逆判据， \(D\) 不可逆。 \item 由 \[ p_A(z)=z^2-(\Tr A)z+\det A \] 得 \[ p_A(z)=z^2-6z+8. \] \item 上三角矩阵的特征值就是对角线元素， 故 \[ p_A(z)=(z-4)^2(z+1)(z-2). \] \item \[ AB=\mat{7&-1\\8&-2},\qquad BA=\mat{3&3\\4&8}. \] 故 \[ \Tr(AB)=5,\qquad \Tr(BA)=11. \] 注意这里应重新检查计算： \[ AB=\mat{1&1\\0&2}\mat{3&0\\4&-1}=\mat{7&-1\\8&-2}, \] \[ BA=\mat{3&0\\4&-1}\mat{1&1\\0&2}=\mat{3&3\\4&2}. \] 于是 \[ \Tr(AB)=7+(-2)=5,\qquad \Tr(BA)=3+2=5. \] \item 行列式为 \[ 2\cdot3\cdot4=24. \] 所以体积放大为原来的 \(24\) 倍。 \item 该反射的行列式为 \(-1\)， 故不保持定向， 而是反转定向。 \item 投影的特征值只有 \(1\) 与 \(0\)， 其中 \(1\) 出现两次， \(0\) 出现一次。 故 \[ \det P=0. \] \item 若 \(0\) 是特征值， 则特征值之积中有一个因子为 \(0\)， 故 \(\det T=0\)。 \item \(\det T=-1<0\)， 故 \(T\) 反转定向。 \end{enumerate}
+
+
+
+
+\subsection*{进阶题解答}
+
+
+
+
+\\begin{enumerate}[resume, label=\\textbf{\\arabic*.}, leftmargin=*, itemsep=0.5em] \item 取同一组基下的矩阵 \(A,B\)。 则 \[ \Tr(S+T)=s(A+B)=s(A)+s(B)=\Tr S+\Tr T. \] \item 上三角矩阵的行列式为对角线之积， 故 \[ \det A=2\cdot3\cdot(-1)=-6. \] 而它的特征值恰为 \(2,3,-1\)， 故也等于特征值之积。 \item 若 \(T\) 的特征值为 \(\lambda_1,\dots,\lambda_n\)， 则 \(\alpha T\) 的特征值为 \(\alpha\lambda_1,\dots,\alpha\lambda_n\)。 故 \[ \det(\alpha T)=\prod_{j=1}^n \alpha\lambda_j=\alpha^n\det T. \] \item 幂零算子的全部特征值都是 \(0\)， 所以 \[ p_N(z)=\prod_{j=1}^n(z-0)=z^n. \] \item 若 \(Tv=\lambda v\) 且 \(T\) 可逆， 则 \[ v=T^{-1}(\lambda v)=\lambda T^{-1}v, \] 故 \[ T^{-1}v=\lambda^{-1}v. \] \item 该矩阵是上三角矩阵， 对角线全为 \(1\)， 所以 \[ \det A=1. \] \item 对列做 \(C_3\leftarrow C_3-C_1\)， \(C_2\leftarrow C_2-C_1\)， 得 \[ \det\mat{ 1&1&2\\ 1&0&0\\ 2&1&3}. \] 再做 \(R_3\leftarrow R_3-2R_1\)， 得 \[ \det\mat{ 1&1&2\\ 1&0&0\\ 0&-1&-1}. \] 按第一列展开可得 \[ 1\cdot\det\mat{0&0\\-1&-1} -1\cdot\det\mat{1&2\\-1&-1}=1. \] 故行列式等于 \(1\)。 \item 若 \(B=P^{-1}AP\)， 则对角线和由相似不变， 乘法性给出 \[ \det B=\det(P^{-1})\det A\det P=\det A. \] \item 列相关当且仅当列向量外积为 \(0\)， 由 \[ v_1\wedge\cdots\wedge v_n=(\det A)e_1\wedge\cdots\wedge e_n \] 知这当且仅当 \(\det A=0\)。 \item 投影 \(P^2=P\) 的特征值只能是 \(0\) 或 \(1\)。 而 \(\rank P\) 等于特征值 \(1\) 的个数。 故迹即为这些 \(1\) 的总和， 所以 \[ \Tr P=\rank P. \] \item 幂零 \(N\) 的特征值全为 \(0\)， 故 \(\Id+N\) 的特征值全为 \(1\)。 于是 \[ \det(\Id+N)=1. \] \item 由 \(P^2=P\) 可知特征值只可能是 \(0,1\)。 故它们的乘积只可能是 \(0\) 或 \(1\)， 也就是 \[ \det P\in\{0,1\}. \] \item \[ p_A(z)=(z-1)(z+2)(z-4). \] \item \[ \Tr A=a+a=2a,\qquad \det A=a^2+b^2. \] \item 若 \(S,T\) 可交换且都可对角化， 则可在同一组基下同时对角化。 于是 \(ST\) 的对角元是对应对角元的乘积， 故 \[ \det(ST)=\det S\det T. \] \item 由 \cref{thm:charpoly-det}， \[ p_T(z)=\det(z\Id-T). \] 令 \(z=0\) 即得 \[ p_T(0)=\det(-T)=(-1)^n\det T. \] \item 由迹的循环性， \[ \Tr(ST-TS)=\Tr(ST)-\Tr(TS)=0. \] \item 比较 \[ p_A(z)=z^2-(\Tr A)z+\det A \] 与 \[ z^2-5z+6 \] 可得 \[ \Tr A=5,\qquad \det A=6. \] \item 一次反射反转定向， 两次反射的复合对应行列式 \[ (-1)\cdot(-1)=1, \] 故保持定向。 \item \[ \Tr A=2+2+2+2=8,\qquad \det A=2^4=16. \] \end{enumerate}
+
+
+
+
+\subsection*{挑战题解答}
+
+
+
+
+\\begin{enumerate}[resume, label=\\textbf{\\arabic*.}, leftmargin=*, itemsep=0.5em] \item 设三列分别为 \[ v_1=ae_1+de_2+ge_3,\quad v_2=be_1+ee_2+he_3,\quad v_3=ce_1+fe_2+ie_3. \] 展开 \[ v_1\wedge v_2\wedge v_3 \] 后，只有 \(e_1\wedge e_2\wedge e_3\) 的排列项保留。 比较系数便得 \[ \det\mat{a&b&c\\d&e&f\\g&h&i} = aei+bfg+cdh-ceg-bdi-afh. \] \item 可对角化且所有特征值都为 \(1\)， 说明它相似于单位矩阵。 故 \(T=\Id\)。 \item 若 \(N^2=0\)，则 \(N\) 幂零， 故全部特征值为 \(0\)， 于是 \[ \Tr N=0. \] 又 \(\Id+N\) 的特征值全为 \(1\)， 故 \[ \det(\Id+N)=1. \] \item 由 \[ p_T(z)=\prod_{j=1}^n(z-\lambda_j) \] 展开可知， \(z^{n-1}\) 的系数是 \[ -(\lambda_1+\cdots+\lambda_n)=-\Tr T, \] 常数项是 \[ (-1)^n\lambda_1\cdots\lambda_n=(-1)^n\det T. \] 故 \(c_1=\Tr T\)、\(c_n=\det T\)。 \item 第 8 章定义 \[ p_T(z)=\prod_{j=1}^n(z-\lambda_j), \] 所以其根就是特征值 \(\lambda_j\)。 根之和为 \[ \lambda_1+\cdots+\lambda_n=\Tr T. \] \item 秩为 \(1\) 的算子最多只有一个非零特征值， 记为 \(\lambda\)； 其余特征值全为 \(0\)。 于是 \[ \Tr T=\lambda,\qquad \det(\Id+T)=(1+\lambda)\cdot1\cdots1=1+\lambda=1+\Tr T. \] \item 剪切矩阵的特征值全为 \(1\)， 故 \[ \det A=1. \] 因此它保持体积； 又 \(\det A>0\)， 故保持定向。 \item \(\det T=1\) 表明体积缩放因子为 \(1\)， 且符号为正。 因此 \(T\) 保持有向体积。 \item 例如 \[ A=\mat{1&1\\0&1}. \] 则 \[ \Tr(A^2)=\Tr\mat{1&2\\0&1}=2, \qquad (\Tr A)^2=4, \] 所以迹不乘法。 再如 \[ A=B=\Id. \] 则 \[ \det(A+B)=\det(2\Id)=2^n, \qquad \det A+\det B=2. \] 当 \(n\neq1\) 时二者不同， 故行列式不加法。 \item 取 \(W\) 的一组基 \(w_1,\dots,w_k\)， 再补成 \(V\) 的一组基 \[ w_1,\dots,w_k,u_{k+1},\dots,u_n. \] 因 \(W\) 对 \(T\) 不变， 每个 \(Tw_j\) 仍在 \(W\) 中， 所以矩阵左下角块为零， 故矩阵是分块上三角。 \item 在上一题的基下， \[ [T]=\mat{A&*\\0&B}. \] 分块上三角矩阵的特征值由 \(A\) 与 \(B\) 的特征值合并而成， 故 \[ \det T=\det A\det B = \det(T|_W)\det(T/W). \] \item 正交矩阵满足 \[ A^\top A=I. \] 取行列式得 \[ (\det A)^2=1, \] 故 \[ \det A=\pm1. \] \item 旋转在 \(\R^3\) 中由正交矩阵且行列式为 \(1\) 描述。 两个旋转的复合行列式仍为 \(1\)。 若 \(\det A<0\)， 则不可能是两个旋转的复合。 \item 设 \(u=(1,\dots,1)^\top\)。 若每列和都等于 \(c\)， 则每一行对 \(u\) 的作用在转置后表现为 \[ A^\top u=cu. \] 故 \(u\) 是 \(A^\top\) 的特征向量， 特征值为 \(c\)。 \item 特征值全为 \(0\) 时， \[ \det A=0. \] 由可逆性判据， \(A\) 不可逆。 \item 相似矩阵有相同特征值及其代数重数。 而 \[ p_A(z)=\prod (z-\lambda_j), \qquad p_B(z)=\prod (z-\lambda_j), \] 故二者相同。 \item 设特征值为 \(\lambda_1,\lambda_2\)。 则 \[ \lambda_1+\lambda_2=0,\qquad \lambda_1\lambda_2>0. \] 故 \(\lambda_2=-\lambda_1\)， 于是 \[ -\lambda_1^2>0, \] 不可能在实数中成立。 因此特征值必为一对纯虚共轭数 \[ \pm bi,\qquad b\neq0. \] \item 面积缩放倍数为 \(|\det T|=7\)， 又反转定向， 故 \[ \det T=-7. \] \item 三角矩阵的特征值就是对角线元素， 故 \[ p_A(z)=\prod_{j=1}^n(z-a_{jj}). \] \item 设 \(A\) 的列向量为 \(v_1,\dots,v_n\)。 由多线性， \[ D(v_1,\dots,v_n) = \sum_{i_1,\dots,i_n} a_{i_1 1}\cdots a_{i_n n} D(e_{i_1},\dots,e_{i_n}). \] 若有重复指标， 交替性给出该项为 \(0\)； 若 \((i_1,\dots,i_n)\) 是置换 \(\sigma\)， 则 \[ D(e_{\sigma(1)},\dots,e_{\sigma(n)}) = \sgn(\sigma)D(e_1,\dots,e_n) = \sgn(\sigma), \] 因为 \(D(I)=1\)。 故 \[ D(A)=\sum_{\sigma}\sgn(\sigma)\,a_{1,\sigma(1)}\cdots a_{n,\sigma(n)}. \] 这正是 \(\det A\) 的 Leibniz 公式， 故 \(D=\det\)。 \end{enumerate}
+
+
+
+

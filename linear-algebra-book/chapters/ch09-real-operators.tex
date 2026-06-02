@@ -1,0 +1,400 @@
+\chapter{实向量空间上的算子}
+
+本章回到底域 $\R$。困难立刻出现：实算子未必有特征值，例如平面上的 $90^\circ$ 旋转。为了继续使用上一章的复算子理论，我们引入\emph{复化}。复化的思想很朴素：把实向量空间临时扩张到复数域上，在那里寻找特征值、Jordan 分解和谱结构；然后再把结果翻译回实空间。
+
+贯穿本章的核心原则是：真正的对象仍是原来的实算子 $T$，复化只是分析它的辅助语言。特别地，非实特征值总是成共轭对出现，并在实空间中产生二维不变子空间；这正是旋转块出现的根源。
+
+\section{复化}
+
+\begin{definition}
+设 $V$ 是实向量空间。它的\emph{复化}记为 $V_\C$，可以具体写成
+\[
+V_\C=\{u+iv:u,v\in V\},
+\]
+其中加法与复数标量乘法按通常方式定义。
+\end{definition}
+
+我们把 $V$ 视为 $V_\C$ 的实子空间：向量 $u\in V$ 对应于 $u+i0$。复化并不改变维数的实信息，只是把系数域从 $\R$ 扩大到了 $\C$。
+
+\begin{proposition}
+若 $\dim_\R V=n$，则 $\dim_\C V_\C=n$。
+\end{proposition}
+
+\begin{proof}
+若 $e_1,\dots,e_n$ 是 $V$ 的一组实基，则同一组向量也是 $V_\C$ 的复基。生成性显然；复线性无关性由
+\[
+(c_1e_1+\cdots+c_ne_n)=0
+\]
+分离实部与虚部即可推出所有 $c_j=0$。
+\end{proof}
+
+\begin{definition}
+若 $T\in\Lmap(V)$，定义其\emph{复化算子}
+\[
+T_\C(u+iv)=Tu+iTv.
+\]
+\end{definition}
+
+\begin{proposition}
+$T_\C$ 是复线性算子，并且 $T\mapsto T_\C$ 保持和、积与单位算子。
+\end{proposition}
+
+\begin{proof}
+对复数 $a+ib$ 与向量 $u+iv$ 直接计算即可验证复线性。其余性质都来自定义逐项展开。
+\end{proof}
+
+\begin{definition}
+在 $V_\C$ 上定义共轭运算
+\[
+\overline{u+iv}=u-iv.
+\]
+\end{definition}
+
+\begin{proposition}
+对任意 $w\in V_\C$，有 $T_\C\overline{w}=\overline{T_\Cw}$。
+\end{proposition}
+
+\begin{proof}
+设 $w=u+iv$，则
+\[
+T_\C\overline{w}=T_\C(u-iv)=Tu-iTv=\overline{Tu+iTv}=\overline{T_\Cw}.
+\]
+\end{proof}
+
+\begin{remark}
+这条简单等式解释了为什么非实特征值必须成共轭对：若 $T_\Cw=\lambda w$，则
+\[
+T_\C\overline{w}=\overline{\lambda}\,\overline{w}.
+\]
+因此 $\overline{\lambda}$ 也是特征值。
+\end{remark}
+
+\section{复化的算子}
+
+\begin{proposition}
+每个非零有限维实向量空间上的算子 $T$，其复化 $T_\C$ 至少有一个复特征值。
+\end{proposition}
+
+\begin{proof}
+这是上一章关于复向量空间算子的结论，直接应用于 $V_\C$ 即可。
+\end{proof}
+
+\begin{proposition}
+若 $\lambda=a+bi\in\C\setminus\R$ 是 $T_\C$ 的特征值，取对应特征向量 $w=u+iv$，则 $u,v\in V$ 线性无关，且实子空间
+\[
+W=\spn_\R\{u,v\}
+\]
+在 $T$ 下不变；在基 $u,v$ 下，$T|_W$ 的矩阵为
+\[
+\mat{a&-b\\b&a}.
+\]
+\end{proposition}
+
+\begin{proof}
+由 $T_\C(u+iv)=(a+bi)(u+iv)$ 比较实部与虚部，得
+\[
+Tu=au-bv,\qquad Tv=bu+av.
+\]
+故 $W$ 在 $T$ 下不变且矩阵如上。若 $u,v$ 实线性相关，则 $w$ 与 $\overline{w}$ 也相关，进而迫使 $\lambda=\overline{\lambda}$，矛盾。
+\end{proof}
+
+\begin{example}
+旋转算子 $R_\theta$ 在 $\R^2$ 上的矩阵为
+\[
+\mat{\cos\theta&-\sin\theta\\ \sin\theta&\cos\theta}.
+\]
+其复化特征值为 $e^{i\theta}$ 与 $e^{-i\theta}$。若 $\theta\notin\pi\Z$，它在实空间没有特征值，但在复化后立刻变成可分析对象。
+\end{example}
+
+\begin{proposition}
+若 $\lambda\in\R$ 是 $T_\C$ 的特征值，则 $T$ 在 $V$ 中有特征值 $\lambda$。
+\end{proposition}
+
+\begin{proof}
+取 $T_\C(u+iv)=\lambda(u+iv)$。比较实部与虚部，得 $Tu=\lambda u$ 且 $Tv=\lambda v$。由于 $u,v$ 不全为零，故 $T$ 在 $V$ 中有实特征向量。
+\end{proof}
+
+\section{实向量空间上算子的结构}
+
+上一章说明：$T_\C$ 在某组复基下有 Jordan 标准形。把共轭成对的非实特征值重新组合，就能得到实空间上的结构定理。
+
+\begin{theorem}[实块上三角形]
+设 $V$ 为有限维实向量空间，$T\in\Lmap(V)$。则存在 $V$ 的一组基，使得 $T$ 的矩阵呈块上三角形，且每个对角块要么是 $1\times1$ 的实数块 $[a]$，要么是 $2\times2$ 的实块
+\[
+\mat{a&-b\\b&a}\qquad(b>0).
+\]
+\end{theorem}
+
+\begin{proof}
+对 $\dim V$ 归纳。若 $T$ 有实特征值 $a$，取对应特征向量 $u$，则 $\spn\{u\}$ 在 $T$ 下不变，于是对商空间或补空间归纳即可。
+
+若 $T$ 没有实特征值，则 $T_\C$ 有非实特征值 $a+bi$。由上个命题得到二维不变子空间 $W=\spn\{u,v\}$，且 $T|_W$ 在基 $u,v$ 下矩阵为所示块。再对商空间 $V/W$ 归纳，得到结论。
+\end{proof}
+
+\begin{remark}
+这一定理不是 Jordan 标准形的全部信息；它只说明实算子总能被“按一维块与二维旋转伸缩块”组织起来。若进一步追踪广义特征向量，还会出现实 Jordan 块与复共轭 Jordan 对应的实块链。
+\end{remark}
+
+\begin{corollary}
+每个实算子都存在维数为 $1$ 或 $2$ 的非零不变子空间。
+\end{corollary}
+
+\begin{proof}
+观察上一定理中的第一个对角块即可。
+\end{proof}
+
+\begin{example}
+矩阵
+\[
+\mat{0&-1&0\\1&0&0\\0&0&2}
+\]
+已经是一个二维旋转块与一个一维实块的直和。其一维不变子空间由第三个基向量张成，而前两个坐标张成的平面是二维不变子空间。
+\end{example}
+
+\section{实算子的特征多项式与 Cayley--Hamilton}
+
+在实数域上，我们把特征多项式定义为复化后的特征多项式。
+
+\begin{definition}
+设 $T\in\Lmap(V)$，其中 $V$ 为有限维实向量空间。定义
+\[
+\chi_T=\chi_{T_\C}.
+\]
+这的确是一个实系数多项式，因为非实特征值成共轭对出现。
+\end{definition}
+
+\begin{proposition}
+若 $T$ 的实块上三角对角块为
+\[
+[a_1],\dots,[a_r],\mat{\alpha_1&-\beta_1\\\beta_1&\alpha_1},\dots,
+\mat{\alpha_s&-\beta_s\\\beta_s&\alpha_s},
+\]
+则
+\[
+\chi_T(z)=\prod_{j=1}^r (z-a_j)\prod_{k=1}^s\big((z-\alpha_k)^2+\beta_k^2\big).
+\]
+\end{proposition}
+
+\begin{proof}
+一维块贡献实根 $a_j$；二维块对应共轭特征值 $\alpha_k\pm i\beta_k$，所以贡献二次因子
+\[
+(z-(\alpha_k+i\beta_k))(z-(\alpha_k-i\beta_k))=(z-\alpha_k)^2+\beta_k^2.
+\]
+把各块相乘即可。
+\end{proof}
+
+\begin{theorem}[实 Cayley--Hamilton]
+对任意实算子 $T$，有
+\[
+\chi_T(T)=0.
+\]
+\end{theorem}
+
+\begin{proof}
+在复化空间上，$\chi_T=\chi_{T_\C}$，所以上一章的 Cayley--Hamilton 定理给出
+\[
+\chi_T(T_\C)=0.
+\]
+把这个等式限制回实子空间 $V\subseteq V_\C$，便得 $\chi_T(T)=0$。
+\end{proof}
+
+\begin{remark}
+在这一表述下，实算子的特征多项式不是通过行列式引入的，而是通过复化与广义特征空间引入的。这与本书“行列式靠后”的路线完全一致。
+\end{remark}
+
+\begin{proposition}
+对任意实系数多项式 $p$，都有
+\[
+p(T)=0\qquad\Longleftrightarrow\qquad p(T_\C)=0.
+\]
+\end{proposition}
+
+\begin{proof}
+若 $p(T)=0$，复化便得 $p(T_\C)=0$。反之若 $p(T_\C)=0$，把它限制到实子空间 $V\subseteq V_\C$，便得到 $p(T)=0$。
+\end{proof}
+
+\begin{corollary}
+实算子的最小多项式可以分解为实一次因子与实不可约二次因子的乘积；其中一次因子对应实特征值，二次因子对应共轭非实特征值对。
+\end{corollary}
+
+\begin{proof}
+复化后的最小多项式在 $\C$ 上完全分裂。由于共轭保持 $T_\C$ 的特征数据，非实根必须成共轭对出现；把每一对共轭线性因子相乘，就得到实不可约二次因子。
+\end{proof}
+
+\begin{example}
+设 $T$ 在某组实基下矩阵为
+\[
+\mat{2&0&0&0\\0&2&-1&0\\0&1&2&0\\0&0&0&0}.
+\]
+则它由一个一维块 $[2]$、一个二维块 $\mat{2&-1\\1&2}$ 与一个一维块 $[0]$ 组成，因此
+\[
+\chi_T(z)=z(z-2)\big((z-2)^2+1\big).
+\]
+这例子说明：即使没有行列式，也能直接从块结构读出特征多项式。
+同时也可以直接看出：实根对应一维块，非实根对对应二维块。
+\end{example}
+
+\section{实正规算子的结构}
+
+现在再加入内积。设 $V$ 是有限维实内积空间，$T\in\Lmap(V)$ 正规，即
+\[
+TT^*=T^*T.
+\]
+复化后，$T_\C$ 仍是复内积空间上的正规算子，因此可由复谱定理正交对角化。把共轭特征值对重新拼回实向量，就得到下述结构。
+
+\begin{theorem}[实正规算子的正交分解]
+设 $T$ 是有限维实内积空间上的正规算子。则 $V$ 可以分解为两两正交的 $T$-不变子空间直和，每个直和因子的维数为 $1$ 或 $2$。在适当的正交规范基下，$T$ 的矩阵为分块对角矩阵，每个对角块要么是 $[a]$，要么是
+\[
+\mat{a&-b\\b&a}\qquad(b>0).
+\]
+\end{theorem}
+
+\begin{proof}
+对 $T_\C$ 应用复谱定理，得到一组正交规范复特征基。对每个实特征值 $a$，对应实特征向量给出一维正交因子。对每对非实共轭特征值 $a\pm bi$，取单位特征向量 $w=u+iv$。正规性保证不同特征值对应的特征向量正交；从而可安排这些共轭对彼此正交。再由
+\[
+Tu=au-bv,\qquad Tv=bu+av
+\]
+知 $\spn\{u,v\}$ 是二维 $T$-不变子空间。把所有这些一维与二维因子拼起来，便得到正交分解。
+\end{proof}
+
+\begin{corollary}
+实自伴随算子可正交对角化；实斜自伴随算子可分解成若干个
+\[
+\mat{0&-b\\b&0}
+\]
+块与零块；实正交算子可分解成若干个 $[1]$、$[-1]$ 与旋转块
+\[
+\mat{\cos\theta&-\sin\theta\\\sin\theta&\cos\theta}.
+\]
+\end{corollary}
+
+\begin{proof}
+对自伴随算子，全部特征值实，所以二维块消失。对斜自伴随算子，复特征值纯虚，因此实块形如所示。对正交算子，复特征值模长为 $1$，故二维块必须是旋转块，一维块只能为 $\pm1$。
+\end{proof}
+
+\begin{remark}
+这给出了许多熟悉结论的统一解释：对称矩阵可正交对角化、反对称矩阵由平面旋转生成、正交矩阵由反射与旋转拼成。这些都只是“实正规算子结构定理”的不同侧面。
+\end{remark}
+
+\section*{习题}
+
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 设 $V$ 为实向量空间，基为 $e_1,e_2$。说明 $e_1,e_2$ 也是 $V_\C$ 的复基。
+\item \basic 写出复化算子 $T_\C(u+iv)$ 的定义。
+\item \basic 证明 $T_\C$ 是复线性的。
+\item \basic 证明 $T_\C\overline{w}=\overline{T_\Cw}$。
+\item \basic 设 $T_\Cw=\lambda w$。证明 $\overline{\lambda}$ 也是 $T_\C$ 的特征值。
+\item \basic 设 $\lambda\in\R$ 是 $T_\C$ 的特征值。证明 $\lambda$ 也是 $T$ 的特征值。
+\item \basic 设 $\lambda=a+bi$ 非实，$w=u+iv$ 为特征向量。写出 $Tu$ 与 $Tv$。
+\item \basic 证明上题中的 $\spn_\R\{u,v\}$ 在 $T$ 下不变。
+\item \basic 写出二维块 $\mat{a&-b\\b&a}$ 的特征值。
+\item \basic 求旋转矩阵 $\mat{0&-1\\1&0}$ 的复特征值。
+\item \basic 说明为什么实算子未必有实特征值。
+\item \basic 证明每个实算子都有一维或二维不变子空间。
+\item \basic 设 $T=2\Id$。求 $\chi_T$。
+\item \basic 设 $T=\mat{0&-1\\1&0}$。求 $\chi_T$。
+\item \basic 设 $T$ 的对角块为 $[3]$ 与 $\mat{1&-2\\2&1}$。写出 $\chi_T$。
+\item \basic 设 $T$ 为实自伴随算子。说明为何其复化 $T_\C$ 也是自伴随。
+\item \basic 设 $T$ 为实正交算子。说明为何其复化 $T_\C$ 是酉算子。
+\item \basic 证明：若 $T$ 是实正规算子，则 $T_\C$ 也是复正规算子。
+\end{enumerate}
+
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 证明 $\dim_\C V_\C=\dim_\R V$。
+\item \medium 设 $S,T\in\Lmap(V)$。证明 $(ST)_\C=S_\C T_\C$。
+\item \medium 设 $p$ 为实系数多项式。证明 $p(T)_\C=p(T_\C)$。
+\item \medium 设 $T_\C$ 的特征值为 $a\pm bi$，$b\neq0$。证明 $T$ 在某二维不变子空间上的矩阵是 $\mat{a&-b\\b&a}$。
+\item \medium 证明实块上三角形定理。
+\item \medium 设 $T$ 没有实特征值。证明 $\dim V$ 为偶数不一定成立，并给出反例或解释。
+\item \medium 设 $T$ 的实块上三角矩阵只有二维对角块。证明 $\chi_T$ 没有实根。
+\item \medium 设 $T$ 的对角块为 $[a_1],\dots,[a_r]$ 与二维块 $B_1,\dots,B_s$。证明 $\deg\chi_T=r+2s$。
+\item \medium 用复化证明实 Cayley--Hamilton 定理。
+\item \medium 设 $T$ 为实算子。证明 $T$ 可逆当且仅当 $T_\C$ 可逆。
+\item \medium 设 $T$ 为实正规算子且有非实特征值 $a+bi$。证明存在二维正交 $T$-不变子空间，其上矩阵为 $\mat{a&-b\\b&a}$。
+\item \medium 设 $T$ 为实正交算子。证明其所有复特征值模长为 $1$。
+\item \medium 设 $T$ 为实斜自伴随算子。证明其所有复特征值纯虚。
+\item \medium 设 $T$ 为实自伴随算子。用复化再证明实谱定理。
+\item \medium 设 $T$ 为实正规算子。证明不同二维块对应的复特征值对彼此正交。
+\item \medium 设 $T$ 为实算子，$p(T)=0$，其中 $p\in\R[z]$。证明 $\chi_T$ 的每个不可约因子都整除某个湮灭多项式。
+\item \medium 设 $T$ 的矩阵为 $\mat{2&0&0\\0&0&-1\\0&1&0}$。求其特征多项式并描述不变子空间分解。
+\item \medium 设 $T$ 的矩阵为 $\mat{1&-1\\1&1}$。求其特征多项式与对应二维块参数。
+\item \medium 设 $T$ 为实正规算子且 $T^2=T$。证明 $T$ 是正交投影。
+\item \medium 设 $T$ 为实正交算子。说明何时它可在实数域上对角化。
+\end{enumerate}
+
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 设 $T$ 在 $\R^3$ 上没有实特征值。证明这不可能发生。
+\item \hard 设 $T$ 在 $\R^4$ 上的特征多项式为 $(z^2+1)^2$。列出其可能的实 Jordan 型或块结构，并指出哪些情形是正规算子。
+\item \hard 设 $T$ 为实正规算子。证明存在正交规范基使其矩阵分块对角，每块为 $[a]$ 或 $\mat{a&-b\\b&a}$。
+\item \hard 设 $T$ 为实正交算子。证明它可写成若干个二维旋转块与若干个 $\pm1$ 块的正交直和。
+\item \hard 设 $T$ 为实斜自伴随算子。证明 $T^2$ 为负半定自伴随算子。
+\item \hard 设 $T$ 为实算子。证明 $\chi_T$ 的非实根总成共轭对且重数相同。
+\item \hard 设 $T$ 与 $S$ 为交换的实自伴随算子。证明存在公共正交规范特征基。
+\item \hard 设 $T$ 为实正规算子。证明 $V$ 可以正交分解为若干个循环子空间，每个循环子空间维数不超过 $2$。
+\item \hard 设 $T$ 为实正交算子且 $\det T>0$ 这一语言尚未引入。仅用本章结构说明：若 $\dim V$ 为奇数，则 $T$ 至少有一个特征值 $1$ 或 $-1$。
+\item \hard 设 $T$ 为实算子，其复化最小多项式分解为
+\[
+(z-a)^2\big((z-b)^2+c^2\big)
+\]
+其中 $c\neq0$。描述 $T$ 的可能实块结构。
+\item \hard 设 $T$ 为实正规算子。证明 $T$ 可写成两个交换的实自伴随算子之和，其中一个前面带上“复结构”产生二维块。
+\item \hard 解释 Hecke 算子在实 Petersson 空间上若先复化再用谱定理，会如何产生实本征分解与二维旋转块；并说明为什么自伴随性排除了旋转块。
+\end{enumerate}
+
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} 任意 $u+iv\in V_\C$ 都可唯一写成 $(a+bi)e_1+(c+di)e_2$，故生成；若复线性组合为零，分离实部与虚部即得系数全零。
+\item \textbf{解答.} 定义为 $T_\C(u+iv)=Tu+iTv$。
+\item \textbf{解答.} 直接计算 $T_\C((a+ib)(u+iv))=(a+ib)T_\C(u+iv)$ 即可。
+\item \textbf{解答.} 若 $w=u+iv$，则 $T_\C\overline{w}=Tu-iTv=\overline{Tu+iTv}=\overline{T_\Cw}$。
+\item \textbf{解答.} 由上一题，$T_\C\overline{w}=\overline{\lambda}\,\overline{w}$，所以 $\overline{\lambda}$ 也是特征值。
+\item \textbf{解答.} 设 $w=u+iv$，则 $Tu+iTv=\lambda u+i\lambda v$。比较实部、虚部，$u,v$ 中至少有一个是非零实特征向量。
+\item \textbf{解答.} 由 $(Tu+iTv)=(a+bi)(u+iv)$ 得 $Tu=au-bv$，$Tv=bu+av$。
+\item \textbf{解答.} 上题公式表明 $Tu,Tv$ 都落在 $\spn_\R\{u,v\}$ 中，因此该子空间不变。
+\item \textbf{解答.} 其特征值为 $a\pm bi$。
+\item \textbf{解答.} 特征值为 $i$ 与 $-i$。
+\item \textbf{解答.} 旋转矩阵 $\mat{0&-1\\1&0}$ 在 $\R^2$ 上就没有实特征值。
+\item \textbf{解答.} 由实块上三角形定理，第一个对角块就是一维或二维不变子空间上的限制。
+\item \textbf{解答.} $\chi_T(z)=(z-2)^n$，其中 $n=\dim V$。
+\item \textbf{解答.} 特征值为 $i,-i$，故 $\chi_T(z)=z^2+1$。
+\item \textbf{解答.} $\chi_T(z)=(z-3)\big((z-1)^2+4\big)$。
+\item \textbf{解答.} 复化保持伴随关系：在复化内积下有 $\inner{T_\Cw}{z}=\inner{w}{(T^*)_\Cz}$，故若 $T=T^*$，则 $T_\C=(T_\C)^*$。
+\item \textbf{解答.} 因为 $T^*T=\Id$，复化后得到 $(T_\C)^*T_\C=\Id$，所以 $T_\C$ 酉。
+\item \textbf{解答.} 复化保乘法与伴随，因此 $T_\C(T_\C)^*=(TT^*)_\C=(T^*T)_\C=(T_\C)^*T_\C$。
+\item \textbf{解答.} 取实基 $e_1,\dots,e_n$，与正文命题相同即可说明它也是复基，因此维数相等。
+\item \textbf{解答.} 对 $u+iv$ 计算：$(ST)_\C(u+iv)=STu+iSTv=S_\C(Tu+iTv)=S_\CT_\C(u+iv)$。
+\item \textbf{解答.} 先对单项式成立，再线性叠加即可。
+\item \textbf{解答.} 取对应特征向量 $u+iv$，由实部虚部分解得到二维不变子空间，矩阵正是该块。
+\item \textbf{解答.} 对维数归纳：若有实特征值就取一维不变子空间；若没有，则复化后取一对非实共轭特征值，得到二维不变子空间，再对商空间归纳。
+\item \textbf{解答.} 不一定。反例是 $\R^3$ 上的算子 $R_{\pi/2}\oplus [2]$，它没有除 $2$ 外的实特征值，但维数是奇数；真正成立的是“若完全没有实特征值，则维数必须为偶数”。
+\item \textbf{解答.} 每个二维块贡献不可约二次因子 $(z-a)^2+b^2$，没有实根；乘积仍没有实根。
+\item \textbf{解答.} 特征多项式的次数等于各块大小之和，即 $r+2s$。
+\item \textbf{解答.} 在复化上应用复 Cayley--Hamilton 得 $\chi_T(T_\C)=0$，再限制到 $V$ 即得结论。
+\item \textbf{解答.} 若 $T$ 可逆，则存在 $T^{-1}$，复化后给出 $(T^{-1})_\C$ 是 $T_\C$ 的逆；反向把 $T_\Cw=0$ 限制到实子空间即可推出 $T$ 单射，从而在有限维下可逆。
+\item \textbf{解答.} 由复谱定理，取 $a+bi$ 的复特征向量 $u+iv$。把它拆成实部虚部后得到二维正交不变子空间，矩阵如题所示。
+\item \textbf{解答.} 复化后是酉算子，故特征值模长全为 $1$。
+\item \textbf{解答.} 若 $T^*=-T$，则 $T_\C$ 也斜自伴随，所以特征值满足 $\lambda=-\overline{\lambda}$，即纯虚。
+\item \textbf{解答.} 复化后 $T_\C$ 自伴随，故有正交规范复特征基且特征值全实。把实特征向量从复化中拉回，就得到实正交规范特征基。
+\item \textbf{解答.} 不同复特征值对应的复特征向量正交。把共轭对拆成实部与虚部后，得到的二维子空间彼此正交。
+\item \textbf{解答.} 若 $p(T)=0$，则在复化后 $p(T_\C)=0$。上一章说明 $\chi_{T_\C}$ 的每个不可约线性因子都必须出现在任何湮灭多项式中；合并共轭对即可得到实不可约因子。
+\item \textbf{解答.} 特征多项式为 $(z-2)(z^2+1)$。因此分解为一维特征子空间 $\spn\{e_1\}$ 与由 $e_2,e_3$ 张成的二维旋转不变平面。
+\item \textbf{解答.} $\chi_T(z)=(z-1)^2+1$，故对应参数为 $a=1,b=1$。
+\item \textbf{解答.} 复化后 $T_\C$ 正规且满足 $T_\C^2=T_\C$，由复情形知它是正交投影。限制回实空间即得 $T$ 也是正交投影。
+\item \textbf{解答.} 当且仅当没有真正的二维旋转块，也就是全部复特征值都实且只能为 $\pm1$ 时，才可在实数域上对角化。
+\item \textbf{解答.} 若在 $\R^3$ 上没有实特征值，则按实块上三角形定理只能由二维块组成，但 $3$ 不是偶数，矛盾。
+\item \textbf{解答.} 可能的块结构包括两个二维旋转块，或一个对应不可对角化复对的四维实块链。正规算子情形下只能是两个彼此正交的二维旋转块，因为正规算子在复化后可对角化，不允许非平凡 Jordan 链。
+\item \textbf{解答.} 由复谱定理先把 $T_\C$ 正交对角化；实特征值给一维正交因子，非实共轭对给二维正交因子。把这些因子拼接即可得到所述分块对角形式。
+\item \textbf{解答.} 这是上一题在特征值模长都为 $1$ 的特例：一维块只能是 $\pm1$，二维块必须写成旋转矩阵。
+\item \textbf{解答.} $T^2$ 自伴随，因为 $(T^2)^*=(-T)^2=T^2$。并且对任意 $v$，$\inner{T^2v}{v}=\inner{Tv}{T^*v}=-\|Tv\|^2\le0$，故负半定。
+\item \textbf{解答.} 因为 $\chi_T=\chi_{T_\C}$ 且 $T_\C$ 与共轭相容，若 $a+bi$ 是根，则 $a-bi$ 也是根；Jordan 数据在共轭下对应，所以重数相同。
+\item \textbf{解答.} 先对其中一个自伴随算子作实谱分解。由于另一个与它交换，每个特征空间都不变。再在每个特征空间内对第二个算子应用实谱定理，即得公共正交规范特征基。
+\item \textbf{解答.} 由实正规结构定理，$V$ 正交分解成一维或二维不变子空间；每个这样的子空间都由某个向量循环生成，因此是维数不超过 $2$ 的循环子空间。
+\item \textbf{解答.} 奇数维空间不可能完全由二维旋转块正交直和组成，因此必有至少一个一维块；对正交算子，一维块只能是 $[1]$ 或 $[-1]$，故结论成立。
+\item \textbf{解答.} 实根 $a$ 的平方因子意味着关于 $a$ 有最大长度为 $2$ 的实 Jordan 块；二次不可约因子对应一个二维旋转伸缩块，若在复化后该因子无重根，则此部分正规且可由一个二维块表示；若追踪更细的 Jordan 数据，还可能出现与该二次因子对应的更长实块链，但最小多项式给出的上界正是题中所示。
+\item \textbf{解答.} 在每个一维块 $[a]$ 上取 $A=[a],B=[0]$；在每个二维块 $\mat{a&-b\\b&a}$ 上写成
+$\mat{a&0\\0&a}+\mat{0&-b\\b&0}$。第一项自伴随，第二项是由标准复结构 $J=\mat{0&-1\\1&0}$ 与标量 $b$ 生成的斜项；各块彼此交换，所以整体可写成两个交换的实自伴随/复结构型部分之和。
+\item \textbf{解答.} 若先把实 Petersson 空间复化，再对 Hecke 算子应用复谱定理，理论上会得到实一维本征线与可能的二维旋转块。但 Hecke 算子关于 Petersson 内积自伴随，因此复特征值必须全实，旋转块被排除，最终只剩真实本征分解。
+\end{enumerate}

@@ -1,0 +1,116 @@
+% ============================================================================
+% main.tex — 《线性代数：从向量空间到算子》
+% ============================================================================
+\documentclass[12pt, a4paper, openany]{book}
+
+\input{preamble}
+
+% ============================================================================
+\begin{document}
+
+\raggedbottom
+
+% --- 封面 ---
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[blue!50!black] (current page.north west) rectangle
+      ([yshift=-0.6cm]current page.north east);
+    \fill[blue!70!black] ([yshift=-2.5cm]current page.north west) rectangle
+      ([yshift=-7.5cm]current page.north east);
+    \fill[blue!50!black] ([yshift=1.8cm]current page.south west) rectangle
+      ([yshift=2.2cm]current page.south east);
+  \end{tikzpicture}
+
+  \centering
+  \vspace*{2.2cm}
+
+  {\color{white}\fontsize{36}{44}\selectfont\bfseries 线性代数\par}
+  \vspace{0.4cm}
+  {\color{white!90}\LARGE 从向量空间到算子\par}
+  \vspace{0.3cm}
+  {\color{white!70}\large\itshape 受 Erta Axler《Linear Algebra Done Right》启发\par}
+
+  \vspace{3cm}
+
+  {\large\itshape 以算子为核心，矩阵为工具，行列式靠后\par}
+  \vspace{0.3cm}
+  {\normalsize 每章含 50--80 道习题（含完整解答），分三级难度\par}
+
+  \vfill
+
+  {\Large\bfseries SZY\par}
+  \vspace{0.3cm}
+  {\normalsize \today\par}
+  \vspace{2.5cm}
+\end{titlepage}
+
+% --- 前言 ---
+\chapter*{前言}
+\addcontentsline{toc}{chapter}{前言}
+
+本书是模形式学习的线性代数预备知识。与传统教材不同，我们采用 Sheldon Axler
+在《Linear Algebra Done Right》中倡导的\textbf{算子优先}思路：
+
+\begin{itemize}
+  \item \textbf{先空间，后矩阵}：第 1--3 章建立向量空间与线性映射的抽象框架，
+    矩阵仅作为线性映射在给定基下的表示出现。
+  \item \textbf{先算子，后行列式}：特征值、不变子空间、谱定理等核心内容
+    （第 5--9 章）完全不依赖行列式。行列式在第 10 章作为特征值之积优雅引入。
+  \item \textbf{多项式作为工具}：第 4 章专门讨论多项式代数，
+    为后续将多项式作用于算子做准备。
+  \item \textbf{面向模形式}：第 12 章将线性代数与模形式联系起来——格、
+    模群作用、Petersson 内积、Hecke 算子的线性代数结构。
+\end{itemize}
+
+每章包含 50--80 道习题，分为基础（$\bigstar$）、进阶（$\bigstar\bigstar$）、
+挑战（$\bigstar\bigstar\bigstar$）三个难度级别，并附有完整解答。
+
+\vspace{1cm}
+\hfill SZY
+
+\hfill \today
+
+% --- 目录 ---
+\tableofcontents
+\newpage
+
+% ============================================================================
+% 第一部分：空间与映射
+% ============================================================================
+\part{空间与映射}
+
+\include{chapters/ch01-vector-spaces}
+\include{chapters/ch02-finite-dimensional}
+\include{chapters/ch03-linear-maps}
+
+% ============================================================================
+% 第二部分：算子理论
+% ============================================================================
+\part{算子理论}
+
+\include{chapters/ch04-polynomials}
+\include{chapters/ch05-eigenvalues}
+\include{chapters/ch06-inner-product}
+\include{chapters/ch07-operators-inner-product}
+
+% ============================================================================
+% 第三部分：结构定理
+% ============================================================================
+\part{结构定理}
+
+\include{chapters/ch08-complex-operators}
+\include{chapters/ch09-real-operators}
+\include{chapters/ch10-trace-determinant}
+
+% ============================================================================
+% 第四部分：高级专题
+% ============================================================================
+\part{高级专题}
+
+\include{chapters/ch11-duality-multilinear}
+\include{chapters/ch12-modular-forms}
+
+% --- 索引 ---
+\printindex
+
+\end{document}

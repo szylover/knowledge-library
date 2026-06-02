@@ -1,0 +1,504 @@
+\chapter{内积空间上的算子}
+
+本章讨论有限维内积空间上的线性算子。与传统教材不同，我们尽量避免把矩阵与行列式作为出发点；真正起决定作用的是伴随算子、正交分解与不变子空间。正因为如此，谱定理、极分解与奇异值分解都可以在“算子优先”的框架下自然地出现。
+
+设 $V$ 是有限维内积空间，$T\in\Lmap(V)$。我们沿用上一章关于特征值与不变子空间的语言，但现在额外拥有伴随算子 $T^*$，它满足
+\[
+\inner{Tv}{w}=\inner{v}{T^*w}\qquad(v,w\in V).
+\]
+伴随把代数问题转化为几何问题；正规、自伴随、正、等距等概念都围绕它展开。
+
+\section{自伴随算子}
+
+\begin{definition}
+若 $T=T^*$，则称 $T$ 为\emph{自伴随算子}。
+\end{definition}
+
+自伴随算子是实数意义下“对称矩阵”的抽象版本。它们的最重要特征，是特征值与正交性都受到强烈控制。
+
+\begin{proposition}
+若 $T$ 是自伴随算子，$Tv=\lambda v$ 且 $v\neq 0$，则 $\lambda\in\R$。
+\end{proposition}
+
+\begin{proof}
+由自伴随性，
+\[
+\lambda\inner{v}{v}=\inner{\lambda v}{v}=\inner{Tv}{v}=\inner{v}{T^*v}=\inner{v}{Tv}=\overline{\lambda}\inner{v}{v}.
+\]
+因为 $\inner{v}{v}>0$，故 $\lambda=\overline{\lambda}$，即 $\lambda\in\R$。
+\end{proof}
+
+\begin{proposition}
+若 $T$ 是自伴随算子，$u,v$ 分别对应不同特征值 $\lambda,\mu$，则 $u\perp v$。
+\end{proposition}
+
+\begin{proof}
+由自伴随性，
+\[
+\lambda\inner{u}{v}=\inner{Tu}{v}=\inner{u}{T^*v}=\inner{u}{Tv}=\inner{u}{\mu v}=\mu\inner{u}{v}.
+\]
+若 $\lambda\neq\mu$，则 $\inner{u}{v}=0$。
+\end{proof}
+
+上面两个命题表明，自伴随算子的特征结构与内积完美兼容。接下来我们证明谱定理。证明思路非常符合 LADR 的精神：先找一个特征向量，再把算子限制到其正交补上做归纳。
+
+\begin{lemma}
+若 $T$ 为自伴随算子，$v$ 是特征向量，则 $(\spn\{v\})^\perp$ 在 $T$ 下不变。
+\end{lemma}
+
+\begin{proof}
+设 $w\perp v$。若 $Tv=\lambda v$，则
+\[
+\inner{Tw}{v}=\inner{w}{T^*v}=\inner{w}{Tv}=\inner{w}{\lambda v}=\lambda\inner{w}{v}=0.
+\]
+故 $Tw\perp v$，即 $Tw\in(\spn\{v\})^\perp$。
+\end{proof}
+
+\begin{theorem}[实谱定理的归纳核心]
+设 $V$ 是有限维内积空间，$T$ 是自伴随算子。若 $T$ 有一个特征向量，则 $V$ 有一组由 $T$ 的特征向量组成的正交规范基。
+\end{theorem}
+
+\begin{proof}
+对 $\dim V$ 作归纳。$\dim V=1$ 时平凡。设结论对较小维数成立。取单位特征向量 $v$，令 $U=(\spn\{v\})^\perp$。由上个引理，$U$ 在 $T$ 下不变；并且 $T|_U$ 仍自伴随。由归纳假设，$U$ 有一组由 $T|_U$ 的特征向量组成的正交规范基。把 $v$ 加进去，就得到 $V$ 的正交规范特征基。
+\end{proof}
+
+在复内积空间上，自伴随算子一定有特征值，因为上一章已经证明复向量空间上的任一算子都有特征值。因此可立即得到：
+
+\begin{corollary}
+复内积空间上的每个自伴随算子都可正交对角化，且对角元全为实数。
+\end{corollary}
+
+\begin{example}
+设 $T\colon\C^3\to\C^3$ 的矩阵为
+\[
+\mat{2&1&0\\1&2&0\\0&0&-1}.
+\]
+这是自伴随矩阵。向量 $(1,1,0)$ 与 $(1,-1,0)$ 分别对应特征值 $3,1$，而 $(0,0,1)$ 对应特征值 $-1$。它们两两正交，归一化后就得到一组正交规范特征基。
+\end{example}
+
+\section{正规算子}
+
+\begin{definition}
+若 $TT^*=T^*T$，则称 $T$ 为\emph{正规算子}。
+\end{definition}
+
+正规算子包含自伴随、斜自伴随和酉算子。它们未必自伴随，但仍足够“好”，以至于在复内积空间上仍可正交对角化。
+
+\begin{lemma}
+若 $T$ 正规，则对任意 $v\in V$，有 $\|Tv\|=\|T^*v\|$。
+\end{lemma}
+
+\begin{proof}
+由正规性，
+\[
+\|Tv\|^2=\inner{Tv}{Tv}=\inner{T^*Tv}{v}=\inner{TT^*v}{v}=\inner{T^*v}{T^*v}=\|T^*v\|^2.
+\]
+\end{proof}
+
+\begin{corollary}
+若 $T$ 正规，则 $\nul T=\nul T^*$。
+\end{corollary}
+
+\begin{proof}
+由上式，$Tv=0$ 当且仅当 $\|Tv\|=0$，当且仅当 $\|T^*v\|=0$，也当且仅当 $T^*v=0$。
+\end{proof}
+
+正规算子的关键观察是：$T-\lambda\Id$ 仍正规。于是
+\[
+\nul(T-\lambda\Id)=\nul(T^*-\overline{\lambda}\Id).
+\]
+这条等式取代了行列式语言中的“特征多项式有重根”之类讨论，是整个证明的枢纽。
+
+\begin{lemma}
+若 $T$ 正规且 $Tv=\lambda v$，则 $T^*v=\overline{\lambda}v$。
+\end{lemma}
+
+\begin{proof}
+因为 $T-\lambda\Id$ 正规，且 $(T-\lambda\Id)v=0$，于是 $v\in\nul(T^*-\overline{\lambda}\Id)$。故 $T^*v=\overline{\lambda}v$。
+\end{proof}
+
+\begin{lemma}
+若 $T$ 正规，$v$ 是特征向量，则 $(\spn\{v\})^\perp$ 同时在 $T$ 与 $T^*$ 下不变。
+\end{lemma}
+
+\begin{proof}
+设 $Tv=\lambda v$。由上个引理，$T^*v=\overline{\lambda}v$。若 $w\perp v$，则
+\[
+\inner{Tw}{v}=\inner{w}{T^*v}=\inner{w}{\overline{\lambda}v}=0,
+\qquad
+\inner{T^*w}{v}=\inner{w}{Tv}=\inner{w}{\lambda v}=0.
+\]
+故结论成立。
+\end{proof}
+
+\begin{theorem}[复谱定理]
+设 $V$ 是非零有限维复内积空间，$T\in\Lmap(V)$。则下列命题等价：
+\begin{enumerate}[label=(\arabic*)]
+\item $T$ 正规；
+\item $V$ 有一组由 $T$ 的特征向量组成的正交规范基；
+\item 在某组正交规范基下，$T$ 的矩阵为对角矩阵。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+$(2)\Leftrightarrow(3)$ 显然。若 $(2)$ 成立，则对角矩阵与其共轭转置可交换，因此 $T$ 正规。
+
+现证 $(1)\Rightarrow(2)$。对 $\dim V$ 归纳。由复向量空间情形，$T$ 至少有一个特征值 $\lambda$，取对应单位特征向量 $v$。由上个引理，$U=(\spn\{v\})^\perp$ 同时在 $T$ 与 $T^*$ 下不变，因此 $T|_U$ 仍正规。由归纳假设，$U$ 有正交规范特征基。把 $v$ 添入，就得到 $V$ 的正交规范特征基。
+\end{proof}
+
+\begin{remark}
+证明中完全没有用到行列式。唯一用到的存在性事实是：复向量空间上的算子必有特征值。正常性则保证我们能把问题一次次压缩到正交补上。
+\end{remark}
+
+\section{实谱定理}
+
+现在设 $V$ 是实内积空间。自伴随算子仍有很强的结构，但“任一算子都有特征值”在实数域上不成立，所以需要先说明自伴随算子确实有特征值。
+
+\begin{proposition}
+设 $T$ 是实内积空间上的自伴随算子。则 $T$ 至少有一个实特征值。
+\end{proposition}
+
+\begin{proof}
+考虑复化空间 $V_\C$ 及复化算子 $T_\C$。它在复向量空间上必有特征值 $\lambda$。又因为 $T_\C$ 仍自伴随，所以 $\lambda\in\R$。设 $(u+iv)$ 是对应特征向量，则
+\[
+T u+iTv=T_\C(u+iv)=\lambda(u+iv).
+\]
+比较实部与虚部，得 $Tu=\lambda u$ 且 $Tv=\lambda v$。由于 $u,v$ 不可能同时为零，故 $T$ 在 $V$ 中有特征向量。
+\end{proof}
+
+\begin{theorem}[实谱定理]
+设 $V$ 是有限维实内积空间，$T\in\Lmap(V)$。若 $T$ 自伴随，则 $V$ 有一组由 $T$ 的特征向量组成的正交规范基。等价地，在某组正交规范基下，$T$ 的矩阵是实对角矩阵。
+\end{theorem}
+
+\begin{proof}
+由上个命题，$T$ 有特征向量。于是可直接应用本章第一节的归纳核心。
+\end{proof}
+
+\begin{example}
+实二次型 $q(v)=\inner{Tv}{v}$ 与自伴随算子密切相关。实谱定理说明：存在正交规范基使得
+\[
+q(x_1e_1+\cdots+x_ne_n)=\lambda_1x_1^2+\cdots+\lambda_nx_n^2.
+\]
+这就是二次型正交化的算子版本。
+\end{example}
+
+\section{复谱定理的进一步形式}
+
+复谱定理可以改写成几条常用判别：
+
+\begin{proposition}
+设 $T\in\Lmap(V)$，其中 $V$ 为有限维复内积空间。则下列命题等价：
+\begin{enumerate}[label=(\arabic*)]
+\item $T$ 正规；
+\item 不同特征值对应的特征空间两两正交，且这些特征空间直和为 $V$；
+\item $T=p(S)$，其中 $S$ 为某个自伴随算子，$p$ 为复多项式；
+\item $T=A+iB$，其中 $A,B$ 自伴随且 $AB=BA$。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+$(1)\Rightarrow(2)$ 由复谱定理。若 $(2)$ 成立，在各特征空间上分别定义对角数据即可得到 $(3)$ 与 $(4)$。若 $(4)$ 成立，则
+\[
+T^*=A-iB,
+\qquad
+TT^*=A^2+B^2+i(BA-AB)=A^2+B^2=T^*T,
+\]
+故 $T$ 正规。
+\end{proof}
+
+\begin{definition}
+若 $T$ 正规，则其全部特征值的集合称为 $T$ 的\emph{谱}，记作 $\sigma(T)$。
+\end{definition}
+
+\begin{remark}
+在有限维情形中，谱只是特征值集合；但“谱定理”这一名称提醒我们：重要的不只是特征值本身，更是由正交投影给出的分解
+\[
+T=\lambda_1P_1+\cdots+\lambda_mP_m.
+\]
+其中 $P_j$ 是到对应特征空间的正交投影。
+\end{remark}
+
+\section{正算子与等距算子}
+
+\begin{definition}
+若存在自伴随算子 $R$ 使 $R^2=T$，则称 $R$ 为 $T$ 的平方根。若 $T$ 自伴随且
+\[
+\inner{Tv}{v}\ge 0\qquad(v\in V),
+\]
+则称 $T$ 为\emph{正算子}。
+\end{definition}
+
+\begin{proposition}
+对任意 $T\in\Lmap(V)$，算子 $T^*T$ 为正算子。
+\end{proposition}
+
+\begin{proof}
+它显然自伴随，且
+\[
+\inner{T^*Tv}{v}=\inner{Tv}{Tv}=\|Tv\|^2\ge 0.
+\]
+\end{proof}
+
+\begin{theorem}
+若 $P$ 是正算子，则存在唯一的正平方根 $\sqrt{P}$，并且 $\sqrt{P}$ 与 $P$ 交换。
+\end{theorem}
+
+\begin{proof}
+由实谱定理（或复谱定理），取 $P$ 的正交规范特征基，使
+\[
+Pe_j=\lambda_je_j,\qquad \lambda_j\ge 0.
+\]
+定义 $\sqrt{P}e_j=\sqrt{\lambda_j}e_j$。则 $\sqrt{P}$ 正、自伴随，且 $(\sqrt{P})^2=P$。若 $R$ 也是正平方根，则在同一特征空间分解上必满足 $Re_j=\sqrt{\lambda_j}e_j$，故唯一。
+\end{proof}
+
+\begin{definition}
+若 $\inner{Tv}{Tw}=\inner{v}{w}$ 对所有 $v,w\in V$ 成立，则称 $T$ 为\emph{等距算子}。当定义域与值域同为 $V$ 时，复情形常称为\emph{酉算子}，实情形常称为\emph{正交算子}。
+\end{definition}
+
+\begin{proposition}
+对 $T\in\Lmap(V)$，下列命题等价：
+\begin{enumerate}[label=(\arabic*)]
+\item $T$ 是等距算子；
+\item $\|Tv\|=\|v\|$ 对所有 $v$ 成立；
+\item $T^*T=\Id$；
+\item $T$ 把任一正交规范基送到正交规范基。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+由极化恒等式可知 $(1)$ 与 $(2)$ 等价；$(1)$ 与 $(3)$ 由伴随定义直接等价；$(3)$ 显然推出 $(4)$；而 $(4)$ 蕴含 $(3)$，因为算子在一组正交规范基上保持内积便有 $T^*T=\Id$。
+\end{proof}
+
+\begin{corollary}
+若 $U$ 酉，则 $U$ 正规，且其全部特征值都位于单位圆上。
+\end{corollary}
+
+\begin{proof}
+$U^*U=\Id$ 立即给出正规性。若 $Uv=\lambda v$ 且 $v\neq 0$，则
+\[
+\|v\|=\|Uv\|=\|\lambda v\|=|\lambda|\,\|v\|,
+\]
+故 $|\lambda|=1$。
+\end{proof}
+
+\section{极分解与奇异值分解}
+
+极分解揭示：任一算子都可分成“先拉伸，再旋转”。
+
+\begin{theorem}[极分解]
+设 $T\in\Lmap(V)$。令 $P=\sqrt{T^*T}$。则存在酉算子 $S$，使得
+\[
+T=SP.
+\]
+若 $T$ 可逆，则 $S$ 唯一；一般情形下，$S$ 在 $\range P=(\nul T)^\perp$ 上唯一。
+\end{theorem}
+
+\begin{proof}
+若 $v\in\range P$，写成 $v=Pu$，定义 $Sv=Tu$。这一定义良好，因为若 $Pu_1=Pu_2$，则 $u_1-u_2\in\nul P=\nul T$，故 $Tu_1=Tu_2$。并且在 $\range P$ 上，
+\[
+\|Sv\|^2=\|Tu\|^2=\inner{T^*Tu}{u}=\inner{P^2u}{u}=\|Pu\|^2=\|v\|^2.
+\]
+故 $S$ 是 $\range P$ 上的等距。把它延拓为整个 $V$ 上的酉算子，即得结论。
+\end{proof}
+
+\begin{definition}
+$T^*T$ 的特征值的非负平方根称为 $T$ 的\emph{奇异值}。
+\end{definition}
+
+\begin{theorem}[奇异值分解]
+设 $T\in\Lmap(V,W)$，其中 $V,W$ 为有限维内积空间。则存在 $V$ 的正交规范基 $e_1,\dots,e_n$、$W$ 的正交规范集 $f_1,\dots,f_n$ 与非负实数 $\sigma_1,\dots,\sigma_n$，使得
+\[
+Te_j=\sigma_j f_j.
+\]
+若去掉 $\sigma_j=0$ 的项，这些 $f_j$ 可扩充成 $W$ 的正交规范基，于是 $T$ 的矩阵呈对角形状。
+\end{theorem}
+
+\begin{proof}
+对正算子 $T^*T$ 应用谱定理，取正交规范基 $e_j$ 使
+\[
+T^*Te_j=\sigma_j^2e_j,\qquad \sigma_j\ge 0.
+\]
+当 $\sigma_j>0$ 时定义 $f_j=\sigma_j^{-1}Te_j$；若 $\sigma_j=0$，则 $Te_j=0$。对 $i\neq j$，
+\[
+\inner{f_i}{f_j}=\frac{1}{\sigma_i\sigma_j}\inner{Te_i}{Te_j}
+=\frac{1}{\sigma_i\sigma_j}\inner{T^*Te_i}{e_j}
+=\frac{\sigma_i^2}{\sigma_i\sigma_j}\inner{e_i}{e_j}=0,
+\]
+故所得到的 $f_j$ 正交规范。于是 $Te_j=\sigma_j f_j$。
+\end{proof}
+
+\begin{remark}
+SVD 是最稳定的坐标形式之一。它不要求定义域和值域相同，也不要求算子可对角化；所有信息都被编码在非负数 $\sigma_j$ 中。
+\end{remark}
+
+\section{Hecke 算子的自伴随性}
+
+这一节给出一个模形式方向的动机。设 $S_k(\Gamma)$ 是某个有限维尖点模形式空间，配备 Petersson 内积 $\inner{\cdot}{\cdot}_P$。在合适条件下，Hecke 算子 $T_n$ 满足
+\[
+\inner{T_nf}{g}_P=\inner{f}{T_ng}_P.
+\]
+也就是说，$T_n$ 关于 Petersson 内积是自伴随的。
+
+\begin{proposition}
+若线性算子族 $\{T_n\}$ 在有限维内积空间上两两交换，并且每个 $T_n$ 都自伴随，则存在一组公共正交规范特征基。
+\end{proposition}
+
+\begin{proof}
+先对 $T_1$ 应用谱定理得到正交直和分解为其特征空间之和。由于各 $T_n$ 与 $T_1$ 交换，每个 $T_1$ 的特征空间都在 $T_n$ 下不变。于是可在各特征空间内对 $T_2$ 再做谱分解，如此继续归纳，得到公共正交规范特征基。
+\end{proof}
+
+\begin{remark}
+这正是 Hecke 理论中 Hecke 本征形式存在的线性代数骨架。解析定义来自双陪集，但“为什么能同时对角化”完全是本章内容。
+\end{remark}
+
+\section*{习题}
+
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 设 $T=T^*$ 且 $Tv=3v$。证明 $\inner{Tv}{v}=3\|v\|^2$。
+\item \basic 设 $T$ 自伴随且 $Tv=\lambda v$。证明 $\lambda\in\R$。
+\item \basic 设 $T$ 自伴随，$Tu=2u$，$Tv=-v$。证明 $u\perp v$。
+\item \basic 若 $T$ 自伴随且 $T^2=0$，证明 $T=0$。
+\item \basic 证明：若 $T$ 自伴随，则 $\inner{Tv}{v}\in\R$ 对所有 $v$ 成立。
+\item \basic 设 $T$ 正规。证明 $\|Tv\|=\|T^*v\|$。
+\item \basic 设 $T$ 正规且 $Tv=0$。证明 $T^*v=0$。
+\item \basic 设 $T$ 酉。证明 $T$ 正规。
+\item \basic 设 $U$ 酉且 $Uv=\lambda v$。证明 $|\lambda|=1$。
+\item \basic 设 $P=T^*T$。证明 $P$ 为正算子。
+\item \basic 证明正算子的全部特征值都非负。
+\item \basic 设 $T$ 为正算子且 $Tv=0$。证明 $\sqrt{T}\,v=0$。
+\item \basic 证明：等距算子必单射。
+\item \basic 在有限维情形下，证明等距算子必满射。
+\item \basic 证明：$T$ 等距当且仅当 $T^*T=\Id$。
+\item \basic 设 $T$ 自伴随且 $\inner{Tv}{v}=0$ 对所有 $v$ 成立。证明 $T=0$。
+\item \basic 设 $T$ 正规且 $Tv=\lambda v$。证明 $T^*v=\overline{\lambda}v$。
+\item \basic 设 $T$ 正规，$Tv=\lambda v$，$Tw=\mu w$，$\lambda\neq\mu$。证明 $v\perp w$。
+\item \basic 证明：自伴随算子一定正规。
+\item \basic 证明：正算子一定自伴随。
+\item \basic 证明：酉算子的逆等于其伴随。
+\item \basic 设 $T$ 酉。证明 $\|T^nv\|=\|v\|$ 对所有 $n\in\N$ 成立。
+\item \basic 设 $T$ 为复内积空间上的自伴随算子。证明其不同特征空间两两正交。
+\item \basic 设 $T$ 为实内积空间上的自伴随算子。说明为什么其特征值全为实数。
+\item \basic 设 $T^*=-T$。证明 $\inner{Tv}{v}$ 为纯虚数。
+\end{enumerate}
+
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 设 $T$ 自伴随。证明 $(\range T)^\perp=\nul T$。
+\item \medium 设 $T$ 正规。证明 $(\range T)^\perp=\nul T$。
+\item \medium 设 $T$ 自伴随。证明 $\|T\|=\max\{|\lambda|:\lambda\in\sigma(T)\}$。
+\item \medium 设 $P$ 为正算子。证明存在自伴随 $R$ 使 $P=R^2$，并说明 $R$ 唯一。
+\item \medium 设 $T$ 正规且只有一个特征值。证明 $T=\lambda\Id$。
+\item \medium 设 $T$ 自伴随，$W$ 为 $T$ 的不变子空间。证明 $W^\perp$ 也在 $T$ 下不变。
+\item \medium 设 $T$ 正规，$W$ 为 $T$ 的不变子空间且由特征向量张成。证明 $W^\perp$ 在 $T$ 下不变。
+\item \medium 设 $T$ 自伴随且可逆。证明 $T^{-1}$ 自伴随。
+\item \medium 设 $U$ 酉且 $P$ 正。证明 $UP=PU$ 当且仅当 $U\sqrt{P}=\sqrt{P}U$。
+\item \medium 设 $T=A+iB$，其中 $A,B$ 自伴随。证明 $T$ 正规当且仅当 $AB=BA$。
+\item \medium 对 $T\in\Lmap(V,W)$，证明 $\nul T=(\range T^*)^\perp$。
+\item \medium 证明：$T$ 与 $T^*$ 有相同的非零奇异值。
+\item \medium 设 $T$ 酉且自伴随。证明 $T^2=\Id$。
+\item \medium 设 $T$ 正且酉。证明 $T=\Id$。
+\item \medium 设 $T$ 自伴随。证明存在多项式 $p$ 使 $T=p(P)$，其中 $P$ 为投影，当且仅当 $T$ 只有两个特征值。
+\item \medium 设 $T$ 正规。证明其最小多项式没有重根当且仅当 $T$ 可对角化。
+\item \medium 设 $T$ 自伴随。证明 $\range T=\range \sqrt{T^2}$。
+\item \medium 设 $T$ 正规。证明 $\|Tv\|^2=\sum_j |\lambda_j|^2\|P_jv\|^2$，其中 $P_j$ 为谱投影。
+\item \medium 设 $T$ 为复内积空间上的正规算子。证明 $T$ 可写成两个交换的自伴随算子之和 $A+iB$。
+\item \medium 设 $T$ 自伴随且 $\inner{Tv}{v}\ge c\|v\|^2$。证明 $T-c\Id$ 为正算子。
+\item \medium 设 $T$ 为正算子。证明存在正交规范基使 $T$ 的矩阵为非负对角矩阵。
+\item \medium 设 $T$ 为实自伴随算子。证明存在正交矩阵 $Q$ 使 $Q^{-1}TQ$ 为对角矩阵。
+\item \medium 设 $T$ 正规，$p$ 为多项式。证明 $p(T)$ 仍正规。
+\item \medium 设 $T$ 自伴随。证明任意特征空间都与其余特征空间之和正交。
+\item \medium 设 $T$ 为酉算子。证明其所有奇异值都等于 $1$。
+\end{enumerate}
+
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 仅用归纳与正交补证明：复内积空间上的正规算子可正交对角化。
+\item \hard 设 $T$ 自伴随。证明存在唯一族两两正交的正交投影 $P_1,\dots,P_m$ 使
+\[
+T=\lambda_1P_1+\cdots+\lambda_mP_m,
+\]
+其中 $\lambda_j$ 为互异特征值。
+\item \hard 设 $T$ 为正算子。证明 $\|Tv\|\le \|Tw\|$ 对所有满足 $0\le \inner{v}{v}\le \inner{w}{w}$ 的特征向量对不必成立，并给出正确的单调性表述。
+\item \hard 设 $T$ 正规，$W$ 为不变子空间。证明 $W$ 在 $T^*$ 下不变当且仅当 $W$ 是 $T$ 的特征空间直和。
+\item \hard 证明极分解中的酉部分在 $\nul T=\{0\}$ 时唯一，并给出非单射情形下不唯一的例子。
+\item \hard 设 $T\in\Lmap(V,W)$。证明 $T$ 的非零奇异值的个数等于 $\rank T$。
+\item \hard 证明：若 $T$ 自伴随，则 $T$ 正当且仅当所有特征值都正。
+\item \hard 设 $U$ 酉，$T$ 自伴随。证明 $UTU^*$ 自伴随且与 $T$ 有相同谱。
+\item \hard 设 $T$ 正规且 $T^2=T$。证明 $T$ 是正交投影。
+\item \hard 设两个自伴随算子 $A,B$ 交换。证明它们可以被同一组正交规范基同时对角化。
+\item \hard 设 $T$ 为酉算子。证明存在自伴随算子 $A$，使得在某组正交规范基下 $T=e^{iA}$。
+\item \hard 设 $T$ 为实自伴随算子。用复化思想重新证明实谱定理。
+\item \hard 设 $T$ 为正算子，$S$ 为任意算子。证明 $S^*TS$ 为正算子。
+\item \hard 设 $T$ 正规。证明 $\|T^nv\|^2=\sum_j |\lambda_j|^{2n}\|P_jv\|^2$。
+\item \hard 设 Hecke 算子族 $\{T_n\}$ 在有限维内积空间上两两交换且各自自伴随。证明存在公共正交规范特征基。
+\end{enumerate}
+
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} 因为 $Tv=3v$，故 $\inner{Tv}{v}=\inner{3v}{v}=3\inner{v}{v}=3\|v\|^2$。
+\item \textbf{解答.} 由自伴随性，$\lambda\|v\|^2=\inner{Tv}{v}=\inner{v}{Tv}=\overline{\lambda}\|v\|^2$，故 $\lambda=\overline{\lambda}$。
+\item \textbf{解答.} 由 $\inner{Tu}{v}=\inner{u}{Tv}$ 得 $2\inner{u}{v}=-\inner{u}{v}$，所以 $\inner{u}{v}=0$。
+\item \textbf{解答.} 自伴随推出 $T$ 的全部特征值实；$T^2=0$ 又推出全部特征值平方为 $0$，故都为 $0$。由谱定理 $T=0$。
+\item \textbf{解答.} 因为 $\inner{Tv}{v}=\inner{v}{Tv}=\overline{\inner{Tv}{v}}$，所以它等于自身共轭，从而为实数。
+\item \textbf{解答.} $\|Tv\|^2=\inner{T^*Tv}{v}=\inner{TT^*v}{v}=\|T^*v\|^2$。
+\item \textbf{解答.} 由上一题，$0=\|Tv\|=\|T^*v\|$，故 $T^*v=0$。
+\item \textbf{解答.} 酉算子满足 $T^*T=\Id$，于是 $TT^*=T(T^{-1})=\Id=T^*T$，故正规。
+\item \textbf{解答.} $\|v\|=\|Uv\|=\|\lambda v\|=|\lambda|\|v\|$，而 $v\neq0$，故 $|\lambda|=1$。
+\item \textbf{解答.} $P^*=T^*{}^*T^*=T^*T=P$，且 $\inner{Pv}{v}=\inner{Tv}{Tv}\ge0$。
+\item \textbf{解答.} 若 $Pv=\lambda v$，则 $\lambda\|v\|^2=\inner{Pv}{v}\ge0$，故 $\lambda\ge0$。
+\item \textbf{解答.} 在 $T$ 的正交规范特征基上，$Tv=0$ 等价于各非负特征值对应分量都消失；对平方根也同样如此，所以 $\sqrt{T}\,v=0$。
+\item \textbf{解答.} 若 $Tv=0$，则 $\|v\|=\|Tv\|=0$，故 $v=0$。
+\item \textbf{解答.} 有限维空间上线性单射必满射，所以等距算子必满射。
+\item \textbf{解答.} $\inner{Tv}{Tw}=\inner{v}{T^*Tw}$。若对一切 $v,w$ 都等于 $\inner{v}{w}$，则 $T^*T=\Id$；反向也直接成立。
+\item \textbf{解答.} 由极化恒等式，若二次型 $v\mapsto\inner{Tv}{v}$ 恒为零，则双线性（或 sesquilinear）形式 $\inner{Tu}{v}$ 恒为零，故 $T=0$。
+\item \textbf{解答.} 因为 $T-\lambda\Id$ 正规且把 $v$ 送到 $0$，故 $v\in\nul(T^*-\overline{\lambda}\Id)$。
+\item \textbf{解答.} 由上一题，$T^*w=\overline{\mu}w$。于是 $\lambda\inner{v}{w}=\inner{Tv}{w}=\inner{v}{T^*w}=\mu\inner{v}{w}$，故 $\inner{v}{w}=0$。
+\item \textbf{解答.} 若 $T=T^*$，则 $TT^*=T^2=T^*T$，所以正规。
+\item \textbf{解答.} 正算子在定义中就要求自伴随，并满足非负二次型。
+\item \textbf{解答.} 酉算子满足 $T^*T=TT^*=\Id$，故 $T^*=T^{-1}$。
+\item \textbf{解答.} 由酉性，$T^n$ 仍酉，因此 $\|T^nv\|=\|v\|$。
+\item \textbf{解答.} 不同特征值的特征向量正交；于是相应特征空间中的任意向量也两两正交。
+\item \textbf{解答.} 因为实自伴随算子也满足上一命题中的等式，若在复化后有特征值，它必须等于自身共轭，所以是实数。
+\item \textbf{解答.} 若 $T^*=-T$，则 $\inner{Tv}{v}=\inner{v}{T^*v}=\inner{v}{-Tv}=-\overline{\inner{Tv}{v}}$，故其实部为零。
+\item \textbf{解答.} 总有 $(\range T)^\perp=\nul T^*$。当 $T$ 自伴随时这等于 $\nul T$。
+\item \textbf{解答.} 对正规算子有 $\nul T=\nul T^*$，而 $(\range T)^\perp=\nul T^*$，故结论成立。
+\item \textbf{解答.} 在正交规范特征基上 $Tv=\sum \lambda_j a_je_j$，若 $\|v\|=1$，则 $\|Tv\|^2=\sum |\lambda_j|^2|a_j|^2\le \max |\lambda_j|^2$。取最大模特征值对应单位特征向量即可达到。
+\item \textbf{解答.} 由谱定理把 $P$ 对角化为 $\diag(\lambda_1,\dots,\lambda_n)$，令 $R=\diag(\sqrt{\lambda_1},\dots,\sqrt{\lambda_n})$。唯一性见正文定理。
+\item \textbf{解答.} 由复谱定理，$T$ 在某正交规范基下为对角矩阵；若只有一个特征值，则该对角矩阵只能是 $\lambda\Id$。
+\item \textbf{解答.} 对 $w\in W^\perp$ 与 $u\in W$，有 $\inner{Tw}{u}=\inner{w}{Tu}=0$，因为 $Tu\in W$。故 $Tw\in W^\perp$。
+\item \textbf{解答.} 若 $W$ 由特征向量张成，则 $W^\perp$ 由其余特征空间之和构成，因而在 $T$ 下不变。
+\item \textbf{解答.} $(T^{-1})^*=(T^*)^{-1}=T^{-1}$。
+\item \textbf{解答.} 若 $UP=PU$，则 $U$ 保持 $P$ 的各特征空间，从而也保持 $\sqrt{P}$ 的各特征空间，故可交换。反向由平方立即得到。
+\item \textbf{解答.} $T^*=A-iB$，直接计算得 $TT^*-T^*T=2i(BA-AB)$，故正规当且仅当 $AB=BA$。
+\item \textbf{解答.} $v\in\nul T$ 当且仅当对所有 $w$ 有 $0=\inner{Tv}{w}=\inner{v}{T^*w}$，即 $v\perp\range T^*$。
+\item \textbf{解答.} 非零奇异值是 $T^*T$ 与 $TT^*$ 的非零特征值的平方根。由 $T(T^*T)=(TT^*)T$ 可把对应特征向量一一对应起来。
+\item \textbf{解答.} 由酉性与自伴随性得 $T^2=TT^*=\Id$。
+\item \textbf{解答.} 正算子特征值非负，酉算子特征值模长为 $1$；两者兼具时全部特征值都只能是 $1$，故 $T=\Id$。
+\item \textbf{解答.} 若只有两个特征值 $\alpha,\beta$，取对应谱投影 $P$，则 $T=\alpha P+\beta(\Id-P)$，故也是 $p(P)$。反之，$p(P)$ 在 $\range P$ 与 $\nul P$ 上分别取常数值，因此至多有两个特征值。
+\item \textbf{解答.} 正规算子已可正交对角化，所以最小多项式等于各互异线性因子的乘积，没有重根；反之若最小多项式无重根，则广义特征空间等于特征空间，从而可对角化。
+\item \textbf{解答.} 在特征基上，$T$ 的特征值为 $\lambda_j$，$\sqrt{T^2}$ 的特征值为 $|\lambda_j|$。两者零特征空间相同，故值域相同。
+\item \textbf{解答.} 写 $v=\sum P_jv$，则 $Tv=\sum \lambda_jP_jv$ 且各项正交，于是范数平方可逐项相加。
+\item \textbf{解答.} 令 $A=(T+T^*)/2$，$B=(T-T^*)/(2i)$。则 $A,B$ 自伴随，且由正规性可知 $AB=BA$，从而 $T=A+iB$。
+\item \textbf{解答.} 对所有 $v$，$\inner{(T-c\Id)v}{v}=\inner{Tv}{v}-c\|v\|^2\ge0$，并且 $T-c\Id$ 自伴随，故为正算子。
+\item \textbf{解答.} 对正算子应用谱定理即可；非负性来自其特征值非负。
+\item \textbf{解答.} 取实谱定理给出的正交规范特征基，以其为列组成正交矩阵 $Q$，则 $Q^{-1}TQ$ 为实对角矩阵。
+\item \textbf{解答.} 由复谱定理，$T$ 在某正交规范基下为对角矩阵 $D$。则 $p(T)$ 在同一基下为对角矩阵 $p(D)$，所以正规。
+\item \textbf{解答.} 由不同特征空间正交可知，某个特征空间与其他所有特征空间之和正交。
+\item \textbf{解答.} 奇异值是 $T^*T=\Id$ 的特征值平方根，因此全等于 $1$。
+\item \textbf{解答.} 对维数归纳。取单位特征向量 $v$，由正规性知 $(\spn\{v\})^\perp$ 对 $T$ 不变且限制仍正规，于是归纳完成。反向由对角矩阵显然正规。
+\item \textbf{解答.} 令 $P_j$ 为到特征空间 $E(\lambda_j)$ 的正交投影。因 $V=\bigoplus E(\lambda_j)$ 且各空间互相正交，故 $\sum P_j=\Id$ 且 $P_iP_j=0(i\neq j)$。对 $v=\sum v_j$，有 $Tv=\sum \lambda_jv_j=\sum \lambda_jP_jv$。唯一性来自投影到各特征空间的唯一性。
+\item \textbf{解答.} 反例：取 $T=\diag(1,3)$，$v=e_2$，$w=2e_1$，则 $\|v\|\le\|w\|$ 但 $\|Tv\|=3>2=\|Tw\|$。正确表述是在同一特征向量方向上，特征值越大放大倍数越大；对一般向量没有这样的单调性。
+\item \textbf{解答.} 若 $W$ 在 $T^*$ 下也不变，则限制到 $W$ 与 $W^\perp$ 仍正规，因而二者都可由特征向量张成，所以 $W$ 是特征空间直和。反之若 $W$ 是特征空间直和，则显然在 $T^*$ 下不变。
+\item \textbf{解答.} 若 $\nul T=\{0\}$，则 $P=\sqrt{T^*T}$ 可逆，故 $S=TP^{-1}$ 唯一。若 $T=0$，则任意酉算子 $S$ 都满足 $T=S\cdot0$，故不唯一。
+\item \textbf{解答.} 非零奇异值对应 $T^*T$ 的非零特征值；其个数等于 $\rank(T^*T)=\rank T$。
+\item \textbf{解答.} 若 $T$ 正，则特征值均正。反之若全部特征值正，在正交规范特征基上对角元全正，于是 $\inner{Tv}{v}=\sum \lambda_j|a_j|^2>0$ 对 $v\neq0$ 成立。
+\item \textbf{解答.} $(UTU^*)^*=UT^*U^*=UTU^*$，故自伴随。若 $Tv=\lambda v$，则 $UTU^*(Uv)=\lambda Uv$，故谱相同。
+\item \textbf{解答.} 由 $T^2=T$ 与正规性知 $T$ 可正交对角化；对角元满足 $\lambda^2=\lambda$，故只能是 $0,1$。因此 $T$ 自伴随且为到某子空间的正交投影。
+\item \textbf{解答.} 先对 $A$ 做谱分解。因 $AB=BA$，$A$ 的每个特征空间都在 $B$ 下不变。再在这些空间上对 $B$ 分别应用谱定理，即得公共正交规范特征基。
+\item \textbf{解答.} 在正交规范特征基上写 $T=\diag(e^{i\theta_1},\dots,e^{i\theta_n})$，取 $A=\diag(\theta_1,\dots,\theta_n)$，则 $e^{iA}=T$。
+\item \textbf{解答.} 令 $T_\C$ 为复化算子。它自伴随，故在 $V_\C$ 上有正交规范特征基，且特征值全实。对每个实特征值选取非零实部或虚部即可得到 $V$ 中的特征向量；再对正交补归纳，得到实谱定理。
+\item \textbf{解答.} 因为 $\inner{S^*TSv}{v}=\inner{TSv}{Sv}\ge0$，且 $S^*TS$ 自伴随，所以它是正算子。
+\item \textbf{解答.} 由谱分解 $T=\sum \lambda_jP_j$，故 $T^n=\sum \lambda_j^nP_j$。于是 $T^nv$ 的正交分量为 $\lambda_j^nP_jv$，范数平方即为所示和式。
+\item \textbf{解答.} 用归纳。先对 $T_1$ 做谱分解；其特征空间在每个 $T_n$ 下都不变，因为 $T_nT_1=T_1T_n$。在每个特征空间上再对 $T_2$ 做谱分解，如此继续，即得公共正交规范特征基。
+\end{enumerate}

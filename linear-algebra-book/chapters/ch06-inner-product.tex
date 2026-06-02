@@ -1,0 +1,615 @@
+\chapter{内积空间}
+
+从本章开始，我们在向量空间上加入“长度”和“角度”的结构。
+这使得线性代数不再只是关于线性组合与维数，
+还能够讨论正交、逼近、最小二乘、伴随算子等问题。
+
+本章始终采用 Axler 风格：
+\textbf{内积首先定义在向量上，而不是定义在矩阵上。}
+矩阵只是相对于某组基的表示。
+
+除特别说明外，$V$ 表示有限维 $\F$-向量空间，其中 $\F=\R$ 或 $\C$。
+若 $\F=\C$，我们约定内积对第一个变量线性、对第二个变量共轭线性。
+
+\section{内积与范数}
+
+\begin{definition}
+$V$ 上的\emph{内积}是映射
+\[
+V\times V\to\F,
+\qquad (v,w)\mapsto \inner{v}{w},
+\]
+满足对任意 $u,v,w\in V$ 与 $a\in\F$：
+\begin{enumerate}[label=(\alph*)]
+\item $\inner{u+v}{w}=\inner{u}{w}+\inner{v}{w}$；
+\item $\inner{av}{w}=a\inner{v}{w}$；
+\item $\inner{v}{w}=\overline{\inner{w}{v}}$；
+\item 若 $v\neq 0$，则 $\inner{v}{v}>0$。
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}
+对复内积空间，有
+\[
+\inner{v}{aw}=\overline a\,\inner{v}{w}.
+\]
+实内积空间中则退化为对第二个变量的线性。
+\end{proposition}
+
+\begin{proof}
+由共轭对称性与第一个变量线性，
+\[
+\inner{v}{aw}=\overline{\inner{aw}{v}}=\overline{a\inner{w}{v}}=\overline a\,\inner{v}{w}.
+\]
+\end{proof}
+
+\begin{definition}
+向量 $v\in V$ 的\emph{范数}定义为
+\[
+\|v\|=\sqrt{\inner{v}{v}}.
+\]
+\end{definition}
+
+\begin{theorem}[Cauchy--Schwarz 不等式]
+对任意 $u,v\in V$，有
+\[
+|\inner{u}{v}|\le \|u\|\,\|v\|.
+\]
+当且仅当 $u,v$ 线性相关时取等号。
+\end{theorem}
+
+\begin{proof}
+若 $v=0$，显然。
+设 $v\neq 0$，对任意 $a\in\F$，
+\[
+0\le \|u-av\|^2=\inner{u-av}{u-av}.
+\]
+取
+\[
+a=\frac{\inner{u}{v}}{\|v\|^2}.
+\]
+展开得
+\[
+0\le \|u\|^2-\frac{|\inner{u}{v}|^2}{\|v\|^2},
+\]
+于是得到不等式。
+若取等号，则 $\|u-av\|=0$，即 $u=av$，故线性相关。
+反之若线性相关，设 $u=av$，则直接取等。
+\end{proof}
+
+\begin{corollary}[三角不等式]
+对任意 $u,v\in V$，有
+\[
+\|u+v\|\le \|u\|+\|v\|.
+\]
+\end{corollary}
+
+\begin{proof}
+展开平方并用 Cauchy--Schwarz：
+\[
+\|u+v\|^2=\|u\|^2+2\Re\inner{u}{v}+\|v\|^2
+\le \|u\|^2+2\|u\|\|v\|+\|v\|^2=(\|u\|+\|v\|)^2.
+\]
+\end{proof}
+
+\begin{example}
+$\F^n$ 上的标准内积为
+\[
+\inner{x}{y}=x_1\overline{y_1}+\cdots+x_n\overline{y_n}.
+\]
+在 $\R^n$ 中这就是熟悉的点积。
+\end{example}
+
+\section{正交性}
+
+\begin{definition}
+若 $\inner{u}{v}=0$，则称 $u$ 与 $v$ \emph{正交}，记作 $u\perp v$。
+一个向量列表若任意两个不同向量都正交，称为\emph{正交列表}。
+若其中每个向量范数都为 $1$，则称为\emph{正交规范列表}。
+\end{definition}
+
+\begin{proposition}
+正交列表中的非零向量必线性无关。
+\end{proposition}
+
+\begin{proof}
+设 $v_1,\dots,v_m$ 两两正交且都非零。
+若
+\[
+a_1v_1+\cdots+a_mv_m=0,
+\]
+对每个 $k$ 与 $v_k$ 取内积，得
+\[
+a_k\|v_k\|^2=0.
+\]
+因 $\|v_k\|^2>0$，故 $a_k=0$。
+\end{proof}
+
+\begin{theorem}[Pythagorean 定理]
+若 $u\perp v$，则
+\[
+\|u+v\|^2=\|u\|^2+\|v\|^2.
+\]
+\end{theorem}
+
+\begin{proof}
+展开得
+\[
+\|u+v\|^2=\inner{u+v}{u+v}=\|u\|^2+\inner{u}{v}+\inner{v}{u}+\|v\|^2.
+\]
+因两中间项都为零，结论成立。
+\end{proof}
+
+\begin{corollary}
+若 $v_1,\dots,v_m$ 是正交列表，则
+\[
+\left\|\sum_{j=1}^m v_j\right\|^2=\sum_{j=1}^m\|v_j\|^2.
+\]
+\end{corollary}
+
+\begin{proof}
+对 $m$ 归纳，反复应用两向量情形即可。
+\end{proof}
+
+\section{正交规范基与 Gram--Schmidt}
+
+\begin{definition}
+若一组基同时是正交规范列表，则称为\emph{正交规范基}。
+\end{definition}
+
+\begin{proposition}
+设 $e_1,\dots,e_n$ 是正交规范基，则对任意 $v\in V$，
+\[
+v=\inner{v}{e_1}e_1+\cdots+\inner{v}{e_n}e_n.
+\]
+\end{proposition}
+
+\begin{proof}
+设 $v=\sum a_je_j$。
+与 $e_k$ 取内积得
+\[
+\inner{v}{e_k}=a_k.
+\]
+代回即可。
+\end{proof}
+
+\begin{theorem}[Gram--Schmidt 过程]
+设 $v_1,\dots,v_m$ 是线性无关列表。
+定义
+\[
+u_1=v_1,
+\qquad
+u_k=v_k-\sum_{j=1}^{k-1}\frac{\inner{v_k}{u_j}}{\|u_j\|^2}u_j
+\quad (k\ge 2).
+\]
+则 $u_1,\dots,u_m$ 是正交列表，且对每个 $k$，
+\[
+\spn(v_1,\dots,v_k)=\spn(u_1,\dots,u_k).
+\]
+\end{theorem}
+
+\begin{proof}
+对 $k$ 归纳。
+构造式说明 $u_k\in\spn(v_1,\dots,v_k)$。
+又由归纳假设，前面的 $u_j$ 张成与前面的 $v_j$ 同一子空间，
+故 $v_k-u_k\in\spn(u_1,\dots,u_{k-1})$，从而两个张成空间相同。
+
+对每个 $j<k$，
+\[
+\inner{u_k}{u_j}
+=
+\inner{v_k}{u_j}-\sum_{i=1}^{k-1}\frac{\inner{v_k}{u_i}}{\|u_i\|^2}\inner{u_i}{u_j}
+=
+\inner{v_k}{u_j}-\frac{\inner{v_k}{u_j}}{\|u_j\|^2}\|u_j\|^2=0.
+\]
+此外，$u_k\neq 0$，否则 $v_k$ 属于前面向量张成空间，与线性无关矛盾。
+\end{proof}
+
+\begin{corollary}
+每个有限维内积空间都存在正交规范基。
+\end{corollary}
+
+\begin{proof}
+从任意一组基出发施行 Gram--Schmidt，得到正交列表，
+再逐个单位化即可。
+\end{proof}
+
+\section{正交补}
+
+\begin{definition}
+设 $U\subseteq V$ 是子空间。
+定义它的\emph{正交补}
+\[
+U^{\perp}=\{v\in V:\inner{v}{u}=0\text{ 对每个 }u\in U\}.
+\]
+\end{definition}
+
+\begin{proposition}
+$U^{\perp}$ 是 $V$ 的子空间。
+\end{proposition}
+
+\begin{proof}
+若 $v,w\in U^{\perp}$，$a,b\in\F$，则对每个 $u\in U$，
+\[
+\inner{av+bw}{u}=a\inner{v}{u}+b\inner{w}{u}=0.
+\]
+故 $av+bw\in U^{\perp}$。
+\end{proof}
+
+\begin{theorem}
+若 $U$ 是有限维内积空间 $V$ 的子空间，则
+\[
+V=U\oplus U^{\perp}.
+\]
+\end{theorem}
+
+\begin{proof}
+取 $U$ 的一组正交规范基 $e_1,\dots,e_m$，再扩充成 $V$ 的正交规范基
+$e_1,\dots,e_m,e_{m+1},\dots,e_n$。
+令
+\[
+W=\spn(e_{m+1},\dots,e_n).
+\]
+则 $W\subseteq U^{\perp}$，反之任意 $v\in U^{\perp}$ 的前 $m$ 个坐标都为零，
+故 $v\in W$。所以 $U^{\perp}=W$，于是
+\[
+V=U\oplus W=U\oplus U^{\perp}.
+\]
+\end{proof}
+
+\begin{definition}
+在分解 $V=U\oplus U^{\perp}$ 下，
+每个 $v\in V$ 唯一写成 $v=u+w$，其中 $u\in U,w\in U^{\perp}$。
+称 $u$ 为 $v$ 在 $U$ 上的\emph{正交投影}，记作 $P_Uv$。
+\end{definition}
+
+\begin{proposition}
+若 $e_1,\dots,e_m$ 是 $U$ 的正交规范基，则
+\[
+P_Uv=\sum_{j=1}^m\inner{v}{e_j}e_j.
+\]
+\end{proposition}
+
+\begin{proof}
+右边显然在 $U$ 中。
+且
+\[
+v-\sum_{j=1}^m\inner{v}{e_j}e_j
+\]
+与每个 $e_k$ 都正交，因此属于 $U^{\perp}$。
+故此式正是投影分解中的 $U$-部分。
+\end{proof}
+
+\section{极小化问题与最小二乘}
+
+\begin{theorem}
+设 $U\subseteq V$ 是子空间，$v\in V$。
+则 $P_Uv$ 是 $U$ 中距离 $v$ 最近的向量，即对任意 $u\in U$，
+\[
+\|v-P_Uv\|\le \|v-u\|.
+\]
+且等号当且仅当 $u=P_Uv$。
+\end{theorem}
+
+\begin{proof}
+把 $v$ 写成 $v=P_Uv+w$，其中 $w\in U^{\perp}$。
+对任意 $u\in U$，有
+\[
+v-u=(P_Uv-u)+w,
+\]
+其中 $P_Uv-u\in U$，且与 $w$ 正交。
+故由 Pythagorean 定理，
+\[
+\|v-u\|^2=\|P_Uv-u\|^2+\|w\|^2\ge \|w\|^2=\|v-P_Uv\|^2.
+\]
+等号成立当且仅当 $P_Uv-u=0$。
+\end{proof}
+
+\begin{remark}
+这一定理说明：最短距离问题的答案不是靠“猜”，
+而是靠正交分解。
+\end{remark}
+
+\begin{example}
+在 $\R^3$ 中，若 $U=\spn((1,0,0),(0,1,0))$，
+则 $P_U(x,y,z)=(x,y,0)$。
+离 $(x,y,z)$ 最近的平面内向量正是它去掉第三坐标后的向量。
+\end{example}
+
+最小二乘问题是上述定理的一个重要应用。
+若给定一个子空间 $U$，我们用 $U$ 中的向量逼近 $v$，
+最佳逼近就是 $P_Uv$。
+
+\section{伴随算子}
+
+\begin{theorem}
+设 $T\in\End(V)$。
+则存在唯一算子 $T^*\in\End(V)$，使得对所有 $v,w\in V$ 都有
+\[
+\inner{Tv}{w}=\inner{v}{T^*w}.
+\]
+称 $T^*$ 为 $T$ 的\emph{伴随算子}。
+\end{theorem}
+
+\begin{proof}
+取 $V$ 的一组正交规范基 $e_1,\dots,e_n$。
+对固定的 $w\in V$，定义
+\[
+T^*w=\sum_{j=1}^n \inner{w}{Te_j}e_j.
+\]
+显然 $T^*$ 对 $w$ 线性。
+
+任取 $v\in V$，写成
+\[
+v=\sum_{j=1}^n \inner{v}{e_j}e_j.
+\]
+则
+\[
+Tv=\sum_{j=1}^n \inner{v}{e_j}Te_j,
+\]
+从而
+\[
+\inner{Tv}{w}=\sum_{j=1}^n \inner{v}{e_j}\inner{Te_j}{w}.
+\]
+另一方面，由正交规范基展开，
+\[
+\inner{v}{T^*w}=\sum_{j=1}^n \inner{v}{e_j}\inner{e_j}{T^*w}.
+\]
+而由定义
+\[
+\inner{e_j}{T^*w}=\inner{Te_j}{w}.
+\]
+故 $\inner{Tv}{w}=\inner{v}{T^*w}$。
+存在性得证。
+
+若 $S$ 也满足 $\inner{Tv}{w}=\inner{v}{Sw}$ 对所有 $v,w$ 成立，
+则对每个 $w$ 与所有 $v$ 有
+\[
+\inner{v}{T^*w-Sw}=0.
+\]
+取 $v=T^*w-Sw$ 可得 $T^*w=Sw$，故 $S=T^*$。
+唯一性得证。
+\end{proof}
+
+\begin{remark}
+若选取正交规范基，则 $T^*$ 的矩阵就是 $T$ 的共轭转置。
+但本书首先把伴随理解为抽象定义，矩阵结论只是其坐标表达。
+\end{remark}
+
+\begin{proposition}
+对任意 $S,T\in\End(V)$ 与标量 $a,b\in\F$，有
+\begin{enumerate}[label=(\alph*)]
+\item $(aS+bT)^*=\overline a\,S^*+\overline b\,T^*$；
+\item $(ST)^*=T^*S^*$；
+\item $(T^*)^*=T$；
+\item $\Id^*=\Id$。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+这些都由定义逐项验证。
+例如
+\[
+\inner{STv}{w}=\inner{Tv}{S^*w}=\inner{v}{T^*S^*w},
+\]
+故 $(ST)^*=T^*S^*$。
+其余类似。
+\end{proof}
+
+\begin{definition}
+若 $T=T^*$，则称 $T$ 为\emph{自伴}算子。
+若 $T^*T=TT^*=\Id$，则称 $T$ 为\emph{酉算子}（实情形称正交算子）。
+\end{definition}
+
+\section{Petersson 内积}
+
+本书面向模形式学习，因此在本章末尾简要说明一个重要例子。
+设 $f,g$ 是权 $k$ 的尖点模形式。
+其 \emph{Petersson 内积} 定义为
+\[
+\inner{f}{g}_{\mathrm P}
+=
+\int_{\SL_2(\Z)\backslash \mathbb H}
+ f(z)\overline{g(z)}\, y^k\,\frac{dx\,dy}{y^2},
+\qquad z=x+iy.
+\]
+
+严格证明这个积分良定义并且给出内积，需要用到模形式的衰减性质与基本区域理论，
+这些超出本章范围。
+但从线性代数角度看，最重要的信息是：
+模形式空间上存在一个自然内积，
+因此正交基、投影、伴随与谱理论都可以被引入。
+这正是后续研究 Hecke 算子的桥梁。
+
+\section*{习题}
+
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 写出内积的四条公理。
+\item \basic 写出范数的定义。
+\item \basic 在 $\R^2$ 的标准内积下，计算 $\inner{(1,2)}{(3,4)}$。
+\item \basic 在 $\R^3$ 中，计算 $\|(1,2,2)\|$。
+\item \basic 判断 $(1,1)$ 与 $(1,-1)$ 在 $\R^2$ 中是否正交。
+\item \basic 设 $u\perp v$，写出 Pythagorean 定理。
+\item \basic 什么是正交列表？
+\item \basic 什么是正交规范列表？
+\item \basic 证明非零正交列表线性无关。
+\item \basic 若 $e_1,e_2$ 是正交规范向量，求 $\|3e_1-4e_2\|$。
+\item \basic 写出正交投影 $P_Uv$ 的定义。
+\item \basic 什么是正交补 $U^{\perp}$？
+\item \basic 设 $U=\{(x,0):x\in\R\}\subseteq\R^2$，求 $U^{\perp}$。
+\item \basic 设 $U=\spn((1,0,0),(0,1,0))\subseteq\R^3$，求 $P_U(2,-1,5)$。
+\item \basic 写出伴随算子 $T^*$ 的定义式。
+\item \basic 写出 $(ST)^*$ 的公式。
+\item \basic 写出 $(T^*)^*$ 的公式。
+\item \basic 什么是自伴算子？
+\item \basic 什么是酉算子？
+\item \basic 若 $e_1,\dots,e_n$ 是正交规范基，写出任意 $v$ 的展开式。
+\item \basic 在 $\R^2$ 中把 $(3,4)$ 单位化。
+\item \basic 设 $u=(1,0)$，$v=(1,1)$，求 Gram--Schmidt 产生的第二个正交向量。
+\item \basic 设 $U=\spn((1,1))\subseteq\R^2$，求 $P_U(1,0)$。
+\item \basic 说明“距离 $v$ 最近的 $U$ 中向量”是谁。
+\item \basic Petersson 内积出现在什么数学背景中？
+\end{enumerate}
+
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 证明 $\inner{v}{aw}=\overline a\,\inner{v}{w}$。
+\item \medium 证明 Cauchy--Schwarz 不等式。
+\item \medium 由 Cauchy--Schwarz 推出三角不等式。
+\item \medium 证明若 $u\perp v$，则 $\|u+v\|^2=\|u\|^2+\|v\|^2$。
+\item \medium 证明若 $v_1,\dots,v_m$ 是正交列表，则 $\|\sum v_j\|^2=\sum\|v_j\|^2$。
+\item \medium 证明正交规范基下系数公式 $v=\sum \inner{v}{e_j}e_j$。
+\item \medium 对列表 $(1,1,0),(1,0,1)$ 在 $\R^3$ 中执行 Gram--Schmidt。
+\item \medium 对列表 $(1,0,1),(1,1,1),(0,1,1)$ 在 $\R^3$ 中执行 Gram--Schmidt，得到正交列表。
+\item \medium 证明 Gram--Schmidt 过程中每一步所得向量都非零。
+\item \medium 证明每个有限维内积空间都存在正交规范基。
+\item \medium 证明 $U^{\perp}$ 是子空间。
+\item \medium 证明 $U\cap U^{\perp}=\{0\}$。
+\item \medium 证明 $V=U\oplus U^{\perp}$。
+\item \medium 设 $e_1,\dots,e_m$ 是 $U$ 的正交规范基，证明 $P_Uv=\sum\inner{v}{e_j}e_j$。
+\item \medium 证明 $P_U$ 是线性算子。
+\item \medium 证明 $P_U^2=P_U$。
+\item \medium 证明 $\range P_U=U$ 且 $\nul P_U=U^{\perp}$。
+\item \medium 证明 $P_U$ 是自伴算子。
+\item \medium 证明 $P_Uv$ 是距离 $v$ 最近的 $U$ 中向量。
+\item \medium 给出最小二乘问题的线性代数表述。
+\item \medium 证明伴随算子存在且唯一。
+\item \medium 证明 $(aS+bT)^*=\overline a\,S^*+\overline b\,T^*$。
+\item \medium 证明 $(ST)^*=T^*S^*$。
+\item \medium 证明 $(T^*)^*=T$。
+\item \medium 证明 $\Ker T^*=(\range T)^{\perp}$。
+\item \medium 证明 $\range T\perp \Ker T^*$。
+\item \medium 若 $T$ 自伴，证明 $\inner{Tv}{v}\in\R$。
+\item \medium 若 $T$ 酉，证明 $\|Tv\|=\|v\|$。
+\item \medium 若 $T$ 保持内积，即对所有 $v,w$ 有 $\inner{Tv}{Tw}=\inner{v}{w}$，证明 $T$ 是酉算子。
+\item \medium 设 $T$ 可逆，证明 $(T^{-1})^*=(T^*)^{-1}$。
+\end{enumerate}
+
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 设 $U,W\subseteq V$ 为子空间，证明若 $U\subseteq W$，则 $W^{\perp}\subseteq U^{\perp}$。
+\item \hard 证明 $(U^{\perp})^{\perp}=U$。
+\item \hard 设 $U,W$ 是子空间，证明 $(U+W)^{\perp}=U^{\perp}\cap W^{\perp}$。
+\item \hard 设 $T\in\End(V)$。证明 $T$ 自伴当且仅当在每组正交规范基下其矩阵都等于自身共轭转置。
+\item \hard 设 $T$ 自伴，且 $Tv=\lambda v$。证明 $\lambda\in\R$。
+\item \hard 设 $T$ 自伴，且 $Tv=\lambda v,\ Tw=\mu w$，其中 $\lambda\neq\mu$。证明 $v\perp w$。
+\item \hard 设 $T$ 酉，且 $Tv=\lambda v$。证明 $|\lambda|=1$。
+\item \hard 设 $U$ 有正交规范基 $e_1,\dots,e_m$。证明最小二乘误差 $\|v-u\|^2$ 在 $u\in U$ 中最小时，坐标正是 $u=\sum \inner{v}{e_j}e_j$。
+\item \hard 设 $T\in\End(V)$。证明 $T^*T=0$ 当且仅当 $T=0$。
+\item \hard 结合模形式背景，说明为什么 Petersson 内积使得“在模形式空间中讨论正交投影与伴随 Hecke 算子”成为可能。
+\end{enumerate}
+
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} 线性（第一变量）、数乘线性、共轭对称、正定：$\inner{v}{v}>0$ 对一切 $v\neq 0$。
+\item \textbf{解答.} $\|v\|=\sqrt{\inner{v}{v}}$。
+\item \textbf{解答.} $1\cdot3+2\cdot4=11$。
+\item \textbf{解答.} $\|(1,2,2)\|=\sqrt{1+4+4}=3$。
+\item \textbf{解答.} $\inner{(1,1)}{(1,-1)}=1-1=0$，所以正交。
+\item \textbf{解答.} 若 $u\perp v$，则 $\|u+v\|^2=\|u\|^2+\|v\|^2$。
+\item \textbf{解答.} 任意两个不同向量彼此正交的列表。
+\item \textbf{解答.} 正交列表且每个向量范数为 $1$。
+\item \textbf{解答.} 若 $\sum a_jv_j=0$，与 $v_k$ 取内积得 $a_k\|v_k\|^2=0$，故全体系数为零。
+\item \textbf{解答.} 因为正交，故 $\|3e_1-4e_2\|^2=9+16=25$，所以范数为 $5$。
+\item \textbf{解答.} 在分解 $v=u+w$（$u\in U,w\in U^{\perp}$）中，$u$ 就是 $P_Uv$。
+\item \textbf{解答.} $U^{\perp}=\{v:\inner{v}{u}=0\text{ 对所有 }u\in U\}$。
+\item \textbf{解答.} $U^{\perp}=\{(0,y):y\in\R\}$。
+\item \textbf{解答.} 投影到前两个坐标平面上，得 $P_U(2,-1,5)=(2,-1,0)$。
+\item \textbf{解答.} 对所有 $v,w\in V$，有 $\inner{Tv}{w}=\inner{v}{T^*w}$。
+\item \textbf{解答.} $(ST)^*=T^*S^*$。
+\item \textbf{解答.} $(T^*)^*=T$。
+\item \textbf{解答.} 满足 $T=T^*$ 的算子。
+\item \textbf{解答.} 满足 $T^*T=TT^*=\Id$ 的算子。
+\item \textbf{解答.} $v=\sum_{j=1}^n\inner{v}{e_j}e_j$。
+\item \textbf{解答.} $(3,4)$ 的范数为 $5$，单位化后为 $(3/5,4/5)$。
+\item \textbf{解答.} 第一向量取 $u_1=(1,0)$。第二个正交向量为
+$v-\inner{v}{u_1}u_1=(1,1)-(1)(1,0)=(0,1)$。
+\item \textbf{解答.} 取单位向量 $e=(1,1)/\sqrt2$，则
+$P_U(1,0)=\inner{(1,0)}{e}e=(1/\sqrt2)e=(1/2,1/2)$。
+\item \textbf{解答.} 就是正交投影 $P_Uv$。
+\item \textbf{解答.} 它出现在模形式与 Hecke 算子的研究中，是模形式空间上的自然内积。
+\item \textbf{解答.} 由共轭对称，
+$\inner{v}{aw}=\overline{\inner{aw}{v}}=\overline{a\inner{w}{v}}=\overline a\,\inner{v}{w}$。
+\item \textbf{解答.} 取 $a=\inner{u}{v}/\|v\|^2$，由 $0\le\|u-av\|^2$ 展开即可得
+$|\inner{u}{v}|\le\|u\|\|v\|$。
+\item \textbf{解答.} 由
+$\|u+v\|^2=\|u\|^2+2\Re\inner{u}{v}+\|v\|^2$
+再用 $|\inner{u}{v}|\le\|u\|\|v\|$ 即得。
+\item \textbf{解答.} 直接展开内积，利用 $\inner{u}{v}=\inner{v}{u}=0$ 即可。
+\item \textbf{解答.} 对 $m$ 归纳。两向量情形即 Pythagorean；归纳步把前 $m-1$ 项之和与第 $m$ 项视为两个正交向量。
+\item \textbf{解答.} 设 $v=\sum a_je_j$，与 $e_k$ 取内积得 $a_k=\inner{v}{e_k}$，所以结论成立。
+\item \textbf{解答.} 取 $u_1=(1,1,0)$。第二个向量为
+\[
+u_2=(1,0,1)-\frac{\inner{(1,0,1)}{(1,1,0)}}{\|(1,1,0)\|^2}(1,1,0)=(1,0,1)-\frac12(1,1,0)=\left(\frac12,-\frac12,1\right).
+\]
+这就是正交列表。
+\item \textbf{解答.} 取 $u_1=(1,0,1)$。再算
+\[
+u_2=(1,1,1)-\frac{2}{2}(1,0,1)=(0,1,0).
+\]
+最后
+\[
+u_3=(0,1,1)-\frac{1}{2}(1,0,1)-1\cdot(0,1,0)=\left(-\frac12,0,\frac12\right).
+\]
+故得到正交列表 $u_1=(1,0,1),u_2=(0,1,0),u_3=(-1/2,0,1/2)$。
+\item \textbf{解答.} 若某一步 $u_k=0$，则 $v_k$ 等于前面 $u_j$ 的线性组合，从而属于前面 $v_j$ 的张成空间，违背原列表线性无关。
+\item \textbf{解答.} 从任意基出发施行 Gram--Schmidt 得正交基，再单位化得正交规范基。
+\item \textbf{解答.} 若 $v,w\in U^{\perp}$，则任意线性组合对每个 $u\in U$ 的内积仍为零，故为子空间。
+\item \textbf{解答.} 若 $v\in U\cap U^{\perp}$，则特别有 $\inner{v}{v}=0$，由正定性得 $v=0$。
+\item \textbf{解答.} 取 $U$ 的正交规范基并扩充为 $V$ 的正交规范基；后面的基向量张成 $U^{\perp}$，从而得到直和分解。
+\item \textbf{解答.} 令 $u=\sum\inner{v}{e_j}e_j$。则 $u\in U$，且 $v-u$ 与每个 $e_k$ 正交，因此与整个 $U$ 正交，故 $u=P_Uv$。
+\item \textbf{解答.} 由投影公式可见 $P_U(av+bw)=aP_Uv+bP_Uw$，故线性。
+\item \textbf{解答.} 因 $P_Uv\in U$，再次投影不变，故 $P_U(P_Uv)=P_Uv$。
+\item \textbf{解答.} 值域显然包含于 $U$，而对每个 $u\in U$ 有 $P_Uu=u$，故值域正好是 $U$。核由那些投影为零的向量组成，即恰为 $U^{\perp}$。
+\item \textbf{解答.} 设 $e_1,\dots,e_m$ 为 $U$ 的正交规范基，则
+\[
+\inner{P_Uv}{w}=\sum \inner{v}{e_j}\inner{e_j}{w}=\inner{v}{P_Uw}.
+\]
+故 $P_U^*=P_U$。
+\item \textbf{解答.} 把 $v$ 分解为 $v=P_Uv+w$，其中 $w\in U^{\perp}$。任意 $u\in U$ 满足
+$\|v-u\|^2=\|P_Uv-u\|^2+\|w\|^2\ge\|w\|^2=\|v-P_Uv\|^2$。
+\item \textbf{解答.} 在给定子空间 $U$ 中，寻找 $u\in U$ 使 $\|v-u\|$ 最小；答案是 $u=P_Uv$。若选定 $U=\range A$，这就是最小二乘近似。
+\item \textbf{解答.} 对固定 $w$，映射 $v\mapsto\inner{Tv}{w}$ 是线性泛函。有限维内积空间中每个线性泛函都有唯一表示 $\inner{v}{u}$，取此 $u$ 为 $T^*w$ 即得。唯一性同理。
+\item \textbf{解答.} 由定义：
+\[
+\inner{(aS+bT)v}{w}=a\inner{Sv}{w}+b\inner{Tv}{w}=\inner{v}{(\overline aS^*+\overline bT^*)w}.
+\]
+故结论成立。
+\item \textbf{解答.} 对任意 $v,w$，
+$\inner{STv}{w}=\inner{Tv}{S^*w}=\inner{v}{T^*S^*w}$，故 $(ST)^*=T^*S^*$。
+\item \textbf{解答.} 由
+$\inner{T^*v}{w}=\inner{v}{Tw}$
+可见 $T$ 满足 $T^*$ 的伴随定义，因此由唯一性得 $(T^*)^*=T$。
+\item \textbf{解答.} 若 $w\in\Ker T^*$，则对每个 $v$，$\inner{Tv}{w}=\inner{v}{T^*w}=0$，故 $w\perp\range T$，即 $w\in(\range T)^{\perp}$。反向同理。
+\item \textbf{解答.} 由上一题，$\Ker T^*=(\range T)^{\perp}$，所以自然有 $\range T\perp\Ker T^*$。
+\item \textbf{解答.} 因 $T=T^*$，有
+$\inner{Tv}{v}=\inner{v}{Tv}=\overline{\inner{Tv}{v}}$，故它等于自身共轭，所以为实数。
+\item \textbf{解答.} 
+$\|Tv\|^2=\inner{Tv}{Tv}=\inner{v}{T^*Tv}=\inner{v}{v}=\|v\|^2$。
+\item \textbf{解答.} 若 $\inner{Tv}{Tw}=\inner{v}{w}$ 对所有 $v,w$ 成立，则
+$\inner{v}{T^*Tw}=\inner{v}{w}$ 对所有 $v,w$ 成立，故 $T^*T=\Id$。有限维下由可逆性可得 $TT^*=\Id$，所以 $T$ 酉。
+\item \textbf{解答.} 由 $TT^{-1}=\Id$ 取伴随得 $(T^{-1})^*T^*=\Id$；同理由 $T^{-1}T=\Id$ 得 $T^*(T^{-1})^*=\Id$。故 $(T^{-1})^*=(T^*)^{-1}$。
+\item \textbf{解答.} 若 $U\subseteq W$，则与 $W$ 中每个向量都正交的向量当然也与 $U$ 中每个向量正交，因此 $W^{\perp}\subseteq U^{\perp}$。
+\item \textbf{解答.} 已知 $U\subseteq (U^{\perp})^{\perp}$。另一方面由维数公式
+$\dim U+\dim U^{\perp}=\dim V$，再应用于 $U^{\perp}$，得
+$\dim (U^{\perp})^{\perp}=\dim U$。故两者相等。
+\item \textbf{解答.} 若 $v\perp U+W$，则特别 $v\perp U$ 且 $v\perp W$，故 $v\in U^{\perp}\cap W^{\perp}$。反向也显然，因为对任意 $u+w\in U+W$，有 $\inner{v}{u+w}=0$。
+\item \textbf{解答.} 在正交规范基下，矩阵元满足 $a_{ij}=\inner{Te_j}{e_i}$。而伴随矩阵元为 $\inner{e_j}{T^*e_i}=\overline{a_{ji}}$。因此 $T=T^*$ 当且仅当矩阵等于自身共轭转置。反之若某组正交规范基下如此，则对应算子满足伴随定义，故自伴。
+\item \textbf{解答.} 若 $Tv=\lambda v$ 且 $v\neq0$，则
+$\lambda\|v\|^2=\inner{Tv}{v}$。右边因自伴而为实数，故 $\lambda\in\R$。
+\item \textbf{解答.} 由自伴性，
+$\lambda\inner{v}{w}=\inner{Tv}{w}=\inner{v}{Tw}=\mu\inner{v}{w}$。
+因 $\lambda\neq\mu$，故 $\inner{v}{w}=0$。
+\item \textbf{解答.} 若 $Tv=\lambda v$，则
+$\|v\|=\|Tv\|=\|\lambda v\|=|\lambda|\,\|v\|$。
+因 $v\neq0$，得 $|\lambda|=1$。
+\item \textbf{解答.} 任意 $u\in U$ 可写成 $u=\sum a_je_j$。则
+\[
+\|v-u\|^2=\left\|v-\sum\inner{v}{e_j}e_j\right\|^2+\sum |a_j-\inner{v}{e_j}|^2.
+\]
+右边第二项非负，故最小值在 $a_j=\inner{v}{e_j}$ 时取得，即 $u=P_Uv$。
+\item \textbf{解答.} 若 $T^*T=0$，则对任意 $v$，
+$0=\inner{T^*Tv}{v}=\inner{Tv}{Tv}=\|Tv\|^2$，故 $Tv=0$，所以 $T=0$。反向显然。
+\item \textbf{解答.} 一旦模形式空间带有 Petersson 内积，它就是一个内积空间。于是可以定义正交、正交基、投影和伴随。若某个 Hecke 算子对这内积有良好相容性，就能谈论其伴随算子、自伴性与谱分解。这把抽象线性代数工具直接带入模形式论。
+\end{enumerate}

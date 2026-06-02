@@ -1,0 +1,560 @@
+\chapter{向量空间}
+
+本章建立全书的出发点：向量空间首先是一种代数结构，而不是带坐标的箭头集合。 受阿克斯勒观点的启发，我们把“向量空间的定义不提坐标”这件事放在最前面。
+因此，$\F^n$ 只是重要例子，不是定义本身。 后续所有关于线性映射、基、特征值与不变子空间的讨论，都建立在这一抽象观点之上。
+
+\section{复数与域}
+
+线性代数中的“标量”来自一个域。 本书大多数地方只考虑 $\R$ 与 $\C$，并用 $\F$ 统一表示二者之一。
+这样做的好处是：许多命题可以一次证明，同时覆盖实向量空间与复向量空间。
+
+\begin{definition} 域是一个集合 $\F$，其上给定加法与乘法两种运算，使得下列条件成立：
+加法把 $\F$ 变成交换群； 乘法在 $\F\setminus\{0\}$ 上把非零元素变成交换群；
+并且乘法对加法满足分配律， 即对任意 $a,b,c\in\F$ 都有 $a(b+c)=ab+ac$ 与 $(a+b)c=ac+bc$。
+\end{definition}
+
+\begin{remark} 域的定义只涉及标量本身。
+向量空间的八条公理将说明：向量可以被相加，也可以被域中的标量缩放。 在这个层面上，向量不必是几何箭头，也不必是坐标列。
+\end{remark}
+
+\begin{example} $\R$ 是域。
+这里的加法与乘法都是通常运算。 零元是 $0$，加法逆元是 $-a$，非零元素 $a$ 的乘法逆元是 $a^{-1}=1/a$。
+\end{example}
+
+\begin{example} $\C$ 也是域。
+每个复数都唯一写成 $a+bi$，其中 $a,b\in\R$ 且 $i^2=-1$。 若 $z=a+bi\neq 0$，则
+\[ z^{-1}=\frac{a-bi}{a^2+b^2}.
+\] 因为
+\[ (a+bi)\frac{a-bi}{a^2+b^2}=\frac{a^2+b^2}{a^2+b^2}=1.
+\] 这里分母非零，因为 $a^2+b^2=0$ 只会发生在 $a=b=0$，与 $z\neq 0$ 矛盾。
+\end{example}
+
+\begin{example} $\Z$ 不是域。
+原因是除了 $1$ 与 $-1$ 之外，整数通常没有整数乘法逆元。 例如 $2x=1$ 在 $\Z$ 中无解。
+这说明“有加法和乘法”远远不够； 在线性代数里，标量必须能够作除法，只要除数不为零。
+\end{example}
+
+\begin{notation} 除非特别说明，本书总假定
+\[ \F\in\{\R,\C\}.
+\] 因此，“$\F$-向量空间”就是以 $\R$ 或 $\C$ 为标量域的向量空间。
+\end{notation}
+
+\begin{proposition} 对任意 $z,w\in\C$，若
+\[ z=a+bi,\qquad w=c+di,
+\] 则
+\[ z+w=(a+c)+(b+d)i,
+\qquad zw=(ac-bd)+(ad+bc)i.
+\] 特别地，复数加法与乘法都由实数运算决定。
+\end{proposition}
+
+\begin{proof} 加法公式直接由同类项合并得到。
+乘法公式由分配律计算： \[
+(a+bi)(c+di)=ac+adi+bci+bdi^2. \]
+因为 $i^2=-1$，所以 \[
+ac+adi+bci+bdi^2=(ac-bd)+(ad+bc)i. \]
+命题得证。 \end{proof}
+
+\begin{example} 求满足 $z^2=1$ 的全部复数。
+设 $z=a+bi$，则 \[
+z^2=(a^2-b^2)+2abi. \]
+于是方程 $z^2=1$ 等价于 \[
+a^2-b^2=1, \qquad
+2ab=0. \]
+由 $2ab=0$ 得 $a=0$ 或 $b=0$。 若 $a=0$，则 $-b^2=1$，无实解。
+若 $b=0$，则 $a^2=1$，故 $a=\pm 1$。 所以解为 $z=1$ 与 $z=-1$。
+\end{example}
+
+\begin{example} 求解方程 $(2-i)z=1+i$。
+由域中非零元素可逆，得到 \[
+z=\frac{1+i}{2-i}. \]
+分子分母同乘以 $2+i$，得 \[
+z=\frac{(1+i)(2+i)}{5}=\frac{1+3i}{5}. \]
+这个例子再次说明：把 $\C$ 看成域时，除法是合法且自然的。 \end{example}
+
+\section{向量空间定义}
+
+现在引入本章的核心对象。 请注意，下面的定义里没有出现坐标、行、列、箭头、长度等词语。
+这正是抽象线性代数的第一步。
+
+\begin{definition} 设 $V$ 是一个集合，$\F$ 是一个域。
+若 $V$ 上定义了向量加法 $+:V\times V\to V$ 与标量乘法 $\F\times V\to V$， 并且对任意 $u,v,w\in V$ 与任意 $a,b\in\F$ 满足下列八条公理，
+则称 $V$ 是一个 $\F$-向量空间： \begin{enumerate}[label=\textup{(\arabic*)}]
+\item $u+v\in V$； \item $u+v=v+u$；
+\item $(u+v)+w=u+(v+w)$； \item 存在 $0\in V$，使得 $v+0=v$；
+\item 对每个 $v\in V$，存在 $-v\in V$，使得 $v+(-v)=0$； \item $av\in V$；
+\item $a(u+v)=au+av$ 且 $(a+b)v=av+bv$； \item $a(bv)=(ab)v$ 且 $1v=v$。
+\end{enumerate} \end{definition}
+
+\begin{remark} 向量空间的定义只说“什么运算必须成立”，并不说“向量长什么样”。
+因此，函数、多项式、矩阵、数列都可能是向量。 $\F^n$ 只是最熟悉的模型之一。
+\end{remark}
+
+\begin{proposition} 设 $V$ 是一个 $\F$-向量空间。
+则零向量唯一，加法逆元也唯一。 \end{proposition}
+
+\begin{proof} 先证零向量唯一。
+若 $0$ 与 $0'$ 都满足单位元条件，则 \[
+0=0+0'=0'. \]
+故零向量唯一。
+
+再证加法逆元唯一。 设 $w$ 与 $w'$ 都是 $v$ 的加法逆元，则
+\[ w=w+0=w+(v+w')=(w+v)+w'=0+w'=w'.
+\] 因此加法逆元唯一。
+\end{proof}
+
+\begin{proposition} 设 $V$ 是一个 $\F$-向量空间，$v\in V$，$a\in\F$。
+则有： \begin{enumerate}[label=\textup{(\arabic*)}]
+\item $0v=0$； \item $a0=0$；
+\item $(-1)v=-v$； \item 若 $av=0$，则 $a=0$ 或 $v=0$。
+\end{enumerate} \end{proposition}
+
+\begin{proof} 对 (1)，由分配律得
+\[ 0v=(0+0)v=0v+0v.
+\] 两边同时加上 $-(0v)$，得到 $0v=0$。
+
+对 (2)，由分配律得 \[
+a0=a(0+0)=a0+a0. \]
+同样消去一项，得 $a0=0$。
+
+对 (3)，由 $v+(-1)v=(1+(-1))v=0v=0$，可知 $(-1)v$ 是 $v$ 的加法逆元，故 $(-1)v=-v$。
+
+对 (4)，若 $a=0$ 已成立。 若 $a\neq 0$，则 $a$ 在域中可逆，于是
+\[ v=1v=(a^{-1}a)v=a^{-1}(av)=a^{-1}0=0.
+\] 故只能有 $v=0$。
+\end{proof}
+
+\begin{example} 集合 $\poly(\F)$ 是一个 $\F$-向量空间。
+这里 $\poly(\F)$ 表示所有以 $\F$ 为系数的一元多项式所成的集合。 两个多项式相加仍是多项式，标量倍仍是多项式。
+八条公理都由系数运算继承而来。 这个例子说明：向量完全可以是函数表达式，而不是数字列表。
+\end{example}
+
+\begin{example} 集合
+\[ V=\{(x,y)\in\R^2:x>0\}
+\] 不是 $\R$-向量空间。
+虽然两个元素可以相加，但零向量 $(0,0)$ 不在其中。 更严重的是，若 $(1,0)\in V$，则 $(-1)(1,0)=(-1,0)\notin V$，
+所以对标量乘法也不封闭。 \end{example}
+
+\begin{example} 把 $\C$ 看成 $\R$-向量空间是合法的。
+向量是复数，标量只允许取实数。 例如
+\[ 2(1+i)=2+2i,
+\qquad \tfrac12(3-4i)=\tfrac32-2i.
+\] 但若把 $\R$ 看成 $\C$-向量空间，则失败。
+因为对 $1\in\R$ 与标量 $i\in\C$，有 $i\cdot 1=i\notin\R$。 \end{example}
+
+\section{基本例子}
+
+抽象定义之后，最重要的是积累例子。 这些例子会在后文反复出现。
+
+\begin{example} $\F^n$ 是最基本的 $\F$-向量空间。
+其元素是长度为 $n$ 的有序数组 \[
+(x_1,\dots,x_n),\qquad x_j\in\F. \]
+加法与标量乘法按分量定义： \[
+(x_1,\dots,x_n)+(y_1,\dots,y_n)=(x_1+y_1,\dots,x_n+y_n), \]
+\[ a(x_1,\dots,x_n)=(ax_1,\dots,ax_n).
+\] 所有公理都可逐分量验证。
+\end{example}
+
+\begin{remark} 尽管 $\F^n$ 十分重要，但它只是向量空间的一个例子。
+定义向量空间时并没有说每个向量都必须写成 $n$ 个坐标。 这一点在研究函数空间与多项式空间时尤其关键。
+\end{remark}
+
+\begin{example} 在 $\R^3$ 中，
+\[ (1,2,-1)+(-3,0,4)=(-2,2,3),
+\] 而
+\[ 3(1,2,-1)=(3,6,-3).
+\] 这些运算只是抽象公理在具体模型中的实现。
+\end{example}
+
+\begin{notation} 对非负整数 $n$，记
+\[ \poly_n(\F)=\{p\in\poly(\F):\deg p\le n\}\cup\{0\}.
+\] 它由次数至多为 $n$ 的多项式组成。
+\end{notation}
+
+\begin{example} $\poly(\F)$ 与 $\poly_n(\F)$ 都是 $\F$-向量空间。
+例如在 $\poly_2(\R)$ 中， \[
+(1+2x-x^2)+(3-x+4x^2)=4+x+3x^2, \]
+\[ 2(1+2x-x^2)=2+4x-2x^2.
+\] 次数至多为 $2$ 的性质在相加与标量倍下保持不变。
+\end{example}
+
+\begin{example} 设 $S$ 是任意集合。
+记 \[
+\F^S=\{f:S\to\F\}. \]
+对 $f,g\in\F^S$ 与 $a\in\F$，按点定义 \[
+(f+g)(s)=f(s)+g(s), \qquad
+(af)(s)=a f(s). \]
+则 $\F^S$ 是一个 $\F$-向量空间。 例如当 $S=\R$ 时，$\F^S$ 就是所有从 $\R$ 到 $\F$ 的函数所成的空间。
+\end{example}
+
+\begin{example} 在函数空间中可以直接计算。
+设 $f(x)=x^2$，$g(x)=1-x$，则 \[
+(f+g)(x)=x^2+1-x, \qquad
+(3f)(x)=3x^2. \]
+函数被当作向量时，运算是在每个点上进行的。 \end{example}
+
+\begin{example} 记 $\Mat_{m,n}(\F)$ 为所有 $m\times n$ 矩阵组成的集合。
+若按对应位置相加并按标量逐项相乘，则 $\Mat_{m,n}(\F)$ 是一个 $\F$-向量空间。 例如
+\[ \mat{1&2\\0&-1}+\mat{3&0\\4&2}=\mat{4&2\\4&1},
+\] \[
+-2\mat{1&2\\0&-1}=\mat{-2&-4\\0&2}. \]
+矩阵在本书中主要扮演“线性映射的表示”这一角色，但在目前阶段它首先只是向量空间中的元素。 \end{example}
+
+\begin{example} 设 $S=\N$，则 $\F^S$ 可以理解为所有数列
+\[ (x_1,x_2,x_3,\dots).
+\] 按项相加与按项数乘使它成为向量空间。
+有限长数组 $\F^n$ 与无限数列空间的相似性很强， 区别仅在于后者有无穷多个分量。
+\end{example}
+
+\section{子空间}
+
+在线性代数中，我们经常研究一个向量空间内部保持线性结构的子集。
+
+\begin{definition} 设 $V$ 是一个 $\F$-向量空间，$U\subseteq V$。
+若 $U$ 在从 $V$ 继承的加法与标量乘法下本身也是一个 $\F$-向量空间， 则称 $U$ 是 $V$ 的子空间。
+\end{definition}
+
+\begin{theorem}[子空间判定法] 设 $V$ 是一个 $\F$-向量空间，$U\subseteq V$。
+则 $U$ 是 $V$ 的子空间，当且仅当满足下列三个条件： \begin{enumerate}[label=\textup{(\arabic*)}]
+\item $0\in U$； \item 对任意 $u,v\in U$，有 $u+v\in U$；
+\item 对任意 $a\in\F$ 与任意 $u\in U$，有 $au\in U$。 \end{enumerate}
+\end{theorem}
+
+\begin{proof} 若 $U$ 是子空间，则它本身是向量空间，所以三条显然成立。
+
+反过来，设三条成立。 由于 $U\subseteq V$，向量加法与标量乘法在 $U$ 上都从 $V$ 继承，
+而交换律、结合律、分配律以及 $1u=u$ 等恒等式本就在 $V$ 中成立， 因此在 $U$ 中仍成立。
+由 (1) 可知 $U$ 有零向量。 由 (2) 与 (3) 可知运算封闭。
+又因为对任意 $u\in U$，有 $(-1)u\in U$，所以 $u$ 的加法逆元也在 $U$ 中。 故 $U$ 满足向量空间全部公理，是 $V$ 的子空间。
+\end{proof}
+
+\begin{example} 在 $\R^3$ 中，集合
+\[ U=\{(x,y,z)\in\R^3:x+y+z=0\}
+\] 是子空间。
+因为 $(0,0,0)\in U$。 若 $u=(x_1,y_1,z_1)$ 与 $v=(x_2,y_2,z_2)$ 都在 $U$ 中，
+则 \[
+(x_1+x_2)+(y_1+y_2)+(z_1+z_2)=0, \]
+所以 $u+v\in U$。 若 $a\in\R$，则
+\[ a(x+y+z)=a\cdot 0=0,
+\] 故 $au\in U$。
+\end{example}
+
+\begin{example} 在 $\poly(\R)$ 中，集合
+\[ U=\{p\in\poly(\R):p(0)=0\}
+\] 是子空间。
+零多项式满足 $0(0)=0$。 若 $p(0)=q(0)=0$，则
+\[ (p+q)(0)=p(0)+q(0)=0,
+\qquad (ap)(0)=a p(0)=0.
+\] 所以 $U$ 对加法与标量乘法都封闭。
+\end{example}
+
+\begin{example} 集合
+\[ W=\{p\in\poly(\R):p(0)=1\}
+\] 不是子空间。
+因为零多项式不属于 $W$。 也可以从标量乘法看出问题：若 $p\in W$，则 $(0p)(0)=0\neq 1$，
+所以对标量乘法不封闭。 \end{example}
+
+\begin{example} 在 $\Mat_{2,2}(\F)$ 中，上三角矩阵集合
+\[ U=\left\{\mat{a&b\\0&c}:a,b,c\in\F\right\}
+\] 是子空间。
+对应位置相加仍保持左下角为 $0$，标量倍也保持左下角为 $0$。 这个例子说明子空间常由“线性条件”刻画。
+\end{example}
+
+\begin{theorem} 任意族子空间的交仍是子空间。
+也就是说，若 $\{U_\alpha\}_{\alpha\in A}$ 是 $V$ 的子空间族，则 \[
+\bigcap_{\alpha\in A} U_\alpha \]
+也是 $V$ 的子空间。 \end{theorem}
+
+\begin{proof} 记
+\[ U=\bigcap_{\alpha\in A} U_\alpha.
+\] 因为每个 $U_\alpha$ 都含零向量，所以 $0\in U$。
+若 $u,v\in U$，则对每个 $\alpha$ 都有 $u,v\in U_\alpha$。 由于 $U_\alpha$ 是子空间，故 $u+v\in U_\alpha$。
+这对每个 $\alpha$ 都成立，所以 $u+v\in U$。 同理，对任意 $a\in\F$，由 $u\in U_\alpha$ 可得 $au\in U_\alpha$，
+故 $au\in U$。 根据子空间判定法，$U$ 是子空间。
+\end{proof}
+
+\begin{remark} 并集一般不是子空间。
+例如在 $\R^2$ 中，$x$ 轴与 $y$ 轴都是子空间， 但它们的并集不含 $(1,0)+(0,1)=(1,1)$。
+因此“交保持子空间性”而“并通常不保持子空间性”。 \end{remark}
+
+\section{和与直和}
+
+给定两个子空间，我们常希望把它们“拼起来”。 这就得到子空间的和。
+
+\begin{definition} 设 $U,W$ 是向量空间 $V$ 的子空间。
+定义它们的和为 \[
+U+W=\{u+w:u\in U,\ w\in W\}. \]
+\end{definition}
+
+\begin{proposition} 若 $U,W$ 是 $V$ 的子空间，则 $U+W$ 也是 $V$ 的子空间。
+\end{proposition}
+
+\begin{proof} 因为 $0=0+0\in U+W$，故零向量属于 $U+W$。
+若 $u_1+w_1$ 与 $u_2+w_2$ 都在 $U+W$ 中，其中 $u_j\in U$，$w_j\in W$，则 \[
+(u_1+w_1)+(u_2+w_2)=(u_1+u_2)+(w_1+w_2). \]
+由于 $U,W$ 都是子空间，所以 $u_1+u_2\in U$，$w_1+w_2\in W$， 从而上式属于 $U+W$。
+再对任意 $a\in\F$，有 \[
+a(u+w)=au+aw\in U+W. \]
+由子空间判定法，$U+W$ 是子空间。 \end{proof}
+
+\begin{example} 在 $\R^2$ 中，令
+\[ U=\{(x,0):x\in\R\},
+\qquad W=\{(0,y):y\in\R\}.
+\] 则每个 $(x,y)\in\R^2$ 都可写成
+\[ (x,y)=(x,0)+(0,y),
+\] 因此 $U+W=\R^2$。
+\end{example}
+
+\begin{example} 在 $\poly(\R)$ 中，令
+\[ U=\{p:p(0)=0\},
+\qquad W=\{\text{常数多项式}\}.
+\] 任意 $p\in\poly(\R)$ 都可写成
+\[ p=(p-p(0))+p(0).
+\] 其中 $p-p(0)\in U$，而 $p(0)\in W$。
+所以 \[
+\poly(\R)=U+W. \]
+这个分解非常自然：一个多项式可以分成“常数部分”与“过原点部分”。 \end{example}
+
+\begin{definition} 若 $V=U+W$ 且每个 $v\in V$ 的表示
+\[ v=u+w,
+\qquad u\in U,\ w\in W, \]
+都是唯一的，则称 $V$ 是 $U$ 与 $W$ 的直和，记作 \[
+V=U\oplus W. \]
+\end{definition}
+
+\begin{theorem}[两个子空间的直和判定] 设 $U,W$ 是 $V$ 的子空间，且 $V=U+W$。
+则下列命题等价： \begin{enumerate}[label=\textup{(\arabic*)}]
+\item $V=U\oplus W$； \item 对每个 $v\in V$，表示 $v=u+w$ 唯一；
+\item $U\cap W=\{0\}$。 \end{enumerate}
+特别地，对两个子空间而言，和是直和当且仅当交只有零向量。 \end{theorem}
+
+\begin{proof} (1) 与 (2) 只是记号改写。
+
+证 (2)$\Rightarrow$(3)。 若 $x\in U\cap W$，则
+\[ 0=0+0=x+(-x).
+\] 其中 $0\in U,0\in W,x\in U,-x\in W$。
+由表示唯一性可知 $x=0$。 故 $U\cap W=\{0\}$。
+
+证 (3)$\Rightarrow$(2)。 设
+\[ v=u_1+w_1=u_2+w_2,
+\qquad u_1,u_2\in U,\ w_1,w_2\in W. \]
+则 \[
+u_1-u_2=w_2-w_1. \]
+左边属于 $U$，右边属于 $W$，故它属于 $U\cap W$。 由 (3) 得 $u_1-u_2=0$，于是 $u_1=u_2$。
+再代回可得 $w_1=w_2$。 所以表示唯一。
+\end{proof}
+
+\begin{remark} 上一定理是本节最重要的结论之一。
+它把“唯一分解”这个表面上全局的性质，化成了“交只有零向量”这个局部条件。 对两个子空间来说，这正是判断直和最方便的办法。
+\end{remark}
+
+\begin{example} 仍看 $\R^2$ 中的 $x$ 轴 $U$ 与 $y$ 轴 $W$。
+因为 $U+W=\R^2$，且 $U\cap W=\{(0,0)\}$，所以 \[
+\R^2=U\oplus W. \]
+每个向量的唯一分解就是 \[
+(x,y)=(x,0)+(0,y). \]
+\end{example}
+
+\begin{example} 在 $\R^2$ 中令
+\[ U=\{(x,0):x\in\R\},
+\qquad W=\{(x,x):x\in\R\}.
+\] 则 $U+W=\R^2$，因为
+\[ (a,b)=(a-b,0)+(b,b).
+\] 又若 $(x,0)=(t,t)$，则由第二个分量得 $t=0$，从而 $x=0$。
+故 $U\cap W=\{0\}$，因此 $\R^2=U\oplus W$。 \end{example}
+
+\begin{example} 在 $\R^2$ 中若取
+\[ U=W=\{(x,0):x\in\R\},
+\] 则 $U+W=U$，而且 $U\cap W=U\neq\{0\}$。
+于是这个和不是直和。 事实上，任意 $(x,0)$ 都有无穷多种表示：
+\[ (x,0)=(t,0)+(x-t,0).
+\] \end{example}
+
+\begin{proposition}[积空间与外直和] 设 $V_1,\dots,V_m$ 是 $\F$-向量空间。
+它们的笛卡儿积 \[
+V_1\times\cdots\times V_m \]
+在按分量定义的加法与标量乘法下是一个 $\F$-向量空间。 对每个 $j$，令
+\[ U_j=\{(0,\dots,0,v_j,0,\dots,0):v_j\in V_j\}.
+\] 则每个 $U_j$ 都是积空间的子空间，并且
+\[ V_1\times\cdots\times V_m=U_1\oplus\cdots\oplus U_m.
+\] \end{proposition}
+
+\begin{proof} 积空间的八条公理由各分量分别满足向量空间公理立即得到。
+每个 $U_j$ 对加法与标量乘法按分量显然封闭，因此是子空间。 任取 $(v_1,\dots,v_m)$，都有分解
+\[ (v_1,\dots,v_m)=
+(v_1,0,\dots,0)+\cdots+(0,\dots,0,v_m). \]
+所以积空间等于这些 $U_j$ 的和。 若
+\[ (0,\dots,0,v_j,0,\dots,0)
+\in U_j\cap\sum_{k\neq j}U_k, \]
+则其第 $j$ 个分量既等于 $v_j$，又等于 $0$，从而 $v_j=0$。 所以该交只有零向量。
+由逐步应用两个子空间的直和判定，得到结论。 \end{proof}
+
+\begin{remark} 有限个空间的积与外直和在集合上可以看成同一个对象，
+只是强调的观点不同： 积强调“把各个分量放在一起”，
+直和强调“每个元素可唯一拆成来自各子空间的部分”。 若指标集无限，通常把“只有有限个分量非零”的元素组成的子空间称为直和，
+而全体分量任意的对象称为积； 这一差别在函数空间与级数空间中非常重要。
+\end{remark}
+
+\section{模形式动机}
+
+本书服务于模形式学习，因此在第一章就给出一个来自模形式的向量空间例子。 这里的目的不是展开理论，而是让读者看到：
+抽象向量空间语言确实能够容纳数论中的自然对象。
+
+\begin{definition} 设 $k\in\Z$。
+记 $M_k$ 为所有满足下列条件的函数 $f:\HH\to\C$ 组成的集合： \begin{enumerate}[label=\textup{(\arabic*)}]
+\item $f$ 在上半平面 $\HH$ 上全纯； \item 对任意 $\mat{a&b\\c&d}\in\SL_2(\Z)$ 与任意 $z\in\HH$，有
+\[ f\!\left(\frac{az+b}{cz+d}\right)=(cz+d)^k f(z);
+\] \item $f$ 在无穷远点全纯。
+\end{enumerate} 称 $M_k$ 为权 $k$ 的模形式空间。
+\end{definition}
+
+\begin{proposition} 对每个整数 $k$，$M_k$ 是 $\C$-向量空间。
+\end{proposition}
+
+\begin{proof} 零函数显然满足三条条件，因此属于 $M_k$。
+若 $f,g\in M_k$，则 $f+g$ 仍全纯，且对任意 $\mat{a&b\\c&d}\in\SL_2(\Z)$ 有
+\[ (f+g)\!\left(\frac{az+b}{cz+d}\right)
+=f\!\left(\frac{az+b}{cz+d}\right)+g\!\left(\frac{az+b}{cz+d}\right) =(cz+d)^k(f(z)+g(z)).
+\] 故 $f+g$ 满足变换性质。
+在无穷远点全纯这一条件对和也保持。 同理，对任意 $\alpha\in\C$，函数 $\alpha f$ 仍全纯，且
+\[ (\alpha f)\!\left(\frac{az+b}{cz+d}\right)
+=\alpha (cz+d)^k f(z) =(cz+d)^k (\alpha f)(z).
+\] 所以 $\alpha f\in M_k$。
+由子空间判定法，$M_k$ 是 $\C$-向量空间。 \end{proof}
+
+\begin{example} 零函数总属于 $M_k$。
+常数函数 $1$ 属于 $M_0$，因为它显然全纯，并满足 \[
+1=(cz+d)^0\cdot 1. \]
+这说明模形式空间并不是空谈，它至少包含最简单的函数。 \end{example}
+
+\begin{example} 以后我们会见到具体的非零模形式，例如某些爱森斯坦级数属于 $M_4$ 与 $M_6$。
+但在第一章我们只需要记住一件事： 模形式空间首先是一个向量空间，
+因此可以讨论子空间、和、直和、基与维数。 这正是线性代数进入数论的第一扇门。
+\end{example}
+
+\section*{本章小结}
+
+本章建立了线性代数的抽象语言： 标量来自域，向量空间由公理定义，$\F^n$ 只是例子而不是定义。
+我们学习了常见向量空间、子空间判定、子空间之交、子空间之和以及两个子空间的直和判定。 特别要牢牢记住：
+若 $V=U+W$，则 $V=U\oplus W$ 当且仅当 $U\cap W=\{0\}$。 此外，有限个空间的积可以看成外直和的具体模型。
+这些思想会在后续章节不断出现。
+
+\section*{习题}
+
+\subsection*{基础题} \begin{enumerate}[label=\textbf{\arabic*.}]
+\item \basic 设 $z=3-4i$，求 $z^{-1}$。 \item \basic 设 $z=a+bi\in\C$，且 $z+\overline z=6$，$z-\overline z=2i$，求 $z$。
+\item \basic 说明为什么 $\R$ 与 $\C$ 都可以作为本书中的标量域。 \item \basic 说明为什么纯虚数集合 $\{bi:b\in\R\}$ 不是域。
+\item \basic 设 $V$ 是向量空间，证明对任意 $v\in V$ 有 $0v=0$。 \item \basic 设 $V$ 是向量空间，证明零向量唯一。
+\item \basic 设 $V$ 是向量空间，证明每个向量的加法逆元唯一。 \item \basic 说明集合 $\{(x,y)\in\R^2:x>0\}$ 不是 $\R$-向量空间。
+\item \basic 证明 $\poly(\F)$ 是 $\F$-向量空间。 \item \basic 证明 $\poly_2(\R)$ 是 $\poly(\R)$ 的子空间。
+\item \basic 证明 $\{p\in\poly(\R):p(0)=0\}$ 是 $\poly(\R)$ 的子空间。 \item \basic 证明 $\{p\in\poly(\R):p(0)=1\}$ 不是 $\poly(\R)$ 的子空间。
+\item \basic 证明 $\{(x,y,z)\in\R^3:x+y+z=0\}$ 是 $\R^3$ 的子空间。 \item \basic 证明 $\Mat_{2,2}(\F)$ 中全体对角矩阵构成子空间。
+\item \basic 求 $\R^2$ 中 $x$ 轴与 $y$ 轴的交。 \item \basic 证明 $\R^2$ 中 $x$ 轴与 $y$ 轴的和等于 $\R^2$。
+\item \basic 证明 $\R^2$ 中 $x$ 轴与 $y$ 轴的和是直和。 \item \basic 给出 $\R^2$ 中两个子空间，其和不是直和。
+\item \basic 设 $S=\R$，证明全体偶函数构成 $\R^S$ 的子空间。 \item \basic 设 $S$ 为任意集合，证明零函数属于 $\F^S$。
+\end{enumerate}
+
+\subsection*{进阶题} \begin{enumerate}[label=\textbf{\arabic*.},start=21]
+\item \medium 设 $a,b,c\in\F$ 且 $a+c=b+c$，证明 $a=b$。 \item \medium 设 $V$ 是向量空间，$a\in\F$，$v\in V$，若 $av=v$ 且 $v\neq 0$，证明 $a=1$。
+\item \medium 证明有限个子空间的交仍是子空间。 \item \medium 设 $U,W$ 是 $V$ 的子空间，证明若 $U\cup W$ 是子空间，则必有 $U\subseteq W$ 或 $W\subseteq U$。
+\item \medium 在 $\poly(\R)$ 中，设 $U=\{p:p(0)=0\}$，$W$ 为常数多项式空间，证明 $\poly(\R)=U+W$。 \item \medium 证明两个子空间的和仍是子空间。
+\item \medium 设 $V=U+W$ 且 $U\cap W=\{0\}$，证明每个 $v\in V$ 的表示 $v=u+w$ 唯一。 \item \medium 在 $\R^3$ 中，令 $U=\{(x,y,0):x,y\in\R\}$，$W=\{(0,0,z):z\in\R\}$，求 $(2,-1,5)$ 关于 $U\oplus W$ 的分解。
+\item \medium 证明 $\R^3$ 等于三条坐标轴的直和。 \item \medium 设 $V,W$ 是向量空间，证明 $V\times W$ 在按分量运算下是向量空间。
+\item \medium 证明 $\Mat_{m,n}(\F)$ 是 $\F$-向量空间。 \item \medium 证明 $\R^4$ 中满足 $x_1+x_2+x_3+x_4=0$ 的向量全体构成子空间。
+\item \medium 证明 $\R^4$ 中满足 $x_1+x_2+x_3+x_4=1$ 的向量全体不是子空间。 \item \medium 设 $S=\N$，证明全体最终为零的数列构成 $\F^S$ 的子空间。
+\item \medium 设 $V=U\oplus W$，若 $u_1+w_1=u_2+w_2$，证明 $u_1=u_2$ 且 $w_1=w_2$。 \item \medium 在 $\R^3$ 中，令 $U$ 为 $x$ 轴，$W$ 为 $y$ 轴，写出 $U\oplus W$ 作为 $\R^3$ 的一个子空间。
+\item \medium 设 $s_0\in S$，证明 $\{f\in\F^S:f(s_0)=0\}$ 是 $\F^S$ 的子空间。 \item \medium 设 $A\subseteq S$，证明支集包含在 $A$ 中的函数全体构成 $\F^S$ 的子空间。
+\item \medium 在 $\poly(\R)$ 中，证明每个多项式都可以唯一写成偶多项式与奇多项式之和。 \item \medium 说明 $\C$ 是 $\R$-向量空间，但 $\R$ 不是 $\C$-向量空间。
+\item \medium 证明权 $k$ 的模形式之和仍是权 $k$ 的模形式。 \item \medium 举例说明三个子空间两两交为 $\{0\}$ 并不能推出它们的和是直和。
+\item \medium 设 $V_1,V_2,V_3$ 为向量空间，证明 $V_1\times V_2\times V_3$ 等于三个坐标子空间的直和。 \item \medium 证明：若 $U$ 是子空间，则对任意 $u,v\in U$ 与 $a,b\in\F$，都有 $au+bv\in U$。
+\item \medium 证明：若非空子集 $U\subseteq V$ 满足对任意 $u,v\in U$ 与 $a,b\in\F$ 都有 $au+bv\in U$，则 $U$ 是子空间。 \end{enumerate}
+
+\subsection*{挑战题} \begin{enumerate}[label=\textbf{\arabic*.},start=46]
+\item \hard 证明：对子空间 $U,W\subseteq V$，并集 $U\cup W$ 是子空间当且仅当 $U\subseteq W$ 或 $W\subseteq U$。 \item \hard 在 $\poly(\R)$ 中，设 $U=\{p:p(0)=0\}$，$W$ 为常数多项式空间，证明 $\poly(\R)=U\oplus W$。
+\item \hard 设 $V$ 为全体从 $\R$ 到 $\R$ 的函数组成的向量空间，证明每个 $f\in V$ 都可唯一写成偶函数与奇函数之和。 \item \hard 设 $S=\N$，证明全体有限支撑函数构成的空间等于各坐标直线的直和。
+\item \hard 设 $V=U+W$。证明：若零向量在 $V=U+W$ 中的表示唯一，则此和是直和。 \item \hard 证明对每个 $n\in\N$，有 $\poly_n(\F)=\poly_{n-1}(\F)\oplus\{ax^n:a\in\F\}$。
+\item \hard 在 $\Mat_{2,2}(\R)$ 中，证明每个矩阵都可唯一写成对称矩阵与斜对称矩阵之和。 \item \hard 在 $\Mat_{2,2}(\F)$ 中，设
+\[ U=\left\{\mat{a&b\\0&a}:a,b\in\F\right\}.
+\] 证明 $U$ 是子空间，并把它写成两个一维子空间的直和。
+\item \hard 设 $U\subseteq V$ 非空。证明：$U$ 是子空间当且仅当对任意 $u,v\in U$ 与任意 $a\in\F$，都有 $u+v\in U$ 且 $au\in U$。 \item \hard 在 $\R^4$ 中，设
+\[ U_1=\{(x,0,0,0):x\in\R\},\quad
+U_2=\{(0,y,0,0):y\in\R\},\quad U_3=\{(0,0,z,w):z,w\in\R\}.
+\] 证明 $\R^4=U_1\oplus U_2\oplus U_3$。
+\item \hard 设 $V=U_1\oplus\cdots\oplus U_m$，证明对每个 $k\ge 2$，都有 \[
+U_k\cap (U_1+\cdots+U_{k-1})=\{0\}. \]
+\item \hard 设子空间 $U_1,\dots,U_m\subseteq V$ 满足 $V=U_1+\cdots+U_m$，且对每个 $k\ge 2$ 都有 \[
+U_k\cap (U_1+\cdots+U_{k-1})=\{0\}. \]
+证明 $V=U_1\oplus\cdots\oplus U_m$。 \item \hard 设 $S$ 为无限集合，证明 $\F^S$ 中全体有限支撑函数形成一个子空间。
+\item \hard 证明对每个整数 $k$，$M_k$ 是 $\C^{\HH}$ 的子空间。 \item \hard 证明 $\R$ 作为 $\R$-向量空间时只有两个子空间：$\{0\}$ 与 $\R$。
+\end{enumerate}
+
+\section*{习题解答}
+
+\subsection*{基础题解答} \begin{enumerate}[label=\textbf{\arabic*.}]
+\item 因为 $z\neq 0$，所以 \[
+z^{-1}=\frac{3+4i}{3^2+4^2}=\frac{3+4i}{25}. \]
+\item 由 $z=a+bi$ 与 $\overline z=a-bi$，得 $2a=6$，$2bi=2i$，故 $a=3$，$b=1$，所以 $z=3+i$。 \item 因为 $\R$ 与 $\C$ 都满足域的公理，所以都能作为标量域；本书把这种统一写成 $\F$。
+\item 纯虚数集合不含乘法单位元 $1$，而且非零纯虚数的乘法逆元一般不是纯虚数，例如 $(2i)^{-1}=-\tfrac i2$ 虽是纯虚数，但两个纯虚数相乘常不在该集合中，如 $i\cdot i=-1$。 \item 由 $(0+0)v=0v+0v$，消去一项即得 $0v=0$。
+\item 若 $0,0'$ 都是零向量，则 $0=0+0'=0'$，故唯一。 \item 若 $w,w'$ 都是 $v$ 的逆元，则 $w=w+0=w+(v+w')=(w+v)+w'=w'$。
+\item 零向量不在其中，且 $(1,0)$ 在其中但 $(-1)(1,0)=(-1,0)$ 不在其中，所以不是向量空间。 \item 多项式对加法与标量乘法封闭，其余公理由系数运算继承，因此是向量空间。
+\item 零多项式属于 $\poly_2(\R)$；两个次数至多为 $2$ 的多项式之和、实数倍仍次数至多为 $2$，故是子空间。 \item 零多项式满足 $0(0)=0$；若 $p(0)=q(0)=0$，则 $(p+q)(0)=0$，$(ap)(0)=0$，故为子空间。
+\item 零多项式不满足 $p(0)=1$，所以它不是子空间。 \item 零向量满足方程；若 $x_1+y_1+z_1=0$ 与 $x_2+y_2+z_2=0$，则相加后仍为 $0$；数乘同理，故是子空间。
+\item 零矩阵是对角矩阵；对角矩阵相加、数乘仍是对角矩阵，故构成子空间。 \item $x$ 轴与 $y$ 轴公共元素只能满足 $(x,0)=(0,y)$，故 $x=y=0$，交为 $\{(0,0)\}$。
+\item 任意 $(a,b)=(a,0)+(0,b)$，前者在 $x$ 轴，后者在 $y$ 轴，所以和等于 $\R^2$。 \item 由前题知和为 $\R^2$，又由第 15 题知交只有零向量，因此是直和。
+\item 可取同一条直线两次，例如 $U=W=\{(x,0):x\in\R\}$，则交不为零，所以和不是直和。 \item 零函数是偶函数；偶函数之和仍偶，实数倍仍偶，所以偶函数构成子空间。
+\item 零函数由 $0(s)=0$ 定义，对任意 $s\in S$ 都属于 $\F$，故零函数属于 $\F^S$。 \end{enumerate}
+
+\subsection*{进阶题解答} \begin{enumerate}[label=\textbf{\arabic*.},start=21]
+\item 在域中给等式两边同时加上 $-c$，得 $a=b$。 \item 由 $av=v$ 得 $(a-1)v=0$。因 $v\neq 0$，由向量空间性质知 $a-1=0$，故 $a=1$。
+\item 用归纳法即可。两个子空间的交是子空间；若前 $n-1$ 个交是子空间，再与第 $n$ 个子空间相交，仍是子空间。 \item 若二者都不包含对方，可取 $u\in U\setminus W$ 与 $w\in W\setminus U$。若 $U\cup W$ 是子空间，则 $u+w\in U\cup W$。若 $u+w\in U$，则 $w=(u+w)-u\in U$，矛盾；若 $u+w\in W$，同理得 $u\in W$，矛盾。
+\item 任意 $p$ 都可写成 $p=(p-p(0))+p(0)$，前者在 $U$，后者在 $W$，所以 $\poly(\R)=U+W$。 \item 与正文命题相同：零向量在和中，和内元素相加与数乘后仍可分别落在两个子空间中，所以仍在和内。
+\item 设 $v=u_1+w_1=u_2+w_2$，则 $u_1-u_2=w_2-w_1$ 属于 $U\cap W$。交只有零向量，故 $u_1=u_2$，$w_1=w_2$。 \item 直接写成
+\[ (2,-1,5)=(2,-1,0)+(0,0,5),
+\] 前者在 $U$，后者在 $W$。
+\item 任意 $(x,y,z)=(x,0,0)+(0,y,0)+(0,0,z)$，且三条坐标轴与前面部分的交都只有零向量，所以是直和。 \item 加法定义为 $(v_1,w_1)+(v_2,w_2)=(v_1+v_2,w_1+w_2)$，标量乘法定义为 $a(v,w)=(av,aw)$。八条公理逐分量成立，所以是向量空间。
+\item 对应位置相加与数乘保持矩阵形状，零矩阵在其中，八条公理由标量域逐项继承，所以成立。 \item 这是一个齐次线性条件定义的集合。零向量满足条件；满足条件的两个向量相加后条件仍成立；数乘后也成立，所以是子空间。
+\item 零向量不满足和等于 $1$，因此不是子空间。 \item 零数列最终为零；两个最终为零的数列在足够靠后的位置都为零，所以它们的和最终为零；数乘同理。
+\item 因为直和分解唯一，而 $u_1+w_1$ 与 $u_2+w_2$ 是同一向量的两种分解，所以必有 $u_1=u_2$，$w_1=w_2$。 \item $U\oplus W=\{(x,y,0):x,y\in\R\}$，即 $xy$ 平面。
+\item 零函数在其中；若 $f(s_0)=g(s_0)=0$，则 $(f+g)(s_0)=0$，$(af)(s_0)=0$，故为子空间。 \item 若函数在 $A$ 外都为零，则两个这样的函数相加后在 $A$ 外仍为零，数乘也保持该性质，因此构成子空间。
+\item 令 \[
+e(x)=\frac{p(x)+p(-x)}2, \qquad
+o(x)=\frac{p(x)-p(-x)}2. \]
+则 $e$ 为偶多项式，$o$ 为奇多项式，且 $p=e+o$。若 $p=e_1+o_1=e_2+o_2$，则 $e_1-e_2=o_2-o_1$ 同时既偶又奇，只能为零，所以分解唯一。 \item $\C$ 对实数标量封闭，所以是 $\R$-向量空间；但 $i\in\C$ 作用在 $1\in\R$ 上得到 $i\notin\R$，故 $\R$ 不是 $\C$-向量空间。
+\item 若 $f,g\in M_k$，则二者都满足同一变换公式与全纯条件，相加后这些条件仍成立，所以 $f+g\in M_k$。 \item 在 $\R^2$ 中取
+\[ U_1=\spn\{(1,0)\},\quad U_2=\spn\{(0,1)\},\quad U_3=\spn\{(1,1)\}.
+\] 它们两两交都为 $\{0\}$，但 $(1,1)=(1,0)+(0,1)$，故零向量的分解不唯一，和不是直和。
+\item 每个 $(v_1,v_2,v_3)$ 都可唯一写成 \[
+(v_1,0,0)+(0,v_2,0)+(0,0,v_3), \]
+故等于三个坐标子空间的直和。 \item 因为 $au\in U$ 且 $bv\in U$，又因 $U$ 对加法封闭，所以 $(au)+(bv)=au+bv\in U$。
+\item 取 $u=v\in U$ 且 $a=b=0$，得 $0\in U$。再取 $b=0$ 得 $au\in U$，取 $a=b=1$ 得 $u+v\in U$，故由子空间判定法知 $U$ 是子空间。 \end{enumerate}
+
+\subsection*{挑战题解答} \begin{enumerate}[label=\textbf{\arabic*.},start=46]
+\item 充分性显然：若 $U\subseteq W$，则 $U\cup W=W$ 是子空间。必要性由第 24 题的证明可得。 \item 第 25 题已得 $\poly(\R)=U+W$。若 $p\in U\cap W$，则 $p$ 同时是常数多项式且满足 $p(0)=0$，故只能是零多项式。因此交为 $\{0\}$，所以是直和。
+\item 定义 \[
+e(x)=\frac{f(x)+f(-x)}2, \qquad
+o(x)=\frac{f(x)-f(-x)}2. \]
+则 $e(-x)=e(x)$，$o(-x)=-o(x)$，且 $f=e+o$。若 $f=e_1+o_1=e_2+o_2$，则 $e_1-e_2=o_2-o_1$ 同时既偶又奇，于是对每个 $x$ 有 $g(x)=g(-x)=-g(x)$，故 $g=0$，分解唯一。 \item 对每个 $n\in\N$，令 $E_n$ 为只在第 $n$ 个位置可能非零的函数所成的一维子空间。有限支撑函数恰是有限个 $E_n$ 中元素之和；而若一个元素同时属于 $E_n$ 与其余各 $E_m$ 的和，则第 $n$ 位既等于某数又等于 $0$，故只能为零，因此得到直和。
+\item 由假设，零向量只有一种表示。若 $x\in U\cap W$，则 \[
+0=0+0=x+(-x) \]
+是零向量的两种表示，故 $x=0$。于是 $U\cap W=\{0\}$。再结合 $V=U+W$，得到 $V=U\oplus W$。 \item 任意 $p\in\poly_n(\F)$ 可唯一写成 $p=q+ax^n$，其中 $q$ 去掉最高次项后次数至多为 $n-1$。因此 $\poly_n(\F)=\poly_{n-1}(\F)+\{ax^n:a\in\F\}$。若 $q=ax^n$ 且 $q\in\poly_{n-1}(\F)$，则除非 $a=0$ 否则次数为 $n$，矛盾，所以交只有零多项式。
+\item 对任意 \[
+A=\mat{a&b\\c&d}, \]
+令 \[
+S=\frac12\mat{a+a&b+c\\b+c&d+d}=\frac12(A+A^{\mathsf T}), \qquad
+K=\frac12\mat{0&b-c\\c-b&0}=\frac12(A-A^{\mathsf T}). \]
+则 $S$ 对称，$K$ 斜对称，且 $A=S+K$。若 $A=S_1+K_1=S_2+K_2$，则 $S_1-S_2=K_2-K_1$ 同时既对称又斜对称，只能为零，因此分解唯一。 \item 零矩阵在 $U$ 中；相加与数乘保持形状，所以 $U$ 是子空间。再令
+\[ U_1=\left\{\mat{a&0\\0&a}:a\in\F\right\},
+\qquad U_2=\left\{\mat{0&b\\0&0}:b\in\F\right\}.
+\] 则 $U=U_1+U_2$，且交只有零矩阵，所以 $U=U_1\oplus U_2$。
+\item 必要性是子空间判定法。充分性中，由非空性取 $u_0\in U$，则 $0u_0=0\in U$。已知对加法与数乘封闭，因此由子空间判定法可知 $U$ 是子空间。 \item 任意 $(a,b,c,d)$ 可写成
+\[ (a,0,0,0)+(0,b,0,0)+(0,0,c,d),
+\] 故和为全体 $\R^4$。又 $U_1\cap U_2=\{0\}$，且 $U_3$ 与前两者之和只在后两坐标上可能非零，所以交也只有零向量，故为直和。
+\item 设 $x\in U_k\cap (U_1+\cdots+U_{k-1})$。则 \[
+0=0+\cdots+0=x+(-x)+0+\cdots+0 \]
+给出零向量的两种直和分解。由唯一性知 $x=0$。 \item 设
+\[ u_1+\cdots+u_m=v_1+\cdots+v_m,
+\qquad u_j,v_j\in U_j. \]
+移项得 \[
+(u_m-v_m)=-(u_1-v_1)-\cdots-(u_{m-1}-v_{m-1}). \]
+左边在 $U_m$，右边在 $U_1+\cdots+U_{m-1}$，故由交为零得 $u_m=v_m$。依次向前递推，得到所有 $u_j=v_j$，故分解唯一，因此是直和。 \item 零函数有空支集，所以属于其中。若 $f,g$ 都有限支撑，则 $f+g$ 的支集包含在 $f$ 与 $g$ 的支集并中，仍是有限集；$af$ 的支集包含在 $f$ 的支集中，也有限，所以构成子空间。
+\item 零函数属于 $M_k$。若 $f,g\in M_k$，则它们在 $\HH$ 上全纯，和与数乘仍全纯；变换公式与在无穷远点全纯的条件都对加法和数乘保持，因此 $M_k$ 是 $\C^{\HH}$ 的子空间。 \item 设 $U$ 是 $\R$ 的子空间。若 $U=\{0\}$ 则已完成。若 $U$ 含某个非零实数 $a$，则因 $a^{-1}\in\R$，有 $1=a^{-1}a\in U$。于是任意 $x\in\R$ 都满足 $x=x\cdot 1\in U$，故 $U=\R$。
+\end{enumerate}

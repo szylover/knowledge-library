@@ -1,0 +1,533 @@
+\chapter{模论}
+
+模论把线性代数与阿贝尔群论放在同一个框架里：把“标量”从域推广到一般环，就得到模；把“线性映射”推广到模同态，就得到一整套能够同时处理向量空间、整数矩阵、有限阿贝尔群、Jordan 标准形的工具。本章的主线是：
+\[
+\text{向量空间}=F\text{-模},\qquad \text{阿贝尔群}=\Z\text{-模},
+\]
+而 PID 上有限生成模的结构定理同时给出有限阿贝尔群分类与 Jordan 标准形。
+
+\section{模的定义与例子}
+
+本章中环默认含幺且模均指左模；若 $R$ 为交换环，则左右模没有区别。
+
+\begin{definition}
+设 $R$ 为环。一个 \emph{$R$-模} 是一个阿贝尔群 $(M,+)$，配以映射 $R\times M\to M$，记为 $(r,m)\mapsto rm$，满足对任意 $r,s\in R$ 与 $m,n\in M$：
+\begin{align*}
+ r(m+n)&=rm+rn,\\
+ (r+s)m&=rm+sm,\\
+ (rs)m&=r(sm),\\
+ 1_Rm&=m.
+\end{align*}
+\end{definition}
+
+这与向量空间的定义完全平行，只是“标量环”不再要求每个非零元都可逆。
+
+\begin{example}
+$\Z$-模恰好就是阿贝尔群。事实上，对阿贝尔群 $A$ 定义 $n\cdot a$ 为重复加法；反过来，任何 $\Z$-模自动是阿贝尔群。
+\end{example}
+
+\begin{example}
+若 $F$ 为域，则 $F$-模恰好就是 $F$ 上向量空间。这里模论只是线性代数的语言重述。
+\end{example}
+
+\begin{example}
+环 $R$ 的任一理想 $I$ 都是 $R$-模；更一般地，$R^n$ 在逐坐标加法与标量乘法下是 $R$-模。
+\end{example}
+
+\begin{example}
+设 $f\in \Mk_k(\GammaO(N))$，则 Hecke 代数 $\mathbb{T}$ 对模形式空间的作用使得 $\Mk_k(\GammaO(N))$ 成为一个 $\mathbb{T}$-模。这个例子说明模形式理论中的“算子作用”自然落入模论语言。
+\end{example}
+
+\begin{proposition}
+设 $M$ 为 $R$-模。
+\begin{enumerate}[label=(\roman*)]
+\item $0_Rm=0$，$r0_M=0$；
+\item $(-r)m=-(rm)=r(-m)$；
+\item 若 $u\in R^\times$ 可逆，则映射 $m\mapsto um$ 是 $M$ 的自同构。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i) 由 $(0_R+0_R)m=0_Rm+0_Rm$，消去得 $0_Rm=0$；$r0_M=r(0_M+0_M)=r0_M+r0_M$ 同理。
+
+(ii) 由 $(r+(-r))m=0$ 得结论。
+
+(iii) 其逆映射为 $m\mapsto u^{-1}m$。
+\end{proof}
+
+\section{子模与商模}
+
+\begin{definition}
+设 $M$ 为 $R$-模。子集 $N\subseteq M$ 称为 \emph{子模}，若对加法与标量乘法封闭，即 $x,y\in N$、$r\in R$ 时有 $x-y\in N$ 且 $rx\in N$。
+\end{definition}
+
+这与子空间判定几乎一致，只是把“线性组合”中的标量从域改为环。
+
+\begin{proposition}[子模判定]
+非空子集 $N\subseteq M$ 是子模，当且仅当对任意 $x,y\in N$ 与 $r,s\in R$，都有 $rx+sy\in N$。
+\end{proposition}
+
+\begin{proof}
+必要性显然。充分性由取 $r=s=1$ 得加法封闭，取 $s=0$ 得标量乘法封闭，取 $r=1,s=-1$ 得减法封闭。
+\end{proof}
+
+\begin{example}
+$\Z$-模 $\Z$ 的子模恰为 $n\Z$。因此 PID 上的理想论已是最简单的模论。
+\end{example}
+
+\begin{definition}
+若 $N\le M$ 为子模，则商阿贝尔群 $M/N$ 在标量乘法
+\[
+ r\cdot (m+N)=rm+N
+\]
+下成为 $R$-模，称为 \emph{商模}。
+\end{definition}
+
+\begin{proposition}[商模的泛性质]
+设 $\pi:M\to M/N$ 为自然满同态。若 $f:M\to P$ 是满足 $N\subseteq \Ker f$ 的模同态，则存在唯一模同态 $\bar f:M/N\to P$ 使得 $f=\bar f\circ \pi$。
+\end{proposition}
+
+\begin{proof}
+定义 $\bar f(m+N)=f(m)$。若 $m+N=m'+N$，则 $m-m'\in N\subseteq \Ker f$，故 $f(m)=f(m')$，良定义。保持模结构直接验证。唯一性来自 $\pi$ 的满射性。
+\end{proof}
+
+\begin{remark}
+这一定义解释了为何商模是“把 $N$ 中元素强制变成 $0$ 的最一般方法”。
+\end{remark}
+
+\section{模同态与同构定理}
+
+\begin{definition}
+设 $M,N$ 为 $R$-模。映射 $f:M\to N$ 称为 \emph{$R$-模同态}，若
+\[
+ f(x+y)=f(x)+f(y),\qquad f(rx)=rf(x).
+\]
+记所有模同态的集合为 $\Hom_R(M,N)$；若 $M=N$，记 $\End_R(M)$。
+\end{definition}
+
+与线性映射完全一样，核与像控制同态的本质。
+
+\begin{proposition}
+若 $f:M\to N$ 为模同态，则 $\Ker f$ 是 $M$ 的子模，$\Ima f$ 是 $N$ 的子模。
+\end{proposition}
+
+\begin{proof}
+由同态定义直接检验即可。
+\end{proof}
+
+\begin{theorem}[第一同构定理]
+对任意模同态 $f:M\to N$，有
+\[
+ M/\Ker f\cong \Ima f.
+\]
+\end{theorem}
+
+\begin{proof}
+由商模的泛性质，$f$ 因子化为 $M\xrightarrow{\pi} M/\Ker f\xrightarrow{\tilde f}N$，其中 $\tilde f(m+\Ker f)=f(m)$。此映射单射且像为 $\Ima f$。
+\end{proof}
+
+\begin{theorem}[第二同构定理]
+若 $A,B\le M$ 为子模，则 $A+B\le M$ 且
+\[
+ (A+B)/B\cong A/(A\cap B).
+\]
+\end{theorem}
+
+\begin{proof}
+考虑 $A\to (A+B)/B$，$a\mapsto a+B$。其核为 $A\cap B$，像为整个 $(A+B)/B$。
+\end{proof}
+
+\begin{theorem}[第三同构定理]
+若 $A\le B\le M$，则
+\[
+ (M/A)/(B/A)\cong M/B.
+\]
+\end{theorem}
+
+\begin{proof}
+由自然映射 $M/A\to M/B$，$m+A\mapsto m+B$，其核正是 $B/A$。
+\end{proof}
+
+\section{自由模}
+
+在线性代数中，最容易处理的空间是有基的向量空间；模论中对应的对象是自由模。
+
+\begin{definition}
+$R$-模 $F$ 称为 \emph{自由模}，若存在集合 $\{e_i\}_{i\in I}$，使得每个 $x\in F$ 唯一表示为有限和
+\[
+ x=\sum_{i\in I} r_ie_i,
+\]
+其中只有有限多个 $r_i\ne 0$。这时称 $\{e_i\}$ 为 $F$ 的一组基，记
+\[
+ F\cong \bigoplus_{i\in I} R e_i.
+\]
+\end{definition}
+
+\begin{example}
+$R^n$ 是秩为 $n$ 的自由模，其标准基为 $e_1,\dots,e_n$。多项式环 $R[x]$ 作为 $R$-模有基 $1,x,x^2,\dots$，因此是可数秩自由模。
+\end{example}
+
+\begin{proposition}[自由模的泛性质]
+设 $F$ 是以基 $\{e_i\}_{i\in I}$ 生成的自由 $R$-模。给定任意 $R$-模 $M$ 与任意函数 $\phi:\{e_i\}\to M$，存在唯一模同态 $\tilde\phi:F\to M$ 使得 $\tilde\phi(e_i)=\phi(e_i)$。
+\end{proposition}
+
+\begin{proof}
+定义
+\[
+ \tilde\phi\Bigl(\sum r_ie_i\Bigr)=\sum r_i\phi(e_i).
+\]
+由于自由表示唯一，映射良定义且唯一。
+\end{proof}
+
+\begin{remark}
+这一定理表明：自由模是“只给定生成元而不加任何关系”的模。一般有限生成模都可表示为自由模的商：若 $M$ 由 $m_1,\dots,m_n$ 生成，则存在满射 $R^n\twoheadrightarrow M$，$e_i\mapsto m_i$。
+\end{remark}
+
+\section{PID 上有限生成模的结构定理}
+
+下面进入本章核心。设 $R$ 为 PID，$M$ 为有限生成 $R$-模。此时关系矩阵可经行列初等变换化为 Smith 标准形，从而得到结构分解。
+
+\begin{theorem}[结构定理：不变因子形式]
+设 $R$ 为 PID，$M$ 为有限生成 $R$-模，则存在整数 $r\ge 0$ 及非零非单位元 $d_1,\dots,d_t\in R$，满足
+\[
+ d_1\mid d_2\mid \cdots \mid d_t,
+\]
+使得
+\[
+ M\cong R^r\oplus R/(d_1)\oplus \cdots \oplus R/(d_t).
+\]
+其中 $r$ 与各 $d_i$ 在乘以单位元意义下唯一。
+\end{theorem}
+
+\begin{proof}[证明思路]
+取满射 $R^m\twoheadrightarrow M$，令其核由 $n$ 个向量生成，于是
+\[
+ M\cong R^m/\Ima(A)
+\]
+其中 $A$ 为某个 $m\times n$ 矩阵。PID 上矩阵可化为 Smith 标准形
+\[
+ UAV=\diag(d_1,\dots,d_t,0,\dots,0),\qquad d_1\mid\cdots\mid d_t,
+\]
+其中 $U,V$ 可逆。可逆矩阵只对应自由模基变换，不改变商模同构类型，于是得结论。
+\end{proof}
+
+\begin{theorem}[初等因子形式]
+在上述条件下，若将每个 $d_i$ 分解为素元幂的乘积，则 $M$ 可写为
+\[
+ M\cong R^r\oplus \bigoplus_{j} R/(p_j^{a_j}),
+\]
+其中各 $p_j$ 为素元。该分解在重新排列与单位意义下唯一。
+\end{theorem}
+
+\begin{remark}
+不变因子形式适合记录“整除链”；初等因子形式适合分解为 $p$-初部分。对 $R=\Z$，它们分别对应有限阿贝尔群分类的两种传统写法。
+\end{remark}
+
+\begin{corollary}
+PID 上有限生成无挠模必自由。
+\end{corollary}
+
+\begin{proof}
+若 $M$ 无挠，则结构定理中的商模部分必须消失，只剩 $R^r$。
+\end{proof}
+
+\section{应用 I：有限阿贝尔群分类}
+
+把有限阿贝尔群视为有限生成 $\Z$-模，且自由部分必须为零，于是立刻得到：
+
+\begin{theorem}[有限阿贝尔群分类]
+任意有限阿贝尔群 $A$ 同构于
+\[
+ \Z/n_1\Z\oplus \cdots \oplus \Z/n_t\Z,
+\qquad n_1\mid n_2\mid\cdots\mid n_t,
+\]
+并且该分解唯一；等价地，
+\[
+ A\cong \bigoplus_{p}\bigoplus_j \Z/p^{a_{p,j}}\Z.
+\]
+\end{theorem}
+
+\begin{example}
+阶 $360=2^3\cdot 3^2\cdot 5$ 的阿贝尔群由各 Sylow 部分直和得到。$2$-部分有三种：$\Z/8$，$\Z/4\oplus \Z/2$，$(\Z/2)^3$；$3$-部分有两种：$\Z/9$ 与 $(\Z/3)^2$；$5$-部分只有 $\Z/5$。故共有 $3\cdot2\cdot1=6$ 种同构类型。
+\end{example}
+
+\section{应用 II：Jordan 标准形}
+
+设 $V$ 为有限维 $F$-向量空间，$T\in \End_F(V)$。令 $F[x]$ 通过
+\[
+ f(x)\cdot v:=f(T)v
+\]
+作用于 $V$，则 $V$ 成为一个有限生成 $F[x]$-模。由于 $F[x]$ 是 PID，结构定理适用。
+
+\begin{proposition}
+作为 $F[x]$-模，$V$ 可分解为若干循环模
+\[
+ V\cong \bigoplus_i F[x]/(a_i(x)),\qquad a_1\mid a_2\mid\cdots.
+\]
+其中 $a_r$ 就是 $T$ 的最小多项式，乘积 $\prod_i a_i$ 是特征多项式。
+\end{proposition}
+
+\begin{remark}
+这给出的是 \emph{有理标准形}。若特征多项式在 $F$ 上完全分裂，则每个 $a_i(x)$ 再分解为 $(x-\lambda)^m$，从而得到 Jordan 块。
+\end{remark}
+
+\begin{theorem}[Jordan 标准形的模论表述]
+若 $T$ 的特征多项式在 $F$ 上完全分裂，则
+\[
+ V\cong \bigoplus_{\lambda}\bigoplus_j F[x]/\bigl((x-\lambda)^{e_{\lambda,j}}\bigr).
+\]
+与之对应的矩阵就是若干 Jordan 块 $J_{e_{\lambda,j}}(\lambda)$ 的直和。
+\end{theorem}
+
+\begin{proof}
+把 $V$ 分解为各广义特征子空间，再对每个 $\lambda$-部分应用 PID 结构定理于 $F[x]$-模。模 $F[x]/((x-\lambda)^e)$ 在合适基下对应大小为 $e$ 的 Jordan 块。
+\end{proof}
+
+\begin{example}
+若 $V\cong F[x]/(x-2)^3\oplus F[x]/(x-2)$，则 $T$ 的 Jordan 形为
+\[
+ J_3(2)\oplus J_1(2).
+\]
+若改为 $F[x]/(x-2)^2\oplus F[x]/(x-2)^2$，则 Jordan 形为 $J_2(2)\oplus J_2(2)$。这说明只知道特征多项式与最小多项式仍不足以唯一确定 Jordan 形。
+\end{example}
+
+\section{正合列}
+
+\begin{definition}
+模同态列
+\[
+ \cdots\to A_{i-1}\xrightarrow{f_{i-1}} A_i\xrightarrow{f_i} A_{i+1}\to\cdots
+\]
+称在 $A_i$ 处 \emph{正合}，若 $\Ima f_{i-1}=\Ker f_i$。短正合列写作
+\[
+ \ses{A}{B}{C}.
+\]
+\end{definition}
+
+短正合列意味着：$A\to B$ 单射，$B\to C$ 满射，且 $C\cong B/A$。
+
+\begin{proposition}
+短正合列
+\[
+ \ses{A}{B}{C}
+\]
+分裂，当且仅当下列任一条件成立：
+\begin{enumerate}[label=(\roman*)]
+\item 存在截面 $s:C\to B$ 使得复合 $C\xrightarrow{s}B\to C$ 为恒等；
+\item 存在收缩 $r:B\to A$ 使得复合 $A\to B\xrightarrow{r}A$ 为恒等；
+\item $B\cong A\oplus C$。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i)$\Rightarrow$(iii)：令 $\phi:A\oplus C\to B$ 为 $\phi(a,c)=i(a)+s(c)$，其中 $i:A\to B$ 为嵌入。易证 $\phi$ 为同构。
+
+(iii)$\Rightarrow$(i),(ii) 由直和投影得到。
+
+(ii)$\Rightarrow$(iii) 同理。
+\end{proof}
+
+\begin{example}
+对任意 $n\ge 1$，序列 $0\to \Z\xrightarrow{\times n}\Z\to \Z/n\Z\to 0$ 不分裂，因为若分裂则 $\Z$ 含有非零有限子群，与事实矛盾。
+\end{example}
+
+\section{张量积}
+
+张量积是模论中最重要的泛构造之一。它把“双线性问题”转化为“线性问题”。
+
+\begin{definition}
+设 $R$ 为交换环，$M,N$ 为 $R$-模。一个映射 $b:M\times N\to P$ 称为 \emph{$R$-双线性}，若对每个变量分别是模同态。
+\end{definition}
+
+\begin{theorem}[张量积的泛性质]
+存在 $R$-模 $M\otimes_R N$ 与双线性映射
+\[
+ \tau:M\times N\to M\otimes_R N,
+\qquad (m,n)\mapsto m\otimes n,
+\]
+使得对任意 $R$-模 $P$ 与任意双线性映射 $b:M\times N\to P$，存在唯一模同态
+\[
+ \tilde b:M\otimes_R N\to P
+\]
+满足 $b=\tilde b\circ \tau$。
+\end{theorem}
+
+\begin{proof}[构造]
+先取由符号 $[m,n]$ 生成的自由模 $F$，再除去强制双线性成立的关系子模：
+\begin{align*}
+ [m+m',n]-[m,n]-[m',n],\\
+ [m,n+n']-[m,n]-[m,n'],\\
+ [rm,n]-[m,rn].
+\end{align*}
+所得商模即为 $M\otimes_R N$。
+\end{proof}
+
+\begin{proposition}
+设 $R$ 为交换环，$M,M',N,N'$ 为 $R$-模，则：
+\begin{enumerate}[label=(\roman*)]
+\item $(M\oplus M')\otimes_R N\cong (M\otimes_R N)\oplus (M'\otimes_R N)$；
+\item $R\otimes_R M\cong M$；
+\item $(R/I)\otimes_R M\cong M/IM$；
+\item 若 $M\xrightarrow{f}N\xrightarrow{g}P\to 0$ 正合，则
+\[
+ M\otimes_R X\xrightarrow{f\otimes 1} N\otimes_R X\xrightarrow{g\otimes 1} P\otimes_R X\to 0
+\]
+仍正合。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i)--(iii) 都可直接由泛性质构造互逆映射。
+
+(iv) 称为张量积的右正合性；它源于张量积的具体构造对商模的兼容性。
+\end{proof}
+
+\begin{example}
+作为 $\Z$-模，
+\[
+ \Z/m\Z\otimes_\Z \Z/n\Z\cong \Z/\gcd(m,n)\Z.
+\]
+特别地，若 $(m,n)=1$，则张量积为零；这正反映了互素挠信息彼此“看不见”。
+\end{example}
+
+\section*{习题}
+
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 证明任意阿贝尔群在重复加法下成为唯一的 $\Z$-模。
+\item \basic 证明域 $F$ 上的模就是 $F$-向量空间。
+\item \basic 设 $I\triangleleft R$，证明 $I$ 是 $R$-模。
+\item \basic 求 $\Z$ 作为 $\Z$-模的全部子模。
+\item \basic 描述 $\Z/n\Z$ 作为 $\Z$-模的生成元与关系。
+\item \basic 证明 $2\Z\le \Z$ 是子模，而奇数集不是子模。
+\item \basic 在 $\Z^2$ 中证明 $\langle (2,0),(0,3)\rangle$ 是子模，并写出对应商模的元素个数。
+\item \basic 证明 $M/N$ 的标量乘法定义良好。
+\item \basic 设 $f:M\to N$ 为模同态，证明 $\Ker f$ 与 $\Ima f$ 为子模。
+\item \basic 求同态 $\Z\to \Z/6\Z$ 的全体。
+\item \basic 求 $\Hom_\Z(\Z/n\Z,\Z/m\Z)$ 的元素个数。
+\item \basic 证明自然映射 $\Z\to \Z/n\Z$ 的核为 $n\Z$。
+\item \basic 设 $A,B\le M$，证明 $A\cap B$ 与 $A+B$ 都是子模。
+\item \basic 写出 $(2\Z+3\Z)/3\Z$ 与 $2\Z/(2\Z\cap 3\Z)$ 的同构。
+\item \basic 对 $A\le B\le \Z$，验证第三同构定理。
+\item \basic 证明 $R^n$ 是自由 $R$-模。
+\item \basic 写出 $R[x]$ 作为 $R$-模的一组基。
+\item \basic 设 $M$ 由 $m_1,\dots,m_r$ 生成，构造一个从 $R^r$ 到 $M$ 的满同态。
+\item \basic 证明有限生成无挠 $\Z$-模必为自由模。
+\item \basic 把群 $\Z/12\Z\oplus \Z/18\Z$ 写成不变因子形式。
+\item \basic 把上一题写成初等因子形式。
+\item \basic 列出所有阶为 $p^3$ 的有限阿贝尔群。
+\item \basic 列出所有阶为 $72$ 的有限阿贝尔群同构类型个数。
+\item \basic 设 $T$ 的 Jordan 形为 $J_2(0)\oplus J_1(0)$，写出相应 $F[x]$-模分解。
+\item \basic 证明 $0\to 2\Z\to \Z\to \Z/2\Z\to 0$ 正合。
+\item \basic 判断上一题短正合列是否分裂。
+\item \basic 证明若短正合列分裂，则中间项同构于直和。
+\item \basic 证明 $R\otimes_R M\cong M$。
+\item \basic 计算 $\Z\otimes_\Z \Z/n\Z$。
+\item \basic 计算 $(\Z/4\Z)\otimes_\Z (\Z/6\Z)$。
+\end{enumerate}
+
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 求 $\Hom_\Z(\Z/12\Z,\Z/18\Z)$ 的结构。
+\item \medium 设 $N=\langle (2,4),(6,8)\rangle\le \Z^2$，求 $\Z^2/N$ 的不变因子分解。
+\item \medium 设 $M=\Z^3/\langle (2,0,0),(0,6,0),(0,0,9)\rangle$，求其分解。
+\item \medium 设 $A=2\Z,B=3\Z$，显式验证第二同构定理中的同构。
+\item \medium 求 $\Hom_R(R^m,R^n)$ 与矩阵环的关系。
+\item \medium 设 $R$ 为整环，证明自由模中线性无关元组可延拓为基这一性质一般会失败；请给出 $R=\Z$ 上子模 $2\Z\le \Z$ 的例子说明。
+\item \medium 证明 PID 上子模的子模仍有限生成。
+\item \medium 证明 PID 上有限生成模的挠子模是直和分量。
+\item \medium 计算 $\Ann_\Z(\Z\oplus \Z/6\Z)$ 与 $\Ann_\Z(\Z/4\Z\oplus \Z/6\Z)$。
+\item \medium 证明有限阿贝尔群的 $p$-初部分是特征子群。
+\item \medium 列出阶为 $360$ 的有限阿贝尔群全部同构类型。
+\item \medium 群 $\Z/8\Z\oplus \Z/12\Z$ 的元素阶有哪些？
+\item \medium 设 $M=\Z/4\Z\oplus \Z/2\Z\oplus \Z/9\Z$，求其不变因子形式。
+\item \medium 设 $T$ 在某基下矩阵为 $\mat{2&1&0\\0&2&0\\0&0&3}$，写出其 $F[x]$-模分解、最小多项式与特征多项式。
+\item \medium 设 $T$ 的不变因子为 $(x-1)^2,(x-1)^3$，写出 Jordan 形。
+\item \medium 设 $T$ 是幂零算子且 $\dim \Ker T=2$、$\dim \Ker T^2=4$、$\dim \Ker T^3=5$、$\dim V=5$，求 Jordan 块大小。
+\item \medium 设 $0\to A\to B\to C\to 0$ 为短正合列且 $C$ 为自由模，证明它分裂。
+\item \medium 设 $0\to A\to B\to C\to 0$ 为短正合列且 $A$ 为内射到 $B$ 的直和分量，证明分裂。
+\item \medium 证明 $\Z/n\Z\otimes_\Z M\cong M/nM$。
+\item \medium 证明 $(M\oplus N)\otimes_R P\cong (M\otimes_R P)\oplus (N\otimes_R P)$。
+\item \medium 计算 $(\Z/8\Z)\otimes_\Z (\Z/12\Z)$。
+\item \medium 计算 $\Q\otimes_\Z \Z/n\Z$ 与 $\Q\otimes_\Z \Z^r$。
+\item \medium 证明张量积是右正合而不必左正合，并以 $0\to \Z\xrightarrow{\times 2}\Z\to \Z/2\Z\to 0$ 张量 $\Z/2\Z$ 为例说明。
+\item \medium 设 $I\triangleleft R$，证明 $(R/I)\otimes_R M\cong M/IM$。
+\item \medium 设 $f:M\times N\to P$ 双线性，证明若 $M$ 由 $m_i$ 生成、$N$ 由 $n_j$ 生成，则 $f$ 由所有 $f(m_i,n_j)$ 唯一决定。
+\end{enumerate}
+
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 设 $M=\Z^2/\langle (4,6),(2,8)\rangle$，求 Smith 标准形并写出 $M$ 的分解。
+\item \hard 设 $M=\Z^3/\langle (2,2,0),(0,4,4),(0,0,6)\rangle$，求其不变因子形式。
+\item \hard 证明有限生成阿贝尔群 $A$ 中挠子群 $A_{\mathrm{tor}}$ 满足 $A/A_{\mathrm{tor}}$ 自由。
+\item \hard 证明两个有限阿贝尔群同构，当且仅当对每个素数 $p$ 它们的 $p$-初部分同构。
+\item \hard 设 $T$ 的特征多项式为 $(x-1)^5$，最小多项式为 $(x-1)^3$，且 $\dim \Ker(T-I)=2$，求 Jordan 形。
+\end{enumerate}
+
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} 对 $n\in \Z,a\in A$ 定义 $na$ 为 $a$ 的重复和，负数用相反元解释。四条模公理由整数运算律直接推出；任何 $\Z$-模结构都必须满足 $na=a+\cdots+a$，故唯一。
+\item \textbf{解答.} 域上模已满足向量空间的全部公理；反之向量空间显然是模。关键差异在于域中非零标量可逆，因此线性代数中很多结论比一般模更强。
+\item \textbf{解答.} 理想 $I$ 对加法构成阿贝尔群，且对任意 $r\in R,x\in I$ 有 $rx\in I$，故为 $R$-模。
+\item \textbf{解答.} 设 $N\le \Z$ 为非零子模，则 $N$ 为加法子群。取其中最小正元 $n$，由欧几里得算法知任意 $m\in N$ 可写 $m=qn+r$ 且 $0\le r<n$，但 $r\in N$，故 $r=0$，于是 $N=n\Z$；零子模对应 $n=0$。
+\item \textbf{解答.} $\Z/n\Z$ 由 $\bar 1$ 生成，唯一关系是 $n\bar 1=0$。因此它是自由模 $\Z e$ 按关系 $ne=0$ 的商，即 $\Z/(n)$。
+\item \textbf{解答.} $2\Z$ 对差与整数倍封闭，所以是子模。奇数集不含 $0$ 且对加法不封闭，故不是子模。
+\item \textbf{解答.} 该子模等于 $2\Z\oplus 3\Z$。商模同构于 $(\Z/2\Z)\oplus(\Z/3\Z)$，共有 $6$ 个元素。
+\item \textbf{解答.} 若 $m+N=m'+N$，则 $m-m'\in N$。于是 $r(m-m')\in N$，故 $rm+N=rm'+N$，定义良好。
+\item \textbf{解答.} 若 $x,y\in \Ker f$，则 $f(x-y)=0$，且 $f(rx)=rf(x)=0$，故核为子模。像的证明同理：$f(a)-f(b)=f(a-b)$，$rf(a)=f(ra)$。
+\item \textbf{解答.} 同态由 $1$ 的像决定，而像可为 $\bar 0,\bar1,\dots,\bar5$ 中任意一个，故共有 $6$ 个，分别是乘以 $0,1,\dots,5$ 的模 $6$ 映射。
+\item \textbf{解答.} 同态由 $\bar1$ 的像 $x\in \Z/m\Z$ 决定，条件是 $n x=0$。满足此条件的元素个数为 $\gcd(m,n)$，因此 $|\Hom_\Z(\Z/n,\Z/m)|=\gcd(m,n)$。
+\item \textbf{解答.} 自然映射 $k\mapsto \bar k$ 的核恰是被 $n$ 整除的整数集合，即 $n\Z$。
+\item \textbf{解答.} 交 $A\cap B$ 对差与标量乘法都封闭；和 $A+B=\{a+b\}$ 中任意两元之差仍可写为 $(a-a')+(b-b')$，且标量乘法也保持，故皆为子模。
+\item \textbf{解答.} 因为 $2\Z+3\Z=\Z$、$2\Z\cap 3\Z=6\Z$，故
+$(2\Z+3\Z)/3\Z\cong \Z/3\Z$，而 $2\Z/(2\Z\cap3\Z)=2\Z/6\Z\cong \Z/3\Z$。同构由第二同构定理给出。
+\item \textbf{解答.} 设 $A=a\Z,B=b\Z$ 且 $b\mid a$。则 $(\Z/A)/(B/A)\cong \Z/B$；例如 $A=6\Z,B=2\Z$ 时有 $(\Z/6\Z)/(2\Z/6\Z)\cong \Z/2\Z$。
+\item \textbf{解答.} 标准基 $e_1,\dots,e_n$ 使每个向量唯一写为 $\sum r_ie_i$，故 $R^n$ 自由。
+\item \textbf{解答.} 基为 $1,x,x^2,\dots$。任一多项式唯一写成有限和 $\sum a_ix^i$。
+\item \textbf{解答.} 定义 $\phi:R^r\to M$，$\phi(e_i)=m_i$。因 $m_i$ 生成 $M$，故 $\phi$ 满射。
+\item \textbf{解答.} 由 PID 结构定理，有限生成 $\Z$-模分解为 $\Z^r\oplus T$，其中 $T$ 有限。无挠迫使 $T=0$，故模自由。
+\item \textbf{解答.} 先分解 $\Z/12\oplus \Z/18\cong (\Z/4\oplus \Z/2)\oplus(\Z/9\oplus \Z/2)$。合并同阶素部分得不变因子为 $\Z/6\oplus \Z/36$。
+\item \textbf{解答.} 初等因子形式为 $\Z/4\oplus \Z/2\oplus \Z/9\oplus \Z/2$，通常按素数分组写为 $\Z/4\oplus \Z/2\oplus \Z/9\oplus \Z/2$ 或 $\Z/4\oplus (\Z/2)^2\oplus \Z/9$。
+\item \textbf{解答.} 共有三种：$\Z/p^3\Z$，$\Z/p^2\Z\oplus \Z/p\Z$，$(\Z/p\Z)^3$。
+\item \textbf{解答.} $72=2^3\cdot 3^2$。$2$-部分有 $3$ 种，$3$-部分有 $2$ 种，因此共有 $6$ 种。
+\item \textbf{解答.} 对应 $F[x]/(x^2)\oplus F[x]/(x)$。因为幂零 Jordan 块 $J_k(0)$ 对应模 $F[x]/(x^k)$。
+\item \textbf{解答.} 映射 $2\Z\to \Z$ 为包含映射，$\Z\to \Z/2\Z$ 为自然投影。第一箭头单射，第二箭头满射，且核正是偶整数，故正合。
+\item \textbf{解答.} 不分裂。若分裂，则 $\Z\cong 2\Z\oplus \Z/2\Z$，右边含非零 2-挠元，左边没有，矛盾。
+\item \textbf{解答.} 若有截面 $s:C\to B$，则映射 $(a,c)\mapsto i(a)+s(c)$ 给出 $A\oplus C\xrightarrow{\sim} B$。反过来直和投影给出截面。
+\item \textbf{解答.} 映射 $R\otimes_R M\to M$，$r\otimes m\mapsto rm$ 双线性诱导而来；逆映射为 $m\mapsto 1\otimes m$。二者互逆。
+\item \textbf{解答.} 由上一题，$\Z\otimes_\Z \Z/n\Z\cong \Z/n\Z$。
+\item \textbf{解答.} 由公式 $\Z/m\otimes \Z/n\cong \Z/\gcd(m,n)$，得 $(\Z/4)\otimes(\Z/6)\cong \Z/2$。
+\item \textbf{解答.} 一个同态由 $\bar1$ 的像决定，像 $x\in \Z/18$ 必满足 $12x=0$。解集是阶整除 $6$ 的元素，构成循环群 $\Z/6\Z$，故 $\Hom_\Z(\Z/12,\Z/18)\cong \Z/6$。
+\item \textbf{解答.} 关系矩阵为 $\mat{2&6\\4&8}$。其 $1\times1$ 子式最大公因子为 $2$，行列式为 $-8$，故 Smith 标准形为 $\diag(2,4)$。于是 $\Z^2/N\cong \Z/2\oplus \Z/4$。
+\item \textbf{解答.} 该商模已是对角关系，故 $M\cong \Z/2\oplus \Z/6\oplus \Z/9$；不变因子形式可并为 $\Z/18\oplus \Z/18$ 不对，因为需整除链且阶应为 $108$。正确的不变因子为 $\Z/6\oplus \Z/18$，其阶也是 $108$。
+\item \textbf{解答.} 如第 14 题，$A+B=\Z$ 且 $A\cap B=6\Z$。映射 $2k+6\Z\mapsto 2k+3\Z$ 给出 $2\Z/6\Z\xrightarrow{\sim} \Z/3\Z=(2\Z+3\Z)/3\Z$。
+\item \textbf{解答.} 给定同态由标准基像决定，因此与任意 $n\times m$ 矩阵一一对应。故 $\Hom_R(R^m,R^n)\cong \Mat_{n\times m}(R)$。
+\item \textbf{解答.} 在 $\Z$ 中，元素 $2$ 在子模 $2\Z$ 中线性无关，但不能延拓为 $\Z$ 的一组基，因为任何基都必须含生成元 $\pm1$。这说明“子模有基可延拓”并非一般成立。
+\item \textbf{解答.} 设 $M\cong R^r$ 自由。PID 上 $R^r$ 的子模仍自由且秩至多 $r$，可用归纳与首坐标理想是主理想证明，因此有限生成。
+\item \textbf{解答.} 结构定理给 $M\cong R^r\oplus T$，其中 $T$ 为挠子模。投影到自由部分的核正是 $T$，故 $T$ 为直和分量。
+\item \textbf{解答.} $\Ann_\Z(\Z\oplus \Z/6)=0$，因为整数自由部分没有非零湮没子。$\Ann_\Z(\Z/4\oplus \Z/6)$ 为同时杀死两部分的整数，即 $\lcm(4,6)\Z=12\Z$。
+\item \textbf{解答.} $A_p=\{a\in A:p^ka=0\text{ for some }k\}$。任意自同构保持元素阶，故把 $p$-幂阶元素送到 $p$-幂阶元素，故 $A_p$ 为特征子群。
+\item \textbf{解答.} 见正文例子：共有 $6$ 种，分别是 $2$-部分三种与 $3$-部分两种再乘上唯一的 $\Z/5$。可写为 $G_2\oplus G_3\oplus \Z/5$。
+\item \textbf{解答.} 元素阶是两坐标阶的最小公倍数。可能的阶来自 $\{1,2,4,8\}$ 与 $\{1,2,3,4,6,12\}$ 的最小公倍数组合，故得到 $1,2,3,4,6,8,12,24$。
+\item \textbf{解答.} 按素数分组得 $2$-部分为 $\Z/4\oplus \Z/2$，$3$-部分为 $\Z/9$。补齐为相同个数因子后相乘，得不变因子形式 $\Z/2\oplus \Z/36$。
+\item \textbf{解答.} 模分解为 $F[x]/(x-2)^2\oplus F[x]/(x-3)$。最小多项式为 $(x-2)^2(x-3)$，特征多项式为 $(x-2)^2(x-3)$。
+\item \textbf{解答.} 不变因子 $(x-1)^2,(x-1)^3$ 对应 Jordan 块大小分别为 $2$ 与 $3$，故 Jordan 形是 $J_3(1)\oplus J_2(1)$。
+\item \textbf{解答.} 设块大小为 $\lambda_1\ge\lambda_2\ge\cdots$。由 $\dim\Ker T=2$ 知有两个块；$\dim\Ker T^2=4$ 说明两块对 $T^2$ 的贡献和为 $4$，故大小至少各为 $2$；$\dim\Ker T^3=5=\dim V$ 说明最大块长为 $3$。唯一可能是 $3$ 与 $2$。
+\item \textbf{解答.} 取 $C$ 的一组基 $c_i$，在 $B$ 中任取原像 $b_i$。由自由模泛性质得同态 $s:C\to B$，满足复合到 $C$ 上为恒等，故分裂。
+\item \textbf{解答.} 若 $B\cong A\oplus D$ 且嵌入 $A\hookrightarrow B$ 是第一坐标，则商 $B/A\cong D$，故可取 $C\cong D$，序列分裂。
+\item \textbf{解答.} 取短正合列 $0\to n\Z\to \Z\to \Z/n\Z\to 0$，张量 $M$ 后得 $n\Z\otimes M\to \Z\otimes M\to (\Z/n)\otimes M\to 0$。经 $\Z\otimes M\cong M$ 识别，第一箭头像为 $nM$，故商为 $M/nM$。
+\item \textbf{解答.} 由双线性映射
+$((m,n),p)\mapsto (m\otimes p,n\otimes p)$
+与其逆 $(m\otimes p,n\otimes p)\mapsto (m,n)\otimes p$ 诱导同构。
+\item \textbf{解答.} 由 $\gcd(8,12)=4$，得 $(\Z/8)\otimes(\Z/12)\cong \Z/4$。
+\item \textbf{解答.} 因 $\Q$ 无挠且含 $1/n$，对任意 $x\in \Z/n$ 有 $1\otimes x=n(1/n\otimes x)=1/n\otimes nx=0$，故 $\Q\otimes \Z/n=0$。另一方面 $\Q\otimes \Z^r\cong \Q^r$。
+\item \textbf{解答.} 张量上述短正合列得 $0\to \Z/2\xrightarrow{0}\Z/2\to \Z/2\to 0$，左端单射失效，故不左正合；但尾部仍正合，说明右正合。
+\item \textbf{解答.} 映射 $(\bar r,m)\mapsto rm+IM$ 双线性，诱导 $(R/I)\otimes_R M\to M/IM$。逆映射由 $m+IM\mapsto \bar1\otimes m$ 给出。
+\item \textbf{解答.} 因双线性，任意 $m=\sum r_im_i,n=\sum s_jn_j$ 满足
+$f(m,n)=\sum_{i,j}r_is_jf(m_i,n_j)$，故由生成元上的值唯一决定。
+\item \textbf{解答.} 关系矩阵 $\mat{4&2\\6&8}$。所有条目 gcd 为 $2$，行列式为 $20$，故 Smith 标准形为 $\diag(2,10)$。于是 $M\cong \Z/2\oplus \Z/10$。
+\item \textbf{解答.} 关系矩阵上三角，行列式为 $48$。经整行列变换可得 Smith 形 $\diag(2,2,12)$，故 $M\cong \Z/2\oplus \Z/2\oplus \Z/12$，也可写成不变因子 $\Z/2\oplus \Z/24$。
+\item \textbf{解答.} 对有限生成阿贝尔群 $A\cong \Z^r\oplus T$，定义 $A_{\mathrm{tor}}=T$。则商 $A/A_{\mathrm{tor}}\cong \Z^r$ 自由。若不用结构定理，也可先取最大线性无关集再证商为挠。
+\item \textbf{解答.} 一方面若群同构，则各 $p$-初部分在同构下对应。另一方面若对每个 $p$ 均同构，则两群作为所有 Sylow 直和也同构，因为有限阿贝尔群是各 $p$-初部分的直和。
+\item \textbf{解答.} Jordan 块大小和为 $5$，最大块长为 $3$，块数为 $\dim\Ker(T-I)=2$，故只能是 $3+2$。所以 Jordan 形为 $J_3(1)\oplus J_2(1)$。
+\end{enumerate}

@@ -1,0 +1,435 @@
+\chapter{表示论初步}
+表示论把群作用线性化： 与其直接研究群 $G$ 如何作用在一个抽象集合上， 不如研究它如何作用在线性空间上。 一旦进入线性代数世界， 特征值、迹、直和分解、投影算子与内积方法都会出现， 这正是表示论在有限群、模形式与数论中如此有力的原因。 对模形式而言， $\SL_2(\Z)$ 对上半平面 $\HH$ 的分式线性作用 诱导了它对函数空间的作用； Hecke 算子则可视为群代数或双陪集代数中的元素所给出的平均算子。 因此，本章一方面建立有限群表示论的基本语言， 另一方面不断提醒读者： 这些构造最终会在模形式空间 $\Mk_k(\Gamma)$ 与 $\Sk_k(\Gamma)$ 中重新出现。
+\section{群表示的定义}
+\begin{definition}
+设 $G$ 是群，$V$ 是域 $\F$ 上的有限维向量空间。 一个\emph{$G$ 在 $V$ 上的线性表示}是一个群同态
+\[
+\rho:G\to \GL(V).
+\]
+若 $g\in G$，则 $\rho(g)$ 是 $V$ 的一个可逆线性变换。 我们也说 $V$ 是一个 $\F[G]$-模。
+\end{definition}
+把表示写成 $G\curvearrowright V$ 往往更直观； 此时记 $g\cdot v=\rho(g)(v)$。 群同态条件正是
+\[
+1\cdot v=v,\qquad (gh)\cdot v=g\cdot(h\cdot v).
+\]
+因此表示不过是“与线性结构相容的群作用”。
+\begin{example}
+平凡表示是 $\rho(g)=\Id_V$。 若 $V=\F$，这给出一维表示。 在复表示论中， 一维表示就是到 $\C^\times$ 的群同态。 例如对循环群 $C_n=\langle x\rangle$， 任一复表示由 $\rho(x)$ 决定， 而 $\rho(x)$ 必须是 $n$ 次单位根。
+\end{example}
+\begin{example}
+若 $G$ 作用在有限集合 $X=\{x_1,\dots,x_m\}$ 上， 则以 $X$ 为基的向量空间 $\F X$ 上有置换表示：
+\[
+\rho(g)e_{x_i}=e_{g x_i}.
+\]
+它把群作用直接翻译为置换矩阵。 对 $S_n$ 作用在 $\{1,\dots,n\}$ 上， 便得到 $n$ 维置换表示。 这个表示包含一维不变子空间 $\F(e_1+\cdots+e_n)$； 商去它之后得到标准表示， 是研究 $S_n$ 的最基本非平凡表示之一。
+\end{example}
+\begin{example}
+二面体群 $D_n=\langle r,s\mid r^n=s^2=1,\ srs=r^{-1}\rangle$ 在平面上的几何作用给出二维实表示
+\[
+\rho(r)=
+\mat{\cos(2\pi/n)&-\sin(2\pi/n)\\ \sin(2\pi/n)&\cos(2\pi/n)},
+\qquad
+\rho(s)=\mat{1&0\\0&-1}.
+\]
+关系 $srs=r^{-1}$ 在矩阵中变成 $\rho(s)\rho(r)\rho(s)=\rho(r)^{-1}$。 这是“用矩阵实现群关系”的典型例子。
+\end{example}
+\begin{definition}
+设 $(\rho,V)$、$(\rho',W)$ 是两个 $G$-表示。 一个线性映射 $T:V\to W$ 称为\emph{$G$-同态}， 若对任意 $g\in G$ 有
+\[
+T\rho(g)=\rho'(g)T.
+\]
+若存在可逆的 $G$-同态 $T$， 则称两个表示\emph{等价}，记为 $V\cong_G W$。
+\end{definition}
+等价表示只是在不同基下写出的同一个表示。 若选定基， 表示就是一个矩阵值同态 $\rho:G\to \GL_n(\F)$； 基变换矩阵 $P$ 把它改写成 $\rho'(g)=P\rho(g)P^{-1}$。 因此表示论中的“分类” 本质上就是在共轭意义下分类这些矩阵值同态。
+\begin{definition}
+设 $V$ 是 $G$-表示。 若子空间 $W\subseteq V$ 满足 $\rho(g)W\subseteq W$ 对每个 $g\in G$ 成立， 则称 $W$ 为 $V$ 的\emph{子表示}或\emph{不变子空间}。
+\end{definition}
+若 $W$ 是子表示， 则限制 $\rho|_W$ 给出 $W$ 上的表示； 同时商空间 $V/W$ 也继承表示
+\[
+\rho_{V/W}(g)(v+W)=\rho(g)v+W.
+\]
+这与群论中的正规子群与商群非常相似， 但在线性情形中可利用补空间与投影来分解表示， 这正是 Maschke 定理的基础。
+\begin{example}
+对置换表示 $\C^n$， 子空间
+\[
+U=\{(x_1,\dots,x_n)\in \C^n\mid x_1+\cdots+x_n=0\}
+\]
+对 $S_n$ 不变， 因为置换不改变坐标和。 于是有直和分解
+\[
+\C^n=\C(1,\dots,1)\oplus U.
+\]
+这说明最自然的表示往往先不是不可约的， 但通过寻找明显不变子空间可以分解它。
+\end{example}
+\begin{remark}
+把表示看成群代数 $\F[G]$-模很有用。 因为
+\[
+\Big(\sum_{g\in G} a_g g\Big)\cdot v=\sum_{g\in G} a_g\rho(g)v
+\]
+定义了 $\F[G]$ 对 $V$ 的作用， 反之任何 $\F[G]$-模都给出表示。 以后谈 $G$-同态、直和、商表示、不可约性时， 其实就是在做模论。
+\end{remark}
+\section{不可约表示与 Maschke 定理}
+\begin{definition}
+非零表示 $V$ 称为\emph{不可约}， 若其仅有两个子表示：$0$ 与 $V$ 本身。 若 $V$ 可写成非平凡直和
+\[
+V=W_1\oplus W_2
+\]
+其中 $W_i$ 均为子表示， 则称 $V$ 可约。
+\end{definition}
+不可约表示是表示论中的“素因子”。 与群论中分解群较难不同， 在线性世界里当特征不整除群阶时， 每个表示都能完全分解成不可约表示的直和。 这就是 Maschke 定理。
+\begin{theorem}[Maschke]
+设 $G$ 为有限群，$V$ 为 $\F$ 上有限维表示。 若 $\Char(\F)\nmid |G|$， 则任一子表示 $W\subseteq V$ 都有 $G$-不变补空间。 因而 $V$ 是不可约表示的直和。
+\end{theorem}
+\begin{proof}
+先任取线性补空间 $V=W\oplus U$， 并令 $P:V\to W$ 为沿 $U$ 的投影。 此时 $P$ 未必与 $G$ 作用交换。 定义平均投影
+\[
+P_G=\frac1{|G|}\sum_{g\in G}\rho(g)P\rho(g)^{-1}.
+\]
+因为 $|G|$ 在 $\F$ 中可逆， 该式有意义。 对任意 $h\in G$，
+\[
+\rho(h)P_G\rho(h)^{-1}
+=\frac1{|G|}\sum_{g\in G}\rho(hg)P\rho(hg)^{-1}=P_G,
+\]
+故 $P_G$ 为 $G$-同态。 又因为 $W$ 不变， 对 $w\in W$ 有 $P(w)=w$， 从而每一项都把 $w$ 送到 $w$， 故 $P_G|_W=\Id_W$。 于是 $\Ker(P_G)$ 是 $G$-不变的， 且
+\[
+V=W\oplus \Ker(P_G).
+\]
+对维数归纳即可得完全可约性。
+\end{proof}
+\begin{remark}
+特征整除 $|G|$ 时结论可能失败。 例如 $G=C_p$ 在 $\F_p^2$ 上由
+\[
+\rho(g)=\mat{1&1\\0&1}
+\]
+给出的表示有不变子空间 $\F_p e_1$， 但不存在不变补空间。 因此模表示论与通常复表示论差异极大。
+\end{remark}
+\begin{proposition}
+若 $V=W_1\oplus\cdots\oplus W_r$ 为不可约表示直和， 则任一子表示 $U\subseteq V$ 也是若干个不可约表示的直和。
+\end{proposition}
+\begin{proof}
+对 $\dim U$ 归纳。 若 $U\neq 0$，取一个不可约子表示 $X\subseteq U$。 由 Maschke 定理， $U=X\oplus U'$， 再对 $U'$ 归纳即可。
+\end{proof}
+完全可约性的直接后果是： 在好特征下， 表示的研究可以分解为两步： 先找出所有不可约表示， 再研究它们出现的重数。 后者由特征标内积精确控制。
+\section{Schur 引理}
+\begin{theorem}[Schur 引理]
+设 $V,W$ 是不可约 $G$-表示， $T:V\to W$ 为 $G$-同态。 则：
+\begin{enumerate}[label=(\arabic*)]
+\item 若 $T\neq 0$，则 $T$ 为同构；
+\item 若 $V=W$ 且底域代数闭，
+则任一 $G$-自同态 $T:V\to V$ 都是数乘 $\lambda\Id_V$。
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+其核 $\Ker T$ 与像 $\Ima T$ 都是子表示。 若 $T\neq 0$，则 $\Ima T\neq 0$， 由 $W$ 不可约得 $\Ima T=W$； 又因 $T$ 不是零映射， $\Ker T\neq V$， 由 $V$ 不可约得 $\Ker T=0$。 故 $T$ 为同构。 若 $V=W$ 且 $\F$ 代数闭， 取 $T$ 的一个特征值 $\lambda$。 则 $T-\lambda\Id$ 不是可逆， 故其核非零。 由上一步， $T-\lambda\Id$ 不可能既非零又为同态， 因此它只能是零映射。
+\end{proof}
+\begin{corollary}
+设 $V=\bigoplus_i m_i V_i$， 其中 $V_i$ 两两不等价且不可约。 则
+\[
+\End_G(V)\cong \prod_i \Mat_{m_i}(D_i),
+\]
+其中 $D_i=\End_G(V_i)$ 是除环。 若 $\F=\C$，则 $D_i=\C$， 故 $\End_G(V)$ 只记录各不可约分量的重数。
+\end{corollary}
+这一结论说明： 如果一个算子与群作用交换， 那么它在不可约分块上必须是“标量”或“矩阵块”。 模形式中的 Hecke 算子正是如此： Hecke 代数与群作用相容时， 便可以在合适的不可约分量上同时对角化。
+\section{特征标}
+\begin{definition}
+设 $(\rho,V)$ 为复表示。 其\emph{特征标}定义为
+\[
+\chi_V(g)=\Tr(\rho(g)).
+\]
+\end{definition}
+迹对共轭不变， 故 $\chi(hgh^{-1})=\chi(g)$。 换言之， 特征标是类函数。 它把矩阵值表示压缩成一个复值函数， 但奇妙的是： 在复表示论中， 特征标几乎保留了全部信息。
+\begin{proposition}
+设 $V,W$ 为复表示。 则
+\begin{enumerate}[label=(\arabic*)]
+\item $\chi_{V\oplus W}=\chi_V+\chi_W$；
+\item $\chi_{V\otimes W}=\chi_V\chi_W$；
+\item $\chi_{V^*}(g)=\chi_V(g^{-1})$；
+\item 等价表示有相同特征标。
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+(1) 来自分块矩阵的迹相加； (2) 来自张量积上线性变换的特征值两两相乘； (3) 因 $\rho^*(g)=(\rho(g^{-1}))^t$； (4) 迹在相似变换下不变。
+\end{proof}
+在有限群上， 复类函数空间带有内积
+\[
+\inner{\varphi}{\psi}=\frac1{|G|}\sum_{g\in G}\varphi(g)\overline{\psi(g)}.
+\]
+这一定义把表示论与 Fourier 分析连接起来。 不可约特征标在此内积下正交。
+\begin{theorem}[特征标正交关系]
+设 $\chi_i,\chi_j$ 为有限群 $G$ 的不可约复特征标， 则
+\[
+\inner{\chi_i}{\chi_j}=\delta_{ij}.
+\]
+更一般地， 若 $V=\bigoplus_i m_i V_i$， 则
+\[
+\chi_V=\sum_i m_i\chi_i,
+\qquad
+m_i=\inner{\chi_V}{\chi_i}.
+\]
+\end{theorem}
+\begin{proof}
+考虑 $\Hom_\C(V_i,V_j)$ 上的共轭作用
+\[
+(g\cdot T)=\rho_j(g)T\rho_i(g)^{-1}.
+\]
+其不变元恰为 $G$-同态， 维数由 Schur 引理等于 $\delta_{ij}$。 另一方面该表示的特征标为 $\chi_j(g)\overline{\chi_i(g)}$， 故不变子空间的维数也等于相应内积。 于是得证。 第二式由展开 $\chi_V$ 并取内积立得。
+\end{proof}
+\begin{corollary}
+有限群的不可约复特征标构成类函数空间的一组标准正交基。 因此不可约表示的个数等于共轭类个数。
+\end{corollary}
+\begin{remark}
+这一定理提供了最有效的计算工具。 若我们已经猜到若干表示， 只需算出它们的特征标， 再用内积检验正交与维数平方和
+\[
+\sum_i (\dim V_i)^2=|G|
+\]
+便可确认是否找齐了所有不可约表示。
+\end{remark}
+\section{特征标表的计算：$S_3,S_4,D_n$}
+对小群， 特征标表可以完全手算。 这既是训练， 也是理解正交关系最直接的方式。
+\subsection*{$S_3$ 的特征标表}
+$S_3$ 有三个共轭类： $1$、换位 $(12)$、三循环 $(123)$， 类大小分别为 $1,3,2$。 因此有三个不可约表示。 两个一维表示是平凡表示与符号表示。 第三个由置换表示 $\C^3=\C\oplus U$ 中的二维标准表示给出。 其特征标易算为 $2,0,-1$。 于是
+\[
+\begin{array}{c|ccc}
+ & 1 & (12) & (123)\\ \hline
+\chi_{\mathrm{triv}} & 1 & 1 & 1\\
+\chi_{\mathrm{sgn}} & 1 & -1 & 1\\
+\chi_{\mathrm{std}} & 2 & 0 & -1
+\end{array}
+\]
+且 $1^2+1^2+2^2=6$。
+\subsection*{$S_4$ 的特征标表}
+$S_4$ 的共轭类由循环类型决定：
+\[
+1,\\ (12),\\ (123),\\ (12)(34),\\ (1234)
+\]
+类大小分别为 $1,6,8,3,6$。 因此有五个不可约表示。 由分拆理论可知其维数为 $1,1,2,3,3$。 其中两个一维表示是平凡与符号表示； 一个三维表示来自置换表示 $\C^4=\C\oplus U$； 另一个三维表示是其与符号表示的张量积； 二维表示可由正交关系求出。 完整特征标表为
+\[
+\begin{array}{c|ccccc}
+ & 1 & (12) & (123) & (12)(34) & (1234)\\ \hline
+\chi_1 & 1 & 1 & 1 & 1 & 1\\
+\chi_2 & 1 & -1 & 1 & 1 & -1\\
+\chi_3 & 2 & 0 & -1 & 2 & 0\\
+\chi_4 & 3 & 1 & 0 & -1 & -1\\
+\chi_5 & 3 & -1 & 0 & -1 & 1
+\end{array}
+\]
+其中 $\chi_5=\chi_4\chi_2$。 读者应练习用行正交与列正交关系重建此表。
+\subsection*{$D_n$ 的特征标表}
+设 $D_n=\langle r,s\rangle$，$|D_n|=2n$。 其复表示可分为一维表示与二维表示两类。 当 $n$ 为奇数时， 共轭类为
+\[
+\{1\},\ \{r^k,r^{-k}\}\ (1\le k\le (n-1)/2),\ \{sr^j:0\le j<n\}.
+\]
+此时有两个一维表示： $\chi_+$ 与 $\chi_-$， 其中 $\chi_-(s)=-1,\chi_-(r)=1$。 此外对 $1\le m\le (n-1)/2$， 有二维表示 $\rho_m$，其特征标满足
+\[
+\chi_m(r^k)=2\cos\frac{2\pi mk}{n},
+\qquad
+\chi_m(sr^j)=0.
+\]
+当 $n$ 为偶数时， 除上述二维表示外， 还有四个一维表示， 因为可令 $r\mapsto \pm 1$，$s\mapsto \pm 1$， 且关系 $srs=r^{-1}$ 不再额外限制。 完整表可按类
+\[
+\{1\},\ \{r^{n/2}\},\ \{r^k,r^{-k}\},\ \{sr^{2j}\},\ \{sr^{2j+1}\}
+\]
+来写。 二维表示仍由
+\[
+\rho_m(r)=
+\mat{\zeta_n^m&0\\0&\zeta_n^{-m}},
+\qquad
+\rho_m(s)=\mat{0&1\\1&0}
+\]
+给出， 其中 $1\le m< n/2$。 这组公式事实上已经构成 $D_n$ 的完整特征标表。
+\section{$\GL_2$ 与 $\SL_2$ 的表示：有限域情形与模形式动机}
+在模形式理论中， $\SL_2(\Z)$ 通过
+\[
+\gamma z=\frac{az+b}{cz+d}
+\qquad
+(\gamma=\mat{a&b\\ c&d})
+\]
+作用在 $\HH$ 上。 权 $k$ 模形式满足
+\[
+(f|_k\gamma)(z)=(cz+d)^{-k}f(\gamma z)=f(z).
+\]
+这里的权因子 $(cz+d)^{-k}$ 可以看作标准二维表示及其对称幂的影子。 为了先建立有限维直觉， 我们先研究 $\GL_2$ 与 $\SL_2$ 在线性空间上的代数表示。
+\begin{example}
+标准表示就是 $\GL_2(\F)$ 对 $\F^2$ 的自然作用。 若基为 $X,Y$， 则矩阵 $g=\mat{a&b\\ c&d}$ 作用在一次齐次多项式上为
+\[
+g\cdot (uX+vY)=(au+bv)X+(cu+dv)Y.
+\]
+更一般地， $\Sym^k(\F^2)$ 可视为次数 $k$ 的齐次多项式空间， 基为 $X^k,X^{k-1}Y,\dots,Y^k$。 它给出 $k+1$ 维表示。
+\end{example}
+\begin{proposition}
+对任意域 $\F$， $\det: \GL_2(\F)\to \F^\times$ 给出一维表示； 而 $\SL_2(\F)$ 的标准表示具有对称幂表示
+\[
+\Sym^k: \SL_2(\F)\to \GL(\Sym^k(\F^2)).
+\]
+\end{proposition}
+\begin{proof}
+行列式是群同态， 故给出一维表示。 对称幂来自张量幂 $(\F^2)^{\otimes k}$ 上的作用与对称群换位作用可交换， 从而在对称张量商上诱导作用。 写成多项式就是变量代换
+\[
+(g\cdot P)(X,Y)=P((X,Y)g).
+\]
+\end{proof}
+若 $\F=\F_q$， 则群 $\GL_2(\F_q)$ 有很多有限维复表示。 其构造大致分为： 由 Borel 子群诱导得到的主系列表示， 由行列式扭曲得到的一维表示， 以及在某些情形下来自椭圆环面或 cuspidal 数据的表示。 本章不追求完整分类， 只强调两个与模形式密切相关的现象。 第一， $\SL_2(\F_p)$ 是 $\SL_2(\Z)$ 模 $p$ 约化后的有限商， 因此模 $p$ 表示常常编码了模形式的同余信息。 第二， $\Sym^{k-2}(\F_p^2)$ 是权 $k$ 模形式模 $p$ 理论中的自然系数系统， 它控制了模符号、上同调与 Galois 表示中的权重现象。
+\begin{example}
+设 $p$ 为素数。 $\SL_2(\F_p)$ 作用在 $\F_p[X,Y]_{k}$ 上， 其中下标表示次数为 $k$ 的齐次多项式。 若 $k<p$， 这个表示保留很多“特征零中的形状”； 而当 $k\ge p$ 时， Frobenius 扭曲与不可约性会变得更微妙。 这正是模表示论开始显著影响模形式的地方。
+\end{example}
+\section{Hecke 算子与表示：群代数观点}
+设 $G$ 为群，$\Gamma\subseteq G$ 为子群。 若 $G$ 作用在某个函数空间或上同调空间上， 则群代数元素 $\sum a_g g$ 作用为加权平均算子。 Hecke 算子正是这种思想的系统化。 在最简单的有限群模型中， 设 $V$ 为 $G$-表示， 则群代数 $\C[G]$ 中元素
+\[
+T=\sum_{g\in G} a_g g
+\]
+作用在 $V$ 上为
+\[
+T\cdot v=\sum_{g\in G} a_g\rho(g)v.
+\]
+若 $T$ 位于中心 $Z(\C[G])$， 则 $T$ 与整个 $G$ 的作用交换。 由 Schur 引理， 它在每个不可约表示上都按标量作用。 这正是中心元可由特征标同时对角化的根本原因。 对模形式， 令
+\[
+G=\GL_2^+(\Q),\qquad \Gamma=\SL_2(\Z).
+\]
+双陪集
+\[
+\Gamma \alpha \Gamma
+\]
+通过分解成有限个右陪集
+\[
+\Gamma\alpha\Gamma=\bigsqcup_i \Gamma \alpha_i
+\]
+定义算子
+\[
+T_{\Gamma\alpha\Gamma}f=\sum_i f|_k\alpha_i.
+\]
+当 $\alpha=\mat{1&0\\0&n}$ 时， 得到经典的 Hecke 算子 $T_n$。 因此 Hecke 算子可以看作双陪集代数中的元素， 其乘法对应算子复合。
+\begin{remark}
+表示论视角的重要性在于： Hecke 算子并不是凭空出现的神秘公式， 而是“群作用 + 平均 + 双陪集分解”的自然产物。 这也是以后理解自动表示与 Hecke 特征值的最短路径。
+\end{remark}
+\section*{习题}
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 证明：平凡表示的任意子空间都是子表示。
+\item \basic 设 $C_n=\langle x\rangle$，证明一个复一维表示由 $\rho(x)$ 唯一决定，且 $\rho(x)^n=1$。
+\item \basic 写出 $C_4$ 的所有复一维表示。
+\item \basic 设 $G$ 作用在有限集合 $X$ 上，证明置换表示 $\C X$ 的特征标在 $g$ 处等于 $g$ 在 $X$ 上的不动点个数。
+\item \basic 对 $S_3$ 的自然置换表示 $\C^3$，求其特征标。
+\item \basic 证明 $\C(1,1,1)$ 是上题表示的子表示。
+\item \basic 求上题商表示的特征标。
+\item \basic 证明两个等价表示有相同维数。
+\item \basic 设 $T:V\to W$ 为 $G$-同态，证明 $\Ker T$ 与 $\Ima T$ 都是子表示。
+\item \basic 给出一个二维可约表示的具体例子。
+\item \basic 证明：若 $W_1,W_2$ 是子表示，则 $W_1\cap W_2$ 与 $W_1+W_2$ 也是子表示。
+\item \basic 对二面体群 $D_4$ 的平面几何表示，计算旋转 $r$ 与反射 $s$ 的迹。
+\item \basic 证明：阿贝尔群的任意复不可约表示都是一维的。
+\item \basic 说明为何特征标是类函数。
+\item \basic 证明 $\chi_{V\oplus W}=\chi_V+\chi_W$。
+\item \basic 证明 $\chi_{V\otimes W}=\chi_V\chi_W$。
+\item \basic 设 $V$ 是一维表示，证明 $\chi_V(g^{-1})=\chi_V(g)^{-1}$。
+\item \basic 写出 $S_3$ 的符号表示特征标。
+\item \basic 验证 $S_3$ 三个不可约特征标两两正交。
+\item \basic 证明不可约表示的维数平方和等于群阶对 $S_3$ 成立。
+\item \basic 设 $G$ 有两个共轭类，证明 $G\cong C_2$。
+\item \basic 证明群代数中心中的元素在每个不可约复表示上按标量作用。
+\item \basic 写出 $D_n$ 的一个二维复表示 $\rho_m$。
+\item \basic 计算 $\rho_m(r^k)$ 的迹。
+\item \basic 解释为什么 Hecke 算子可以视为某种平均算子。
+\end{enumerate}
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 设 $V$ 是有限群 $G$ 的表示，证明不变向量子空间 $V^G=\{v:g\cdot v=v\}$ 是子表示。
+\item \medium 用平均法证明：若 $\Char(\F)\nmid |G|$，则任意表示都可赋予一个 $G$-不变内积。
+\item \medium 用上一题重新证明 Maschke 定理。
+\item \medium 设 $G=C_n$，求其全部不可约复特征标，并写出特征标表。
+\item \medium 设 $V$ 为 $S_3$ 的二维标准表示，求 $V\otimes \sgn$ 的特征标，并判断是否与 $V$ 等价。
+\item \medium 证明：若 $V$ 不可约，则 $V^*$ 也不可约。
+\item \medium 设 $V,W$ 不可约且不等价，证明 $\Hom_G(V,W)=0$。
+\item \medium 设 $V$ 是复表示，证明 $\inner{\chi_V}{\chi_V}\in \N$，并解释其与不可约分解的关系。
+\item \medium 设 $G$ 为有限群，$\chi$ 为正则表示的特征标，求 $\chi(g)$。
+\item \medium 用正则表示证明 $\sum_i (\dim V_i)^2=|G|$。
+\item \medium 证明 $S_4$ 中五个共轭类的大小分别为 $1,6,8,3,6$。
+\item \medium 由 $S_4$ 的置换表示 $\C^4$ 构造一个三维表示并求其特征标。
+\item \medium 用正交关系求出 $S_4$ 二维不可约表示的特征标。
+\item \medium 证明 $D_n$ 的二维表示 $\rho_m$ 在 $m\not\equiv 0,n/2$ 时不可约。
+\item \medium 当 $n$ 为奇数时，证明 $D_n$ 恰有两个一维表示。
+\item \medium 当 $n$ 为偶数时，证明 $D_n$ 恰有四个一维表示。
+\item \medium 设 $n$ 为奇数，验证 $D_n$ 的维数平方和公式。
+\item \medium 设 $n$ 为偶数，验证 $D_n$ 的维数平方和公式。
+\item \medium 证明：若 $Z(\C[G])$ 的维数为 $r$，则 $G$ 有 $r$ 个不可约复表示。
+\item \medium 设 $V=\Sym^2(\C^2)$，写出 $\GL_2$ 在基 $X^2,XY,Y^2$ 下的作用矩阵公式。
+\item \medium 设 $g=\mat{a&b\\ c&d}\in \SL_2(\F)$，求 $g$ 在 $\Sym^k(\F^2)$ 上对单项式 $X^{k-i}Y^i$ 的作用。
+\item \medium 证明行列式给出 $\GL_2(\F_q)$ 的一维表示，并求其核。
+\item \medium 设 $T=\sum_{g\in G} g\in \C[G]$，求它在平凡表示与任一非平凡不可约表示上的作用。
+\item \medium 设 $f:X\to Y$ 为有限 $G$-集合之间的 $G$-映射，证明诱导线性映射 $\C X\to \C Y$ 是 $G$-同态。
+\item \medium 说明双陪集算子为什么通常与左 $\Gamma$-作用交换。
+\end{enumerate}
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 设 $G$ 为有限群，证明任一复表示同构于不可约表示直和的方式在重数意义下唯一。
+\item \hard 证明：若两个复表示有相同特征标，则它们等价。
+\item \hard 设 $G$ 非阿贝尔，证明其必有维数大于 $1$ 的不可约复表示。
+\item \hard 对 $S_4$，用列正交关系验证上文特征标表的正确性。
+\item \hard 设 $D_p$，其中 $p$ 为奇素数，完整写出其特征标表。
+\item \hard 证明：对有限群 $G$ 与共轭类 $C$，元素 $z_C=\sum_{g\in C} g\in Z(\C[G])$。
+\item \hard 设 $z_C$ 如上，证明其在不可约表示 $V$ 上作用为标量 $\dfrac{|C|\chi_V(C)}{\dim V}$。
+\item \hard 证明 $\Sym^{k}(\C^2)$ 作为 $\SL_2(\C)$-表示不可约。
+\item \hard 设 $G$ 作用在陪集空间 $G/H$ 上，证明置换表示中平凡表示出现一次，且其余部分维数为 $[G:H]-1$。
+\item \hard 从群代数观点解释为什么 Hecke 代数的交换性会导致 Hecke 本征基的存在。
+\end{enumerate}
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} 平凡表示中每个 $g$ 都作用为恒等，因此任意子空间都自动对群作用不变。
+\item \textbf{解答.} 因 $C_n$ 由 $x$ 生成，群同态由 $x$ 的像决定；又 $x^n=1$，故 $\rho(x)^n=1$。
+\item \textbf{解答.} 取 $i=\sqrt{-1}$，四个表示为 $x\mapsto 1,-1,i,-i$。
+\item \textbf{解答.} 在基 $\{e_x\}$ 下，$\rho(g)$ 是置换矩阵，其迹等于被 $g$ 固定的基向量个数，即 $|\Fix_X(g)|$。
+\item \textbf{解答.} 对 $1,(12),(123)$ 的不动点数分别是 $3,1,0$，故特征标为 $3,1,0$。
+\item \textbf{解答.} 置换只重新排列坐标，所以 $(1,1,1)$ 仍被送到自身，故所张子空间不变。
+\item \textbf{解答.} 商表示等于 $\chi_{\C^3}-\chi_{\mathrm{triv}}$，故特征标为 $2,0,-1$。
+\item \textbf{解答.} 等价表示由可逆线性变换连接，故底层向量空间维数必相同。
+\item \textbf{解答.} 若 $v\in\Ker T$，则 $T(gv)=gT(v)=0$；若 $w=T(v)\in\Ima T$，则 $gw=T(gv)\in\Ima T$。
+\item \textbf{解答.} 例如 $C_2=\{1,g\}$ 在 $\C^2$ 上由 $\rho(g)=\diag(1,-1)$ 作用，它分解为两个一维子表示。
+\item \textbf{解答.} 对 $v\in W_1\cap W_2$ 与 $g\in G$，有 $gv\in W_1\cap W_2$；对 $v=w_1+w_2$，有 $gv=gw_1+gw_2\in W_1+W_2$。
+\item \textbf{解答.} 旋转 $r$ 的矩阵是 $90^\circ$ 旋转，迹为 $0$；反射 $s$ 可取为 $\diag(1,-1)$，迹也为 $0$。
+\item \textbf{解答.} 阿贝尔群中所有 $\rho(g)$ 两两交换；若 $V$ 不可约，取某个 $\rho(g)$ 的特征空间，它对全群不变，故只能是一维全空间。
+\item \textbf{解答.} 因 $\chi(hgh^{-1})=\Tr(\rho(h)\rho(g)\rho(h)^{-1})=\Tr(\rho(g))$。
+\item \textbf{解答.} 直和表示的矩阵是分块对角矩阵，故迹相加。
+\item \textbf{解答.} 若 $A,B$ 的特征值分别为 $\lambda_i,\mu_j$，则 $A\otimes B$ 的特征值为 $\lambda_i\mu_j$，故迹为乘积。
+\item \textbf{解答.} 一维时 $\chi_V(g)=\rho(g)$，故 $\chi_V(g^{-1})=\rho(g^{-1})=\rho(g)^{-1}$。
+\item \textbf{解答.} 符号表示在偶置换上取 $1$，奇置换上取 $-1$，故表为 $1,-1,1$。
+\item \textbf{解答.} 直接算内积：$\frac16(1+3+2)=1$，$\frac16(1+3+2)=1$，$\frac16(4+0+2)=1$，交叉项都为 $0$。
+\item \textbf{解答.} 因 $1^2+1^2+2^2=6=|S_3|$。
+\item \textbf{解答.} 共轭类数等于不可约表示数；若仅两个共轭类，则有两个不可约表示，维数平方和给出 $1^2+1^2=|G|$，故 $|G|=2$。
+\item \textbf{解答.} 若 $z\in Z(\C[G])$，则 $\rho(z)$ 与所有 $\rho(g)$ 交换；在不可约复表示上由 Schur 引理知 $\rho(z)=\lambda\Id$。
+\item \textbf{解答.} 取 $\rho_m(r)=\diag(\zeta_n^m,\zeta_n^{-m})$，$\rho_m(s)=\mat{0&1\\1&0}$ 即可。
+\item \textbf{解答.} $\Tr(\rho_m(r^k))=\zeta_n^{mk}+\zeta_n^{-mk}=2\cos(2\pi mk/n)$。
+\item \textbf{解答.} 因它把若干群作用的结果求和，本质上是对某个陪集或双陪集做平均。
+\item \textbf{解答.} 若 $v\in V^G$，则对任意 $h\in G$ 有 $h\cdot v=v$，故 $V^G$ 对作用稳定，是子表示。
+\item \textbf{解答.} 任取内积 $(\ ,\ )$，定义 $\inner{v}{w}_G=\frac1{|G|}\sum_g (gv,gw)$；它非退化且满足 $\inner{hv}{hw}_G=\inner{v}{w}_G$。
+\item \textbf{解答.} 对子表示 $W$ 取其关于 $G$-不变内积的正交补 $W^\perp$；因内积不变，$W^\perp$ 亦不变，故 $V=W\oplus W^\perp$。
+\item \textbf{解答.} 对 $0\le j<n$，令 $\chi_k(x^j)=\exp(2\pi i kj/n)$，$k=0,\dots,n-1$；这给出全部不可约特征标。
+\item \textbf{解答.} $\chi_{V\otimes \sgn}=(2,0,-1)\cdot(1,-1,1)=(2,0,-1)$，故与 $V$ 等价。
+\item \textbf{解答.} 若 $W\subseteq V^*$ 为非零子表示，则其湮没子 $W^\perp\subseteq V$ 是真子表示；由 $V$ 不可约得 $W^\perp=0$，故 $W=V^*$。
+\item \textbf{解答.} 由 Schur 引理，非零 $G$-同态必为同构；不等价不可约表示间无同构，故同态空间为 $0$。
+\item \textbf{解答.} 若 $V=\bigoplus_i m_iV_i$，则 $\inner{\chi_V}{\chi_V}=\sum_i m_i^2$，故是非负整数，且测量重数平方和。
+\item \textbf{解答.} 正则表示中仅单位元固定所有基向量，故 $\chi(1)=|G|$，$g\neq 1$ 时 $\chi(g)=0$。
+\item \textbf{解答.} 若正则表示分解为 $\bigoplus_i m_iV_i$，则由内积得 $m_i=\dim V_i$，比较总维数即得公式。
+\item \textbf{解答.} $S_4$ 的共轭类按循环类型计数：单位元 $1$ 个；换位 $\binom42=6$ 个；三循环 $4\cdot2=8$ 个；双换位 $3$ 个；四循环 $(4-1)!=6$ 个。
+\item \textbf{解答.} 由 $\C^4=\C\oplus U$，置换表示特征标为 $4,2,1,0,0$，减去平凡表示得 $U$ 的特征标 $3,1,0,-1,-1$。
+\item \textbf{解答.} 设二维特征标为 $(2,a,b,c,d)$，与两维三维已知行正交并满足范数为 $1$，解得 $(2,0,-1,2,0)$。
+\item \textbf{解答.} 若有一维不变子空间，则 $r$ 在其上取特征值 $\zeta_n^{\pm m}$，而 $srs=r^{-1}$ 强迫同时出现两特征值；除非它们相等，即 $2m\equiv0$，否则不可约。
+\item \textbf{解答.} 一维表示由 $r,s$ 的像决定。因 $srs=r^{-1}$ 且一维时左右相同，得 $\rho(r)=\rho(r)^{-1}$，故 $\rho(r)=\pm1$；当 $n$ 奇时又有 $\rho(r)^n=1$，只能取 $1$，而 $s$ 可取 $\pm1$。
+\item \textbf{解答.} 当 $n$ 偶时，$\rho(r)=\pm1$ 都满足 $\rho(r)^n=1$，$\rho(s)=\pm1$ 任选，共四个。
+\item \textbf{解答.} 奇数情形有两个一维与 $(n-1)/2$ 个二维，故平方和为 $2+4\cdot\frac{n-1}2=2n$。
+\item \textbf{解答.} 偶数情形有四个一维与 $n/2-1$ 个二维，故平方和为 $4+4(\frac n2-1)=2n$。
+\item \textbf{解答.} $Z(\C[G])$ 恰是类函数在正则表示中的卷积版本，其维数等于共轭类数；不可约表示数也等于共轭类数，故相等。
+\item \textbf{解答.} 对 $g=\mat{a&b\\c&d}$，有 $g\cdot X=aX+cY$，$g\cdot Y=bX+dY$，故在基 $X^2,XY,Y^2$ 下矩阵为 $\mat{a^2&ab&b^2\\2ac&ad+bc&2bd\\ c^2&cd&d^2}$。
+\item \textbf{解答.} 有 $g\cdot X^{k-i}Y^i=(aX+cY)^{k-i}(bX+dY)^i$，展开后按单项式系数读出即可。
+\item \textbf{解答.} $\det$ 为群同态；其核是行列式为 $1$ 的矩阵群，即 $\SL_2(\F_q)$。
+\item \textbf{解答.} 在平凡表示上，每个 $g$ 都作用为 $1$，故 $T$ 作用为乘以 $|G|$；在非平凡不可约表示上，$T$ 与群作用交换且像落在不变向量中，而无非零不变向量，故作用为 $0$。
+\item \textbf{解答.} 线性延拓满足 $\widetilde f(g\cdot e_x)=e_{f(gx)}=e_{gf(x)}=g\cdot e_{f(x)}$，故是 $G$-同态。
+\item \textbf{解答.} 因左乘任意 $\gamma\in\Gamma$ 只改变双陪集分解中的代表元，不改变对应右陪集集合，所以算子与左 $\Gamma$-作用交换。
+\item \textbf{解答.} 设两种分解为 $\bigoplus_i m_iV_i$ 与 $\bigoplus_i n_iV_i$。对任意 $V_j$ 取特征标内积得 $m_j=n_j$，故重数唯一。
+\item \textbf{解答.} 将二者分解为不可约直和，特征标相等则与每个不可约特征标取内积得到相同重数，故表示等价。
+\item \textbf{解答.} 若所有不可约表示都一维，则 $|G|$ 个元素的正则表示分解成一维表示，说明群代数交换，从而 $G$ 阿贝尔，矛盾。
+\item \textbf{解答.} 对每个共轭类 $C$ 计算列内积 $\sum_i \chi_i(C)\overline{\chi_i(C')}$，可得当 $C=C'$ 时等于 $|G|/|C|$，否则为 $0$，逐项代入上表即可验证。
+\item \textbf{解答.} 当 $p$ 奇素数时，共轭类为 $\{1\}$、$\{r^k,r^{-k}\}$、所有反射；两条一维行分别是 $(1,1,\dots,1;1)$ 与 $(1,1,\dots,1;-1)$，其余 $(p-1)/2$ 条二维行在 $r^k$ 上取 $2\cos(2\pi mk/p)$、在反射类上取 $0$。
+\item \textbf{解答.} 对任意 $h\in G$，有 $hz_Ch^{-1}=\sum_{g\in C} hgh^{-1}$；共轭把类 $C$ 置换到自身，故仍为 $z_C$。
+\item \textbf{解答.} 由 Schur 引理，$z_C$ 在 $V$ 上为 $\lambda\Id$。取迹得 $\lambda\dim V=\Tr(\rho(z_C))=\sum_{g\in C}\chi_V(g)=|C|\chi_V(C)$。
+\item \textbf{解答.} 设 $W\subseteq \Sym^k(\C^2)$ 非零且 $\SL_2(\C)$-不变。取 $W$ 中最高次项最多的多项式，利用上三角幺幺元与对角元作用可逐步推出 $X^k$ 属于 $W$，再用下三角幺幺元产生全部基向量，故 $W$ 为全空间。
+\item \textbf{解答.} 常值函数张成平凡子表示。其补空间可取坐标和为 $0$ 的函数空间，维数为 $[G:H]-1$。
+\item \textbf{解答.} 若 Hecke 代数由彼此交换的算子组成，并在带内积的有限维空间上由正规算子表示，则它们可同时对角化，于是存在由共同特征向量组成的本征基；表示论上这反映了交换代数的简单模是一维。
+\end{enumerate}

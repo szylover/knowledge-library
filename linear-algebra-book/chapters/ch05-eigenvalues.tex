@@ -1,0 +1,474 @@
+\chapter{特征值与不变子空间}
+
+本章进入算子理论的核心。
+与传统路线不同，我们\textbf{不使用特征多项式，也不使用行列式}。
+特征值的存在、上三角化、可对角化等结论，
+都将从不变子空间与多项式作用于算子的观点出发得到。
+
+设 $V$ 是有限维向量空间，$T\in\End(V)$。
+如果没有特别说明，本章默认 $V\neq\{0\}$。
+
+\section{不变子空间}
+
+\begin{definition}
+子空间 $U\subseteq V$ 称为 $T$-\emph{不变}，
+如果对每个 $u\in U$ 都有 $Tu\in U$。
+等价地，$T(U)\subseteq U$。
+\end{definition}
+
+\begin{example}
+零子空间 $\{0\}$ 与整个空间 $V$ 总是 $T$-不变的。
+\end{example}
+
+\begin{example}
+若 $v\neq 0$ 且 $Tv=\lambda v$，
+则一维子空间 $\spn(v)$ 是 $T$-不变的。
+反过来，若 $\spn(v)$ 是 $T$-不变的，
+则必有某个标量 $\lambda$ 使 $Tv=\lambda v$。
+因此一维不变子空间正是特征向量张成的子空间。
+\end{example}
+
+\begin{proposition}
+若 $U_1,U_2\subseteq V$ 都是 $T$-不变子空间，
+则 $U_1+U_2$ 与 $U_1\cap U_2$ 也是 $T$-不变的。
+\end{proposition}
+
+\begin{proof}
+若 $u_1\in U_1,u_2\in U_2$，则
+\[
+T(u_1+u_2)=Tu_1+Tu_2\in U_1+U_2,
+\]
+所以 $U_1+U_2$ 不变。
+若 $u\in U_1\cap U_2$，则 $Tu\in U_1$ 且 $Tu\in U_2$，
+故 $Tu\in U_1\cap U_2$。
+\end{proof}
+
+\begin{proposition}
+设 $U$ 是 $T$-不变子空间。
+则限制映射
+\[
+T|_U:U\to U
+\]
+是 $U$ 上的线性算子。
+\end{proposition}
+
+\begin{proof}
+由不变性，$T(u)\in U$ 对每个 $u\in U$ 成立，
+因此 $T|_U$ 的值域确在 $U$ 中。
+线性性由 $T$ 的线性性继承。
+\end{proof}
+
+\section{特征值与特征向量}
+
+\begin{definition}
+标量 $\lambda\in\F$ 称为 $T$ 的\emph{特征值}，
+如果算子 $T-\lambda\Id$ 不可逆。
+非零向量 $v\in V$ 称为对应于 $\lambda$ 的\emph{特征向量}，
+如果
+\[
+Tv=\lambda v.
+\]
+\end{definition}
+
+\begin{proposition}
+对 $\lambda\in\F$，下列条件等价：
+\begin{enumerate}[label=(\alph*)]
+\item $\lambda$ 是 $T$ 的特征值；
+\item 存在非零向量 $v$ 使 $Tv=\lambda v$；
+\item $\nul(T-\lambda\Id)\neq\{0\}$；
+\item $\range(T-\lambda\Id)\neq V$。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a)$\Leftrightarrow$(c)$\Leftrightarrow$(d) 来自有限维空间上线性算子“可逆、单射、满射”等价。
+而 (b) 与 (c) 只是把
+\[
+(T-\lambda\Id)v=0
+\]
+改写为 $Tv=\lambda v$。
+\end{proof}
+
+\begin{definition}
+对应于特征值 $\lambda$ 的\emph{特征空间}定义为
+\[
+E(\lambda,T)=\nul(T-\lambda\Id).
+\]
+\end{definition}
+
+\begin{proposition}
+$E(\lambda,T)$ 是 $V$ 的子空间；
+当且仅当 $\lambda$ 是特征值时，它非零。
+\end{proposition}
+
+\begin{proof}
+它是线性映射 $T-\lambda\Id$ 的核，因此是子空间。
+由定义，$\lambda$ 是特征值恰当且仅当这个核非零。
+\end{proof}
+
+\begin{lemma}
+属于不同特征值的特征向量线性无关。
+\end{lemma}
+
+\begin{proof}
+设 $v_1,\dots,v_m$ 分别对应互异特征值 $\lambda_1,\dots,\lambda_m$。
+对 $m$ 归纳。
+若
+\[
+a_1v_1+\cdots+a_mv_m=0,
+\]
+施以 $T-\lambda_m\Id$ 得
+\[
+a_1(\lambda_1-\lambda_m)v_1+\cdots+a_{m-1}(\lambda_{m-1}-\lambda_m)v_{m-1}=0.
+\]
+由归纳假设，$a_1=\cdots=a_{m-1}=0$，再回原式得 $a_m=0$。
+\end{proof}
+
+\begin{corollary}
+若 $\lambda_1,\dots,\lambda_m$ 互异，
+则特征空间之和
+\[
+E(\lambda_1,T)+\cdots+E(\lambda_m,T)
+\]
+是直和。
+\end{corollary}
+
+\begin{proof}
+从每个特征空间取一组基，这些基向量都对应互异特征值，
+故总列表线性无关。
+\end{proof}
+
+\section{复向量空间上的特征值存在性}
+
+这一节是 LADR 风格的关键转折点。
+我们先证明某个非零多项式一定会把算子“杀掉”。
+
+\begin{lemma}
+设 $V$ 为有限维向量空间，$\dim V=n$，$T\in\End(V)$。
+则存在非零多项式 $p\in\F[x]$，使得
+\[
+p(T)=0.
+\]
+\end{lemma}
+
+\begin{proof}
+空间 $\End(V)$ 的维数为 $n^2$。
+因此 $\Id,T,T^2,\dots,T^{n^2}$ 这 $n^2+1$ 个向量在 $\End(V)$ 中线性相关。
+故存在不全为零的标量 $a_0,\dots,a_{n^2}$ 使
+\[
+a_0\Id+a_1T+\cdots+a_{n^2}T^{n^2}=0.
+\]
+令
+\[
+p(x)=a_0+a_1x+\cdots+a_{n^2}x^{n^2},
+\]
+则 $p\neq 0$ 且 $p(T)=0$。
+\end{proof}
+
+\begin{theorem}
+设 $V$ 是非零有限维复向量空间，$T\in\End(V)$。
+则 $T$ 至少有一个特征值。
+\end{theorem}
+
+\begin{proof}
+由上引理，存在非零 $p\in\C[x]$ 使 $p(T)=0$。
+由代数基本定理，
+\[
+p(x)=c(x-\lambda_1)\cdots(x-\lambda_m)
+\]
+其中 $c\neq 0$。
+于是
+\[
+0=p(T)=c(T-\lambda_1\Id)\cdots(T-\lambda_m\Id).
+\]
+若每个 $T-\lambda_j\Id$ 都可逆，则其乘积可逆，不可能等于零算子。
+故至少有一个 $T-\lambda_j\Id$ 不可逆。
+所以某个 $\lambda_j$ 是特征值。
+\end{proof}
+
+\begin{remark}
+请注意：这里没有使用特征多项式。
+特征值的存在性来自“某个多项式在 $T$ 上为零”以及复系数多项式可分解为一次因子。
+\end{remark}
+
+\section{上三角矩阵}
+
+\begin{theorem}
+设 $V$ 是非零有限维复向量空间，$T\in\End(V)$。
+则 $V$ 存在一组基，使得 $T$ 在这组基下的矩阵是上三角矩阵。
+\end{theorem}
+
+\begin{proof}
+对 $n=\dim V$ 归纳。
+当 $n=1$ 时显然。
+设 $n>1$ 且结论对维数 $n-1$ 成立。
+由上一节，$T$ 有特征值 $\lambda$，取对应特征向量 $v_1\neq 0$。
+于是 $U=\spn(v_1)$ 是一维 $T$-不变子空间。
+
+考虑商空间 $V/U$ 上诱导算子
+\[
+\widetilde T(v+U)=Tv+U.
+\]
+它定义良好，因为 $U$ 不变。
+$V/U$ 的维数为 $n-1$，故由归纳假设，存在 $V/U$ 的一组基
+\[
+v_2+U,\dots,v_n+U
+\]
+使 $\widetilde T$ 在该基下为上三角。
+于是
+\[
+Tv_k\in \spn(v_1,\dots,v_k)
+\quad (k=2,\dots,n),
+\]
+而 $Tv_1=\lambda v_1$。
+因此在基 $v_1,\dots,v_n$ 下，$T$ 的矩阵为上三角。
+\end{proof}
+
+\begin{corollary}
+设 $V$ 为复向量空间，$T\in\End(V)$。
+则 $T$ 的对角线上元素可取为 $T$ 的全部特征值（按重复出现计）。
+\end{corollary}
+
+\begin{proof}
+在上三角基下，若对角线上第 $k$ 个元素为 $a_{kk}$，
+则
+\[
+(T-a_{kk}\Id)v_k\in \spn(v_1,\dots,v_{k-1}),
+\]
+特别地，限制到商空间 $\spn(v_1,\dots,v_k)/\spn(v_1,\dots,v_{k-1})$ 上，
+它作用为零，故这些对角元正是逐层得到的特征值。
+反过来，上三角矩阵的任何特征值都必须出现在对角线上，
+因为若 $T-\lambda\Id$ 可逆，则其上三角矩阵对角线都非零；
+而若某个对角元为零，则它不可能可逆。
+\end{proof}
+
+\section{对角化}
+
+\begin{definition}
+若 $V$ 存在一组由 $T$ 的特征向量组成的基，
+则称 $T$ \emph{可对角化}。
+等价地，$T$ 在某组基下有对角矩阵表示。
+\end{definition}
+
+\begin{theorem}
+设 $\lambda_1,\dots,\lambda_m$ 是 $T$ 的互异特征值。
+则下列条件等价：
+\begin{enumerate}[label=(\alph*)]
+\item $T$ 可对角化；
+\item $V=E(\lambda_1,T)\oplus\cdots\oplus E(\lambda_m,T)$；
+\item 存在由特征向量组成的基。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(a)$\Leftrightarrow$(c) 只是定义改写。
+(c)$\Rightarrow$(b)：把基按特征值分组即可；不同特征值对应的特征空间和为直和。
+(b)$\Rightarrow$(c)：分别取各特征空间的基，再合并，得到由特征向量组成的 $V$ 的基。
+\end{proof}
+
+\begin{corollary}
+若 $T$ 在 $n$ 维空间上有 $n$ 个互异特征值，则 $T$ 可对角化。
+\end{corollary}
+
+\begin{proof}
+每个特征值至少给出一个非零特征向量，互异特征值对应向量线性无关，
+故得到 $n$ 个线性无关向量，形成基。
+\end{proof}
+
+\begin{proposition}
+若 $T$ 可对角化，则对每个 $v\in V$，
+可以唯一地写成若干特征向量的和。
+\end{proposition}
+
+\begin{proof}
+由前述定理，$V$ 是特征空间的直和。
+直和分解的向量表达自动唯一。
+\end{proof}
+
+\section{不变子空间与限制算子}
+
+\begin{proposition}
+若 $U$ 是 $T$-不变子空间，则 $T|_U$ 的每个特征值都是 $T$ 的特征值。
+\end{proposition}
+
+\begin{proof}
+若 $\lambda$ 是 $T|_U$ 的特征值，取非零 $u\in U$ 使
+\[
+T|_U(u)=\lambda u.
+\]
+但 $T|_U(u)=Tu$，所以 $Tu=\lambda u$，
+故 $u$ 也是 $T$ 的特征向量。
+\end{proof}
+
+\begin{proposition}
+若 $U$ 是 $T$-不变子空间，则每个特征空间与 $U$ 的交
+\[
+E(\lambda,T)\cap U
+\]
+恰为 $E(\lambda,T|_U)$。
+\end{proposition}
+
+\begin{proof}
+向量 $u\in U$ 属于 $E(\lambda,T|_U)$ 当且仅当
+\[
+T|_U(u)=\lambda u,
+\]
+这等价于 $Tu=\lambda u$ 且 $u\in U$，
+也即 $u\in E(\lambda,T)\cap U$。
+\end{proof}
+
+\begin{remark}
+本章的很多论证都可概括为：
+先找到一个非平凡不变子空间，再把问题限制到它或投射到商空间上，
+然后做归纳。
+这是“算子优先”观点的典型思路。
+\end{remark}
+
+\section*{习题}
+
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 判断 $\{0\}$ 是否总是 $T$-不变子空间。
+\item \basic 判断 $V$ 是否总是 $T$-不变子空间。
+\item \basic 设 $Tv=3v$ 且 $v\neq 0$，证明 $\spn(v)$ 是 $T$-不变的。
+\item \basic 若 $\spn(v)$ 是 $T$-不变的且 $v\neq 0$，证明 $v$ 是特征向量。
+\item \basic 写出“$\lambda$ 是特征值”的定义。
+\item \basic 写出“$v$ 是特征向量”的定义。
+\item \basic 证明 $E(\lambda,T)$ 是子空间。
+\item \basic 若 $Tv=0$ 且 $v\neq 0$，指出一个特征值。
+\item \basic 若 $Tv=5v$，求 $(T-5\Id)v$。
+\item \basic 若 $(T+2\Id)v=0$ 且 $v\neq 0$，求对应特征值。
+\item \basic 设 $T=\Id$，求它的全部特征值。
+\item \basic 设 $T=0$，求它的全部特征值。
+\item \basic 证明不同特征值对应的两个特征向量线性无关。
+\item \basic 若 $\lambda\neq\mu$，证明 $E(\lambda,T)\cap E(\mu,T)=\{0\}$。
+\item \basic 若 $U$ 是 $T$-不变的，说明为何 $T|_U$ 是线性算子。
+\item \basic 设 $U_1,U_2$ 都是 $T$-不变的，证明 $U_1\cap U_2$ 也是 $T$-不变的。
+\item \basic 设 $U_1,U_2$ 都是 $T$-不变的，证明 $U_1+U_2$ 也是 $T$-不变的。
+\item \basic 设 $T$ 在基 $e_1,e_2$ 下矩阵为 $\mat{2&1\\0&3}$。指出两个特征值。
+\item \basic 设 $T$ 在某基下矩阵是对角矩阵 $\mat{4&0\\0&-1}$。写出两个特征空间。
+\item \basic 若 $T$ 可对角化，说明什么样的向量可以作为一组基。
+\item \basic 设 $T$ 有三个互异特征值，说明对应三个非零特征向量为何线性无关。
+\item \basic 设 $U$ 是 $T$-不变的，若 $u\in U$ 且 $Tu=\lambda u$，说明 $\lambda$ 是谁的特征值。
+\item \basic 设 $T\in\End(\C^1)$，证明它一定有特征值。
+\item \basic 若 $T$ 在某组基下为上三角矩阵，写出它的对角线元素与特征值的关系。
+\item \basic 给出一个二维空间上不可对角化的上三角矩阵例子。
+\end{enumerate}
+
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 证明下列条件等价：$\lambda$ 是特征值；$\nul(T-\lambda\Id)\neq\{0\}$；$\range(T-\lambda\Id)\neq V$。
+\item \medium 证明一维子空间 $U$ 是 $T$-不变的，当且仅当 $U=\spn(v)$，其中 $v$ 是某个特征向量。
+\item \medium 证明属于互异特征值的任意有限个特征向量线性无关。
+\item \medium 设 $v_1,v_2,v_3$ 分别对应互异特征值，证明它们构成线性无关组。
+\item \medium 设 $T^2=0$。证明 $0$ 是 $T$ 的唯一可能特征值。
+\item \medium 设 $T^2=T$。证明 $T$ 的特征值只能是 $0$ 或 $1$。
+\item \medium 设 $T^2=\Id$。证明 $T$ 的特征值只能是 $1$ 或 $-1$。
+\item \medium 设 $p(T)=0$ 且 $p(\lambda)\neq 0$。证明 $\lambda$ 不是特征值。
+\item \medium 设 $T\in\End(V)$，证明存在非零多项式 $p$ 使 $p(T)=0$。
+\item \medium 利用上一题与代数基本定理证明复向量空间上的算子必有特征值。
+\item \medium 证明若 $T$ 有特征值，则存在非平凡 $T$-不变子空间。
+\item \medium 设 $T$ 有一维不变子空间，证明 $T$ 有特征值。
+\item \medium 证明复向量空间上的每个算子都可上三角化。
+\item \medium 设 $T$ 在某组基下为上三角矩阵。证明对角线上每个数都是特征值。
+\item \medium 设 $T$ 在某组基下为上三角矩阵。证明任何特征值都必须出现在对角线上。
+\item \medium 证明：若 $T$ 有 $n$ 个互异特征值且 $\dim V=n$，则 $T$ 可对角化。
+\item \medium 证明：若 $V=E(\lambda_1,T)\oplus E(\lambda_2,T)$，则 $T$ 可对角化。
+\item \medium 证明：若 $T$ 可对角化，则 $V$ 是全部特征空间的直和。
+\item \medium 设 $T$ 可对角化且可逆。证明 $T^{-1}$ 也可对角化。
+\item \medium 设 $Tv=\lambda v$，其中 $\lambda\neq 0$。证明 $v$ 也是 $T^{-1}$ 的特征向量，并求特征值。
+\item \medium 设 $U$ 是 $T$-不变的。证明 $E(\lambda,T|_U)=E(\lambda,T)\cap U$。
+\item \medium 设 $U$ 是 $T$-不变的。证明 $T|_U$ 的每个特征值都是 $T$ 的特征值。
+\item \medium 设 $S,T\in\End(V)$ 且 $ST=TS$。证明每个 $T$ 的特征空间都是 $S$-不变的。
+\item \medium 设 $T$ 可对角化，且 $U$ 是由若干特征向量张成的子空间。证明 $U$ 是 $T$-不变的。
+\item \medium 设 $T$ 的特征值只有 $2,-1$，且 $V=E(2,T)+E(-1,T)$。证明这是直和。
+\item \medium 设 $T$ 的不同特征空间维数之和等于 $\dim V$。证明 $T$ 可对角化。
+\item \medium 设 $T$ 在基 $v_1,\dots,v_n$ 下为上三角。证明 $\spn(v_1,\dots,v_k)$ 对每个 $k$ 都是 $T$-不变的。
+\item \medium 设 $T$ 可对角化且其特征值只有一个。证明 $T=\lambda\Id$。
+\item \medium 设 $T$ 的特征值为 $\lambda_1,\dots,\lambda_m$，且 $T$ 可对角化。证明对任意多项式 $p$，$p(T)$ 的特征值是 $p(\lambda_1),\dots,p(\lambda_m)$。
+\item \medium 设 $T$ 可对角化且 $p(T)=0$。证明每个特征值 $\lambda$ 都满足 $p(\lambda)=0$。
+\end{enumerate}
+
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 设 $T\in\End(V)$，$U\subseteq V$ 为 $T$-不变子空间，且 $T|_U$ 与诱导算子 $\widetilde T$ 在 $V/U$ 上都可对角化。证明这并不必然推出 $T$ 可对角化，并给出例子。
+\item \hard 设 $S,T\in\End(V)$ 可交换，且 $V$ 是复向量空间。证明存在一组基使 $T$ 上三角且同时每个由前 $k$ 个基向量张成的子空间都是 $S$-不变的。
+\item \hard 设 $p(x)=(x-\lambda_1)\cdots(x-\lambda_m)$，其中 $\lambda_j$ 两两不同，且 $p(T)=0$。证明 $T$ 可对角化。
+\item \hard 设 $T$ 可对角化，证明每个 $T$-不变子空间都有一组由 $T|_U$ 的特征向量组成的基。
+\item \hard 设 $T$ 满足 $(T-2\Id)(T+\Id)=0$。证明 $T$ 可对角化，且 $V=E(2,T)\oplus E(-1,T)$。
+\item \hard 设 $T$ 满足 $(T-\lambda\Id)^2=0$。证明 $\lambda$ 是 $T$ 的唯一特征值，并说明 $T$ 何时可对角化。
+\item \hard 设 $T$ 是复向量空间上的算子。证明存在基 $v_1,\dots,v_n$ 使对每个 $k$，$\spn(v_1,\dots,v_k)$ 都是 $T$-不变的，当且仅当 $T$ 在某组基下是上三角矩阵。
+\item \hard 设 $T$ 可对角化，$S\in\End(V)$ 与 $T$ 可交换。证明每个特征空间 $E(\lambda,T)$ 都被 $S$ 保持不变，并据此说明若每个特征空间上一并能选出 $S$ 的特征向量，则 $S,T$ 可同时对角化。
+\item \hard 设 $T$ 在复空间上无重复特征值。证明凡与 $T$ 可交换的算子都在 $T$ 的特征向量基下为对角矩阵。
+\item \hard 设 $T$ 在复向量空间上。证明：$T$ 可对角化当且仅当存在分解 $V=U_1\oplus\cdots\oplus U_m$，其中每个 $U_j$ 非零、$T$-不变，且 $T|_{U_j}=\lambda_j\Id$。
+\end{enumerate}
+
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} 是。因为 $T0=0\in\{0\}$。
+\item \textbf{解答.} 是。因为 $T(V)\subseteq V$ 总成立。
+\item \textbf{解答.} 任取 $av\in\spn(v)$，有 $T(av)=aTv=3av\in\spn(v)$，故不变。
+\item \textbf{解答.} 因 $Tv\in\spn(v)$，存在标量 $\lambda$ 使 $Tv=\lambda v$，故 $v$ 是特征向量。
+\item \textbf{解答.} $\lambda$ 是特征值，当且仅当 $T-\lambda\Id$ 不可逆。
+\item \textbf{解答.} 非零向量 $v$ 满足 $Tv=\lambda v$ 时，称 $v$ 为对应于 $\lambda$ 的特征向量。
+\item \textbf{解答.} 因 $E(\lambda,T)=\nul(T-\lambda\Id)$，核总是子空间。
+\item \textbf{解答.} $0$ 是特征值，因为 $(T-0\Id)v=0$ 且 $v\neq 0$。
+\item \textbf{解答.} $(T-5\Id)v=Tv-5v=0$。
+\item \textbf{解答.} 特征值是 $-2$。
+\item \textbf{解答.} 唯一特征值是 $1$，因为 $(\Id-\lambda\Id)=(1-\lambda)\Id$ 在且仅在 $\lambda=1$ 时不可逆。
+\item \textbf{解答.} 唯一特征值是 $0$。
+\item \textbf{解答.} 若 $Tv=\lambda v$，$Tw=\mu w$，且 $\lambda\neq\mu$。若 $av+bw=0$，施以 $T$ 并消去，可得 $(\lambda-\mu)av=0$，故 $a=0$，再得 $b=0$。
+\item \textbf{解答.} 若 $v$ 属于交，则 $Tv=\lambda v=\mu v$，故 $(\lambda-\mu)v=0$。因 $\lambda\neq\mu$，得 $v=0$。
+\item \textbf{解答.} 因 $U$ 不变，$T(u)\in U$ 对每个 $u\in U$ 成立，所以 $T|_U:U\to U$ 定义良好，且继承线性性。
+\item \textbf{解答.} 若 $u\in U_1\cap U_2$，则 $Tu\in U_1$ 且 $Tu\in U_2$，故 $Tu\in U_1\cap U_2$。
+\item \textbf{解答.} 若 $u=u_1+u_2$，则 $Tu=Tu_1+Tu_2\in U_1+U_2$。
+\item \textbf{解答.} 对角线元素为 $2,3$，它们就是特征值。
+\item \textbf{解答.} $E(4,T)=\spn(e_1)$，$E(-1,T)=\spn(e_2)$。
+\item \textbf{解答.} 可以由 $T$ 的特征向量组成一组基。
+\item \textbf{解答.} 因为互异特征值对应特征向量线性无关。
+\item \textbf{解答.} 它既是 $T|_U$ 的特征值，也是 $T$ 的特征值。
+\item \textbf{解答.} $\C^1$ 上任一算子都形如 $T(v)=\lambda v$，故特征值就是该标量 $\lambda$。
+\item \textbf{解答.} 对角线元素正是特征值，并按上三角基中出现的顺序计重数。
+\item \textbf{解答.} 例如 $\mat{1&1\\0&1}$。它只有一个特征值 $1$，但只有一维特征空间，故不可对角化。
+\item \textbf{解答.} 在有限维空间上，线性算子不可逆当且仅当不单射，当且仅当核非零；也当且仅当不满射，当且仅当值域不等于全空间。
+\item \textbf{解答.} 若 $U$ 一维，取 $0\neq v\in U$，则 $U=\spn(v)$。若 $U$ 不变，则 $Tv\in U$，故 $Tv=\lambda v$。反之若 $Tv=\lambda v$，则 $\spn(v)$ 不变。
+\item \textbf{解答.} 这是正文引理的直接结论。对向量个数归纳即可，关键步骤是施以 $T-\lambda_m\Id$ 消去最后一个向量。
+\item \textbf{解答.} 它们对应互异特征值，故由上一题直接得线性无关。
+\item \textbf{解答.} 若 $Tv=\lambda v$，则 $0=T^2v=\lambda^2v$。因 $v\neq 0$，得 $\lambda^2=0$，故 $\lambda=0$。
+\item \textbf{解答.} 若 $Tv=\lambda v$，则 $\lambda^2v=T^2v=Tv=\lambda v$，故 $\lambda^2=\lambda$，即 $\lambda(\lambda-1)=0$。
+\item \textbf{解答.} 若 $Tv=\lambda v$，则 $v=T^2v=\lambda^2v$，故 $\lambda^2=1$，即 $\lambda=\pm1$。
+\item \textbf{解答.} 若 $\lambda$ 是特征值，取非零 $v$ 使 $Tv=\lambda v$。则 $p(T)v=p(\lambda)v$。若 $p(T)=0$，便有 $p(\lambda)v=0$，故 $p(\lambda)=0$。逆否命题即所求。
+\item \textbf{解答.} 因 $\End(V)$ 有限维，$\Id,T,\dots,T^{n^2}$ 线性相关，故存在非零多项式 $p$ 使 $p(T)=0$。
+\item \textbf{解答.} 取非零 $p$ 使 $p(T)=0$，在 $\C[x]$ 中分解为一次因子。若每个 $T-\lambda_j\Id$ 都可逆，则其乘积可逆，不可能等于零算子。故某个 $\lambda_j$ 是特征值。
+\item \textbf{解答.} 取特征向量 $v\neq 0$，则 $\spn(v)$ 是非平凡不变子空间。
+\item \textbf{解答.} 一维不变子空间必为某个非零向量 $v$ 的张成。由不变性，$Tv=\lambda v$，故有特征值。
+\item \textbf{解答.} 对维数归纳。先取一个特征向量张成的一维不变子空间，再在商空间上归纳，最后把基提升回来，即得上三角基。
+\item \textbf{解答.} 若上三角矩阵对角线第 $k$ 个元素为 $a_{kk}$，则前 $k$ 个基向量张成的子空间不变，且在对应商空间上一维作用为乘以 $a_{kk}$，故它是特征值。
+\item \textbf{解答.} 若 $\lambda$ 不是任一对角元，则上三角矩阵 $T-\lambda\Id$ 对角线全非零，因此可逆，故 $\lambda$ 不可能是特征值。
+\item \textbf{解答.} 取每个特征值的一个特征向量，共有 $n$ 个，且线性无关，因此构成基，$T$ 可对角化。
+\item \textbf{解答.} 取两个特征空间的基并合并。由于和是直和，得到 $V$ 的一组由特征向量组成的基。
+\item \textbf{解答.} 把由特征向量组成的基按特征值分组。每组张成相应特征空间，且总和为直和并等于全空间。
+\item \textbf{解答.} 取 $T$ 的特征向量基。若 $Tv=\lambda v$ 且 $\lambda\neq 0$，则 $T^{-1}v=\lambda^{-1}v$。因此同一组基对角化 $T^{-1}$。
+\item \textbf{解答.} 由 $Tv=\lambda v$ 得 $v=T^{-1}(\lambda v)=\lambda T^{-1}v$，故 $T^{-1}v=\lambda^{-1}v$。
+\item \textbf{解答.} 一方面，若 $u\in E(\lambda,T|_U)$，则 $u\in U$ 且 $Tu=\lambda u$，故 $u\in E(\lambda,T)\cap U$。另一方面，反向包含显然。
+\item \textbf{解答.} 若 $u\neq 0$ 且 $T|_U(u)=\lambda u$，则同样有 $Tu=\lambda u$，所以 $\lambda$ 是 $T$ 的特征值。
+\item \textbf{解答.} 若 $v\in E(\lambda,T)$，则 $T(Sv)=S(Tv)=S(\lambda v)=\lambda Sv$，故 $Sv\in E(\lambda,T)$。
+\item \textbf{解答.} 设 $U=\spn(v_1,\dots,v_m)$，每个 $v_j$ 是特征向量。则任意 $u=\sum a_jv_j$ 满足 $Tu=\sum a_j\lambda_jv_j\in U$，故 $U$ 不变。
+\item \textbf{解答.} 不同特征空间交为零，因此和自动为直和。
+\item \textbf{解答.} 不同特征空间之和本来就是直和，若其维数和等于 $\dim V$，则该直和必等于 $V$，故 $T$ 可对角化。
+\item \textbf{解答.} 上三角意味着 $Tv_k\in\spn(v_1,\dots,v_k)$。因此前 $k$ 个向量张成的子空间不变。
+\item \textbf{解答.} 若唯一特征值为 $\lambda$ 且 $T$ 可对角化，则存在特征向量基，所有基向量都满足 $Tv_j=\lambda v_j$，故 $T=\lambda\Id$。
+\item \textbf{解答.} 设 $Tv_j=\lambda_jv_j$ 为特征向量基，则 $p(T)v_j=p(\lambda_j)v_j$。因此 $p(T)$ 在同一基下仍为对角矩阵，对角元为 $p(\lambda_j)$。
+\item \textbf{解答.} 取 $T$ 的特征向量 $v\neq 0$，满足 $Tv=\lambda v$。则 $0=p(T)v=p(\lambda)v$，故 $p(\lambda)=0$。
+\item \textbf{解答.} 例子：在 $\C^2$ 上取 $T=\mat{1&1\\0&1}$，令 $U=\spn(e_1)$。则 $U$ 不变，$T|_U=1\Id$ 可对角化，$V/U$ 上诱导算子也为 $1\Id$ 可对角化，但 $T$ 本身不可对角化，因为特征空间只有一维。
+\item \textbf{解答.} 先由上三角化定理取一组基使 $T$ 上三角。由于前 $k$ 维旗标可由 $T$ 构造，且 $ST=TS$ 使每个 $T$ 的广义层级被 $S$ 保持，归纳构造时可在每一步选取同时使新增一维空间对 $S$ 不变的向量。于是得到所求基。更直接的做法是：先取 $T$ 的特征向量 $v_1$。由可交换性，$\spn(v_1)$ 对 $S$ 也不变。然后在商空间上归纳。
+\item \textbf{解答.} 因各因子互异，彼此互素。由 Bezout 关系可构造多项式投影，把任意 $v$ 分解为各特征空间向量之和，得到
+$V=\bigoplus_{j=1}^mE(\lambda_j,T)$，故 $T$ 可对角化。
+\item \textbf{解答.} 设 $T$ 在特征向量基下对角化。任意 $T$-不变子空间 $U$ 中的向量按该基展开后，可利用不同特征值分量经多项式投影逐个取出，说明 $U$ 由它含有的特征向量张成。因此 $U$ 有一组由 $T|_U$ 的特征向量组成的基。
+\item \textbf{解答.} 由题设多项式分解为互异线性因子。应用第 58 题结论，$T$ 可对角化，且特征值只能是 $2,-1$。又相应特征空间之和等于全空间，故 $V=E(2,T)\oplus E(-1,T)$。
+\item \textbf{解答.} 若 $Tv=\mu v$，则 $(\mu-\lambda)^2v=(T-\lambda\Id)^2v=0$，故 $\mu=\lambda$，所以唯一特征值是 $\lambda$。若 $T$ 可对角化，则只有一个特征值，故必有 $T=\lambda\Id$，等价于 $T-\lambda\Id=0$。反之显然可对角化。
+\item \textbf{解答.} “若”方向显然：上三角矩阵满足 $Tv_k\in\spn(v_1,\dots,v_k)$。反之若存在这样的基，则 $T$ 对每个基向量的像都落在前 $k$ 个基向量张成空间中，因此矩阵下三角以下元素全为零，即为上三角矩阵。
+\item \textbf{解答.} 第一部分已在第 47 题证明。若每个 $E(\lambda,T)$ 上都能选取 $S$ 的特征向量基，则把这些基合并，得到一组同时由 $T$ 与 $S$ 的特征向量组成的基，故可同时对角化。
+\item \textbf{解答.} 因 $T$ 无重复特征值，每个特征空间都是一维。若 $ST=TS$，则每个特征空间被 $S$ 保持不变，因此 $S$ 在每条特征线上只是数乘。故在 $T$ 的特征向量基下，$S$ 为对角矩阵。
+\item \textbf{解答.} 若 $T$ 可对角化，把不同特征值的特征空间作为 $U_j$ 即得。反之若存在这样的分解，则每个 $U_j$ 中任意基向量都是 $T$ 的特征向量，合并这些基即得 $V$ 的特征向量基，所以 $T$ 可对角化。
+\end{enumerate}

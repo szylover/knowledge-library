@@ -1,0 +1,514 @@
+\chapter{代数在模形式中的应用}
+\section{模形式的定义回顾}
+本章是全书的收束点。 前九章中出现的群、环、模、域扩张与 Galois 理论， 在模形式理论中并不是彼此孤立的工具， 而是围绕 $\SL_2(\Z)$ 及其同余子群形成一套彼此联动的代数语言。 我们的目标不是发展模形式的全部解析理论， 而是说明：抽象代数为何恰好提供了理解模形式所需的结构框架。
+\begin{definition}
+设
+$\gamma=\mat{a&b\\ c&d}\in \GL_2^+(\R)$，
+$k\in \Z$，
+$f:\HH\to\C$ 为函数。
+定义权 $k$ 的 slash 作用为
+\[ (f\mid_k \gamma)(z)=\det(\gamma)^{k/2}(cz+d)^{-k}f\!\left(\frac{az+b}{cz+d}\right). \]
+在本章主要讨论 $\Gamma\subseteq \SL_2(\Z)$ 的情形，
+此时公式简化为
+\[ (f\mid_k \gamma)(z)=(cz+d)^{-k}f\!\left(\frac{az+b}{cz+d}\right). \]
+\end{definition}
+\begin{definition}
+设 $\Gamma\subseteq \SL_2(\Z)$ 为有限指标子群，$k\ge 0$。
+称全纯函数 $f:\HH\to\C$ 是 $\Gamma$ 上的权 $k$ 模形式，
+如果满足：
+\begin{enumerate}[label=(\roman*), leftmargin=*]
+\item 对每个 $\gamma\in \Gamma$，有 $f\mid_k\gamma=f$；
+\item $f$ 在 $\Gamma$ 的每个 cusp 处全纯。
+\end{enumerate}
+全体这类函数构成的复向量空间记为 $\Mk_k(\Gamma)$。
+若进一步要求 $f$ 在每个 cusp 处消失，
+则称 $f$ 为尖点形式，
+其空间记为 $\Sk_k(\Gamma)$。
+\end{definition}
+当 $\Gamma=\SL_2(\Z)$ 时，
+由于平移矩阵 $\mat{1&1\\0&1}\in\Gamma$，
+任意模形式都满足 $f(z+1)=f(z)$，
+故可写成 Fourier 展开
+\[ f(z)=\sum_{n=0}^{\infty} a_n q^n, \qquad q=e^{2\pi i z}. \]
+其中 $f\in \Sk_k(\Gamma)$ 当且仅当常数项 $a_0=0$。
+对于一般的有限指标子群，
+每个 cusp 经过适当缩放后也有类似的 $q$-展开。
+\begin{example}
+Eisenstein 级数
+\[ E_4(z)=1+240\sum_{n\ge 1}\sigma_3(n)q^n, \qquad E_6(z)=1-504\sum_{n\ge 1}\sigma_5(n)q^n \]
+分别属于 $\Mk_4(\SL_2(\Z))$ 与 $\Mk_6(\SL_2(\Z))$。
+判别函数
+\[ \Delta(z)=q\prod_{n\ge 1}(1-q^n)^{24} =\sum_{n\ge 1}\tau(n)q^n \]
+属于 $\Sk_{12}(\SL_2(\Z))$。
+它们提供了“有系数的函数”与“有环论结构的对象”之间的第一座桥梁。
+\end{example}
+\begin{proposition}
+若 $f\in \Mk_k(\Gamma)$，$g\in \Mk_\ell(\Gamma)$，
+则 $fg\in \Mk_{k+\ell}(\Gamma)$；
+若 $g\in \Sk_\ell(\Gamma)$，则 $fg\in \Sk_{k+\ell}(\Gamma)$。
+因此
+\[ \Mk(\Gamma)=\bigoplus_{k\ge 0}\Mk_k(\Gamma) \]
+带有按权分次的交换环结构，
+而
+\[ \Sk(\Gamma)=\bigoplus_{k\ge 0}\Sk_k(\Gamma) \]
+是其分次理想。
+\end{proposition}
+\begin{proof}
+变换律直接相乘即可：
+$(fg)\mid_{k+\ell}\gamma=(f\mid_k\gamma)(g\mid_\ell\gamma)=fg$。
+在 cusp 处的全纯性与消失性由 $q$-展开逐项相乘得到。
+\end{proof}
+\begin{remark}
+这里已经能看出前几章代数内容的影子：
+$\Gamma$ 的群作用给出不变性条件，
+Fourier 展开把解析对象编码为形式幂级数，
+而乘法使不同权的空间拼成一个分次环。
+从这个角度看，模形式首先是带额外对称性的函数代数。
+\end{remark}
+\section{Hecke代数的环结构}
+仅靠乘法并不足以揭示模形式的算术内容。 真正把模形式与整数分解、局部到整体原则联系起来的， 是 Hecke 算子。 在本节为了突出代数结构， 我们主要讨论 $\Gamma=\SL_2(\Z)$ 的情形。
+\begin{definition}
+对正整数 $n$，
+定义 Hecke 算子 $T_n:\Mk_k(\SL_2(\Z))\to \Mk_k(\SL_2(\Z))$ 为
+\[ (T_nf)(z)=n^{k-1}\sum_{ad=n\atop d>0}\ \sum_{b\, (\mathrm{mod}\ d)} d^{-k} f\!\left(\frac{az+b}{d}\right). \]
+它也可由双陪集
+$\Gamma\mat{1&0\\0&n}\Gamma$
+给出。
+\end{definition}
+若
+$f(z)=\sum_{m\ge 0}a_mq^m$，
+则
+\[ T_nf=\sum_{m\ge 0} \left(\sum_{d\mid(m,n)} d^{k-1}a_{mn/d^2}\right)q^m. \]
+这一定义看似分析，
+实际上完全服从算术：
+系数只通过公因子 $d\mid(m,n)$ 发生混合。
+\begin{theorem}
+对任意正整数 $m,n$，在 $\Mk_k(\SL_2(\Z))$ 上有关系
+\[ T_mT_n=\sum_{d\mid(m,n)} d^{k-1}T_{mn/d^2}. \]
+特别地，当 $(m,n)=1$ 时，
+\[ T_mT_n=T_{mn}. \]
+因此由所有 $T_n$ 生成的 Hecke 代数
+\[ \mathcal{H}_k=\C[T_1,T_2,T_3,\dots]\subseteq \End_\C(\Mk_k) \]
+是交换环。
+\end{theorem}
+\begin{proof}
+用 $q$-展开公式可直接验证：
+比较 $T_mT_n f$ 与 $T_nT_m f$ 的第 $r$ 个系数，
+二者都整理成
+\[ \sum_{e\mid(r,mn)} c_e\, a_{rmn/e^2} \]
+的形式，
+其中系数仅取决于 $(m,n)$ 的公因子分解。
+更概念化地说，
+双陪集卷积满足交换的乘法公式，
+上式正是该卷积在 $\GL_2^+(\Q)$ 中的具体体现。
+\end{proof}
+\begin{corollary}
+对素数 $p$ 与整数 $r\ge 1$，有递推关系
+\[ T_pT_{p^r}=T_{p^{r+1}}+p^{k-1}T_{p^{r-1}}. \]
+特别地，
+$T_p^2=T_{p^2}+p^{k-1}T_1$。
+\end{corollary}
+Hecke 代数之所以像“算术环”， 是因为它由各个素数方向的局部算子控制； 互素时完全乘法， 同一素数幂之间满足二阶递推。 这与欧拉积中的局部因子形式完全一致， 将在 \S10.5 中重新出现。
+\section{Hecke代数作为模}
+\begin{definition}
+令 $\mathcal{H}_k$ 表示作用在 $\Mk_k(\Gamma)$ 上的 Hecke 代数。
+因为每个 $T_n$ 都是线性算子，
+所以可定义标量作用
+\[ h\cdot f:=h(f),\qquad h\in \mathcal{H}_k,\, f\in \Mk_k(\Gamma). \]
+于是 $\Mk_k(\Gamma)$ 是一个左 $\mathcal{H}_k$-模。
+若某子空间在所有 $T_n$ 下稳定，
+则它是 Hecke 子模。
+\end{definition}
+\begin{proposition}
+尖点空间 $\Sk_k(\Gamma)$ 在 Hecke 算子下稳定，
+因此是 $\Mk_k(\Gamma)$ 的 Hecke 子模。
+\end{proposition}
+\begin{proof}
+对 level $1$，
+$q$-展开公式表明
+$T_n$ 的常数项只依赖于 $a_0$。
+若 $f$ 的常数项为 $0$，
+则 $T_n f$ 的常数项仍为 $0$，
+故 $T_n f$ 仍为尖点形式。
+对一般同余子群，
+在每个 cusp 的局部参数下做同样检查即可。
+\end{proof}
+这一步把解析空间转化为模论对象。 第 7 章中关于模的思想——子模、生成元、同时特征分解、 局部化——都可以移植到 Hecke 代数的作用中。 特别重要的是： Hecke 代数是交换的， 因此有限维模常常能分解为广义特征空间的直和。
+\begin{remark}
+更深入地看，
+在 Petersson 内积下，
+适当归一化后的 Hecke 算子是正规算子，
+故在 $\Sk_k(\Gamma)$ 上可以同时酉对角化。
+这使得“找好基”成为可能：
+好基不是随意选出的线性代数基，
+而是由算术对称性指定的特征形式基。
+\end{remark}
+\section{Hecke特征形式与特征值}
+\begin{definition}
+设 $0\ne f\in \Sk_k(\Gamma)$。
+若对所有 $n\ge 1$ 存在标量 $\lambda_n\in\C$，
+使得
+\[ T_n f=\lambda_n f, \]
+则称 $f$ 为 Hecke 特征形式。
+若其 Fourier 展开写作
+\[ f(z)=\sum_{n\ge 1} a_n q^n \]
+且满足 $a_1=1$，
+则称 $f$ 为归一化特征形式。
+\end{definition}
+\begin{proposition}
+若 $f=\sum_{n\ge 1}a_nq^n$ 是 level $1$ 的归一化 Hecke 特征形式，
+则对每个 $n\ge 1$ 有
+\[ \lambda_n=a_n. \]
+因此 Fourier 系数本身记录了 Hecke 特征值。
+\end{proposition}
+\begin{proof}
+取 $T_nf$ 的 $q^1$ 系数。
+由 Hecke 的系数公式，
+该系数等于 $a_n$。
+另一方面，
+若 $T_nf=\lambda_nf$，
+则其 $q^1$ 系数也等于 $\lambda_n a_1=\lambda_n$。
+因为 $a_1=1$，故 $\lambda_n=a_n$。
+\end{proof}
+\begin{theorem}
+设 $f=\sum_{n\ge 1}a_nq^n$ 为归一化特征形式。
+则
+\[ a_ma_n=\sum_{d\mid(m,n)} d^{k-1}a_{mn/d^2}. \]
+特别地，若 $(m,n)=1$，则
+\[ a_{mn}=a_ma_n. \]
+对素数幂有递推
+\[ a_{p^{r+1}}=a_pa_{p^r}-p^{k-1}a_{p^{r-1}}. \]
+\end{theorem}
+\begin{proof}
+由 $T_mT_nf=T_nT_m$ 与 $T_nf=a_nf$ 可得
+\[ a_ma_n f=T_mT_nf =\sum_{d\mid(m,n)} d^{k-1}T_{mn/d^2}f =\sum_{d\mid(m,n)} d^{k-1}a_{mn/d^2}f. \]
+比较系数即可。
+当 $(m,n)=1$ 时只有 $d=1$。
+素数幂递推来自前节的 $T_pT_{p^r}$ 公式。
+\end{proof}
+这说明特征形式的 Fourier 系数不是“任意复数列”， 而是满足强烈乘法规律的算术函数。 从抽象代数角度看， 它们给出了 Hecke 代数的一维表示 $\mathcal{H}_k\to\C$。
+\section{$L$-函数的代数结构}
+\begin{definition}
+设 $f=\sum_{n\ge 1}a_nq^n$ 为归一化尖点 Hecke 特征形式。
+其 $L$-函数定义为
+\[ L(f,s)=\sum_{n\ge 1}\frac{a_n}{n^s}. \]
+若再带上 Gamma 因子，
+可得到完成的 $\Lambda(f,s)$；
+本章主要强调其欧拉积的代数来源。
+\end{definition}
+由上一节的乘法性，
+Dirichlet 级数不再只是分析函数，
+而是算术环中的可分解对象。
+回忆：
+若 $a,b:\N\to\C$ 是算术函数，
+则其 Dirichlet 卷积定义为
+\[ (a*b)(n)=\sum_{d\mid n}a(d)b(n/d). \]
+全体算术函数在点加法与卷积下构成交换环，
+单位元是
+$\varepsilon(1)=1$、$\varepsilon(n)=0$ $(n>1)$。
+Dirichlet 级数乘法正对应卷积。
+\begin{theorem}
+设 $f$ 为权 $k$、平凡特征、归一化尖点特征形式。
+则在 $\Re(s)$ 足够大时有欧拉积
+\[ L(f,s)=\prod_p \left(1-a_pp^{-s}+p^{k-1-2s}\right)^{-1}. \]
+\end{theorem}
+\begin{proof}
+由互素乘法性和素数幂递推，
+局部生成函数满足
+\[ \sum_{r\ge 0} a_{p^r}X^r=\frac{1}{1-a_pX+p^{k-1}X^2}. \]
+取 $X=p^{-s}$ 并对所有素数相乘，
+便得到欧拉积。
+因为每个正整数唯一分解为素数幂乘积，
+展开乘积后恰恢复 Dirichlet 级数系数 $a_n$。
+\end{proof}
+\begin{remark}
+欧拉积是本章最典型的“环论语言解释分析对象”的例子。
+Hecke 关系给出局部递推，
+递推决定局部因子，
+而算术基本定理把局部因子乘成整体 $L$-函数。
+这正是从素理想到 Euler 因子的普遍模式。
+\end{remark}
+\section{同余子群的群论}
+模形式不是只在整个 $\SL_2(\Z)$ 上讨论。 许多最深刻的算术现象发生在同余子群上。 于是第 1--3 章的群论重新登场： 需要明确子群、正规性、商群与指标。
+\begin{definition}
+对正整数 $N$，定义
+\[ \Gamma(N)=\left\{\mat{a&b\\c&d}\in\SL_2(\Z): \mat{a&b\\c&d}\equiv \mat{1&0\\0&1}\pmod N\right\}, \]
+\[ \GammaI(N)=\left\{\mat{a&b\\c&d}\in\SL_2(\Z): a\equiv d\equiv 1\pmod N,\ c\equiv 0\pmod N\right\}, \]
+\[ \GammaO(N)=\left\{\mat{a&b\\c&d}\in\SL_2(\Z): c\equiv 0\pmod N\right\}. \]
+它们称为主同余子群、第一类同余子群与零类同余子群。
+\end{definition}
+显然
+\[ \Gamma(N)\subseteq \GammaI(N)\subseteq \GammaO(N)\subseteq \SL_2(\Z). \]
+第一个包含来自“模 $N$ 全部恒等”，
+第二个包含来自只要求 $a,d,c$ 受限制，
+第三个则是最粗的下三角条件。
+\begin{proposition}
+$\Gamma(N)$ 是 $\SL_2(\Z)$ 的正规子群，
+$\GammaI(N)$ 是 $\GammaO(N)$ 的正规子群，
+且
+\[ \GammaO(N)/\GammaI(N)\cong (\Z/N\Z)^\times. \]
+\end{proposition}
+\begin{proof}
+模 $N$ 约化映射
+\[ \rho_N:\SL_2(\Z)\to \SL_2(\Z/N\Z) \]
+是群同态，
+其核正是 $\Gamma(N)$，
+故 $\Gamma(N)\triangleleft \SL_2(\Z)$。
+对于 $\GammaO(N)$，
+映射
+\[ \mat{a&b\\c&d}\longmapsto d\bmod N \]
+是到 $(\Z/N\Z)^\times$ 的满同态，
+核正是 $\GammaI(N)$，
+故结论成立。
+\end{proof}
+\begin{theorem}
+它们在 $\SL_2(\Z)$ 中的指标分别为
+\[ [\SL_2(\Z):\Gamma(N)]=N^3\prod_{p\mid N}(1-p^{-2}) \qquad (N>1), \]
+\[ [\SL_2(\Z):\GammaI(N)]=N^2\prod_{p\mid N}(1-p^{-2}), \]
+\[ [\SL_2(\Z):\GammaO(N)]=N\prod_{p\mid N}(1+p^{-1}). \]
+\end{theorem}
+这些公式的重要性不只在于计数。 有限指标意味着模形式空间有限维； 不同子群的指标控制了基本区域面积、cusp 数、 椭圆点修正项以及维数公式的主项。 换言之， 群论中的“子群有多大”直接决定解析空间“有多少自由度”。
+\section{Galois表示与模形式}
+到目前为止， Hecke 代数仍作用在一个复向量空间上。 令人震撼的事实是： 同一个特征形式还能产生数论中的另一类核心对象——Galois 表示。
+\begin{theorem}[Deligne，叙述]
+设
+$f=\sum_{n\ge 1}a_nq^n$
+是权 $k\ge 2$、level $N$、nebentypus 为 $\chi$ 的归一化新形式。
+对每个素数 $\ell$，
+存在连续半单表示
+\[ \rho_{f,\ell}:\Gal(\overline{\Q}/\Q)\to \GL_2(\overline{\Q}_\ell), \]
+满足：
+\begin{enumerate}[label=(\roman*), leftmargin=*]
+\item 它在 $N\ell$ 之外未分歧；
+\item 若 $p\nmid N\ell$，则
+\[ \Tr(\rho_{f,\ell}(\Frob_p))=a_p, \qquad \det(\rho_{f,\ell}(\Frob_p))=\chi(p)p^{k-1}; \]
+\item 特征多项式为
+\[ X^2-a_pX+\chi(p)p^{k-1}. \]
+\end{enumerate}
+\end{theorem}
+对一个固定的 $\ell$-进表示取整系数模型再模去极大理想，
+可得到残余表示
+\[ \bar\rho_{f,\lambda}:\Gal(\overline{\Q}/\Q)\to \GL_2(\F_\lambda). \]
+当系数字段在某素理想 $\lambda\mid \ell$ 上剩余域恰为 $\F_\ell$ 时，
+便得到用户熟悉的形式
+$\Gal(\overline{\Q}/\Q)\to \GL_2(\F_\ell)$。
+这正是现代模性提升定理中最常见的输入。
+\begin{remark}
+这里再次看见本书前三部分的汇合：
+域论提供 Galois 群，
+线性代数提供二维表示，
+环与模论解释迹与行列式在 Hecke 代数中的来源，
+而群论中的 Frobenius 共轭类则把素数 $p$ 编码为 Galois 元素。
+模形式的 Fourier 系数与 Galois 表示的迹完全同步，
+这正是“自守世界”与“Galois 世界”的第一次精确握手。
+\end{remark}
+\section{模性定理与Fermat大定理}
+\begin{theorem}[模性定理，叙述]
+每条定义在 $\Q$ 上的椭圆曲线 $E/\Q$ 都是模的。
+也就是说，
+存在某个权 $2$、level 等于导子 $N_E$ 的归一化新形式 $f_E$，
+使得
+\[ L(E,s)=L(f_E,s), \]
+并且对每个素数 $\ell$，
+椭圆曲线的 Tate 模给出的 Galois 表示
+与 $f_E$ 的 $\ell$-进 Galois 表示同构。
+\end{theorem}
+这个定理给出一个三角关系：
+\[ \text{椭圆曲线} \longleftrightarrow \text{模形式} \longleftrightarrow \text{Galois 表示}. \]
+椭圆曲线携带几何对象与代数群结构；
+模形式提供 Hecke 特征值与 $L$-函数；
+Galois 表示则记录绝对 Galois 群如何作用在扭点与 Tate 模上。
+三者并不是类比关系，
+而是由深刻定理识别为同一算术信息的不同外观。
+Fermat 大定理的现代证明路线可以概括如下：
+若存在非平凡解
+$a^p+b^p=c^p$，
+可构造 Frey 曲线
+\[ E_{a,b,p}: y^2=x(x-a^p)(x+b^p). \]
+Ribet 定理表明，
+这种曲线若来自 Fermat 反例，
+将诱导出一种“不可能模”的残余表示；
+而 Wiles--Taylor--Wiles 的模性提升方法证明了相应的半稳定椭圆曲线必须是模的。
+矛盾由此产生，
+故 Fermat 方程无非平凡整数解。
+\begin{remark}
+从本书视角看，
+Fermat 大定理之所以能由抽象代数驱动，
+不是因为方程本身“像群论题”或“像环论题”，
+而是因为其反例会制造一条椭圆曲线，
+这条曲线又落入模形式与 Galois 表示的统一框架。
+最终起决定作用的是表示、同余、局部条件和 Hecke 代数的精密配合。
+\end{remark}
+\section{展望：Langlands纲领}
+Langlands 纲领可以粗略描述为： 把 abelian class field theory 推广到非交换情形， 并建立 Galois 表示与自守表示之间的大统一对应。 在本章出现的情景中， 归一化特征形式给出 GL$_2$ 的自守对象， Deligne 定理给出二维 Galois 表示， 模性定理则说明某些几何对象也进入同一对应。
+更一般地，
+人们期待把
+\[ \text{$n$维 Galois 表示} \qquad\longleftrightarrow\qquad \text{GL$_n$ 上的自守表示} \]
+作为全局字典。
+其局部版本研究局部域上的表示；
+几何版本把数域换成函数域或代数曲线；
+$p$-进版本则与 Hodge 理论、变形环、Iwasawa 理论相互作用。
+\begin{remark}
+若说第 10 章要传达一个核心信息，
+那就是：
+抽象代数并不是模形式理论的辅助记号系统，
+而是其骨架。
+群作用解释变换律，
+环结构产生 Hecke 代数，
+模论组织特征分解，
+域论与 Galois 理论揭示 Fourier 系数背后的算术来源。
+Langlands 纲领所追求的，
+正是把这些骨架提升为一套跨越分析、几何与数论的普遍结构理论。
+\end{remark}
+\section*{习题}
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 设 $\gamma_1,\gamma_2\in \SL_2(\Z)$。验证
+$(f\mid_k\gamma_1)\mid_k\gamma_2=f\mid_k(\gamma_1\gamma_2)$。
+\item \basic 设 $f\in \Mk_k(\SL_2(\Z))$。证明 $f(z+1)=f(z)$。
+\item \basic 说明为什么 $\Sk_k(\Gamma)\subseteq \Mk_k(\Gamma)$。
+\item \basic 设 $f(z)=\sum_{n\ge 0}a_nq^n$。证明 $f\in \Sk_k(\SL_2(\Z))$ 当且仅当 $a_0=0$。
+\item \basic 证明若 $f\in \Mk_k(\Gamma)$，$g\in \Mk_\ell(\Gamma)$，则 $fg\in \Mk_{k+\ell}(\Gamma)$。
+\item \basic 证明若 $f\in \Mk_k(\Gamma)$，$g\in \Sk_\ell(\Gamma)$，则 $fg\in \Sk_{k+\ell}(\Gamma)$。
+\item \basic 由 Hecke 公式直接验证 $T_1=\Id$。
+\item \basic 设 $f=\sum a_nq^n$。写出 $T_pf$ 的前两项系数公式。
+\item \basic 证明 Hecke 算子是复线性的。
+\item \basic 设 $f\in \Sk_k$。利用 $q$-展开证明 $T_nf\in \Sk_k$。
+\item \basic 证明 $\Mk_k$ 在 Hecke 算子作用下是左 $\mathcal{H}_k$-模。
+\item \basic 设 $f$ 为归一化特征形式。证明 $T_nf=a_nf$ 中的 $a_n$ 等于 $T_nf$ 的 $q^1$ 系数。
+\item \basic 证明若 $(m,n)=1$，则特征形式系数满足 $a_{mn}=a_ma_n$。
+\item \basic 由 $T_p^2=T_{p^2}+p^{k-1}\Id$ 推出
+$a_{p^2}=a_p^2-p^{k-1}$。
+\item \basic 设 $a(n)$、$b(n)$ 是算术函数。写出 Dirichlet 卷积 $(a*b)(12)$ 的显式求和式。
+\item \basic 证明 Dirichlet 卷积的单位元是 $\varepsilon(1)=1$、$\varepsilon(n)=0$ $(n>1)$。
+\item \basic 写出 $\Gamma(N)$、$\GammaI(N)$、$\GammaO(N)$ 的定义，并说明包含关系。
+\item \basic 证明 $\Gamma(N)$ 是模 $N$ 约化映射的核。
+\item \basic 证明 $\Gamma(N)\triangleleft \SL_2(\Z)$。
+\item \basic 计算 $[\SL_2(\Z):\GammaO(2)]$。
+\item \basic 计算 $[\SL_2(\Z):\GammaI(2)]$。
+\item \basic 在 Deligne 定理的叙述中，写出 $p\nmid N\ell$ 时的迹与行列式公式。
+\item \basic 用一句话说明模性定理把哪两类对象联系起来。
+\item \basic 用一句话说明 Langlands 纲领是对哪一现象的广义推广。
+\end{enumerate}
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 由 Hecke 乘法公式证明 $T_mT_n=T_nT_m$。
+\item \medium 设 $(m,n)=1$。证明 $T_mT_n=T_{mn}$。
+\item \medium 证明 $T_pT_{p^r}=T_{p^{r+1}}+p^{k-1}T_{p^{r-1}}$。
+\item \medium 设 $f$ 为归一化特征形式。证明
+$a_ma_n=\sum_{d\mid(m,n)}d^{k-1}a_{mn/d^2}$。
+\item \medium 由上一题推出素数幂递推
+$a_{p^{r+1}}=a_pa_{p^r}-p^{k-1}a_{p^{r-1}}$。
+\item \medium 证明形式幂级数恒等式
+$\sum_{r\ge 0}a_{p^r}X^r=(1-a_pX+p^{k-1}X^2)^{-1}$。
+\item \medium 从上题推出 $L(f,s)$ 的欧拉积。
+\item \medium 证明 $\GammaO(N)/\GammaI(N)\cong (\Z/N\Z)^\times$。
+\item \medium 由指标公式计算 $[\SL_2(\Z):\GammaO(3)]$ 与 $[\SL_2(\Z):\GammaO(5)]$。
+\item \medium 证明 $[\SL_2(\Z):\Gamma(N)] = [\SL_2(\Z):\GammaI(N)]\cdot [\GammaI(N):\Gamma(N)]$，并由此求出 $[\GammaI(N):\Gamma(N)]$。
+\item \medium 说明为什么 Hecke 代数的交换性使“同时特征向量”成为合理目标。
+\item \medium 设 $f,g$ 是两个归一化特征形式，且某个 $n$ 满足 $a_n(f)\ne a_n(g)$。证明它们不可能生成同一个 Hecke 一维子模。
+\item \medium 若 $f$ 对所有素数 $p$ 都满足 $T_pf=a_pf$，说明为什么它对所有 $T_n$ 也是特征向量。
+\item \medium 解释欧拉因子
+$1-a_pp^{-s}+p^{k-1-2s}$
+与二维表示特征多项式的关系。
+\item \medium 说明为什么模性定理可表述为 $L(E,s)=L(f_E,s)$ 与 Galois 表示同构的双重对应。
+\item \medium 对素数 $p$，证明 $[\SL_2(\Z):\GammaO(p)]=p+1$。
+\item \medium 解释为什么 Fourier 系数“像一个算术函数”，而不仅是“复数序列”。
+\item \medium 说明残余表示 $\bar\rho_{f,\lambda}$ 的来源，以及它为何自然落在有限域上线性群中。
+\item \medium 解释 class field theory 与 Langlands 纲领之间的关系。
+\item \medium 设 $W\subseteq \Sk_k$ 在所有 $T_n$ 下稳定。证明 $W$ 是 Hecke 子模。
+\end{enumerate}
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 设 $f$ 是归一化特征形式。证明若已知所有素数 $p$ 的特征值 $a_p$，则全部 $a_n$ 由乘法性与素数幂递推唯一决定。
+\item \hard 设 $V$ 是有限维复向量空间，$A,B\in\End(V)$ 可对角化且交换。证明 $V$ 有一组同时把 $A,B$ 对角化的基。说明其与 Hecke 特征形式分解的关系。
+\item \hard 设 $f$ 为归一化特征形式。证明 Euler 因子可写成
+$(1-\alpha_pp^{-s})^{-1}(1-\beta_pp^{-s})^{-1}$，
+其中 $\alpha_p+\beta_p=a_p$，$\alpha_p\beta_p=p^{k-1}$。
+\item \hard 证明若两个归一化特征形式在所有素数 $p$ 处满足 $a_p=b_p$，则它们所有 Fourier 系数都相同。
+\item \hard 说明 $\Gamma(N)\triangleleft \SL_2(\Z)$ 与有限商 $\SL_2(\Z/N\Z)$ 之间的关系如何体现“模形式 level 结构来源于有限群数据”。
+\item \hard 解释为何 Deligne 定理中的特征多项式
+$X^2-a_pX+\chi(p)p^{k-1}$
+与 Hecke 欧拉因子完全匹配。
+\item \hard 给出一段结构性论证，说明 Hecke 代数、模形式空间、Galois 表示三者为何可以看作同一算术信息的三个实现。
+\item \hard 设 $p\nmid N\ell$。说明为什么知道
+$\Tr(\rho_{f,\ell}(\Frob_p))$ 与
+$\det(\rho_{f,\ell}(\Frob_p))$
+就足以确定其特征多项式。
+\item \hard 说明为什么 Fermat 大定理的证明从“三个整数的方程”转向“椭圆曲线的模性”并非绕远路，而是把问题放入更有结构的范畴中。
+\item \hard 论述本章中群、环、模、域与表示这五条主线如何在模形式理论中汇合。
+\item \hard 设 $f$ 为权 $2$ 新形式，对应椭圆曲线 $E/\Q$。解释为什么“点数公式”
+$a_p=p+1-\#E(\F_p)$
+使 Hecke 特征值与有限域上的几何计数相遇。
+\end{enumerate}
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} 直接代入定义。
+若 $\gamma_i=\mat{a_i&b_i\\c_i&d_i}$，
+则两次代换得到的因子正好乘成
+$(c'z+d')^{-k}$，其中
+$\gamma_1\gamma_2=\mat{a'&b'\\c'&d'}$。
+这表明 slash 作用确是右作用。
+\item \textbf{解答.} 取平移矩阵 $T=\mat{1&1\\0&1}\in \SL_2(\Z)$。 由模形式不变性， $f\mid_k T=f$，而此时 $cz+d=1$，故 $f(z+1)=f(z)$。
+\item \textbf{解答.} 尖点形式的定义是在模形式定义基础上再加“每个 cusp 处消失”。 因此任何尖点形式自动满足模形式的全部条件，故为其子空间。
+\item \textbf{解答.} 对 $\SL_2(\Z)$， $q=e^{2\pi iz}$ 在无穷远 cusp 处趋于 $0$。 $f$ 在该 cusp 处消失等价于 $q$-展开常数项为零， 即 $a_0=0$。
+\item \textbf{解答.} 对任意 $\gamma\in\Gamma$， $(fg)\mid_{k+\ell}\gamma=(f\mid_k\gamma)(g\mid_\ell\gamma)=fg$。 $q$-展开相乘仍全纯， 故 $fg\in \Mk_{k+\ell}(\Gamma)$。
+\item \textbf{解答.} 已知 $g$ 在每个 cusp 的局部展开常数项为 $0$。 于是 $fg$ 的每个局部展开也无常数项， 故 $fg$ 为尖点形式。
+\item \textbf{解答.} 在 $T_n$ 公式中取 $n=1$，只有 $a=d=1$、$b=0$ 一项。 故 $(T_1f)(z)=f(z)$，即 $T_1=\Id$。
+\item \textbf{解答.} 由 $(T_pf)(z)=\sum_{m\ge 0}(a_{pm}+p^{k-1}a_{m/p})q^m$， 其中约定 $a_{m/p}=0$ 若 $p\nmid m$。 因此常数项为 $a_0$， $q^1$ 系数为 $a_p$。
+\item \textbf{解答.} Hecke 公式是有限和， 并且各项都对 $f$ 线性。 故对任意 $\alpha,\beta\in\C$ 有 $T_n(\alpha f+\beta g)=\alpha T_nf+\beta T_ng$。
+\item \textbf{解答.} 若 $f$ 是尖点形式，则 $a_0=0$。 由系数公式， $T_nf$ 的常数项为 $\sum_{d\mid(0,n)}d^{k-1}a_0=\bigl(\sum_{d\mid n}d^{k-1}\bigr)a_0=0$。 故 $T_nf$ 仍为尖点形式。
+\item \textbf{解答.} $\mathcal{H}_k$ 是由各 $T_n$ 生成的交换子环。 定义 $h\cdot f=h(f)$。 单位元作用为 $T_1=\Id$， 乘法满足 $(h_1h_2)\cdot f=h_1\cdot(h_2\cdot f)$。 因此 $\Mk_k$ 是左模。
+\item \textbf{解答.} 因为 $f$ 归一化，$a_1=1$。 若 $T_nf=\lambda_nf$， 则其 $q^1$ 系数等于 $\lambda_n$。 而 Hecke 公式说明该系数恰是 $a_n$， 故二者相等。
+\item \textbf{解答.} 由 Hecke 关系 $T_mT_n=T_{mn}$（互素情形）和 $T_rf=a_rf$， 得 $a_ma_nf=T_mT_nf=T_{mn}f=a_{mn}f$。 因 $f\ne 0$，故 $a_{mn}=a_ma_n$。
+\item \textbf{解答.} 对归一化特征形式应用 $T_p^2=T_{p^2}+p^{k-1}\Id$： 左边作用给出 $a_p^2f$， 右边给出 $(a_{p^2}+p^{k-1})f$。 比较系数即得结论。
+\item \textbf{解答.} 因 $12$ 的正因子为 $1,2,3,4,6,12$， 故 $(a*b)(12)=a(1)b(12)+a(2)b(6)+a(3)b(4)+a(4)b(3)+a(6)b(2)+a(12)b(1)$。
+\item \textbf{解答.} 对任意算术函数 $a$， 有 $(a*\varepsilon)(n)=\sum_{d\mid n}a(d)\varepsilon(n/d)$。 只有 $n/d=1$，即 $d=n$ 的项不为零， 故结果为 $a(n)$。 同理 $\varepsilon*a=a$。
+\item \textbf{解答.} 三者定义见正文。 由条件强弱立刻得到 $\Gamma(N)\subseteq \GammaI(N)\subseteq \GammaO(N)\subseteq \SL_2(\Z)$。
+\item \textbf{解答.} 约化映射 $\rho_N:\SL_2(\Z)\to \SL_2(\Z/N\Z)$ 把矩阵模 $N$ 取像。 核即模 $N$ 同余于单位矩阵的元素， 正是 $\Gamma(N)$。
+\item \textbf{解答.} 任一群同态的核都是正规子群。 上一题已知 $\Gamma(N)=\Ker(\rho_N)$， 故其正规。
+\item \textbf{解答.} 用公式 $[\SL_2(\Z):\GammaO(N)]=N\prod_{p\mid N}(1+p^{-1})$。 当 $N=2$ 时得到 $2(1+1/2)=3$。
+\item \textbf{解答.} 用公式 $[\SL_2(\Z):\GammaI(N)]=N^2\prod_{p\mid N}(1-p^{-2})$。 当 $N=2$ 时得到 $4(1-1/4)=3$。
+\item \textbf{解答.} 对 $p\nmid N\ell$， Deligne 定理给出 $\Tr(\rho_{f,\ell}(\Frob_p))=a_p$， $\det(\rho_{f,\ell}(\Frob_p))=\chi(p)p^{k-1}$。
+\item \textbf{解答.} 模性定理把定义在 $\Q$ 上的椭圆曲线与权 $2$ 的新形式联系起来。
+\item \textbf{解答.} Langlands 纲领广义推广了 abelian class field theory 所体现的“Galois 对应自守对象”的现象。
+\item \textbf{解答.} 由一般乘法公式 $T_mT_n=\sum_{d\mid(m,n)}d^{k-1}T_{mn/d^2}$， 右边对 $m,n$ 对称， 故 $T_mT_n=T_nT_m$。
+\item \textbf{解答.} 若 $(m,n)=1$， 公因子只有 $1$， 故求和式化简为 $T_mT_n=T_{mn}$。
+\item \textbf{解答.} 在一般公式中令 $m=p$、$n=p^r$。 公因子只有 $1,p$， 故 $T_pT_{p^r}=T_{p^{r+1}}+p^{k-1}T_{p^{r-1}}$。
+\item \textbf{解答.} 因 $T_rf=a_rf$， 有 $a_ma_nf=T_mT_nf= \sum_{d\mid(m,n)}d^{k-1}T_{mn/d^2}f= \sum_{d\mid(m,n)}d^{k-1}a_{mn/d^2}f$。 去掉非零向量 $f$ 即得。
+\item \textbf{解答.} 在上一题中取 $m=p$、$n=p^r$。 公因子仍只有 $1,p$， 于是得到 $a_pa_{p^r}=a_{p^{r+1}}+p^{k-1}a_{p^{r-1}}$， 整理即成递推式。
+\item \textbf{解答.} 设 $F(X)=\sum_{r\ge 0}a_{p^r}X^r$，且 $a_{p^0}=1$。 由递推式， $(1-a_pX+p^{k-1}X^2)F(X)$ 的 $X^r$ 系数在 $r\ge 1$ 时全为零， 常数项为 $1$， 故该乘积等于 $1$。
+\item \textbf{解答.} 对每个素数 $p$， 局部部分和为 $\sum_{r\ge 0}a_{p^r}p^{-rs}=(1-a_pp^{-s}+p^{k-1-2s})^{-1}$。 把所有素数相乘， 并用唯一分解恢复全部整数项， 得到欧拉积。
+\item \textbf{解答.} 定义 $\phi:\GammaO(N)\to (\Z/N\Z)^\times$， $\phi\bigl(\mat{a&b\\c&d}\bigr)=d\bmod N$。 若 $c\equiv 0\pmod N$ 且 $ad-bc=1$，则 $d$ 在模 $N$ 下可逆。 它是群同态， 核恰是满足 $d\equiv 1$ 且进而 $a\equiv 1$ 的矩阵， 即 $\GammaI(N)$。 故商群同构于单位群。
+\item \textbf{解答.} 对 $N=3$， 指标为 $3(1+1/3)=4$。 对 $N=5$， 指标为 $5(1+1/5)=6$。
+\item \textbf{解答.} 由塔式公式，
+只要子群包含关系成立，
+就有指标相乘。
+代入两个显式公式得
+\[ [\GammaI(N):\Gamma(N)] =\frac{N^3\prod_{p\mid N}(1-p^{-2})}{N^2\prod_{p\mid N}(1-p^{-2})}=N. \]
+\item \textbf{解答.} 若算子不交换， 一个算子的特征向量一般不会被另一个保持。 交换性保证特征子空间彼此稳定， 从而有希望寻找共同特征向量并进行同时分解。
+\item \textbf{解答.} 若它们生成同一 Hecke 一维子模， 则所有 $T_n$ 在该子模上的作用都由同一组标量给出。 于是必有 $a_n(f)=a_n(g)$ 对所有 $n$ 成立， 与题设某个 $n$ 上不同矛盾。
+\item \textbf{解答.} Hecke 代数由所有 $T_p$ 生成。 更具体地， 一般的 $T_n$ 可由素数幂算子相乘得到， 而素数幂算子又由递推关系从 $T_p$ 表达出来。 故若 $f$ 对每个 $T_p$ 都是特征向量， 则对全部 $T_n$ 也是特征向量。
+\item \textbf{解答.} 对未分歧素数 $p$， 二维表示的特征多项式为 $X^2-a_pX+p^{k-1}$。 把 $X$ 替为 $p^{-s}$， 再取逆， 便得到欧拉因子。 因此欧拉因子正是 Frobenius 作用的“局部线性代数数据”。
+\item \textbf{解答.} 模性定理一方面说存在新形式 $f_E$ 使 $L(E,s)=L(f_E,s)$， 另一方面说对每个 $\ell$， 由 Tate 模得到的 Galois 表示与 $f_E$ 的 $\ell$-进表示同构。 两种表述分别对应解析面与表示面， 但描述的是同一对象。
+\item \textbf{解答.} 把 $N=p$ 代入指标公式： $[\SL_2(\Z):\GammaO(p)]=p(1+p^{-1})=p+1$。
+\item \textbf{解答.} 因为 Fourier 系数满足互素乘法性与素数幂递推， 它们随整数的素因子分解而变化， 所以是带强算术结构的函数 $n\mapsto a_n$， 不是彼此独立的复数项。
+\item \textbf{解答.} 先在某个数域的整数环中实现 $\rho_{f,\ell}$， 再对位于 $\ell$ 上方的素理想 $\lambda$ 取模。 由于剩余域是有限域 $\F_\lambda$， 所得矩阵自然落在 $\GL_2(\F_\lambda)$ 中。
+\item \textbf{解答.} class field theory 处理的是阿贝尔 Galois 群与 Hecke 特征之间的对应； Langlands 纲领希望把这一对应推广到非阿贝尔、甚至高维表示情形。 因此前者可看作后者的 $n=1$ 原型。
+\item \textbf{解答.} 这正是定义： 若 $W$ 对所有 $T_n$ 稳定， 则对 Hecke 代数中任意多项式表达式 $h(T_1,T_2,\dots)$ 也稳定。 故 $W$ 对 $\mathcal{H}_k$ 稳定，是 Hecke 子模。
+\item \textbf{解答.} 任意正整数写成 $n=\prod p_i^{r_i}$。 互素乘法性把 $a_n$ 分解为各 $a_{p_i^{r_i}}$ 的乘积； 而每个 $a_{p^r}$ 由 $a_p$ 和递推唯一决定。 因此全部系数由所有 $a_p$ 唯一确定。
+\item \textbf{解答.} 先分解 $V$ 为 $A$ 的特征空间直和。 因 $AB=BA$，每个 $A$-特征空间都被 $B$ 保持。 在每个这样的子空间上再对角化 $B$， 拼接所得基即可同时对角化。 Hecke 作用中，交换的 Hecke 算子正是依此思想寻找共同特征形式基。
+\item \textbf{解答.} 令 $\alpha_p,\beta_p$ 为方程 $X^2-a_pX+p^{k-1}=0$ 的两根。 则 $\alpha_p+\beta_p=a_p$， $\alpha_p\beta_p=p^{k-1}$。 于是 $1-a_pX+p^{k-1}X^2=(1-\alpha_pX)(1-\beta_pX)$， 代入 $X=p^{-s}$ 即得。
+\item \textbf{解答.} 若所有素数上 $a_p=b_p$， 则上一题说明所有素数幂系数由同一递推给出，故也相等。 再用互素乘法性， 任意 $n$ 的系数由其素数幂分解唯一决定， 故 $a_n=b_n$ 对所有 $n$ 成立。
+\item \textbf{解答.} 因为 $\Gamma(N)$ 是约化映射的核， 所以 $\SL_2(\Z)/\Gamma(N)\cong \Ima(\rho_N)\subseteq \SL_2(\Z/N\Z)$。 这表明 level $N$ 的附加结构本质上来自模 $N$ 的有限群数据， 例如椭圆曲线的 $N$-扭点或模曲线上的 level 结构。
+\item \textbf{解答.} Hecke 欧拉因子是 $(1-a_pp^{-s}+\chi(p)p^{k-1-2s})^{-1}$。 而 Deligne 给出的特征多项式为 $X^2-a_pX+\chi(p)p^{k-1}$。 把 $X$ 替成 $p^{-s}$ 并取逆， 正好得到同一局部因子， 说明 Hecke 数据与 Galois 数据在每个素数处精确对齐。
+\item \textbf{解答.} Hecke 代数记录算术对称性； 模形式空间承载这些对称性的线性作用； Galois 表示则把同一组局部特征值解释为 Frobenius 的迹与行列式。 三者共享相同的局部特征多项式， 因此可以视为同一信息在函数空间、算子代数与绝对 Galois 群表示中的三个实现。
+\item \textbf{解答.} 对二维线性变换， 特征多项式由迹与行列式唯一决定： $X^2-(\Tr A)X+\det A$。 因此一旦知道 $\Tr(\rho_{f,\ell}(\Frob_p))$ 和 $\det(\rho_{f,\ell}(\Frob_p))$， 其特征多项式即被唯一确定。
+\item \textbf{解答.} 原始方程缺乏可利用的对称与局部结构。 转向 Frey 曲线后， 问题进入椭圆曲线、Galois 表示、模形式的范畴， 那里存在 Hecke 代数、同余、变形与模性提升等强大工具。 这不是绕路，而是把孤立方程嵌入更丰富的结构理论。
+\item \textbf{解答.} 群论给出 $\SL_2(\Z)$ 及其同余子群； 环论给出 Hecke 代数与模形式环； 模论解释模形式空间是 Hecke 模并可分解； 域论与 Galois 理论提供绝对 Galois 群及 Frobenius 元； 表示论把 Fourier 系数重释为二维表示的迹。 五条主线在 Euler 因子和模性定理中汇合为单一图景。
+\item \textbf{解答.} 对椭圆曲线的局部 zeta 函数，
+Frobenius 在 $H^1$ 或 Tate 模上的迹满足
+$a_p=p+1-\#E(\F_p)$。
+模性定理说同一个 $a_p$ 也是新形式的 Hecke 特征值。
+于是有限域上的点数、Galois 作用与模形式系数被同一整数连接起来。
+\end{enumerate}

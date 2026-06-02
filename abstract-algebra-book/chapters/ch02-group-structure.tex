@@ -1,0 +1,559 @@
+\chapter{群的结构定理}
+上一章建立了群、子群、同态与商群的语言。
+从本章开始，我们关心更深的问题：
+有限群究竟长什么样？
+如何用作用、陪集计数与正规列把一个群拆解成较简单的块？
+这些问题的答案形成了有限群论的基本骨架。
+对模形式而言，
+$\SL_2(\Z/N\Z)$、$\Gamma_0(N)/\Gamma(N)$、Hecke 作用下的有限置换结构都要依赖这些工具。
+\section{群作用的引入}
+\begin{example}[从“对称作用在对象上”开始]
+正方形的对称群 $D_4$ 不只是一个抽象群；
+它还作用在四个顶点、四条边、两条对角线构成的集合上。
+同样，$\SL_2(\Z)$ 作用在同余类向量 $(\Z/N\Z)^2$ 上，
+从而产生有限置换表示。
+群作用把“群自身的代数结构”与“它控制的外部对象”联系起来。
+\end{example}
+\begin{definition}
+设 $G$ 为群，$X$ 为集合。
+一个 \emph{$G$ 在 $X$ 上的左作用} 是映射
+\[
+G\times X\to X,\qquad (g,x)\mapsto g\cdot x,
+\]
+满足
+\[
+ e\cdot x=x,\qquad (gh)\cdot x=g\cdot(h\cdot x)
+\]
+对一切 $g,h\in G$ 与 $x\in X$ 成立。
+\end{definition}
+\begin{example}
+\begin{enumerate}[label=\textnormal{(\arabic*)}, leftmargin=3em]
+  \item $S_n$ 作用在 $\{1,\dots,n\}$ 上：$\sigma\cdot i=\sigma(i)$；
+  \item 任意群 $G$ 作用在自身左陪集集合 $G/H$ 上：$g\cdot(xH)=(gx)H$；
+  \item $G$ 作用在自身上，通过共轭：$g\cdot x=gxg^{-1}$。
+\end{enumerate}
+\end{example}
+\begin{definition}
+设 $G$ 作用在 $X$ 上，$x\in X$。
+定义 $x$ 的\emph{轨道}与\emph{稳定子}为
+\[
+\Orb(x)=\{g\cdot x:g\in G\},
+\qquad
+\Stab(x)=\{g\in G:g\cdot x=x\}.
+\]
+\end{definition}
+\begin{proposition}
+在任意群作用中，$\Stab(x)\le G$。
+轨道把 $X$ 分割成互不相交的若干块。
+\end{proposition}
+\begin{proof}
+若 $g,h\in\Stab(x)$，则
+\[
+(gh^{-1})\cdot x=g\cdot(h^{-1}\cdot x)=g\cdot x=x,
+\]
+故 $gh^{-1}\in\Stab(x)$，所以稳定子是子群。
+若两个轨道有公共点 $y$，设 $y=g\cdot x=h\cdot z$，
+则 $z=h^{-1}g\cdot x$，故 $\Orb(z)=\Orb(x)$。
+所以轨道要么相等，要么不交。
+\end{proof}
+\begin{remark}
+以后我们会不断用“选择一个点，再研究它的稳定子”来做计数。
+这是有限群论中最经济的办法之一。
+\end{remark}
+\section{Lagrange 定理}
+\begin{example}[先从整数的余类看]
+$\Z$ 被子群 $n\Z$ 分成 $n$ 个陪集，
+即模 $n$ 的剩余类。
+有限群中的 Lagrange 定理是这一现象的普遍化：
+子群把整个群切成大小相同的若干块。
+\end{example}
+\begin{proposition}
+设 $H\le G$，则任意左陪集 $gH$ 与 $H$ 等势。
+若 $G$ 有限，则每个左陪集都有 $|H|$ 个元素。
+\end{proposition}
+\begin{proof}
+映射 $H\to gH$，$h\mapsto gh$ 为双射，逆映射是 $gh\mapsto h$。
+\end{proof}
+\begin{theorem}[Lagrange]
+若 $G$ 为有限群，$H\le G$，则
+\[
+|G|=[G:H]\,|H|.
+\]
+特别地，$|H|$ 整除 $|G|$。
+\end{theorem}
+\begin{proof}
+$G$ 被 $H$ 的左陪集分割成 $[G:H]$ 个互不相交的块，
+且每块大小都是 $|H|$。
+将这些块的大小相加便得公式。
+\end{proof}
+\begin{corollary}
+有限群中每个元素的阶整除群的阶。
+\end{corollary}
+\begin{proof}
+元素 $a$ 生成的循环子群 $\langle a\rangle$ 的阶等于 $\ord(a)$。
+由 Lagrange 定理，$|\langle a\rangle|\mid |G|$。
+\end{proof}
+\begin{corollary}[Euler 与 Fermat]
+若 $(a,n)=1$，则
+\[
+ a^{\varphi(n)}\equiv 1\pmod n.
+\]
+若 $p$ 为素数且 $p\nmid a$，则 $a^{p-1}\equiv1\pmod p$。
+\end{corollary}
+\begin{proof}
+在乘法群 $(\Z/n\Z)^\times$ 中，$\bar a$ 的阶整除群阶 $\varphi(n)$。
+第二句取 $n=p$ 即得。
+\end{proof}
+\begin{example}
+$|\GL_2(\F_p)|=(p^2-1)(p^2-p)$，
+故若 $A\in\GL_2(\F_p)$，则 $A^{|\GL_2(\F_p)|}=I$。
+对处理模 $p$ 上的矩阵递推非常有效。
+\end{example}
+\section{正规子群与单群}
+\begin{definition}
+非平凡群 $G$ 若其正规子群只有 $\{e\}$ 与 $G$ 自身，
+则称 $G$ 为\emph{单群}。
+\end{definition}
+\begin{example}
+素数阶循环群是单群。
+因为任意子群的阶整除素数，只能是 $1$ 或 $p$。
+\end{example}
+\begin{proposition}
+子群 $N\le G$ 正规，当且仅当它是某个同态的核。
+\end{proposition}
+\begin{proof}
+若 $N\trianglelefteq G$，自然投影 $\pi:G\to G/N$ 的核是 $N$。
+反之，任何同态的核都对共轭封闭，所以正规。
+\end{proof}
+\begin{lemma}
+对 $n\ge 3$，交错群 $A_n$ 由所有三循环生成。
+\end{lemma}
+\begin{proof}
+每个偶置换都可写成偶数个换位之积。
+而
+\[
+(ab)(ac)=(acb)
+\]
+把两个有公共点的换位乘起来得到三循环。
+任意偶数个换位可两两配对并改写为三循环之积，故结论成立。
+\end{proof}
+\begin{lemma}
+在 $A_n$ 中，所有三循环彼此共轭，前提是 $n\ge5$。
+\end{lemma}
+\begin{proof}
+在 $S_n$ 中三循环显然彼此共轭。
+若把 $(abc)$ 送到 $(def)$ 的置换是奇置换，
+由于 $n\ge5$，可取两个不在 $\{d,e,f\}$ 中的点 $u,v$，
+把该奇置换再乘上一个与 $(def)$ 支撑不相交的换位 $(uv)$，
+得到偶置换，且共轭结果不变。
+因此在 $A_n$ 中也彼此共轭。
+\end{proof}
+\begin{theorem}
+当 $n\ge5$ 时，$A_n$ 是单群。
+\end{theorem}
+\begin{proof}
+设 $N\trianglelefteq A_n$ 非平凡，取 $1\ne \sigma\in N$，
+在所有非恒等元素中选一个使其动点数最少。
+若 $\sigma$ 不是三循环，我们将构造动点更少的非恒等元素，矛盾。
+若 $\sigma$ 含一个长度至少 $4$ 的循环，可设其中包含 $1,2,3,4$，
+取三循环 $\tau=(123)$。
+则换位子 $\tau\sigma\tau^{-1}\sigma^{-1}\in N$，
+直接计算可见它只移动更少的点且非恒等，矛盾。
+若 $\sigma$ 是两个不相交换位之积，例如 $(12)(34)$，取 $\tau=(123)$，则
+\[
+\tau\sigma\tau^{-1}\sigma^{-1}=(132)
+\]
+是三循环，故 $N$ 含三循环。
+于是最少动点的非平凡元素必是三循环。
+由上一个引理，所有三循环与它共轭，而 $N$ 正规，故 $N$ 含全部三循环。
+再由 $A_n$ 由三循环生成，得到 $N=A_n$。
+故 $A_n$ 为单群。
+\end{proof}
+\begin{remark}
+这个结论十分关键。
+因为 $A_n$ 在 $n\ge5$ 时单且非阿贝尔，
+它们成为 Galois 理论中“不可解”的原型，
+也解释了五次一般方程没有根式公式。
+\end{remark}
+\section{Sylow 定理}
+\begin{definition}
+设有限群 $G$ 的阶为 $|G|=p^am$，其中 $p\nmid m$。
+阶为 $p^a$ 的子群称为 $G$ 的一个 \emph{Sylow $p$-子群}。
+所有这样的子群构成集合 $\Syl_p(G)$，其个数记为 $n_p$。
+\end{definition}
+\begin{lemma}[$p$-群作用计数]
+若有限 $p$-群 $P$ 作用在有限集合 $X$ 上，则
+\[
+|X|\equiv |\Fix(X)|\pmod p,
+\]
+其中 $\Fix(X)=\{x\in X:g\cdot x=x\ \forall g\in P\}$。
+\end{lemma}
+\begin{proof}
+把 $X$ 分成轨道。
+由轨道-稳定子定理，每个轨道大小都是 $|P|/|\Stab(x)|$，故为 $p$ 的幂。
+大小为 $1$ 的轨道恰是固定点轨道，其余轨道大小都被 $p$ 整除。
+把所有轨道大小相加即得同余式。
+\end{proof}
+\begin{lemma}[正规化子放大]
+设 $H$ 是有限群 $G$ 的一个 $p$-子群。
+若 $H$ 不是 Sylow $p$-子群，则 $p\mid [N_G(H):H]$。
+特别地，存在更大的 $p$-子群 $K$ 使 $H<K$。
+\end{lemma}
+\begin{proof}
+令 $H$ 左作用于 $G/H$，定义为 $h\cdot(gH)=hgH$。
+固定点恰好满足 $g^{-1}Hg\subseteq H$，于是等价于 $g\in N_G(H)$，
+所以固定点个数是 $[N_G(H):H]$。
+另一方面，$|G/H|=[G:H]$ 被 $p$ 整除，因为 $H$ 不是 Sylow。
+由上个引理，固定点个数也被 $p$ 整除。
+于是 $p\mid[N_G(H):H]$。
+再对群 $N_G(H)/H$ 用 Cauchy 定理，存在阶为 $p$ 的元素，
+其原像给出一个严格包含 $H$ 的更大 $p$-子群。
+\end{proof}
+\begin{theorem}[Sylow 第一、二、三定理]
+设 $|G|=p^am$，其中 $p\nmid m$。
+则：
+\begin{enumerate}[label=\textnormal{(\arabic*)}, leftmargin=3em]
+  \item $G$ 至少有一个 Sylow $p$-子群；
+  \item 任意两个 Sylow $p$-子群彼此共轭；
+  \item Sylow $p$-子群的个数 $n_p$ 满足 $n_p\equiv1\pmod p$ 且 $n_p\mid m$。
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1) 由 Cauchy 定理先取一个阶为 $p$ 的子群。
+若它还不是 Sylow，就用上个引理放大。
+不断放大，最终得到阶为 $p^a$ 的子群，即 Sylow $p$-子群。
+(2) 设 $P,Q$ 为两个 Sylow $p$-子群。
+令 $P$ 左作用于 $G/Q$。
+集合 $G/Q$ 的大小为 $[G:Q]=m$，不被 $p$ 整除。
+故按 $p$-群作用计数，引理保证存在固定点 $gQ$。
+于是对所有 $x\in P$，有 $xgQ=gQ$，即 $g^{-1}xg\in Q$。
+所以 $g^{-1}Pg\subseteq Q$。
+两边阶相同，故 $g^{-1}Pg=Q$。
+(3) 由共轭作用知 $n_p=[G:N_G(P)]$，故 $n_p\mid [G:P]=m$。
+再令 $P$ 作用在 $\Syl_p(G)$ 上，方式为共轭。
+固定点若为 $Q$，则 $P\subseteq N_G(Q)$，从而 $PQ$ 是 $p$-子群。
+但 $Q$ 已是最大 $p$-子群，只能有 $PQ=Q$，故 $P\subseteq Q$，进而 $P=Q$。
+所以唯一固定点是 $P$ 本身。
+由 $p$-群作用计数，
+\[
+ n_p=|\Syl_p(G)|\equiv1\pmod p.
+\]
+\end{proof}
+\begin{example}
+$|S_3|=6=2\cdot3$。
+Sylow $3$-子群只有一个，即 $A_3$；
+Sylow $2$-子群有三个，分别由三个换位生成。
+其中 $n_2=3\equiv1\pmod2$，且 $3\mid3$。
+\end{example}
+\begin{example}
+$|A_4|=12$。
+Sylow $3$-子群数 $n_3\equiv1\pmod3$ 且 $n_3\mid4$，故 $n_3=1$ 或 $4$。
+实际有四个三循环子群，所以 $n_3=4$。
+Sylow $2$-子群是 Klein 四元群，唯一且正规。
+\end{example}
+\section{有限阿贝尔群的结构定理}
+\begin{example}
+阶为 $12$ 的阿贝尔群不止一个：
+\[
+\Z/12\Z,\qquad \Z/6\Z\times\Z/2\Z,\qquad \Z/3\Z\times\Z/2\Z\times\Z/2\Z.
+\]
+它们都只有 $12$ 个元素，但元素阶与子群结构不同。
+结构定理说明：所有有限阿贝尔群都能由素数幂循环群唯一拼装出来。
+\end{example}
+\begin{theorem}[有限阿贝尔群结构定理]
+任一有限阿贝尔群 $G$ 同构于若干个循环群的直积。
+更精确地，存在唯一的正整数列
+\[
+ d_1\mid d_2\mid\cdots\mid d_r
+\]
+使得
+\[
+ G\cong \Z/d_1\Z\times\cdots\times \Z/d_r\Z.
+\]
+等价地，$G$ 可唯一写成若干素数幂阶循环群的直积。
+\end{theorem}
+\begin{proof}[证明思路与计算核心]
+先做素数分解。
+对每个素数 $p$，定义 $p$-初部分
+\[
+G_{(p)}=\{x\in G:x^{p^k}=e\ \text{对某个 }k\ge0\}.
+\]
+若 $|G|=\prod p_i^{a_i}$，则由中国剩余思想可证
+\[
+G\cong \prod_i G_{(p_i)}.
+\]
+因此只需分类有限阿贝尔 $p$-群。
+对阿贝尔 $p$-群，可把 $G$ 写成有限生成阿贝尔群的一个表示
+\[
+\Z^m/R.
+\]
+对关系矩阵做整数初等变换并应用 Smith 标准形，
+可化为对角关系
+\[
+\diag(p^{e_1},\dots,p^{e_r},0,\dots,0),
+\qquad e_1\le\cdots\le e_r.
+\]
+由于 $G$ 有限，没有自由部分，故
+\[
+G\cong \Z/p^{e_1}\Z\times\cdots\times\Z/p^{e_r}\Z.
+\]
+把各个素数的分量重新合并，便得到不变因子形式。
+唯一性同样来自 Smith 标准形的唯一性，
+也可从元素阶与各 $p$-部分的大小逐步恢复。
+\end{proof}
+\begin{example}
+若 $|G|=360=2^3\cdot3^2\cdot5$，
+则阿贝尔群 $G$ 的可能类型由三个素数部分独立决定：
+\[
+G_{(2)}\in\{\Z/8,\ \Z/4\times\Z/2,\ (\Z/2)^3\},
+\]
+\[
+G_{(3)}\in\{\Z/9,\ \Z/3\times\Z/3\},
+\qquad
+G_{(5)}\cong\Z/5.
+\]
+所以总共有 $3\times2\times1=6$ 种同构类型。
+\end{example}
+\begin{corollary}
+阶为平方自由数的有限阿贝尔群必循环。
+\end{corollary}
+\begin{proof}
+若 $|G|=p_1\cdots p_r$，则每个 $p_i$-部分只能是 $\Z/p_i\Z$，
+故
+\[
+G\cong \Z/p_1\Z\times\cdots\times\Z/p_r\Z\cong \Z/(p_1\cdots p_r)\Z.
+\]
+\end{proof}
+\section{合成列与 Jordan--H\"older 定理}
+\begin{definition}
+群 $G$ 的一个\emph{正规列}是子群链
+\[
+G=G_0\trianglerighteq G_1\trianglerighteq\cdots\trianglerighteq G_r=\{e\}
+\]
+其中每个 $G_{i+1}\trianglelefteq G_i$。
+若每个商群 $G_i/G_{i+1}$ 都是单群，则称为\emph{合成列}，
+这些商群称为\emph{合成因子}。
+\end{definition}
+\begin{example}
+对 $S_3$，有
+\[
+S_3\trianglerighteq A_3\trianglerighteq \{e\},
+\]
+其合成因子是 $S_3/A_3\cong \Z/2\Z$ 与 $A_3\cong \Z/3\Z$。
+\end{example}
+\begin{lemma}[蝴蝶引理，记述版]
+若 $A'\trianglelefteq A$ 且 $B'\trianglelefteq B$，
+则
+\[
+\frac{A'(A\cap B)}{A'(A\cap B')}
+\cong
+\frac{B'(A\cap B)}{B'(A'\cap B)}.
+\]
+\end{lemma}
+\begin{remark}
+蝴蝶引理是正规列 refinement 的核心代数恒等式。
+这里不把全部细节展开到最细，
+而强调它提供了“两个不同细分会产生同样的简单商”的桥梁。
+\end{remark}
+\begin{theorem}[Jordan--H\"older]
+有限群的任意两个合成列长度相同，
+且合成因子在重排之后两两同构。
+\end{theorem}
+\begin{proof}[证明思路]
+对两个正规列不断做细分。
+由 Schreier refinement 定理，任意两个正规列都有等价细分；
+其证明建立在蝴蝶引理之上。
+若原列已经是合成列，则其各商群都是单群，无法再做非平凡细分，
+因此任何等价细分都只能把这些单群因子重新排列。
+故合成列长度唯一，合成因子也唯一到次序与同构。
+\end{proof}
+\begin{remark}
+Jordan--H\"older 定理说明：
+虽然把一个群拆开的具体步骤不唯一，
+但最终拆到“不可再拆的单群因子”时，
+得到的基本积木是唯一的。
+\end{remark}
+\section{可解群}
+\begin{definition}
+定义导出列
+\[
+G^{(0)}=G,\qquad G^{(1)}=[G,G],\qquad G^{(n+1)}=[G^{(n)},G^{(n)}].
+\]
+若对某个 $r$ 有 $G^{(r)}=\{e\}$，则称 $G$ 为\emph{可解群}。
+等价地，$G$ 存在一个正规列，其各商群全为阿贝尔群。
+\end{definition}
+\begin{example}
+阿贝尔群显然可解，因为 $[G,G]=\{e\}$。
+群 $S_3$ 也可解，因为
+\[
+S_3\trianglerighteq A_3\trianglerighteq \{e\}
+\]
+而商群分别是 $\Z/2\Z$ 与 $\Z/3\Z$。
+\end{example}
+\begin{proposition}
+若 $N\trianglelefteq G$，且 $N$ 与 $G/N$ 都可解，则 $G$ 可解。
+\end{proposition}
+\begin{proof}
+把 $N$ 的导出列与 $G/N$ 的导出列拼接起来即可。
+更具体地，$G^{(i)}N/N$ 是 $G/N$ 的导出列中的项，
+故经过有限步后落入 $N$；
+再继续有限步，因 $N$ 可解最终到达平凡群。
+\end{proof}
+\begin{theorem}
+当 $n\ge5$ 时，$S_n$ 不可解。
+\end{theorem}
+\begin{proof}
+若 $S_n$ 可解，则其正规子群 $A_n$ 也可解。
+但 $A_n$ 在 $n\ge5$ 时是非阿贝尔单群。
+非平凡可解群的导出列最后一步给出一个非平凡阿贝尔正规商，
+从而存在非平凡真正规子群，这与单性矛盾。
+故 $A_n$ 不可解，进而 $S_n$ 不可解。
+\end{proof}
+\begin{remark}
+这一定理预告了 Galois 理论中的经典结论：
+一般五次方程不可由根式求解。
+从群论角度看，障碍正是 $S_5$ 的不可解性。
+\end{remark}
+\section*{习题}
+\subsection*{基础题}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \basic 写出 $S_3$ 在集合 $\{1,2,3\}$ 上的自然作用。
+\item \basic 求 $S_3$ 中元素 $1$ 的稳定子。
+\item \basic 求 $S_3$ 在 $\{1,2,3\}$ 上的轨道。
+\item \basic 证明任意作用中稳定子是子群。
+\item \basic 证明轨道给出集合的一个分割。
+\item \basic 设 $H\le G$，说明 $G$ 左作用在 $G/H$ 上。
+\item \basic 写出 $\Z/4\Z$ 加法作用在自身上的轨道。
+\item \basic 计算 $|\langle(123)\rangle|$。
+\item \basic 用 Lagrange 定理说明 $2$ 不能整除 $3$ 阶群的元素阶。
+\item \basic 证明有限群中元素阶整除群阶。
+\item \basic 求 $|S_3|,|A_3|,|D_4|$。
+\item \basic 说明素数阶群必循环。
+\item \basic 证明阶为 $15$ 的群一定有阶为 $5$ 的子群（可用 Cauchy）。
+\item \basic 证明阿贝尔群是可解群。
+\item \basic 写出 $S_3$ 的一个可解列。
+\item \basic 证明核是正规子群。
+\item \basic 证明单群没有非平凡真正规子群。
+\item \basic 证明 $A_4$ 不是单群。
+\item \basic 写出 $A_4$ 的正规 Klein 四元群。
+\item \basic 求 $S_3$ 的 Sylow $3$-子群个数。
+\item \basic 求 $S_3$ 的 Sylow $2$-子群个数。
+\item \basic 求 $A_4$ 的 Sylow $2$-子群个数。
+\item \basic 证明任意有限 $p$-群的中心非平凡。
+\item \basic 证明群的一个合成因子必是单群。
+\item \basic 写出 $\Z/12\Z$ 的一个合成列。
+\item \basic 说明 $\Z/12\Z$ 的合成因子都是素数阶循环群。
+\item \basic 求 $\Z/8\Z$ 的所有子群。
+\item \basic 求 $\Z/2\Z\times\Z/2\Z$ 的所有非单位元阶。
+\item \basic 写出一个阶为 $8$ 的非循环阿贝尔群。
+\item \basic 说明 $\Z/6\Z\times\Z/2\Z\not\cong \Z/12\Z$。
+\end{enumerate}
+\subsection*{进阶题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \medium 证明轨道大小等于指数 $[G:\Stab(x)]$。
+\item \medium 设 $G$ 作用在有限集 $X$ 上，证明 $|X|=\sum |\Orb(x_i)|$。
+\item \medium 证明 Lagrange 定理。
+\item \medium 用 Lagrange 定理证明 Fermat 小定理。
+\item \medium 证明指数为最小素数的子群必正规。
+\item \medium 证明 $A_n$ 由三循环生成。
+\item \medium 证明 $n\ge5$ 时 $A_n$ 中任意两个三循环共轭。
+\item \medium 证明 $A_5$ 是单群。
+\item \medium 利用 Sylow 定理证明 $|G|=21$ 的群必有正规 Sylow 子群。
+\item \medium 利用 Sylow 定理分类 $|G|=15$ 的群。
+\item \medium 利用 Sylow 定理证明 $|G|=45$ 的群必有正规 Sylow $5$-子群。
+\item \medium 求 $S_4$ 的 Sylow $2$-子群个数。
+\item \medium 求 $S_4$ 的 Sylow $3$-子群个数。
+\item \medium 证明任意两个 Sylow $p$-子群共轭。
+\item \medium 证明 Sylow $p$-子群个数满足 $n_p\equiv1\pmod p$。
+\item \medium 证明阶为 $p^2$ 的群阿贝尔。
+\item \medium 证明阶为 $pq$（$p<q$ 且 $p\nmid q-1$）的群循环。
+\item \medium 写出所有阶为 $16$ 的阿贝尔群同构类型。
+\item \medium 写出所有阶为 $72$ 的阿贝尔群同构类型个数。
+\item \medium 求所有阶为 $100$ 的阿贝尔群同构类型。
+\item \medium 设 $G$ 有合成列，证明其合成因子阶的乘积等于 $|G|$。
+\item \medium 证明有限阿贝尔群的合成因子都为素数阶循环群。
+\item \medium 证明若 $G$ 可解，则其任何子群也可解。
+\item \medium 证明若 $G$ 可解，则其任何商群也可解。
+\item \medium 证明 $S_4$ 可解。
+\end{enumerate}
+\subsection*{挑战题}
+\begin{enumerate}[resume, label=\textbf{\arabic*.}, leftmargin=*, itemsep=0.5em]
+\item \hard 设 $G$ 作用在 $p$ 个点上且作用传递，证明若 $p$ 为素数，则点稳定子是极大子群。
+\item \hard 利用 Sylow 定理证明阶为 $56$ 的单群不存在。
+\item \hard 证明阶为 $p^aq^b$ 的群一定可解。
+\item \hard 证明 $A_5$ 是最小的非阿贝尔单群。
+\item \hard 设有限阿贝尔群 $G$ 的每个非单位元阶都为 $p$，证明 $G\cong (\Z/p\Z)^r$。
+\item \hard 证明 $D_{2n}$ 可解，并求其导出列在 $n$ 为奇数时的前两项。
+\item \hard 证明若有限群 $G$ 有唯一一个 Sylow $p$-子群对每个素数 $p\mid|G|$，则 $G$ 是这些 Sylow 子群的直积。
+\item \hard 设 $G$ 为有限群，证明 $G$ 可解当且仅当它的每个合成因子都是素数阶循环群。
+\item \hard 证明阶为 $p^3$ 的群都有正规子群链长度 $3$。
+\item \hard 设 $G$ 为有限群且 $|G|$ 为奇数，证明不存在阶为 $2$ 的元素；据此说明共轭类大小奇偶性的一种限制。
+\end{enumerate}
+\section*{习题解答}
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=1em]
+\item \textbf{解答.} 对 $\sigma\in S_3$ 与 $i\in\{1,2,3\}$，定义 $\sigma\cdot i=\sigma(i)$。
+\item \textbf{解答.} 稳定子是保持 $1$ 不动的置换，故为 $\{e,(23)\}$。
+\item \textbf{解答.} 轨道是整个集合 $\{1,2,3\}$，因为自然作用是传递的。
+\item \textbf{解答.} 若 $g,h$ 固定 $x$，则 $(gh^{-1})\cdot x=g\cdot(h^{-1}\cdot x)=g\cdot x=x$，故稳定子为子群。
+\item \textbf{解答.} 若两个轨道交于某点，则可相互到达，故两轨道相等；否则不交。
+\item \textbf{解答.} 定义 $g\cdot(xH)=(gx)H$。若 $xH=yH$，则 $y=xh$，故 $(gy)H=(gxh)H=(gx)H$，良定义。
+\item \textbf{解答.} 平移作用是传递的，故唯一轨道为整个 $\Z/4\Z$。
+\item \textbf{解答.} $(123)$ 的阶为 $3$。
+\item \textbf{解答.} 若某元素阶为 $2$，则 $2$ 应整除群阶 $3$，矛盾。
+\item \textbf{解答.} 元素 $a$ 生成的子群阶为 $\ord(a)$，由 Lagrange 定理整除 $|G|$。
+\item \textbf{解答.} $|S_3|=6,|A_3|=3,|D_4|=8$。
+\item \textbf{解答.} 取 $a\ne e$，则 $\langle a\rangle$ 的阶整除素数 $p$，只能为 $p$，故群循环。
+\item \textbf{解答.} 由 Cauchy 定理，因为 $5\mid15$，所以存在阶为 $5$ 的元素，从而有阶为 $5$ 的子群。
+\item \textbf{解答.} 阿贝尔群满足 $[G,G]=\{e\}$，故一步就到平凡群。
+\item \textbf{解答.} $S_3\trianglerighteq A_3\trianglerighteq\{e\}$ 即可，商群都是阿贝尔的。
+\item \textbf{解答.} 若 $x\in\Ker\varphi$，则 $\varphi(gxg^{-1})=\varphi(g)e\varphi(g)^{-1}=e$，故核正规。
+\item \textbf{解答.} 这正是单群的定义。
+\item \textbf{解答.} 因 Klein 四元群 $V_4\trianglelefteq A_4$ 非平凡且真，所以 $A_4$ 不单。
+\item \textbf{解答.} 即 $V_4=\{e,(12)(34),(13)(24),(14)(23)\}$。
+\item \textbf{解答.} Sylow $3$-子群只有一个，即 $A_3$，所以个数为 $1$。
+\item \textbf{解答.} 三个换位各生成一个阶 $2$ 子群，所以有 $3$ 个。
+\item \textbf{解答.} $A_4$ 的 Sylow $2$-子群唯一，即 $V_4$，故个数为 $1$。
+\item \textbf{解答.} $p$-群按共轭作用于自身，类方程中非中心共轭类大小都被 $p$ 整除，而总大小也被 $p$ 整除，故中心大小被 $p$ 整除，特别非平凡。
+\item \textbf{解答.} 合成列的定义要求每个商群都是单群。
+\item \textbf{解答.} 例如 $\Z/12\Z\trianglerighteq\langle\bar2\rangle\trianglerighteq\langle\bar6\rangle\trianglerighteq\{\bar0\}$。
+\item \textbf{解答.} 有限阿贝尔群的单群必是素数阶循环群，故合成因子如此。
+\item \textbf{解答.} 子群对应因子 $1,2,4,8$，故有 $\{0\},\langle\bar4\rangle,\langle\bar2\rangle,\langle\bar1\rangle$。
+\item \textbf{解答.} 三个非单位元都满足两倍为零，故阶均为 $2$。
+\item \textbf{解答.} 例如 $\Z/4\Z\times\Z/2\Z$ 或 $(\Z/2\Z)^3$。
+\item \textbf{解答.} 前者有元素阶 $6$，故也有元素阶 $12$ 当且仅当与另一分量互素；但 $\Z/6\Z\times\Z/2\Z$ 的元素最大阶是 $6$，所以不同构于 $\Z/12\Z$。
+\item \textbf{解答.} 轨道映射 $g\Stab(x)\mapsto g\cdot x$ 给出双射，所以 $|\Orb(x)|=[G:\Stab(x)]$。
+\item \textbf{解答.} 取各轨道代表元 $x_i$，集合分割成这些轨道的并，因此总大小是轨道大小之和。
+\item \textbf{解答.} 见本章定理：陪集分割群且每个陪集大小等于子群大小。
+\item \textbf{解答.} 在 $(\Z/p\Z)^\times$ 中，$\bar a^{p-1}=\bar1$，故 $a^{p-1}\equiv1\pmod p$。
+\item \textbf{解答.} 设 $[G:H]=p$ 为最小素数。$G$ 左作用在 $G/H$ 上得到同态到 $S_p$。其像阶被 $p!$ 整除且也整除 $|G|$，由最小素数条件可得核指数为 $p$，从而核包含在 $H$ 中且与 $H$ 同阶，故 $H$ 正规。
+\item \textbf{解答.} 每个偶置换是偶数个换位之积，而 $(ab)(ac)=(acb)$，故可写成三循环之积。
+\item \textbf{解答.} 任两三循环在 $S_n$ 共轭；若共轭元奇，则乘以与支撑不交的换位修正为偶置换，仍给出同样共轭结果。
+\item \textbf{解答.} 按正文中 $A_n$ 单性定理，取 $n=5$ 即得。
+\item \textbf{解答.} 设 $|G|=21=3\cdot7$。$n_7\equiv1\pmod7$ 且 $n_7\mid3$，只能是 $1$，故 Sylow $7$-子群正规。
+\item \textbf{解答.} 同理 $n_5\equiv1\pmod5$ 且 $n_5\mid3$，故 $n_5=1$；$n_3\equiv1\pmod3$ 且 $n_3\mid5$，也得 $n_3=1$。两 Sylow 子群都正规，群同构于 $\Z/15\Z$。
+\item \textbf{解答.} $n_5\equiv1\pmod5$ 且 $n_5\mid9$，只能为 $1$，故正规。
+\item \textbf{解答.} $|S_4|=24=2^3\cdot3$。$n_2\equiv1\pmod2$ 且 $n_2\mid3$，故 $n_2=1$ 或 $3$。实际不正规，故为 $3$。
+\item \textbf{解答.} $n_3\equiv1\pmod3$ 且 $n_3\mid8$，故 $n_3=1$ 或 $4$。$S_4$ 中有 $8$ 个三循环，每个 Sylow $3$-子群含 $2$ 个非单位元，所以个数为 $4$。
+\item \textbf{解答.} 见 Sylow 第二定理证明：令一个 Sylow 子群作用在另一个的陪集空间上即可。
+\item \textbf{解答.} 见 Sylow 第三定理证明：令 Sylow 子群按共轭作用在所有 Sylow 子群集合上，唯一固定点是自身。
+\item \textbf{解答.} $p$-群中心非平凡。若中心等于全群则阿贝尔；否则商群阶为 $p$，循环，从而原群也阿贝尔。
+\item \textbf{解答.} 由 Sylow 计数，$n_q\equiv1\pmod q$ 且 $n_q\mid p$，故 $n_q=1$，Sylow $q$-子群正规。若再有 $p\nmid q-1$，则半直积只能退化为直积，所以群循环。
+\item \textbf{解答.} 分拆 $16=2^4$，得到五种：$\Z/16,\ \Z/8\times\Z/2,\ \Z/4\times\Z/4,\ \Z/4\times(\Z/2)^2,\ (\Z/2)^4$。
+\item \textbf{解答.} $72=2^3\cdot3^2$。$2$-部分有 $3$ 种，$3$-部分有 $2$ 种，所以共有 $6$ 种。
+\item \textbf{解答.} $100=2^2\cdot5^2$。类型为 $\Z/4\times\Z/25,\ \Z/4\times\Z/5\times\Z/5,\ \Z/2\times\Z/2\times\Z/25,\ \Z/2\times\Z/2\times\Z/5\times\Z/5$。
+\item \textbf{解答.} 由连乘公式 $|G_i|=|G_i/G_{i+1}|\,|G_{i+1}|$ 逐步相乘，望远镜消去后得到 $|G|=\prod |G_i/G_{i+1}|$。
+\item \textbf{解答.} 有限阿贝尔群的单群只能是素数阶循环群，因此其合成因子皆如此。
+\item \textbf{解答.} 子群的导出列包含于原群的导出列中，因此有限步后也到平凡群。
+\item \textbf{解答.} 商映射把换位子送到换位子，故 $(G/N)^{(i)}=G^{(i)}N/N$，于是有限步后为平凡群。
+\item \textbf{解答.} 有正规列 $S_4\trianglerighteq A_4\trianglerighteq V_4\trianglerighteq\{e\}$，其各商群分别同构于 $\Z/2,\ \Z/3,\ \Z/2\times\Z/2$，都阿贝尔，所以可解。
+\item \textbf{解答.} 传递作用下，轨道是整个 $p$ 点集合，故 $[G:\Stab(x)]=p$。指数为素数的真子群必极大，因为若 $\Stab(x)\subsetneq H\subsetneq G$，则 $[G:\Stab(x)]=[G:H][H:\Stab(x)]$ 与素性矛盾。
+\item \textbf{解答.} $|G|=56=2^3\cdot7$。若单，则 $n_7\equiv1\pmod7$ 且 $n_7\mid8$，故 $n_7=8$。于是有 $48$ 个阶 $7$ 的非单位元。再看 Sylow $2$-子群个数 $n_2\equiv1\pmod2$ 且 $n_2\mid7$，若 $n_2=1$ 则正规矛盾，只能是 $7$。每个阶 $8$ 的 Sylow $2$-子群至少含 $7$ 个非单位元，总数至少 $49$，与群总元素数矛盾。
+\item \textbf{解答.} 归纳于 $a+b$。由 Sylow 定理，存在正规 Sylow 子群 $P$ 或 $Q$；商群阶仍为两素数幂之积，归纳可解，再由扩张保持可解得结论。
+\item \textbf{解答.} 非阿贝尔单群的阶必须被至少三个素数整除；阶 $<60$ 的情形可用 Sylow 定理逐一排除。$A_5$ 阶为 $60$ 且为单群，因此最小。
+\item \textbf{解答.} 由条件，$G$ 是指数为 $p$ 的向量空间：定义标量乘法 $k\cdot x=x^k$。阿贝尔性来自所有元素阶 $p$ 且由结构定理，故同构于 $(\Z/p\Z)^r$。
+\item \textbf{解答.} $D_{2n}$ 有正规列 $D_{2n}\trianglerighteq\langle r\rangle\trianglerighteq\{e\}$，商群分别为 $\Z/2$ 与 $\Z/n$，故可解。若 $n$ 为奇数，导出子群为 $\langle r\rangle$，再下一步为 $\{e\}$ 当且仅当 $n$ 也为阿贝尔部分；具体有 $D_{2n}^{(1)}=\langle r\rangle$，$D_{2n}^{(2)}=\{e\}$。
+\item \textbf{解答.} 唯一 Sylow 子群都正规，且不同素数对应的子群交平凡。任取各 Sylow 子群元素彼此交换，因为交换子同时落在两个不同素数幂阶子群中，只能为单位元。于是乘法映射给出内部直积。
+\item \textbf{解答.} 若 $G$ 可解，则其合成因子作为可解群的商，必是可解单群，只能是素数阶循环群。反之，若合成因子都为素数阶循环群，则沿合成列逐段扩张得到 $G$ 可解。
+\item \textbf{解答.} $p$-群中心非平凡，可取中心中的阶 $p$ 子群 $Z_1$。商群 $G/Z_1$ 阶为 $p^2$，也有中心阶 $p$ 的子群，拉回得 $Z_2$。于是 $G\trianglerighteq Z_2\trianglerighteq Z_1\trianglerighteq\{e\}$ 即所求。
+\item \textbf{解答.} 若有阶 $2$ 元素 $x$，则 $2\mid|G|$，与 $|G|$ 为奇数矛盾。因而奇数阶群的非平凡共轭类无法由单个自逆元组成；配对 $x$ 与 $x^{-1}$ 时也得到奇偶性限制。
+\end{enumerate}
