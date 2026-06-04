@@ -129,6 +129,23 @@
 这个公式说明，提高匝数、面积、磁场强度或转速，都能提高发电机输出电压。
 \end{example}
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={时间 $t$}, ylabel={感应电动势 $\varepsilon/\varepsilon_0$},
+  axis lines=middle,
+  xmin=0, xmax=6.4, ymin=-1.1, ymax=1.1,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:6.283, samples=180] {sin(deg(x))};
+\end{axis}
+\end{tikzpicture}
+\caption{旋转线圈产生的感应电动势随时间作正弦变化}
+\end{figure}
+
 \begin{theorem}[广义法拉第定律]
 若回路本身也在运动，则总电动势应写为
 \[
@@ -232,6 +249,29 @@ P_J=I^2R=\left(\frac{B\ell v}{R}\right)^2R=\frac{B^2\ell^2 v^2}{R}.
 \begin{remark}
 “导体切割磁感线”只是动生电动势的一种形象说法。严格地说，关键不是是否看见“切割了线”，而是回路中电荷是否具有相对于磁场的速度，从而受到 $q\vb{v}\times\vb{B}$ 力。
 \end{remark}
+
+在导体整体进入磁场、并由涡流提供主要阻力的制动问题中，速度常近似满足指数衰减规律
+\[
+v(t)=v_0\mathrm{e}^{-t/\tau}.
+\]
+它表明制动力在速度较大时更明显，随后逐渐减弱。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={时间 $t/\tau$}, ylabel={速度 $v/v_0$},
+  axis lines=middle,
+  xmin=0, xmax=5.2, ymin=0, ymax=1.08,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:5, samples=180] {exp(-x)};
+\end{axis}
+\end{tikzpicture}
+\caption{涡流制动中物体速度随时间逐渐衰减}
+\end{figure}
 
 \section{感生电动势}
 
@@ -344,6 +384,23 @@ N_2\Phi_{21}=M I_1,
 \end{definition}
 
 互感是变压器工作的基础。交流电通过原线圈时，原线圈中的电流不断变化，于是铁芯中的磁通量不断变化，再在副线圈中激发感应电动势。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={原线圈电流 $I_1$}, ylabel={磁链 $N_2\Phi_{21}$},
+  axis lines=middle,
+  xmin=0, xmax=5.2, ymin=0, ymax=4.5,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:5, samples=120] {0.8*x};
+\end{axis}
+\end{tikzpicture}
+\caption{在线性范围内，互感磁链与原线圈电流成正比}
+\end{figure}
 
 \begin{law}[理想变压器关系]
 忽略漏磁、线圈电阻和能量损失时，理想变压器满足

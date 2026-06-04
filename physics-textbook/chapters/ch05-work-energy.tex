@@ -61,18 +61,27 @@ W=\int_C \vb{F}\cdot \dd \vb{r}=\vb{F}\cdot\int_C \dd \vb{r}=\vb{F}\cdot \vb{s}=
 W=\int_0^a kx\,\dd x = \frac{1}{2}ka^2.
 \]
 这说明：当力随位移线性增大时，平均力为末态力的一半，因此做功等于三角形面积。
-
-\begin{center}
-\begin{tikzpicture}[scale=0.95]
-  \draw[->] (-0.2,0) -- (4.6,0) node[right] {$x$};
-  \draw[->] (0,-0.2) -- (0,3.2) node[above] {$F$};
-  \draw[thick,blue] (0,0) -- (4,2.8) node[above right] {$F=kx$};
-  \draw[dashed] (4,0) node[below] {$a$} -- (4,2.8);
-  \fill[blue!18] (0,0) -- (4,0) -- (4,2.8) -- cycle;
-  \node at (2.6,0.8) {$W=\displaystyle\int_0^a F\,\dd x$};
-\end{tikzpicture}
-\end{center}
 \end{example}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={位置 $x$}, ylabel={力 $F$},
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  xmin=0, xmax=4.5, ymin=0, ymax=3.2,
+  xtick={4}, xticklabels={$a$},
+]
+\addplot[name path=force, blue, domain=0:4, samples=100] {0.7*x};
+\addplot[name path=axisline, draw=none, domain=0:4] {0};
+\addplot[blue!18] fill between[of=force and axisline];
+\end{axis}
+\end{tikzpicture}
+\caption{变力做功的图像意义：$F(x)$ 曲线下的面积就是功}
+\end{figure}
 
 \begin{example}[二维路径上的线积分]
 平面内有力场
@@ -410,6 +419,27 @@ E_k+U=\text{常量}.
 证毕。
 \end{proof}
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={位置 $x$}, ylabel={能量},
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  xmin=-3.4, xmax=3.4, ymin=0, ymax=3.0,
+  legend style={at={(0.98,0.98)}, anchor=north east, draw=none, fill=white},
+]
+\addplot[blue, domain=-3.2:3.2, samples=100] {0.25*x^2 + 0.4};
+\addplot[red, domain=-2.95:2.95, samples=100] {2.6 - (0.25*x^2 + 0.4)};
+\addplot[green!50!black, domain=-3.2:3.2, samples=2, dashed] {2.6};
+\legend{$U(x)$,$E_k(x)$,$E$}
+\end{axis}
+\end{tikzpicture}
+\caption{机械能守恒时，势能升高的部分正对应动能降低的部分，总能量 $E$ 保持不变}
+\end{figure}
+
 这个证明非常重要，因为它把“是否守恒”的判断压缩成一句话：
 \[
 \boxed{\ \text{机械能是否守恒，取决于非保守力是否做功。}\ }
@@ -544,6 +574,29 @@ E-U(x)=\frac{1}{2}mv^2\ge 0.
   \item 若 $U(x)=E$，则 $v=0$，这类点称为转折点；
   \item 若 $U(x)<E$，则粒子可以在该区域运动。
 \end{enumerate}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={位置 $x$}, ylabel={势能 $U$},
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  xmin=-3.4, xmax=3.4, ymin=0, ymax=3.2,
+]
+\addplot[blue, domain=-3.2:3.2, samples=100] {0.28*x^2 + 0.5};
+\addplot[red, domain=-3.2:3.2, samples=2, dashed] {2.5};
+\addplot[only marks, mark=*, mark size=1.8pt, red] coordinates {(-2.67,2.5) (2.67,2.5)};
+\addplot[dashed] coordinates {(-2.67,0) (-2.67,2.5)};
+\addplot[dashed] coordinates {(2.67,0) (2.67,2.5)};
+\node at (axis cs:-2.67,-0.12) {$x_{\mathrm{L}}$};
+\node at (axis cs:2.67,-0.12) {$x_{\mathrm{R}}$};
+\end{axis}
+\end{tikzpicture}
+\caption{势能曲线与总能量线的交点给出转折点：粒子到达这些位置时瞬时速度为零}
+\end{figure}
 
 \begin{definition}[平衡点与稳定性]
 若某点 $x_0$ 处力为零，即

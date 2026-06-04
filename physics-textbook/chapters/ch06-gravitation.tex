@@ -144,6 +144,23 @@ U(r)=-\frac{GMm}{r}.
 对应的势能函数是负值，这反映了引力体系是束缚体系：若要把物体带到无穷远，必须向系统补充能量。
 \end{theorem}
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={距离 $r$}, ylabel={势能 $U$},
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  xmin=0.6, xmax=5.2, ymin=-2.2, ymax=0.2,
+]
+\addplot[blue, domain=0.7:5.0, samples=100] {-1/x};
+\end{axis}
+\end{tikzpicture}
+\caption{引力势能 $U(r)=-GMm/r$ 随距离增大逐渐上升，并在无穷远处趋向零}
+\end{figure}
+
 对该势能求导，可以恢复引力：
 \[
 F_r=-\dv{U}{r}=-\dv{}{r}\left(-\frac{GMm}{r}\right)=-\frac{GMm}{r^2}.
@@ -274,6 +291,23 @@ v_c=\sqrt{\frac{GM}{r}},
 T=\frac{2\pi r}{v_c}=2\pi\sqrt{\frac{r^3}{GM}}.
 \]
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={轨道半径 $r$}, ylabel={轨道速度 $v$},
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  xmin=0.6, xmax=5.2, ymin=0, ymax=1.3,
+]
+\addplot[blue, domain=0.8:5.0, samples=100] {1/sqrt(x)};
+\end{axis}
+\end{tikzpicture}
+\caption{圆轨道速度满足 $v_c\propto r^{-1/2}$：轨道越高，所需速度越小}
+\end{figure}
+
 当 $0<e<1$ 时，轨道为椭圆，中心天体位于焦点之一，而不在椭圆中心。近日点与远日点分别为
 \[
 r_{\min}=\frac{p}{1+e},\qquad r_{\max}=\frac{p}{1-e}.
@@ -363,6 +397,31 @@ v^2=GM\left(\frac{2}{r}-\frac{1}{a}\right).
 \]
 当轨道为圆时 $a=r$，该公式退化为 $v^2=GM/r$。
 \end{theorem}
+
+若把角动量 $L$ 固定，径向运动还可以写成
+\[
+\frac{1}{2}m\dot r^2 + U_{\text{eff}}(r)=E,
+\qquad
+U_{\text{eff}}(r)=\frac{L^2}{2mr^2}-\frac{GMm}{r}.
+\]
+其中第一项像“离心势垒”，第二项来自引力势能；两者合成后的有效势能曲线决定了轨道是否会在某个半径附近形成稳定束缚运动。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={距离 $r$}, ylabel={有效势能 $U_{\text{eff}}$},
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  xmin=0.6, xmax=5.2, ymin=-1.2, ymax=1.4,
+]
+\addplot[blue, domain=0.7:5.0, samples=120] {1/x^2 - 2/x};
+\end{axis}
+\end{tikzpicture}
+\caption{有效势能由近距离的“势垒”和远距离的引力井组成，最低点对应稳定圆轨道附近}
+\end{figure}
 
 这个公式也解释了一个常见事实：同一椭圆轨道上，近日点 $r$ 较小，所以速度较大；远日点 $r$ 较大，所以速度较小。速度变化并不是因为中心天体“有时拉得更用力”，而是机械能在动能和势能之间持续转换的结果。
 

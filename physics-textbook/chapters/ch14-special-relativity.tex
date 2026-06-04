@@ -261,6 +261,23 @@ x'\approx x-vt,
 这说明经典力学并未被否定，而是作为低速极限被包含在更一般的理论中。
 \end{remark}
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={速度比 $\beta=v/c$}, ylabel={洛伦兹因子 $\gamma$},
+  xmin=0, xmax=0.995, ymin=1, ymax=10.5,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:0.995, samples=300] {1/sqrt(1-x^2)};
+\end{axis}
+\end{tikzpicture}
+\caption{洛伦兹因子在速度逼近光速时急剧增大}
+\end{figure}
+
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.05, >=Latex]
@@ -315,6 +332,23 @@ x'\approx x-vt,
 \]
 令 $\Delta t' = \Delta t_0$ 即得。
 \end{proof}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={速度比 $\beta=v/c$}, ylabel={时间比 $\Delta t'/\Delta t$},
+  xmin=0, xmax=0.99, ymin=0, ymax=1.05,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:0.99, samples=200] {sqrt(1-x^2)};
+\end{axis}
+\end{tikzpicture}
+\caption{固定实验室时间间隔时，运动时钟记录的时间随速度增大而减少}
+\end{figure}
 
 也可以用“光钟”作几何解释：在钟自身静止系中，光在两镜之间上下反射；而在外部参考系里，光走的是更长的折线路径。由于光速恒定，只能用更长的传播时间来补偿更长的路程，于是运动钟变慢。
 
@@ -418,6 +452,23 @@ L=\frac{L_0}{\gamma}.
 \]
 令 $\Delta x'=L_0$、$\Delta x=L$，即得 $L=L_0/\gamma$。
 \end{proof}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={速度比 $\beta=v/c$}, ylabel={长度比 $L/L_0$},
+  xmin=0, xmax=0.99, ymin=0, ymax=1.05,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:0.99, samples=200] {sqrt(1-x^2)};
+\end{axis}
+\end{tikzpicture}
+\caption{运动物体的长度随速度增大而收缩}
+\end{figure}
 
 \begin{remark}
 长度收缩不是“物体主观上被压扁了”，而是不同参考系对“同一时刻截面”的选择不同。没有同时性的相对性，就没有长度收缩。正因如此，时间膨胀、长度收缩与同时性的相对性并不是三件彼此独立的现象，而是同一套洛伦兹几何的三个侧面。
@@ -579,26 +630,37 @@ u=\frac{0.70c+0.80c}{1+0.70\times 0.80}=\frac{1.50}{1.56}c\approx 0.962c.
 
 这三类分离对应三种完全不同的物理关系：类时事件之间可以存在慢于光速的因果链；类光事件只能由光信号相连；类空事件则没有任何因果可能。由此可见，狭义相对论真正保留下来的不是欧几里得意义上的距离，而是“谁能影响谁”的结构。
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[scale=1.0, >=Latex]
-  \draw[->] (-5,0) -- (5,0) node[below] {$x$};
-  \draw[->] (0,-5) -- (0,5) node[left] {$ct$};
-  \fill[blue!10] (0,0) -- (4.2,4.2) -- (-4.2,4.2) -- cycle;
-  \fill[blue!10] (0,0) -- (4.2,-4.2) -- (-4.2,-4.2) -- cycle;
-  \draw[thick, blue!70!black] (0,0) -- (4.4,4.4);
-  \draw[thick, blue!70!black] (0,0) -- (-4.4,4.4);
-  \draw[thick, blue!70!black] (0,0) -- (4.4,-4.4);
-  \draw[thick, blue!70!black] (0,0) -- (-4.4,-4.4);
-  \fill (0,0) circle (2pt);
-  \node[right] at (0,0) {$O$};
-  \node at (0,3.2) {绝对未来};
-  \node at (0,-3.2) {绝对过去};
-  \node at (3.0,0.8) {类空区};
-  \node at (-3.0,0.8) {类空区};
-  \node[above right] at (2.6,2.6) {光线};
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.72\textwidth, height=0.72\textwidth,
+  xlabel={空间坐标 $x$}, ylabel={$ct$},
+  xmin=-4.5, xmax=4.5, ymin=-4.5, ymax=4.5,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  clip=false,
+]
+\path[fill=blue!10] (axis cs:0,0) -- (axis cs:4.2,4.2) -- (axis cs:-4.2,4.2) -- cycle;
+\path[fill=blue!10] (axis cs:0,0) -- (axis cs:4.2,-4.2) -- (axis cs:-4.2,-4.2) -- cycle;
+\addplot[blue, domain=-4.2:4.2, samples=200] {abs(x)};
+\addplot[blue, domain=-4.2:4.2, samples=200] {-abs(x)};
+\addplot[red, domain=0:4.2, samples=2] coordinates {(0,0) (0,4.2)};
+\addplot[orange!85!black, domain=0:2.2, samples=2] coordinates {(0,0) (2.2,4.2)};
+\addplot[green!60!black, domain=0:1.2, samples=2] coordinates {(0,0) (-1.2,4.2)};
+\fill (axis cs:0,0) circle (2pt);
+\node[anchor=west] at (axis cs:0,0) {$O$};
+\node at (axis cs:0,3.2) {绝对未来};
+\node at (axis cs:0,-3.2) {绝对过去};
+\node at (axis cs:3.0,0.7) {类空区};
+\node at (axis cs:-3.0,0.7) {类空区};
+\node[blue, anchor=west] at (axis cs:2.8,2.9) {光线};
+\node[red, anchor=west] at (axis cs:0.15,4.0) {静止世界线};
+\node[orange!85!black, anchor=west] at (axis cs:2.25,4.0) {运动世界线};
+\end{axis}
 \end{tikzpicture}
-\caption{事件 $O$ 的光锥与因果区域}
+\caption{事件 $O$ 的光锥与世界线示意图}
 \end{figure}
 
 光锥把一个事件周围的时空分成三部分：未来光锥内的事件可以被该事件以不超过光速的信号影响；过去光锥内的事件可以影响该事件；光锥外的类空区域则与该事件不存在因果联系。

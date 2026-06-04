@@ -315,6 +315,27 @@
 这三式本质上来自两次积分与一次链式法则。
 \end{theorem}
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={时间 $t$}, ylabel={量值},
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  xmin=0, xmax=4.2, ymin=0, ymax=4.5,
+  legend style={at={(0.02,0.98)}, anchor=north west, draw=none, fill=white},
+]
+\addplot[blue, domain=0:4, samples=100] {0.25*x^2};
+\addplot[red, domain=0:4, samples=100] {x};
+\addplot[green!50!black, domain=0:4, samples=2] {1};
+\legend{$x(t)$,$v(t)$,$a(t)$}
+\end{axis}
+\end{tikzpicture}
+\caption{匀加速直线运动中，位置是抛物线，速度是直线，加速度保持常量}
+\end{figure}
+
 \subsubsection*{自由落体作为匀变速的特例}
 取竖直向上为正方向，自由落体初速度为零，重力加速度记为 $-g$。因为
 \[
@@ -497,18 +518,23 @@
 \]
 这是一条开口向下的抛物线。
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[scale=0.9, >=Latex]
-  \draw[->] (-0.2,0) -- (7.4,0) node[below] {$x$};
-  \draw[->] (0,-0.2) -- (0,4.8) node[left] {$y$};
-  \draw[thick, blue, domain=0:6.3, smooth] plot(\x,{0.9*\x-0.12*\x*\x});
-  \draw[->, thick, red] (0,0) -- (1.8,1.6) node[midway, above] {$\vb{v}_0$};
-  \draw (1.0,0) arc (0:41:1.0);
-  \node at (1.35,0.35) {$\theta$};
-  \node[blue] at (5.5,1.9) {轨迹};
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={水平位置 $x$}, ylabel={竖直位置 $y$},
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  xmin=0, xmax=6.8, ymin=0, ymax=4.0,
+]
+\addplot[blue, domain=0:6.2, samples=100] {0.9*x - 0.12*x^2};
+\addplot[only marks, mark=*, mark size=1.8pt, blue] coordinates {(3.75,1.6875)};
+\node at (axis cs:5.5,1.2) {轨迹};
+\end{axis}
 \end{tikzpicture}
-\caption{无空气阻力时的抛体轨迹}
+\caption{无空气阻力时的抛体轨迹是一条开口向下的抛物线}
 \end{figure}
 
 \subsection{射程、最高点与飞行时间}
@@ -604,6 +630,26 @@
  y(t)=\int_0^t \qty[\qty(v_0\sin\theta+\frac{g}{k})e^{-k\tau}-\frac{g}{k}]\dd \tau
 =\frac{1}{k}\qty(v_0\sin\theta+\frac{g}{k})\qty(1-e^{-kt})-\frac{g}{k}t.
 \]
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={时间 $t$}, ylabel={向下速度},
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  xmin=0, xmax=3.2, ymin=0, ymax=4.2,
+  legend style={at={(0.02,0.98)}, anchor=north west, draw=none, fill=white},
+]
+\addplot[blue, domain=0:3, samples=100] {1.2*x};
+\addplot[red, domain=0:3, samples=100] {3*(1-exp(-1.2*x))};
+\legend{无空气阻力,有空气阻力}
+\end{axis}
+\end{tikzpicture}
+\caption{自由下落时，空气阻力会使速度逐渐逼近终端速度，而不再无限增大}
+\end{figure}
 
 \begin{remark}
 与无阻力情形相比，$x(t)$ 不再与 $t$ 成正比，$y(t)$ 也不再是简单二次函数；轨迹通常无法写成漂亮的抛物线方程。这里微积分的价值更加明显：即便图像不再简单，运动规律仍可由微分方程系统刻画。

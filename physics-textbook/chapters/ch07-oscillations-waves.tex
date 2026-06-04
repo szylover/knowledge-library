@@ -91,6 +91,23 @@ f=\frac{\omega}{2\pi}.
 \]
 这说明只要知道系统的“恢复快慢”，就能确定振动节奏。
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={时间 $t$}, ylabel={位移 $x$},
+  axis lines=middle,
+  xmin=0, xmax=6.4, ymin=-1.2, ymax=1.2,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:6.283, samples=160] {cos(deg(2*x + 0.6))};
+\end{axis}
+\end{tikzpicture}
+\caption{简谐运动的位移随时间按余弦规律变化}
+\end{figure}
+
 \begin{remark}
 把 $x=A\cos(\omega t+\varphi)$ 投影到圆周运动上理解，是学习简谐运动的经典方法：设一点在半径为 $A$ 的圆上做匀速圆周运动，其在某一直径上的投影便做简谐运动。这个几何图像能帮助我们理解相位差、超前与滞后。
 \end{remark}
@@ -358,6 +375,25 @@ E(t)\propto e^{-2\gamma t}.
 高中题里常说“振幅逐渐减小”，微积分语言给出更精确的说法：如果阻力与速度成正比，则振幅不是线性减小，而是指数衰减。也就是说，前几次看上去衰减明显，越到后面越“拖尾”。
 \end{remark}
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={时间 $t$}, ylabel={位移 $x$},
+  axis lines=middle,
+  xmin=0, xmax=12, ymin=-1.1, ymax=1.1,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:12, samples=220] {exp(-0.18*x)*cos(deg(4*x))};
+\addplot[red, dashed, domain=0:12, samples=120] {exp(-0.18*x)};
+\addplot[red, dashed, domain=0:12, samples=120] {-exp(-0.18*x)};
+\end{axis}
+\end{tikzpicture}
+\caption{欠阻尼振动及其指数衰减包络线}
+\end{figure}
+
 \begin{example}
 已知阻尼方程
 \[
@@ -436,19 +472,22 @@ D(\Omega)=(\omega_0^2-\Omega^2)^2+4\gamma^2\Omega^2.
 无阻尼极限 $\gamma\to 0$ 时，$\Omega_r\to\omega_0$，这就是教材常说“驱动力频率等于固有频率时共振”。一旦存在阻尼，共振峰会变矮、变宽，并且峰值位置略小于 $\omega_0$。
 \end{remark}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[scale=1.0]
-  \draw[->] (0,0) -- (6.4,0) node[right] {$\Omega$};
-  \draw[->] (0,0) -- (0,3.8) node[above] {$X$};
-  \draw[thick, blue!70!black, smooth] plot coordinates {
-    (0.35,0.4) (0.8,0.55) (1.4,0.9) (2.0,1.6) (2.5,3.0) (2.8,3.3) (3.1,2.5) (3.6,1.5) (4.2,0.95) (5.0,0.6) (5.8,0.42)
-  };
-  \draw[dashed] (2.8,0) -- (2.8,3.3);
-  \node[below] at (2.8,0) {$\Omega_r$};
-  \node[above right] at (3.4,2.9) {共振峰};
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={驱动角频率 $\Omega/\omega_0$}, ylabel={稳态振幅 $X$},
+  axis lines=middle,
+  xmin=0, xmax=1.8, ymin=0, ymax=5.4,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0.05:1.8, samples=220] {1/sqrt((1 - x^2)^2 + 0.04*x^2)};
+\addplot[gray, dashed] coordinates {(0.9899,0) (0.9899,5.2)};
+\end{axis}
 \end{tikzpicture}
-\caption{阻尼受迫振动的振幅—频率曲线示意图}
+\caption{阻尼受迫振动的共振曲线在固有频率附近出现峰值}
 \end{figure}
 
 \begin{example}
@@ -661,21 +700,25 @@ f_{\text{beat}}=|260-256|=4\text{ Hz}.
 这意味着每秒听到 $4$ 次强弱变化。
 \end{example}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[scale=0.95]
-  \draw[->] (-0.2,0) -- (6.6,0) node[right] {$x$};
-  \draw[->] (0,-1.8) -- (0,1.8) node[above] {$y$};
-  \draw[thick, blue!70!black, domain=0:6.1, samples=180] plot (\x,{1.2*sin(deg(2*\x))*cos(deg(0.0))});
-  \foreach \p in {0.785,2.356,3.927,5.498} {
-    \draw[dashed] (\p,-1.5) -- (\p,1.5);
-  }
-  \node[below] at (0.785,-1.5) {波节};
-  \node[below] at (2.356,-1.5) {波节};
-  \node[above] at (1.57,1.35) {波腹};
-  \node[above] at (4.71,1.35) {波腹};
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={位置 $x$}, ylabel={位移 $y$},
+  axis lines=middle,
+  xmin=0, xmax=6.4, ymin=-2.2, ymax=2.2,
+  grid=major, grid style={gray!30},
+  thick,
+  legend style={at={(0.98,0.98)}, anchor=north east, fill=white, draw=gray!30},
+]
+\addplot[blue, dashed, domain=0:6.283, samples=180] {cos(deg(x - 0.8))};
+\addplot[red, dashed, domain=0:6.283, samples=180] {cos(deg(x + 0.8))};
+\addplot[black, domain=0:6.283, samples=180] {cos(deg(x - 0.8)) + cos(deg(x + 0.8))};
+\legend{$y_1$, $y_2$, $y_1+y_2$}
+\end{axis}
 \end{tikzpicture}
-\caption{驻波的瞬时形状示意图}
+\caption{相向传播的两列简谐波叠加后形成驻波}
 \end{figure}
 
 下面选取三道常见振动、波动题型，说明微积分方法如何使题目的结构更清晰。

@@ -86,6 +86,27 @@
 \]
 虽然速度看起来只增加了不到 $10\%$，动量却增加了三倍多。这正是现代加速器需要巨大能量输入的原因：粒子越接近光速，继续提升速度就越困难。
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={速度比 $\beta=v/c$}, ylabel={动量比 $p/(mc)$},
+  xmin=0, xmax=0.98, ymin=0, ymax=5.2,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  legend style={at={(0.98,0.02)}, anchor=south east, draw=none, fill=none}
+]
+\addplot[blue, domain=0:0.98, samples=200] {x/sqrt(1-x^2)};
+\addlegendentry{相对论动量}
+\addplot[red, dashed, domain=0:0.98, samples=200] {x};
+\addlegendentry{经典动量}
+\end{axis}
+\end{tikzpicture}
+\caption{相对论动量在速度逼近光速时显著偏离经典结果}
+\end{figure}
+
 \section{相对论能量}
 
 经典动能定义为 $K=\tfrac12 mv^2$。它在低速下正确，但在高速下也必须修正。修正的方法可以从功的定义出发：外力对粒子所做的功等于粒子能量的变化。
@@ -160,6 +181,27 @@ E_0=mc^2.
 \]
 当 $v\ll c$ 时，$K\approx \tfrac12 mv^2$。
 \end{law}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={速度比 $\beta=v/c$}, ylabel={能量比 $K/(mc^2)$},
+  xmin=0, xmax=0.98, ymin=0, ymax=4.2,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  legend style={at={(0.98,0.02)}, anchor=south east, draw=none, fill=none}
+]
+\addplot[blue, domain=0:0.98, samples=200] {1/sqrt(1-x^2)-1};
+\addlegendentry{相对论动能}
+\addplot[red, dashed, domain=0:0.98, samples=200] {0.5*x^2};
+\addlegendentry{经典动能}
+\end{axis}
+\end{tikzpicture}
+\caption{相对论动能与经典动能的比较}
+\end{figure}
 
 \begin{remark}
 静能并不是“额外附送”的一项，而是物体作为一个存在的物理实体所固有的能量储备。化学能、核能、弹性能，乃至热能的变化，本质上都伴随着系统总质量的极微小变化。
@@ -276,18 +318,28 @@ p=\frac{E}{c}=\frac{h\nu}{c}=\frac{h}{\lambda}.
 \]
 因此光既携带能量，也携带动量，这正是光压、康普顿散射等现象的基础。
 
-\begin{center}
-\begin{tikzpicture}[scale=0.95, >=Stealth]
-  \draw[->] (0,0) -- (5.4,0) node[right] {$pc$};
-  \draw[->] (0,0) -- (0,4.8) node[above] {$E$};
-  \draw[thick, blue, domain=0:4.6, smooth, variable=\x] plot ({\x},{sqrt(1.6^2 + \x^2)});
-  \draw[thick, red, dashed] (0,0) -- (4.5,4.5);
-  \draw[dotted] (0,1.6) -- (1.2,2.0);
-  \node[blue!70!black] at (3.6,4.2) {$E^2=(pc)^2+(mc^2)^2$};
-  \node[red!70!black] at (3.5,3.0) {$E=pc\;(m=0)$};
-  \fill (0,1.6) circle (1.5pt) node[left] {$mc^2$};
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={$pc/(mc^2)$}, ylabel={$E/(mc^2)$},
+  xmin=0, xmax=4.5, ymin=0, ymax=4.8,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  legend style={at={(0.98,0.02)}, anchor=south east, draw=none, fill=none}
+]
+\addplot[blue, domain=0:4.4, samples=200] {sqrt(1 + x^2)};
+\addlegendentry{$E^2=(pc)^2+(mc^2)^2$}
+\addplot[red, dashed, domain=0:4.4, samples=200] {x};
+\addlegendentry{$E=pc$}
+\addplot[only marks, mark=*, mark size=1.8pt] coordinates {(0,1)};
+\node[anchor=east] at (axis cs:0,1) {$mc^2$};
+\end{axis}
 \end{tikzpicture}
-\end{center}
+\caption{固定静质量粒子的能量--动量关系双曲线}
+\end{figure}
 
 上图中，蓝色曲线表示固定静质量 $m$ 的粒子在 $(pc,E)$ 平面中的允许状态；红色虚线表示无静质量粒子的情形。它们共同展示了一个事实：在相对论中，能量和动量不是彼此独立的数据，而是由同一个几何结构约束在一起。
 

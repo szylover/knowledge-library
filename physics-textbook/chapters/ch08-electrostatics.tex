@@ -43,6 +43,23 @@ F = \frac{1}{4\pi\varepsilon_0}\frac{2q^2}{a^2}.
 \end{equation}
 由于两电荷异号，因此相互吸引。若取从 $q_1$ 指向 $q_2$ 为正方向，则 $q_1$ 受力方向指向 $q_2$，$q_2$ 受力方向指向 $q_1$，大小相等、方向相反，符合牛顿第三定律。
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={距离 $r$}, ylabel={库仑力 $F$},
+  axis lines=middle,
+  xmin=0, xmax=4.2, ymin=0, ymax=3.2,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0.6:4, samples=180] {1/x^2};
+\end{axis}
+\end{tikzpicture}
+\caption{库仑力随距离按反平方规律迅速减小}
+\end{figure}
+
 \begin{definition}[试探电荷]
 为了描述某一点附近电场的性质，我们在该点放入一个足够小的正点电荷 $q_0$，称其为\emph{试探电荷}。它只用来“测试”电场，而不显著改变原有电荷分布。
 \end{definition}
@@ -65,6 +82,23 @@ F = \frac{1}{4\pi\varepsilon_0}\frac{2q^2}{a^2}.
 = \frac{1}{4\pi\varepsilon_0}\frac{Q}{r^3}\vb{r}.
 \end{equation}
 若 $Q>0$，电场线向外发散；若 $Q<0$，电场线向内汇聚。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={距离 $r$}, ylabel={场强 $E$},
+  axis lines=middle,
+  xmin=0, xmax=4.2, ymin=0, ymax=3.2,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0.6:4, samples=180] {1/x^2};
+\end{axis}
+\end{tikzpicture}
+\caption{点电荷的电场强度随距离按 $1/r^2$ 衰减}
+\end{figure}
 
 \begin{figure}[H]
 \centering

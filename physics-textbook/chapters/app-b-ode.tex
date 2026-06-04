@@ -116,6 +116,63 @@ q(t)=CV_0+\qty(q_0-CV_0)e^{-t/(RC)}.
  x(t)=A\cos \omega t+B\sin \omega t.
 \]
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.65\textwidth, height=0.55\textwidth,
+  xlabel={位移 $x$}, ylabel={速度 $v$},
+  xmin=-1.2, xmax=1.2, ymin=-1.7, ymax=1.7,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:360, samples=200] ({cos(x)},{-1.5*sin(x)});
+\end{axis}
+\end{tikzpicture}
+\caption{简谐振子在相平面中的轨迹是一条闭合椭圆}
+\end{figure}
+
+\subsection*{典型例子：阻尼振动}
+
+阻尼振子满足
+\[
+\dv[2]{x}{t}+2\beta\dv{x}{t}+\omega_0^2 x=0.
+\]
+其特征方程为
+\[
+ r^2+2\beta r+\omega_0^2=0.
+\]
+因此按阻尼强弱分为三类：
+\begin{itemize}
+  \item 若 $\beta<\omega_0$，为欠阻尼，解呈现振荡并带有指数衰减包络；
+  \item 若 $\beta=\omega_0$，为临界阻尼，系统恰好不振荡且最快回到平衡；
+  \item 若 $\beta>\omega_0$，为过阻尼，解是两个指数衰减项的叠加，回到平衡更慢。
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={无量纲时间 $\omega_0 t$}, ylabel={位移比 $x/x_0$},
+  xmin=0, xmax=6, ymin=-0.3, ymax=1.05,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  legend style={at={(0.98,0.98)}, anchor=north east, draw=none, fill=none}
+]
+\addplot[blue, domain=0:6, samples=200] {exp(-0.25*x)*(cos(deg(0.9682458*x)) + 0.2581989*sin(deg(0.9682458*x)))};
+\addlegendentry{欠阻尼}
+\addplot[red, dashed, domain=0:6, samples=200] {(1 + x)*exp(-x)};
+\addlegendentry{临界阻尼}
+\addplot[green!60!black, dashdotted, domain=0:6, samples=200] {1.1708204*exp(-0.381966*x) - 0.1708204*exp(-2.618034*x)};
+\addlegendentry{过阻尼}
+\end{axis}
+\end{tikzpicture}
+\caption{阻尼振子的三类典型解随时间的衰减形态}
+\end{figure}
+
 \section{二阶常系数非齐次 ODE（待定系数法）}
 
 标准形式为

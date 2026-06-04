@@ -169,7 +169,32 @@
 \[
   m\dv[2]{x}{t}=F-f,
 \]
-竖直方向若无加速度，则有 $N-mg=0$。许多经典题的“难点”，其实只是把这些步骤压缩得过于简短。
+竖直方向若无加速度，则有 $N-mg=0$。若把摩擦力大小随外加力变化的过程画成图像，可以更直观地看见：静摩擦力先随外力同步增大，达到最大静摩擦后才转入较小的动摩擦力。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={外加力 $F_{\text{施}}$}, ylabel={摩擦力 $F_{\text{摩}}$},
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  xmin=0, xmax=4.2, ymin=0, ymax=1.4,
+]
+\addplot[blue] coordinates {(0,0) (1,1)};
+\addplot[blue] coordinates {(1,0.7) (4,0.7)};
+\addplot[only marks, mark=*, blue] coordinates {(1,0.7)};
+\addplot[only marks, mark=o, blue] coordinates {(1,1)};
+\addplot[dashed] coordinates {(1,0) (1,1.05)};
+\node at (axis cs:0.55,1.12) {静摩擦};
+\node at (axis cs:2.6,0.88) {动摩擦};
+\end{axis}
+\end{tikzpicture}
+\caption{摩擦力随外加力的变化：静摩擦先“跟着走”，滑动后转为近似恒定的动摩擦}
+\end{figure}
+
+许多经典题的“难点”，其实只是把这些步骤压缩得过于简短。
 
 \begin{example}[恒力作用下的直线运动]
 质量为 $m$ 的小车在水平光滑轨道上受恒力 $F_0$ 作用，初始时刻位置为 $x_0$，速度为 $v_0$。求其运动方程。
@@ -194,6 +219,23 @@
 \]
 这就是匀变速直线运动公式的微积分来源。
 \end{proof}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={质量 $m$}, ylabel={加速度 $a$},
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  xmin=0, xmax=5.5, ymin=0, ymax=4.5,
+]
+\addplot[blue, domain=0.5:5, samples=100] {2/x};
+\end{axis}
+\end{tikzpicture}
+\caption{在合力恒定时，$a=F/m$ 表明质量越大，加速度越小}
+\end{figure}
 
 \subsection{质量与加速度的方向}
 

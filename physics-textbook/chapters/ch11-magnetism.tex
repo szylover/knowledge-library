@@ -241,6 +241,24 @@
 \[
   B(z)=\frac{\mu_0 I R^2}{2(R^2+z^2)^{3/2}}.
 \]
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={轴向位置 $z/R$}, ylabel={磁场 $B/B_0$},
+  axis lines=middle,
+  xmin=-3.2, xmax=3.2, ymin=0, ymax=1.08,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=-3:3, samples=220] {(1 + x^2)^(-1.5)};
+\end{axis}
+\end{tikzpicture}
+\caption{圆形电流环轴线上磁场在圆心处最强并向两侧衰减}
+\end{figure}
+
 特别地，在圆心 $z=0$ 处，
 \[
   B_\mathrm{center}=\frac{\mu_0 I}{2R}.
@@ -416,6 +434,23 @@
   T=\frac{2\pi}{\omega}=\frac{2\pi m}{|q|B}.
 \]
 值得注意的是，在非相对论范围内，周期与速率无关，只与 $m/(|q|B)$ 有关，这为回旋加速器、质谱仪等装置提供了理论基础。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={速度 $v$}, ylabel={轨道半径 $r$},
+  axis lines=middle,
+  xmin=0, xmax=5.2, ymin=0, ymax=3.2,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:5, samples=120] {0.6*x};
+\end{axis}
+\end{tikzpicture}
+\caption{在 $m$、$q$ 与 $B$ 固定时，圆周运动半径与粒子速度成正比}
+\end{figure}
 
 \subsection*{二、速度斜射于磁场：螺旋运动}
 

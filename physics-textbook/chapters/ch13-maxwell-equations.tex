@@ -80,6 +80,23 @@ I_d=\varepsilon_0\dv{}{t}(EA)=\varepsilon_0 A \dv{E}{t}
 这正说明：虽然板间没有传导电流穿过，但位移电流恰好补足了磁场的源，使任意张面得到相同结果。
 \end{example}
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={时间 $t/\tau$}, ylabel={位移电流密度 $J_d/J_0$},
+  xmin=0, xmax=5, ymin=0, ymax=1.05,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:5, samples=100] {exp(-x)};
+\end{axis}
+\end{tikzpicture}
+\caption{电容器充电过程中位移电流密度随时间指数衰减}
+\end{figure}
+
 \begin{remark}
 从对称性看，法拉第定律告诉我们“变磁生电”，安培--麦克斯韦定律则告诉我们“变电生磁”。这两个“旋度方程”共同构成电磁波传播的动力学核心。没有位移电流，电磁学只能描述静态与准静态现象；加入位移电流后，场本身便获得脱离物质源而独立传播的能力。
 \end{remark}
@@ -304,6 +321,27 @@ B_0=\frac{E_0}{c},
 \omega=ck.
 \]
 \end{law}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={位置 $x/\lambda$}, ylabel={归一化场强},
+  xmin=0, xmax=2, ymin=-1.2, ymax=1.2,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  thick,
+  legend style={at={(0.98,0.02)}, anchor=south east, draw=none, fill=none}
+]
+\addplot[blue, domain=0:2, samples=200] {sin(deg(2*pi*x))};
+\addlegendentry{$E/E_0$}
+\addplot[red, dashed, domain=0:2, samples=200] {sin(deg(2*pi*x))};
+\addlegendentry{$cB/E_0$}
+\end{axis}
+\end{tikzpicture}
+\caption{沿传播方向的电场与磁场同相作正弦振荡}
+\end{figure}
 
 \section{电磁波的性质——横波、正交与能量}
 

@@ -214,6 +214,23 @@ V(\vb r)=\frac{1}{4\pi\varepsilon_0}\sum_i \frac{q_i}{\abs{\vb r-\vb r_i}}.
 \]
 注意这是\textbf{代数和}而不是矢量和，因此通常比电场更容易计算。
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={距离 $r$}, ylabel={电势 $V$},
+  axis lines=middle,
+  xmin=0, xmax=4.2, ymin=0, ymax=2.4,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0.6:4, samples=180] {1/x};
+\end{axis}
+\end{tikzpicture}
+\caption{点电荷电势随距离按 $1/r$ 下降}
+\end{figure}
+
 \begin{example}
 两个点电荷 $+q$ 与 $-q$ 分别放在 $x=\pm a$ 处。求原点的电势，并判断原点电场的方向。
 \end{example}
@@ -385,12 +402,51 @@ W=\int_0^Q \frac{q}{C}\dd q=\frac{Q^2}{2C}.
 W=\frac{1}{2}QU=\frac{1}{2}CU^2.
 \]
 
+若把电容器通过电阻接到恒定电压源上，极板电荷会按指数规律逐渐逼近终值 $Q_0$，其典型充电曲线为
+\[
+Q(t)=Q_0\left(1-\mathrm{e}^{-t/(RC)}\right).
+\]
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={时间 $t/(RC)$}, ylabel={电荷 $Q/Q_0$},
+  axis lines=middle,
+  xmin=0, xmax=5.2, ymin=0, ymax=1.08,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:5, samples=180] {1 - exp(-x)};
+\end{axis}
+\end{tikzpicture}
+\caption{电容器充电时极板电荷随时间逐渐接近饱和值}
+\end{figure}
+
 \begin{law}
 电容器储存的电场能量为
 \[
 W=\frac{Q^2}{2C}=\frac{1}{2}QU=\frac{1}{2}CU^2.
 \]
 \end{law}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.75\textwidth, height=0.5\textwidth,
+  xlabel={电压 $U$}, ylabel={储能 $W$},
+  axis lines=middle,
+  xmin=0, xmax=4.2, ymin=0, ymax=8.8,
+  grid=major, grid style={gray!30},
+  thick,
+]
+\addplot[blue, domain=0:4, samples=180] {0.5*x^2};
+\end{axis}
+\end{tikzpicture}
+\caption{电容器储能随电压呈抛物线增长}
+\end{figure}
 
 \subsection{能量密度}
 

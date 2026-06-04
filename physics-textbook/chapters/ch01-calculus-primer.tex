@@ -269,6 +269,42 @@
 这个结果告诉我们：抛物线 $y=x^2$ 越往右越陡，斜率随 $x$ 线性增加。
 \end{example}
 
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=\linewidth, height=0.7\linewidth,
+        xlabel={自变量 $x$}, ylabel={函数值},
+        axis lines=middle,
+        grid=major, grid style={gray!30},
+        thick,
+        xmin=-2.4, xmax=2.4, ymin=-0.5, ymax=5.2,
+      ]
+        \addplot[blue, domain=-2.2:2.2, samples=100] {x^2};
+      \end{axis}
+    \end{tikzpicture}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=\linewidth, height=0.7\linewidth,
+        xlabel={自变量 $x$}, ylabel={导数值},
+        axis lines=middle,
+        grid=major, grid style={gray!30},
+        thick,
+        xmin=-2.4, xmax=2.4, ymin=-4.8, ymax=4.8,
+      ]
+        \addplot[red, domain=-2.2:2.2, samples=100] {2*x};
+      \end{axis}
+    \end{tikzpicture}
+  \end{minipage}
+  \caption{函数 $f(x)=x^2$ 与其导数 $f'(x)=2x$：原函数越陡，导数越大}
+\end{figure}
+
 \subsection{常用求导公式}
 
 \begin{theorem}
@@ -441,19 +477,27 @@
 
 更准确地说，定积分来源于“把区间切成许多小段，再把每一小段上的函数值乘以宽度，然后求和，最后取极限”。这和高中物理里“很多小量相加”的思维是一致的。
 
-\begin{figure}[H]
+\begin{figure}[htbp]
   \centering
-  \begin{tikzpicture}[scale=0.95]
-    \draw[->] (-0.2,0) -- (5.5,0) node[right] {$x$};
-    \draw[->] (0,-0.2) -- (0,4.0) node[above] {$y$};
-    \draw[thick, blue, domain=0.5:5.0, samples=100] plot (\x, {0.35*\x + 0.25*sin(120*\x) + 0.6});
-    \fill[blue!15, domain=1:4, samples=80] (1,0) -- plot (\x, {0.35*\x + 0.25*sin(120*\x) + 0.6}) -- (4,0) -- cycle;
-    \draw[dashed] (1,0) -- (1,1.1);
-    \draw[dashed] (4,0) -- (4,2.0);
-    \node at (1,-0.25) {$a$};
-    \node at (4,-0.25) {$b$};
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=0.75\textwidth, height=0.5\textwidth,
+      xlabel={自变量 $x$}, ylabel={函数值},
+      axis lines=middle,
+      grid=major, grid style={gray!30},
+      thick,
+      xmin=0, xmax=4.3, ymin=0, ymax=3.6,
+      xtick={1.0,3.4},
+      xticklabels={$a$,$b$},
+    ]
+      \addplot[name path=curve, blue, domain=0.6:4.0, samples=100] {0.18*x^2 + 0.45};
+      \addplot[name path=baseline, draw=none, domain=1.0:3.4] {0};
+      \addplot[blue!20] fill between[of=curve and baseline, soft clip={domain=1.0:3.4}];
+      \addplot[dashed] coordinates {(1.0,0) (1.0,0.63)};
+      \addplot[dashed] coordinates {(3.4,0) (3.4,2.53)};
+    \end{axis}
   \end{tikzpicture}
-  \caption{定积分的几何意义：曲线下方的有向面积}
+  \caption{定积分的几何意义：曲线与 $x$ 轴之间的阴影面积表示累积量}
 \end{figure}
 
 \begin{remark}
