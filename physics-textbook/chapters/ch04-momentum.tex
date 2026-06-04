@@ -66,7 +66,7 @@
 \]
 当质量恒定时，
 \[
-\dv{\vb p}{t}=\dv{}{t}(m\vb v)=m\dv{\vb v}{t}=m\vb a,
+\dv{\vb p}{t}=\dv{(m\vb{v})}{t}=m\dv{\vb v}{t}=m\vb a,
 \]
 这才退化成熟悉的 $\vb F=m\vb a$。因此，动量是牛顿动力学中更基本的状态量；尤其在火箭这类变质量问题里，必须回到 $\vb F=\dv{\vb p}{t}$ 才能正确处理。
 
@@ -215,7 +215,7 @@ p(\tau)=p_0+\frac{2F_0\tau}{\pi}.
 \]
 两式相加得
 \[
-\dv{}{t}(\vb p_1+\vb p_2)=\vb F_1^{\text{ext}}+\vb F_2^{\text{ext}}+(\vb F_{12}+\vb F_{21}).
+\dv{(\vb{p}_1+\vb{p}_2)}{t}=\vb F_1^{\text{ext}}+\vb F_2^{\text{ext}}+(\vb F_{12}+\vb F_{21}).
 \]
 若满足牛顿第三定律，
 \[
@@ -248,7 +248,7 @@ p(\tau)=p_0+\frac{2F_0\tau}{\pi}.
 \]
 对全部 $i$ 求和，得到
 \[
-\dv{}{t}\sum_{i=1}^N\vb p_i=\sum_{i=1}^N\vb F_i^{\text{ext}}+\sum_{i=1}^N\sum_{j\ne i}\vb F_{ij}.
+\dv{}{t}\!\left(\sum_{i=1}^N\vb{p}_i\right)=\sum_{i=1}^N\vb F_i^{\text{ext}}+\sum_{i=1}^N\sum_{j\ne i}\vb F_{ij}.
 \]
 如果内力满足成对反向，则双重求和中的各项两两抵消，只剩外力总和。这一推导说明，总动量守恒并不是“巧合公式”，而是由微分方程对整个系统求和后出现的结构性结果。
 
@@ -549,7 +549,7 @@ M\dv[2]{\vb R}{t}=\vb F_{\text{ext}}.
 \]
 等价地，
 \[
-\dv{}{t}(M\vb V_{\text{cm}})=\vb F_{\text{ext}}.
+\dv{(M\vb{V}_{\text{cm}})}{t}=\vb F_{\text{ext}}.
 \]
 也就是说，系统质心的运动只由外力决定，内部相互作用不会改变质心运动规律。
 \end{theorem}
@@ -639,7 +639,7 @@ v=v_0+u\ln\frac{m_0}{m}.
 
 若还考虑外力 $\vb F_{\text{ext}}$，则矢量形式可写为
 \[
-\vb F_{\text{ext}}=\dv{}{t}(m\vb v)-\vb u\,\dv{m}{t},
+\vb F_{\text{ext}}=\dv{(m\vb{v})}{t}-\vb u\,\dv{m}{t},
 \]
 这里 $\vb u$ 表示喷气相对火箭的速度矢量。对于竖直发射、忽略空气阻力的情形，若取向上为正，则有
 \[

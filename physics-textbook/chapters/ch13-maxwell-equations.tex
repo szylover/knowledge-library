@@ -22,11 +22,11 @@
 \begin{definition}[位移电流]
 位移电流是由电位移矢量 $\vb{D}$ 的时间变化所对应的“等效电流”项，其面通量形式定义为
 \[
-I_d\coloneqq \dv{}{t}\int_{\Sigma} \vb{D}\cdot \dd \vb{A}.
+I_d\coloneqq \dv{}{t}\!\left(\int_{\Sigma} \vb{D}\cdot \dd \vb{A}\right).
 \]
 若介质为真空，$\vb{D}=\varepsilon_0\vb{E}$，则
 \[
-I_d=\varepsilon_0\dv{}{t}\int_{\Sigma} \vb{E}\cdot \dd \vb{A}.
+I_d=\varepsilon_0\dv{}{t}\!\left(\int_{\Sigma} \vb{E}\cdot \dd \vb{A}\right).
 \]
 在局域形式中，对应的电流密度称为位移电流密度：
 \[
@@ -40,12 +40,12 @@ I_d=\varepsilon_0\dv{}{t}\int_{\Sigma} \vb{E}\cdot \dd \vb{A}.
 完整的环路定律应写成
 \[
 \oint_{\partial \Sigma} \vb{H}\cdot \dd \vb{l}
-= I_{\text{free}}+\dv{}{t}\int_{\Sigma}\vb{D}\cdot \dd\vb{A}.
+= I_{\text{free}}+\dv{}{t}\!\left(\int_{\Sigma}\vb{D}\cdot \dd\vb{A}\right).
 \]
 在真空中，由 $\vb{B}=\mu_0\vb{H}$ 与 $\vb{D}=\varepsilon_0\vb{E}$ 得
 \[
 \oint_{\partial \Sigma} \vb{B}\cdot \dd \vb{l}
-=\mu_0 I_{\text{cond}}+\mu_0\varepsilon_0\dv{}{t}\int_{\Sigma}\vb{E}\cdot \dd\vb{A}.
+=\mu_0 I_{\text{cond}}+\mu_0\varepsilon_0\dv{}{t}\!\left(\int_{\Sigma}\vb{E}\cdot \dd\vb{A}\right).
 \]
 \end{law}
 
@@ -74,7 +74,7 @@ E=\frac{Q}{\varepsilon_0 A}.
 \]
 因此位移电流为
 \[
-I_d=\varepsilon_0\dv{}{t}(EA)=\varepsilon_0 A \dv{E}{t}
+I_d=\varepsilon_0\dv{(EA)}{t}=\varepsilon_0 A \dv{E}{t}
 =\dv{Q}{t}=I.
 \]
 这正说明：虽然板间没有传导电流穿过，但位移电流恰好补足了磁场的源，使任意张面得到相同结果。
@@ -140,8 +140,8 @@ I_d=\varepsilon_0\dv{}{t}(EA)=\varepsilon_0 A \dv{E}{t}
 \begin{align*}
 \oint_{\partial V} \vb{D}\cdot \dd \vb{A} &= Q_{\text{free, enc}}, \\
 \oint_{\partial V} \vb{B}\cdot \dd \vb{A} &= 0, \\
-\oint_{\partial \Sigma} \vb{E}\cdot \dd \vb{l} &= -\dv{}{t}\int_{\Sigma}\vb{B}\cdot \dd \vb{A}, \\
-\oint_{\partial \Sigma} \vb{H}\cdot \dd \vb{l} &= I_{\text{free, enc}}+\dv{}{t}\int_{\Sigma}\vb{D}\cdot \dd \vb{A}.
+\oint_{\partial \Sigma} \vb{E}\cdot \dd \vb{l} &= -\dv{}{t}\!\left(\int_{\Sigma}\vb{B}\cdot \dd \vb{A}\right), \\
+\oint_{\partial \Sigma} \vb{H}\cdot \dd \vb{l} &= I_{\text{free, enc}}+\dv{}{t}\!\left(\int_{\Sigma}\vb{D}\cdot \dd \vb{A}\right).
 \end{align*}
 \end{law}
 
@@ -157,8 +157,8 @@ I_d=\varepsilon_0\dv{}{t}(EA)=\varepsilon_0 A \dv{E}{t}
 \begin{align*}
 \oint_{\partial V} \vb{E}\cdot \dd \vb{A} &= \frac{Q_{\text{enc}}}{\varepsilon_0}, \\
 \oint_{\partial V} \vb{B}\cdot \dd \vb{A} &= 0, \\
-\oint_{\partial \Sigma} \vb{E}\cdot \dd \vb{l} &= -\dv{}{t}\int_{\Sigma}\vb{B}\cdot \dd \vb{A}, \\
-\oint_{\partial \Sigma} \vb{B}\cdot \dd \vb{l} &= \mu_0 I_{\text{enc}}+\mu_0\varepsilon_0\dv{}{t}\int_{\Sigma}\vb{E}\cdot \dd \vb{A}.
+\oint_{\partial \Sigma} \vb{E}\cdot \dd \vb{l} &= -\dv{}{t}\!\left(\int_{\Sigma}\vb{B}\cdot \dd \vb{A}\right), \\
+\oint_{\partial \Sigma} \vb{B}\cdot \dd \vb{l} &= \mu_0 I_{\text{enc}}+\mu_0\varepsilon_0\dv{}{t}\!\left(\int_{\Sigma}\vb{E}\cdot \dd \vb{A}\right).
 \end{align*}
 
 利用高斯定理与斯托克斯定理，积分形式可转化为局域微分形式。
@@ -183,7 +183,7 @@ I_d=\varepsilon_0\dv{}{t}(EA)=\varepsilon_0 A \dv{E}{t}
 \begin{proof}
 以法拉第定律为例，积分形式为
 \[
-\oint_{\partial \Sigma}\vb{E}\cdot \dd\vb{l}=-\dv{}{t}\int_\Sigma \vb{B}\cdot \dd\vb{A}.
+\oint_{\partial \Sigma}\vb{E}\cdot \dd\vb{l}=-\dv{}{t}\!\left(\int_\Sigma \vb{B}\cdot \dd\vb{A}\right).
 \]
 由斯托克斯定理，左端可写为
 \[
@@ -514,7 +514,7 @@ S(t)=\varepsilon_0 c E_0^2 \cos^2(kx-\omega t).
 
 把上式对任意体积 $V$ 积分，并使用高斯定理，可得
 \[
-\dv{}{t}\int_V u\,\dd V+\oint_{\partial V}\vb{S}\cdot\dd\vb{A}+\int_V \vb{J}\cdot\vb{E}\,\dd V=0.
+\dv{}{t}\!\left(\int_V u\,\dd V\right)+\oint_{\partial V}\vb{S}\cdot\dd\vb{A}+\int_V \vb{J}\cdot\vb{E}\,\dd V=0.
 \]
 它表明：边界面上的坡印廷通量给出了体积内部电磁能的净流出率，而 $\vb{J}\cdot\vb{E}$ 则给出了场能转化为物质能的速率。
 
