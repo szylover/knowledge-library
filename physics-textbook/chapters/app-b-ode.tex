@@ -269,3 +269,262 @@ RL 电路电流增长 & $L\dv{I}{t}+RI=\mathcal{E}$ & $I(t)=\frac{\mathcal{E}}{R
   \item 求出通解后，务必利用初始条件或边界条件确定积分常数。
   \item 在物理问题中，指数衰减、简谐振动与受迫振动是最常见的三大原型。
 \end{itemize}
+
+\section{偏微分方程的分离变量法}
+
+在正文中，我们首先把微分方程作为“局部规律决定整体演化”的语言来理解。到了振动、热传导与电磁场问题，仅靠一条时间函数已经不够，因为系统在不同空间位置上的量会彼此联系，于是自然进入偏微分方程。
+
+\subsection{基本思路：把 PDE 化成 ODE}
+
+\begin{definition}
+若一个 PDE 的未知函数 $u(x,t)$ 可以设想为若干单变量函数的乘积，例如
+\[
+  u(x,t)=X(x)T(t),
+\]
+并且代入方程后能把含 $x$ 的部分与含 $t$ 的部分分开，那么这种方法称为\textbf{分离变量法}。
+\end{definition}
+
+它的核心思想是：先找出一批最简单的“本征模态”，再用叠加原理把一般初始条件表示成这些模态的和。对线性 PDE 而言，这种方法尤其有效。
+
+\begin{theorem}[一维波动方程的分离]
+考虑区间 $0<x<L$ 上的一维波动方程
+\[
+  \pdv[2]{u}{t}=c^2\pdv[2]{u}{x}.
+\]
+若设
+\[
+  u(x,t)=X(x)T(t),
+\]
+则代入后有
+\[
+  X(x)\dv[2]{T}{t}=c^2\dv[2]{X}{x}T(t).
+\]
+当 $X,T$ 都不恒为零时，两边除以 $c^2XT$，得
+\[
+  \frac{1}{c^2T}\dv[2]{T}{t}=\frac{1}{X}\dv[2]{X}{x}.
+\]
+左边只依赖 $t$，右边只依赖 $x$，因此它们都必须等于同一个常数。写作
+\[
+  \frac{1}{c^2T}\dv[2]{T}{t}=\frac{1}{X}\dv[2]{X}{x}=-\lambda,
+\]
+便得到两个常微分方程
+\[
+  \dv[2]{X}{x}+\lambda X=0,
+  \qquad
+  \dv[2]{T}{t}+c^2\lambda T=0.
+\]
+\end{theorem}
+
+这里把分离常数写成 $-\lambda$，是因为在固定端点问题中，只有 $\lambda>0$ 时才会产生非平凡的振荡模态。
+
+\subsection{边界条件如何决定本征值}
+
+对弦振动而言，最常见的边界条件是两端固定：
+\[
+  u(0,t)=0,
+  \qquad
+  u(L,t)=0.
+\]
+设 $u=X T$ 后，这对应于
+\[
+  X(0)=0,
+  \qquad
+  X(L)=0.
+\]
+
+空间方程
+\[
+  \dv[2]{X}{x}+\lambda X=0
+\]
+的通解为
+\[
+  X(x)=A\sin \sqrt{\lambda}\,x + B\cos \sqrt{\lambda}\,x.
+\]
+由 $X(0)=0$ 得 $B=0$；再由 $X(L)=0$ 得
+\[
+  \sin\qty(\sqrt{\lambda}\,L)=0.
+\]
+因此必须有
+\[
+  \sqrt{\lambda_n}\,L=n\pi,
+  \qquad n=1,2,3,\dots
+\]
+也就是
+\[
+  \lambda_n=\qty(\frac{n\pi}{L})^2.
+\]
+这说明：\textbf{边界条件并不是事后补充，而是直接决定了允许出现哪些模态。} 这些离散的 $\lambda_n$ 称为\textbf{本征值}，相应的 $X_n(x)$ 称为\textbf{本征函数}。
+
+\subsection{例子：固定两端弦的驻波}
+
+对每个 $n=1,2,3,\dots$，空间部分为
+\[
+  X_n(x)=\sin\frac{n\pi x}{L}.
+\]
+把 $\lambda_n$ 代回时间方程，可得
+\[
+  \dv[2]{T_n}{t}+\omega_n^2 T_n=0,
+  \qquad
+  \omega_n=c\sqrt{\lambda_n}=\frac{n\pi c}{L}.
+\]
+因此
+\[
+  T_n(t)=A_n\cos \omega_n t+B_n\sin \omega_n t.
+\]
+于是每一个分离变量解都写成
+\[
+  u_n(x,t)=\qty(A_n\cos \omega_n t+B_n\sin \omega_n t)\sin\frac{n\pi x}{L}.
+\]
+这正是第 $n$ 个驻波模态：空间形状固定不变，只是整体振幅随时间作简谐振动。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.78\textwidth, height=0.46\textwidth,
+  xlabel={$x/L$}, ylabel={归一化位移},
+  xmin=0, xmax=1, ymin=-1.15, ymax=1.15,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  xtick={0,0.25,0.5,0.75,1},
+  legend style={at={(0.98,0.98)}, anchor=north east, draw=none, fill=none}
+]
+\addplot[blue, domain=0:1, samples=300] {sin(deg(pi*x))};
+\addlegendentry{$n=1$}
+\addplot[red, dashed, domain=0:1, samples=300] {sin(deg(2*pi*x))};
+\addlegendentry{$n=2$}
+\addplot[green!60!black, dashdotted, domain=0:1, samples=300] {sin(deg(3*pi*x))};
+\addlegendentry{$n=3$}
+\end{axis}
+\end{tikzpicture}
+\caption{固定两端弦的前三个驻波模态}
+\end{figure}
+
+由于波动方程是线性的，多个模态可以叠加，因此一般解写成级数形式
+\[
+  u(x,t)=\sum_{n=1}^{\infty}\qty[A_n\cos\qty(\frac{n\pi c}{L}t)+B_n\sin\qty(\frac{n\pi c}{L}t)]\sin\frac{n\pi x}{L}.
+\]
+其中系数由初始位形 $u(x,0)$ 与初始速度 $\pdv{u}{t}(x,0)$ 决定。也就是说，真正的困难不再是“每个模态怎么解”，而是“初始条件怎样分解成这些模态”，这正引向 Fourier 级数。
+
+\begin{remark}
+热传导方程与拉普拉斯方程也可用相同策略处理：先分离变量，再由边界条件筛选允许的本征值与本征函数。区别只是时间方程的形式不同：波动方程给出正弦、余弦型时间演化，热方程给出指数衰减型时间演化，而拉普拉斯方程则通常没有时间变量、对应纯粹的边界值问题。
+\end{remark}
+
+\section{Fourier 级数基础}
+
+分离变量法告诉我们：线性 PDE 的一般解往往是许多本征模态的叠加。于是自然会问：给定一个初始形状 $f(x)$，怎样把它写成正弦、余弦模态的和？Fourier 级数就是回答这个问题的标准工具。
+
+\begin{definition}[Fourier 级数]
+在区间 $0\le x\le L$ 上，适当的函数 $f(x)$ 可以展开为
+\[
+  f(x)=\frac{a_0}{2}+\sum_{n=1}^{\infty}\qty(a_n\cos\frac{n\pi x}{L}+b_n\sin\frac{n\pi x}{L}).
+\]
+其中系数由函数本身决定，反映了各个余弦模态与正弦模态所占的权重。
+\end{definition}
+
+\begin{theorem}[Fourier 系数公式]
+若 $f(x)$ 在 $[0,L]$ 上满足常见的分段光滑条件，则其 Fourier 系数为
+\[
+  a_0=\frac{2}{L}\int_0^L f(x)\,\dd x,
+\]
+\[
+  a_n=\frac{2}{L}\int_0^L f(x)\cos\frac{n\pi x}{L}\,\dd x,
+  \qquad
+  b_n=\frac{2}{L}\int_0^L f(x)\sin\frac{n\pi x}{L}\,\dd x.
+\]
+\end{theorem}
+
+这些公式之所以成立，根本原因在于三角函数彼此正交：
+\[
+  \int_0^L \sin\frac{n\pi x}{L}\sin\frac{m\pi x}{L}\,\dd x=
+  \begin{cases}
+    0, & n\ne m,\\[4pt]
+    \dfrac{L}{2}, & n=m,
+  \end{cases}
+\]
+\[
+  \int_0^L \cos\frac{n\pi x}{L}\cos\frac{m\pi x}{L}\,\dd x=
+  \begin{cases}
+    0, & n\ne m,\\[4pt]
+    \dfrac{L}{2}, & n=m\ge 1,
+  \end{cases}
+\]
+并且
+\[
+  \int_0^L \sin\frac{n\pi x}{L}\cos\frac{m\pi x}{L}\,\dd x=0.
+\]
+正交性使得每个模态都能像“互不干扰的坐标轴”那样被单独提取出来。
+
+\begin{example}[方波展开]
+考虑定义在区间 $(-\pi,\pi)$ 上的周期函数
+\[
+  f(x)=
+  \begin{cases}
+    1, & 0<x<\pi,\\
+    -1, & -\pi<x<0.
+  \end{cases}
+\]
+它是奇函数，因此 Fourier 展开中只有正弦项：
+\[
+  f(x)\sim \frac{4}{\pi}\qty(\sin x+\frac{1}{3}\sin 3x+\frac{1}{5}\sin 5x+\cdots).
+\]
+取前几项就得到对方波的近似：模态越多，近似越精细；但在跃变点附近，会始终出现轻微过冲，这就是 Gibbs 现象。
+\end{example}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.8\textwidth, height=0.48\textwidth,
+  xlabel={$x$}, ylabel={$f(x)$},
+  xmin=-3.1416, xmax=3.1416, ymin=-1.45, ymax=1.45,
+  axis lines=middle,
+  grid=major, grid style={gray!30},
+  xtick={-3.1416,0,3.1416},
+  xticklabels={$-\pi$,$0$,$\pi$},
+  legend style={at={(0.98,0.02)}, anchor=south east, draw=none, fill=none}
+]
+\addplot[black, very thick, domain=-3.1416:-0.001, samples=2] {-1};
+\addplot[black, very thick, domain=0.001:3.1416, samples=2] {1};
+\addlegendentry{方波}
+\addplot[blue, domain=-3.1416:3.1416, samples=500] {(4/pi)*sin(deg(x))};
+\addlegendentry{$S_1$}
+\addplot[red, dashed, domain=-3.1416:3.1416, samples=500] {(4/pi)*(sin(deg(x)) + sin(deg(3*x))/3 + sin(deg(5*x))/5)};
+\addlegendentry{$S_3$}
+\addplot[green!60!black, dashdotted, domain=-3.1416:3.1416, samples=500] {(4/pi)*(sin(deg(x)) + sin(deg(3*x))/3 + sin(deg(5*x))/5 + sin(deg(7*x))/7 + sin(deg(9*x))/9 + sin(deg(11*x))/11 + sin(deg(13*x))/13)};
+\addlegendentry{$S_7$}
+\end{axis}
+\end{tikzpicture}
+\caption{方波的 Fourier 级数部分和逐步逼近原函数}
+\end{figure}
+
+对弦振动问题而言，如果初始位形 $u(x,0)=f(x)$，那么正弦级数的系数恰好就是各个驻波模态的振幅；如果还有初始速度，则它也要展开成同一组正弦模态。Fourier 级数因此把“任意初始条件”与“本征模态叠加”精确地连接起来。
+
+\section{物理中的偏微分方程总结表}
+
+\begin{longtable}{p{0.18\textwidth}p{0.24\textwidth}p{0.24\textwidth}p{0.24\textwidth}}
+\toprule
+物理情景 & PDE & 关键方法 & 本书中的位置 \\
+\midrule
+\endfirsthead
+
+\toprule
+物理情景 & PDE & 关键方法 & 本书中的位置 \\
+\midrule
+\endhead
+
+\bottomrule
+\endfoot
+
+振动弦、声波、电磁波 & $\pdv[2]{u}{t}=c^2\nabla^2 u$（一维时为 $\pdv[2]{u}{t}=c^2\pdv[2]{u}{x}$） & 分离变量、本征模展开、Fourier 级数 & 第 7 章振动与波；第 13 章电磁波 \\
+
+热传导、扩散 & $\pdv{u}{t}=\alpha\nabla^2 u$ & 分离变量、衰减模态、Fourier 展开 & 本书正文未详细展开，可作为连续介质问题的标准原型 \\
+
+无源区电势、引力势 & $\nabla^2 \phi=0$（二维时即拉普拉斯方程） & 边界值问题、分离变量、对称性分析 & 第 8 章静电场；第 9 章电势与电容 \\
+
+有源静电势或引力势 & $\nabla^2 \phi=-\rho/\varepsilon_0$（或按具体相互作用改写源项） & 泊松方程、积分表示、由源求场 & 作为静电势方程的背景形式，与第 8--9 章内容直接相关 \\
+
+量子波函数演化 & $i\hbar\pdv{\psi}{t}=-\dfrac{\hbar^2}{2m}\nabla^2\psi+V\psi$ & 分离变量、定态本征值问题、边界条件 & 本书未展开，仅提示其与波动方程同属 PDE 框架 \\
+
+\end{longtable}
+

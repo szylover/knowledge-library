@@ -1,0 +1,963 @@
+\chapter{分析力学与 Noether 定理}
+\label{chap:lagrangian-noether}
+
+前面几章中，我们主要以牛顿方程
+\[
+  m\ddot{\vb r}=\vb F
+\]
+为出发点讨论动量、能量与中心力问题。这种表述对于单个质点在笛卡尔坐标中的运动已经十分有效；然而一旦系统带有约束、坐标选择并不自然，或者我们希望直接把“对称性”与“守恒律”联系起来，牛顿形式就显得笨重。分析力学的核心思想，是把“轨道如何由力推动”改写为“允许轨道中哪一条使某个泛函取驻值”。在这一语言中，广义坐标、作用量、Legendre 变换、相空间以及 Lie 群自然地连成一条统一的数学链条。
+
+本章面向偏好严格表述的读者：我们会把构形空间视为一个有限维光滑流形的局部坐标描述，把连续对称性表述为一参数 Lie 群作用，并在这一框架下证明 Noether 定理。与此同时，我们也始终追问：这些数学对象在物理上究竟意味着什么。
+
+\section{从牛顿力学到分析力学}
+
+\subsection{牛顿表述的优势与局限}
+
+牛顿力学的基本未知量是质点在欧氏空间中的位置函数 $\vb r(t)$。若所有约束都能直接消去，并且受力易于在笛卡尔坐标中分解，那么写出
+\[
+  m\ddot x = F_x,\qquad m\ddot y = F_y,\qquad m\ddot z = F_z
+\]
+往往最直接。然而这种方法至少有三个局限。
+
+\begin{enumerate}
+  \item \textbf{约束反力不易处理。} 对于摆、滚动、刚体铰接等系统，运动实际上被限制在某个低维子流形上，但牛顿方程通常需要先在高维空间中引入约束反力，再与几何约束联立消去。
+  \item \textbf{坐标选择与系统几何不匹配。} 问题的对称性可能是极坐标、球坐标或更一般曲线坐标下才显得简单；强行使用笛卡尔坐标会掩盖结构。
+  \item \textbf{守恒律并未直接显现其来源。} 动量守恒、能量守恒、角动量守恒在牛顿语言中常分别证明；分析力学则揭示它们都来自对称性。
+\end{enumerate}
+
+因此，分析力学并不是推翻牛顿力学，而是把其内容重新编码到更适合几何与变分的语言中。
+
+\begin{remark}
+严格地说，牛顿力学与 Lagrange 力学在正则情形下是等价的：两者给出同一类二阶常微分方程。差别不在于“预测不同”，而在于“组织信息的方式不同”。分析力学把约束、对称性与守恒结构放在了更靠前的位置。
+\end{remark}
+
+\subsection{广义坐标与自由度}
+
+\begin{definition}[构形空间与自由度]
+设一个经典系统在时刻 $t$ 的所有可能位置状态组成集合 $\mathcal Q$，称为系统的\emph{构形空间}。若 $\mathcal Q$ 在局部上是 $n$ 维光滑流形，则称系统具有 $n$ 个\emph{自由度}。在局部坐标图中，可取坐标
+\[
+  q=(q_1,\dots,q_n)
+\]
+作为\emph{广义坐标}。
+\end{definition}
+
+物理上，构形空间记录的是“系统能处于哪些几何位置”；自由度是描述这些位置所需的独立实参数个数。对单个自由质点，$\mathcal Q\cong \mathbb R^3$，自由度为 $3$；对长度固定的摆球，其位置受约束 $x^2+y^2=\ell^2$，于是构形空间不再是整个平面，而是圆周 $S^1$，自由度降为 $1$。
+
+广义坐标优于笛卡尔坐标的根本原因，是它们只保留真正独立的变量，从而把约束“吸收”进坐标本身。此时动力学方程不再需要显式出现约束反力。
+
+\begin{example}[平面单摆的两种描述]
+考虑长度为 $\ell$ 的平面单摆，摆球质量为 $m$。
+
+\textbf{笛卡尔坐标：} 若用 $(x,y)$ 描述摆球位置，则必须满足约束
+\[
+  x^2+y^2=\ell^2.
+\]
+牛顿方程写成
+\[
+  m\ddot x = T\frac{x}{\ell},\qquad m\ddot y = T\frac{y}{\ell}-mg,
+\]
+其中 $T$ 为绳张力，是额外未知量。必须再联立约束方程才能消去 $T$。
+
+\textbf{广义坐标：} 若取偏角 $\theta$ 为唯一坐标，令
+\[
+  x=\ell\sin\theta,
+  \qquad
+  y=-\ell\cos\theta,
+\]
+则约束自动满足。动能与势能分别为
+\[
+  T=\frac12 m\ell^2\dot\theta^2,
+  \qquad
+  V=mg\ell(1-\cos\theta).
+\]
+最后只需得到一个关于 $\theta$ 的方程
+\[
+  \ell\ddot\theta + g\sin\theta =0.
+\]
+这正是分析力学的优势：坐标已经适配了几何约束。
+\end{example}
+
+\subsection{构形空间的数学意义}
+
+对数学背景较强的读者而言，构形空间并不只是“坐标个数的集合”，而应被看作一个几何对象。若系统由若干长度固定的杆、关节和粒子组成，则所有允许位置往往形成嵌入在某个欧氏空间中的子流形。广义坐标只是该流形上的局部参数，而不是物理本体。
+
+速度则属于切空间 $T_q\mathcal Q$：在时刻 $t$，系统状态由 $q(t)\in \mathcal Q$ 与速度向量 $\dot q(t)\in T_{q(t)}\mathcal Q$ 描述。于是动力学的真正变量不是 $q$ 单独，而是切丛 $T\mathcal Q$ 上的点 $(q,\dot q)$。Lagrangian 正是定义在 $T\mathcal Q\times \mathbb R$ 上的函数
+\[
+  L=L(q,\dot q,t).
+\]
+
+\begin{remark}
+“位置”描述系统在哪里；“速度”描述系统正朝构形空间的哪个切向方向离开该点。分析力学把动力学看成切丛上的演化，这一观点在 Hamilton 力学中将进一步转化为余切丛 $T^*\mathcal Q$ 上的演化。
+\end{remark}
+
+\subsection{单摆：笛卡尔坐标与广义坐标的比较}
+
+为了更清楚地展示两种语言的差别，我们把单摆问题再写得系统一些。令
+\[
+  \vb r=(x,y),\qquad x^2+y^2=\ell^2.
+\]
+对约束两次求导可得
+\[
+  x\dot x+y\dot y=0,
+  \qquad
+  x\ddot x+y\ddot y+\dot x^2+\dot y^2=0.
+\]
+这说明即使我们只想追踪切向运动，法向约束仍会不断混入方程。相比之下，取 $\theta$ 后，速度自动满足
+\[
+  \vb v = \ell\dot\theta\,\uvec{\theta},
+\]
+动能立刻简化为纯二次型。物理上，这意味着摆球的真实运动只在圆周的切向方向上发生；数学上，这意味着动力学位于 $S^1$ 的切丛，而不是环境空间 $\mathbb R^2$ 的切丛。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=1.0,>=Latex]
+  \draw[fill=blue!5] (0,0) circle (2.1);
+  \draw[thick, blue!50!black] (0,0) circle (2.1);
+  \fill (0,0) circle (0.05);
+  \draw[thick] (0,0) -- (1.48,-1.48);
+  \fill[orange!60] (1.48,-1.48) circle (0.11);
+  \draw[->, thick, red!70!black] (1.48,-1.48) -- (2.15,-0.81) node[right] {$\uvec{\theta}$};
+  \draw[dashed] (0,0) -- (0,-2.1);
+  \draw[->, thick, gray!70] (1.48,-1.48) -- (2.02,-2.02) node[below right] {$\uvec r$};
+  \draw[->, thick] (0,-1.05) arc[start angle=-90,end angle=-45,radius=1.05];
+  \node at (0.45,-0.85) {$\theta$};
+  \node[blue!50!black] at (0,2.45) {$\mathcal Q=S^1$};
+  \node at (2.3,-1.55) {$q=\theta$};
+\end{tikzpicture}
+\caption{平面单摆的构形空间是圆周 $S^1$，而不是整个平面}
+\end{figure}
+
+\section{Lagrangian 力学}
+
+\subsection{作用量与 Lagrangian}
+
+分析力学从一个时间积分开始。
+
+\begin{definition}[作用量泛函]
+设 $q:[t_1,t_2]\to \mathcal Q$ 是一条足够光滑的轨道，Lagrangian 为
+\[
+  L=L(q,\dot q,t).
+\]
+定义其\emph{作用量泛函}为
+\[
+  S[q]\coloneqq \int_{t_1}^{t_2} L(q(t),\dot q(t),t)\,\dd t.
+\]
+在最常见的机械系统中，
+\[
+  L=T-V,
+\]
+其中 $T$ 是动能，$V$ 是势能。
+\end{definition}
+
+物理上，$L$ 不是能量本身，而是“动能与势能之差”。这一点起初似乎有些神秘，但其效果极为深刻：把所有允许轨道放在一起比较时，真实运动轨道恰是使 $S[q]$ 取驻值的一条。
+
+\begin{law}[Hamilton 原理]
+在固定端点条件
+\[
+  q(t_1)=q^{(1)},\qquad q(t_2)=q^{(2)}
+\]
+下，真实运动轨道满足
+\[
+  \delta S =0.
+\]
+更准确地说，对任意满足 $\eta(t_1)=\eta(t_2)=0$ 的可允许变分 $\eta$，若取
+\[
+  q_\varepsilon(t)=q(t)+\varepsilon \eta(t),
+\]
+则有
+\[
+  \left.\dv{S[q_\varepsilon]}{\varepsilon}\right|_{\varepsilon=0}=0.
+\]
+\end{law}
+
+\begin{remark}
+“最小作用量原理”这一俗称并不总是精确。严格地说，真实轨道使作用量取\emph{驻值}，即一阶变分为零；它可以是极小值，也可能只是鞍点。数学上，这与有限维优化中的临界点完全同型。
+\end{remark}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.82\textwidth, height=0.45\textwidth,
+  xlabel={时间 $t$}, ylabel={坐标 $q$},
+  xmin=0, xmax=1, ymin=-0.1, ymax=1.1,
+  axis lines=left, grid=major, grid style={gray!25},
+  samples=120, thick
+]
+\addplot[gray!70, dashed, domain=0:1] {x^0.9};
+\addplot[gray!70, dashed, domain=0:1] {x + 0.22*x*(1-x)};
+\addplot[blue, very thick, domain=0:1] {x};
+\node[anchor=west] at (axis cs:0.72,0.82) {非极值路径};
+\node[anchor=west, blue!80!black] at (axis cs:0.72,0.58) {驻值路径};
+\end{axis}
+\end{tikzpicture}
+\caption{固定端点的多条候选路径中，真实轨道使作用量的一阶变分消失}
+\end{figure}
+
+\subsection{Euler--Lagrange 方程的推导}
+
+设 $q=(q_1,\dots,q_n)$，取变分
+\[
+  q_i^\varepsilon(t)=q_i(t)+\varepsilon \eta_i(t),
+  \qquad
+  \eta_i(t_1)=\eta_i(t_2)=0.
+\]
+则
+\[
+  \dv{S[q^\varepsilon]}{\varepsilon}
+  =\int_{t_1}^{t_2}\sum_{i=1}^n\left(
+    \pdv{L}{q_i}\eta_i + \pdv{L}{\dot q_i}\dot\eta_i
+  \right)\dd t.
+\]
+对第二项分部积分：
+\[
+  \int_{t_1}^{t_2}\pdv{L}{\dot q_i}\dot\eta_i\,\dd t
+  =\eval{\pdv{L}{\dot q_i}\eta_i}_{t_1}^{t_2}
+  -\int_{t_1}^{t_2}\dv{}{t}\left(\pdv{L}{\dot q_i}\right)\eta_i\,\dd t.
+\]
+边界项由于 $\eta_i(t_1)=\eta_i(t_2)=0$ 而消失，因此
+\[
+  \delta S
+  =\int_{t_1}^{t_2}\sum_{i=1}^n
+  \left[
+    \pdv{L}{q_i}-\dv{}{t}\left(\pdv{L}{\dot q_i}\right)
+  \right]\eta_i\,\dd t.
+\]
+由变分法基本引理，若该积分对任意端点为零的 $\eta_i$ 都为零，则括号内函数恒为零。于是得到：
+
+\begin{theorem}[Euler--Lagrange 方程]
+若轨道 $q(t)$ 使作用量在固定端点变分下取驻值，则它满足
+\[
+  \dv{}{t}\left(\pdv{L}{\dot q_i}\right)-\pdv{L}{q_i}=0,
+  \qquad i=1,\dots,n.
+\]
+\end{theorem}
+
+\begin{remark}
+这是二阶常微分方程组，但其形式与坐标选择密切相关。坐标改变后，方程外形会变，然而“由作用量变分得到”这一结构保持不变；这正是 Lagrange 力学的坐标协变性所在。
+\end{remark}
+
+\subsection{自由粒子：导出牛顿第一定律}
+
+\begin{example}[自由粒子]
+质量为 $m$ 的自由粒子没有势能，可取
+\[
+  L=\frac12 m\dot x^2.
+\]
+Euler--Lagrange 方程给出
+\[
+  \dv{}{t}\left(\pdv{L}{\dot x}\right)-\pdv{L}{x}=0
+  \quad\Longrightarrow\quad
+  \dv{}{t}(m\dot x)=0.
+\]
+因此
+\[
+  m\ddot x=0,
+\]
+即
+\[
+  x(t)=x_0+vt.
+\]
+这正是牛顿第一定律：不受力的粒子做匀速直线运动。
+\end{example}
+
+这里的重点不只是“算出同样的方程”，而是看到平移对称性已经内嵌在 $L$ 的坐标无关性中。Noether 定理将对此给出统一解释。
+
+\subsection{简谐振子}
+
+\begin{example}[简谐振子]
+设
+\[
+  L=\frac12 m\dot q^2-\frac12 k q^2.
+\]
+则
+\[
+  \pdv{L}{\dot q}=m\dot q,
+  \qquad
+  \pdv{L}{q}=-kq.
+\]
+因此
+\[
+  m\ddot q+kq=0.
+\]
+记 $\omega=\sqrt{k/m}$，则通解为
+\[
+  q(t)=A\cos(\omega t+\varphi).
+\]
+该例说明：Lagrangian 中的二次动能项与二次势能项自然编码了振动系统。
+\end{example}
+
+对于简谐振子，其正则动量是
+\[
+  p=\pdv{L}{\dot q}=m\dot q,
+\]
+能量函数为
+\[
+  E=\dot q\pdv{L}{\dot q}-L=\frac12 m\dot q^2+\frac12 kq^2,
+\]
+稍后我们将把它解释为时间平移对称性的 Noether 守恒量。
+
+\subsection{中心力问题：极坐标的优雅}
+
+在平面中心力问题中，若势能只依赖于径向距离 $r$，则使用极坐标 $(r,\theta)$ 最自然。速度平方为
+\[
+  v^2=\dot r^2+r^2\dot\theta^2,
+\]
+故 Lagrangian 为
+\[
+  L=\frac12 m\left(\dot r^2+r^2\dot\theta^2\right)-V(r).
+\]
+Euler--Lagrange 方程分别给出
+\[
+  m\ddot r-mr\dot\theta^2+V'(r)=0,
+\]
+以及
+\[
+  \dv{}{t}\left(mr^2\dot\theta\right)=0.
+\]
+第二式表明
+\[
+  p_\theta=mr^2\dot\theta
+\]
+守恒。这正是角动量守恒。与其在笛卡尔坐标中先写两个方程、再组合出力矩为零，不如在极坐标中一步看出 $\theta$ 是循环坐标。
+
+\begin{example}[开普勒势]
+若
+\[
+  V(r)=-\frac{k}{r},\qquad k>0,
+\]
+则径向方程为
+\[
+  m\ddot r-mr\dot\theta^2+\frac{k}{r^2}=0,
+\]
+而角向守恒量
+\[
+  \ell =mr^2\dot\theta
+\]
+常数。代入后可把二维问题约化为一维有效势问题
+\[
+  E=\frac12 m\dot r^2+\frac{\ell^2}{2mr^2}-\frac{k}{r}.
+\]
+这说明角动量守恒把轨道问题的复杂性大幅降低。
+\end{example}
+
+\subsection{电磁场中的带电粒子：广义势}
+
+分析力学尤其擅长处理速度依赖势。设带电粒子电荷为 $e$，质量为 $m$，电磁势为标势 $\phi(\vb r,t)$ 与矢势 $\vb A(\vb r,t)$。可取
+\[
+  L(\vb r,\dot{\vb r},t)=\frac12 m\dot{\vb r}^{\,2}+e\vb A\cdot \dot{\vb r}-e\phi.
+\]
+这里的 $e\vb A\cdot\dot{\vb r}$ 不是通常意义下的势能，但它依然可以并入 Lagrangian，称为\emph{广义势}项。
+
+\begin{example}[Euler--Lagrange 方程导出洛伦兹力]
+对分量 $x_i$ 应用 Euler--Lagrange 方程，有
+\[
+  \pdv{L}{\dot x_i}=m\dot x_i+eA_i,
+\]
+因此
+\[
+  \dv{}{t}\pdv{L}{\dot x_i}=m\ddot x_i+e\pdv{A_i}{t}+e\sum_j \pdv{A_i}{x_j}\dot x_j.
+\]
+另一方面
+\[
+  \pdv{L}{x_i}=e\sum_j \pdv{A_j}{x_i}\dot x_j-e\pdv{\phi}{x_i}.
+\]
+相减得
+\[
+  m\ddot x_i = e\left(-\pdv{\phi}{x_i}-\pdv{A_i}{t}\right)
+  +e\sum_j\left(\pdv{A_j}{x_i}-\pdv{A_i}{x_j}\right)\dot x_j.
+\]
+把括号识别为电场与磁场的分量，可得矢量形式
+\[
+  m\ddot{\vb r}=e\vb E+e\dot{\vb r}\times \vb B.
+\]
+这正是洛伦兹力公式。
+\end{example}
+
+\begin{remark}
+该例的重要性在于：即使力含有速度项，Lagrange 形式仍然自然。事实上，电磁学中的规范对称性正是通过势 $\phi,\vb A$ 而非电磁场张量的某些分量来表达的。
+\end{remark}
+
+\section{对称性与守恒律——Noether 定理}
+
+\subsection{连续对称性的数学形式}
+
+\begin{definition}[一参数 Lie 群作用]
+设 $G=\{g_\varepsilon\}_{\varepsilon\in\mathbb R}$ 是一个一参数 Lie 群，在构形空间与时间上光滑作用为
+\[
+  (t,q)\longmapsto (t',q')=(t_\varepsilon(t,q),q_\varepsilon(t,q)).
+\]
+若满足群律
+\[
+  g_0=\mathrm{id},\qquad g_{\varepsilon_1}\circ g_{\varepsilon_2}=g_{\varepsilon_1+\varepsilon_2},
+\]
+则称其为系统的一个连续变换族。
+\end{definition}
+
+在无穷小层面，这个作用由生成向量场给出：
+\[
+  \tau(q,t)\pdv{}{t}+\sum_i \xi_i(q,t)\pdv{}{q_i},
+\]
+其中
+\[
+  \tau=\eval{\pdv{t_\varepsilon}{\varepsilon}}_{\varepsilon=0},
+  \qquad
+  \xi_i=\eval{\pdv{q_{\varepsilon,i}}{\varepsilon}}_{\varepsilon=0}.
+\]
+若只考虑构形空间上的变换而时间不变，则退化为常见形式
+\[
+  q_i\longmapsto q_i+\varepsilon\,\delta q_i.
+\]
+
+物理上，连续对称性意味着：系统的描述在某种连续重标记下不变。例如整体平移坐标原点、整体旋转参考轴、整体平移时间起点，不应改变实验预测。
+
+\subsection{Noether 定理的精确陈述}
+
+为了同时覆盖时间平移与“只差一个全导数”的情形，我们采用如下表述。
+
+\begin{theorem}[Noether 定理]
+设 Lagrangian $L(q,\dot q,t)$ 在一参数无穷小变换
+\[
+  t' = t+\varepsilon\tau(q,t),
+  \qquad
+  q_i'(t')=q_i(t)+\varepsilon\xi_i(q,t)
+\]
+下满足
+\[
+  L(q',\dot q',t')\dd t' = L(q,\dot q,t)\dd t + \varepsilon \dv{F}{t}\dd t + O(\varepsilon^2),
+\]
+其中 $F=F(q,t)$。则对任一满足 Euler--Lagrange 方程的轨道，量
+\[
+  Q\coloneqq \sum_i p_i\xi_i-H\tau-F
+\]
+守恒，其中
+\[
+  p_i\coloneqq \pdv{L}{\dot q_i},
+  \qquad
+  H\coloneqq \sum_i p_i\dot q_i-L.
+\]
+亦即
+\[
+  \dv{Q}{t}=0.
+\]
+\end{theorem}
+
+\begin{proof}
+定义轨道在固定参数 $t$ 下的垂直变分
+\[
+  \Delta q_i\coloneqq \xi_i-\dot q_i\tau.
+\]
+它表示在扣除时间重参数影响后，轨道点在构形空间中的真正位移。对作用量密度作一阶展开，可得标准恒等式
+\[
+  \delta L
+  =\sum_i\left(\pdv{L}{q_i}\Delta q_i+\pdv{L}{\dot q_i}\dv{}{t}\Delta q_i\right)
+  +\dv{}{t}(L\tau).
+\]
+将第二项分部积分，得到
+\[
+  \delta L
+  =\sum_i\left[\pdv{L}{q_i}-\dv{}{t}\left(\pdv{L}{\dot q_i}\right)\right]\Delta q_i
+  +\dv{}{t}\left(\sum_i p_i\Delta q_i + L\tau\right).
+\]
+若变换是作用量的拟对称，则按假设
+\[
+  \delta L=\dv{F}{t}.
+\]
+于是沿任意经典轨道（即 Euler--Lagrange 方程成立）有
+\[
+  \dv{}{t}\left(\sum_i p_i\Delta q_i + L\tau -F\right)=0.
+\]
+代入 $\Delta q_i=\xi_i-\dot q_i\tau$，得
+\[
+  \sum_i p_i\Delta q_i + L\tau -F
+  =\sum_i p_i\xi_i-\left(\sum_i p_i\dot q_i-L\right)\tau-F
+  =\sum_i p_i\xi_i-H\tau-F.
+\]
+故
+\[
+  \dv{}{t}\left(\sum_i p_i\xi_i-H\tau-F\right)=0.
+\]
+证毕。
+\end{proof}
+
+\begin{remark}
+该定理的哲学意义极深：守恒量不是偶然出现的“好算组合”，而是连续对称性的微分不变量。对称性属于群论；守恒律属于动力学；Noether 定理把两者接通。
+\end{remark}
+
+\subsection{Noether 对应表}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{0.94\textwidth}{>{\raggedright\arraybackslash}p{0.23\textwidth} >{\centering\arraybackslash}p{0.28\textwidth} >{\raggedright\arraybackslash}X}
+\toprule
+对称性（Lie 群） & 无穷小生成元 & 守恒量 \\
+\midrule
+时间平移 $t\to t+\epsilon$ & $\partial/\partial t$ & 能量 $E=\sum_i p_i\dot q_i-L$ \\
+空间平移 $x\to x+\epsilon$ & $\partial/\partial x$ & 动量 $p=\partial L/\partial \dot x$ \\
+旋转 $\theta\to \theta+\epsilon$ & $\partial/\partial \theta$ & 角动量 $J=\partial L/\partial \dot\theta$ \\
+规范变换 & --- & 电荷守恒 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+表中前三行属于有限维经典力学的直接应用；最后一行更准确地说属于带有复值场的场论或量子力学体系，其中 $U(1)$ 相位/规范对称性导出电荷守恒。下面分别推导。
+
+\subsection{时间平移 $\Rightarrow$ 能量守恒}
+
+若 Lagrangian 不显含时间，即
+\[
+  \pdv{L}{t}=0,
+\]
+则在时间平移
+\[
+  t\mapsto t+\varepsilon
+\]
+下可取
+\[
+  \tau=1,
+  \qquad
+  \xi_i=0,
+  \qquad
+  F=0.
+\]
+Noether 守恒量为
+\[
+  Q=-H.
+\]
+故
+\[
+  H=\sum_i p_i\dot q_i-L
+\]
+守恒。
+
+\begin{law}[能量守恒的 Noether 形式]
+若系统的 Lagrangian 不显含时间，则能量函数
+\[
+  E=\sum_i p_i\dot q_i-L
+\]
+沿经典轨道守恒。
+\end{law}
+
+在自然机械系统 $L=T-V$ 中，若 $T$ 是速度的二次齐次式，则由 Euler 齐次公式可得
+\[
+  \sum_i \dot q_i\pdv{T}{\dot q_i}=2T,
+\]
+从而
+\[
+  E=T+V.
+\]
+这就恢复了第 5 章中出现的机械能守恒。
+
+\subsection{空间平移 $\Rightarrow$ 动量守恒}
+
+考虑一维自由度 $x$。若 $L$ 不显含 $x$，即
+\[
+  \pdv{L}{x}=0,
+\]
+则对空间平移
+\[
+  x\mapsto x+\varepsilon
+\]
+可取
+\[
+  \tau=0,
+  \qquad
+  \xi_x=1,
+  \qquad
+  F=0.
+\]
+于是 Noether 守恒量为
+\[
+  Q=p_x=\pdv{L}{\dot x}.
+\]
+因此
+\[
+  \dv{p_x}{t}=0.
+\]
+对三维自由粒子，若 $L=\frac12 m\dot{\vb r}^{\,2}$，则所有方向都平移对称，于是
+\[
+  \vb p = m\dot{\vb r}
+\]
+守恒。这正是第 4 章动量守恒在单粒子层面的源头；对多粒子系统，总动量守恒来自整体平移对称性。
+
+\subsection{旋转对称性 $\Rightarrow$ 角动量守恒}
+
+设系统在平面极坐标中由 $(r,\theta)$ 描述，Lagrangian 不显含角变量 $\theta$，即
+\[
+  \pdv{L}{\theta}=0.
+\]
+对旋转群 $SO(2)$ 的无穷小变换
+\[
+  \theta\mapsto \theta+\varepsilon
+\]
+可取
+\[
+  \tau=0,
+  \qquad
+  \xi_\theta=1,
+  \qquad
+  F=0.
+\]
+Noether 守恒量为
+\[
+  J=p_\theta=\pdv{L}{\dot\theta}.
+\]
+对中心力 Lagrangian
+\[
+  L=\frac12 m(\dot r^2+r^2\dot\theta^2)-V(r)
+\]
+有
+\[
+  J=mr^2\dot\theta,
+\]
+这正是角动量守恒。其几何含义是：构形空间的旋转对称性在切空间中诱导了守恒流。
+
+\subsection{规范/相位对称性 $\Rightarrow$ 电荷守恒}
+
+为了避免误解，我们先指出：对单个经典带电粒子的 Lagrangian，电磁势的规范变换
+\[
+  \vb A\mapsto \vb A+\grad \chi,
+  \qquad
+  \phi\mapsto \phi-\pdv{\chi}{t}
+\]
+只会使
+\[
+  L\mapsto L+e\dv{\chi}{t},
+\]
+即作用量改变一个边界项。这说明物理不依赖势的具体表示，但它本身并不直接给出一个新的机械守恒量。
+
+电荷守恒更自然地出现在场论版本的 Noether 定理中。以复标量场 $\psi$ 为例，若 Lagrangian 在全局 $U(1)$ 相位变换
+\[
+  \psi\mapsto e^{i\varepsilon}\psi
+\]
+下不变，则对应 Noether 流 $j^\mu$ 满足连续性方程
+\[
+  \partial_\mu j^\mu =0.
+\]
+积分其时间分量得总电荷
+\[
+  Q=\int j^0\,\dd^3x
+\]
+守恒。进一步要求局域 $U(1)$ 规范不变性，就会自然引入电磁场耦合。因此“规范对称性 $\Rightarrow$ 电荷守恒”应理解为：电荷守恒属于 Noether 机制在场论中的表现，而不是有限维点粒子系统中的额外第一积分。
+
+\subsection{开普勒问题：旋转对称性与平面轨道}
+
+\begin{example}[开普勒问题中的角动量守恒]
+对势能
+\[
+  V(r)=-\frac{k}{r}
+\]
+的中心力系统，Lagrangian 为
+\[
+  L=\frac12 m(\dot r^2+r^2\dot\theta^2)+\frac{k}{r}.
+\]
+它不显含 $\theta$，所以
+\[
+  J=mr^2\dot\theta
+\]
+守恒。于是面积速度
+\[
+  \dv{A}{t}=\frac12 r^2\dot\theta = \frac{J}{2m}
+\]
+为常数，即开普勒第二定律。
+
+更进一步，由于角动量矢量
+\[
+  \vb L = m\vb r\times \dot{\vb r}
+\]
+方向固定，位置矢量与速度矢量始终位于与 $\vb L$ 垂直的同一平面内。因此轨道必为平面曲线。这说明“行星轨道是平面的”并非额外经验事实，而是旋转对称性通过 Noether 定理的直接几何后果。
+\end{example}
+
+\section{Hamilton 力学简介}
+
+\subsection{Legendre 变换与 Hamiltonian}
+
+Lagrange 力学以速度 $\dot q_i$ 为变量；Hamilton 力学则改用共轭动量
+\[
+  p_i\coloneqq \pdv{L}{\dot q_i}.
+\]
+若 Lagrangian 关于速度的 Hessian 矩阵
+\[
+  \left(\pdv[2]{L}{\dot q_i}{\dot q_j}\right)
+\]
+可逆，则可在局部上把 $\dot q$ 写成 $(q,p,t)$ 的函数。此时定义 Legendre 变换
+\[
+  H(q,p,t)\coloneqq \sum_i p_i\dot q_i-L(q,\dot q,t).
+\]
+
+\begin{definition}[正则 Lagrangian]
+若映射
+\[
+  (q,\dot q)\mapsto (q,p),\qquad p_i=\pdv{L}{\dot q_i}
+\]
+局部可逆，则称 $L$ 为\emph{正则的}。在此情形下，Legendre 变换把切丛 $T\mathcal Q$ 上的动力学转移到余切丛 $T^*\mathcal Q$ 上。
+\end{definition}
+
+物理上，$H$ 往往是总能量，但这一点并非定义所必需。它的真正意义是：Hamiltonian 生成时间演化。
+
+\subsection{Hamilton 正则方程}
+
+对 $H=\sum_i p_i\dot q_i-L$ 求微分：
+\[
+  \dd H = \sum_i \dot q_i\,\dd p_i + \sum_i p_i\,\dd(\dot q_i) - \sum_i \pdv{L}{q_i}\,\dd q_i - \sum_i \pdv{L}{\dot q_i}\,\dd(\dot q_i) - \pdv{L}{t}\,\dd t.
+\]
+利用 $p_i=\pdv{L}{\dot q_i}$ 与 Euler--Lagrange 方程 $\dot p_i=\pdv{L}{q_i}$，得到
+\[
+  \dd H = \sum_i \dot q_i\,\dd p_i - \sum_i \dot p_i\,\dd q_i - \pdv{L}{t}\,\dd t.
+\]
+与
+\[
+  \dd H = \sum_i \pdv{H}{q_i}\dd q_i + \sum_i \pdv{H}{p_i}\dd p_i + \pdv{H}{t}\dd t
+\]
+比较系数，便得：
+
+\begin{theorem}[Hamilton 正则方程]
+对于正则 Lagrangian 的 Legendre 变换，系统在相空间中的演化满足
+\[
+  \dot q_i = \pdv{H}{p_i},
+  \qquad
+  \dot p_i = -\pdv{H}{q_i}.
+\]
+\end{theorem}
+
+\begin{example}[简谐振子的 Hamilton 形式]
+对 Lagrangian
+\[
+  L=\frac12 m\dot q^2-\frac12 kq^2,
+\]
+有
+\[
+  p=m\dot q,
+  \qquad
+  H(q,p)=\frac{p^2}{2m}+\frac12 kq^2.
+\]
+Hamilton 方程为
+\[
+  \dot q=\frac{p}{m},
+  \qquad
+  \dot p=-kq.
+\]
+联立即得
+\[
+  m\ddot q+kq=0.
+\]
+因此 Hamilton 形式与 Lagrange 形式完全等价，但变量组织方式改为一阶系统。
+\end{example}
+
+\subsection{相空间与 Liouville 定理}
+
+\begin{definition}[相空间]
+系统的\emph{相空间}定义为余切丛 $T^*\mathcal Q$；在局部坐标下其点写作
+\[
+  (q_1,\dots,q_n,p_1,\dots,p_n).
+\]
+它的维数是 $2n$。
+\end{definition}
+
+构形空间记录“系统在哪里”；相空间记录“系统在哪里且如何运动”。在相空间中，一条物理轨道变成一条由 Hamilton 向量场生成的积分曲线。
+
+\begin{law}[Liouville 定理，简述版]
+Hamilton 流保持相空间体积不变。也就是说，若一簇初值在相空间中形成一个体积元，则它随时间演化虽然会拉伸、弯曲，但总体积保持不变。
+\end{law}
+
+这一定理对统计力学极为关键，因为它保证“相空间密度沿 Hamilton 流搬运而不压缩”。从几何上看，它源于辛形式的不变性。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.6\textwidth, height=0.5\textwidth,
+  xlabel={$q$}, ylabel={$p$},
+  axis lines=middle,
+  xmin=-2.2, xmax=2.2, ymin=-2.2, ymax=2.2,
+  grid=major, grid style={gray!25},
+  samples=200
+]
+\addplot[blue, thick, domain=0:360] ({1.6*cos(x)},{1.6*sin(x)});
+\addplot[blue!60, thick, domain=0:360] ({1.1*cos(x)},{1.1*sin(x)});
+\node[blue!80!black] at (axis cs:1.55,0.45) {$H=\text{常量}$};
+\end{axis}
+\end{tikzpicture}
+\caption{简谐振子在 $(q,p)$ 相空间中的相轨线是闭合椭圆；适当缩放后可视为圆}
+\end{figure}
+
+\subsection{Poisson 括号与 Lie 代数结构}
+
+在相空间上，对任意足够光滑函数 $f(q,p,t)$ 与 $g(q,p,t)$，定义 Poisson 括号
+\[
+  \{f,g\}
+  \coloneqq
+  \sum_i\left(
+    \pdv{f}{q_i}\pdv{g}{p_i}-\pdv{f}{p_i}\pdv{g}{q_i}
+  \right).
+\]
+
+\begin{proposition}
+Poisson 括号满足：
+\begin{enumerate}
+  \item 反对称性：$\{f,g\}=-\{g,f\}$；
+  \item 双线性；
+  \item Jacobi 恒等式：
+  \[
+    \{f,\{g,h\}\}+\{g,\{h,f\}\}+\{h,\{f,g\}\}=0;
+  \]
+  \item Leibniz 规则：$\{f,gh\}=\{f,g\}h+g\{f,h\}$。
+\end{enumerate}
+因此相空间上的可观测量在 Poisson 括号下形成一个 Lie 代数。
+\end{proposition}
+
+特别地，基本 Poisson 括号为
+\[
+  \{q_i,p_j\}=\delta_{ij},
+  \qquad
+  \{q_i,q_j\}=0,
+  \qquad
+  \{p_i,p_j\}=0.
+\]
+它们是 Hamilton 力学的代数核心。
+
+若 $f$ 不显含时间，则沿 Hamilton 流的导数为
+\[
+  \dv{f}{t}=\{f,H\}.
+\]
+因此守恒量恰是与 Hamiltonian Poisson 对易的函数：
+\[
+  \dv{f}{t}=0
+  \quad\Longleftrightarrow\quad
+  \{f,H\}=0.
+\]
+这使 Noether 守恒量与 Lie 代数结构发生了直接联系。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Latex]
+  \draw[rounded corners, thick, fill=blue!5] (0,0) rectangle (4.8,2.2);
+  \draw[rounded corners, thick, fill=green!5] (6.0,0) rectangle (11.3,2.2);
+  \node at (2.4,1.75) {构形空间 $\mathcal Q$};
+  \node at (2.4,1.15) {点：$q=(q_1,\dots,q_n)$};
+  \node at (2.4,0.55) {维数 $n$};
+  \node at (8.65,1.75) {相空间 $T^*\mathcal Q$};
+  \node at (8.65,1.15) {点：$(q_1,\dots,q_n,p_1,\dots,p_n)$};
+  \node at (8.65,0.55) {维数 $2n$};
+  \draw[->, very thick] (4.95,1.1) -- (5.85,1.1) node[midway, above] {加入动量};
+\end{tikzpicture}
+\caption{构形空间与相空间：后者不仅记位置，也记共轭动量}
+\end{figure}
+
+\section{Lie 群视角下的物理对称性}
+
+\subsection{给物理学者的 Lie 群与 Lie 代数简介}
+
+\begin{definition}[Lie 群]
+既是群又是光滑流形，并且乘法与取逆映射都光滑的对象，称为\emph{Lie 群}。
+\end{definition}
+
+经典力学中常见的 Lie 群包括：
+\begin{itemize}
+  \item 时间平移群 $(\mathbb R,+)$；
+  \item 空间平移群 $(\mathbb R^3,+)$；
+  \item 平面旋转群 $SO(2)$；
+  \item 三维旋转群 $SO(3)$；
+  \item 相空间中的正则变换群（无限维）。
+\end{itemize}
+
+Lie 代数是 Lie 群在单位元附近的线性化。它由切空间 $T_eG$ 与 Lie 括号构成，刻画无穷小生成元之间的交换关系。Noether 定理之所以偏爱“无穷小变换”，正因为守恒量首先与 Lie 代数元对应。
+
+\subsection{$SO(3)$ 与角动量}
+
+三维旋转群
+\[
+  SO(3)=\{R\in M_{3\times 3}(\mathbb R):R^TR=I,\det R=1\}
+\]
+描述欧氏空间中保持内积与定向的线性变换。其 Lie 代数记作 $\mathfrak{so}(3)$，由所有反对称矩阵组成：
+\[
+  \mathfrak{so}(3)=\{X\in M_{3\times 3}(\mathbb R):X^T=-X\}.
+\]
+
+取基 $J_1,J_2,J_3$ 后，其交换关系可写为
+\[
+  [J_i,J_j]=\sum_k \varepsilon_{ijk}J_k,
+\]
+其中 $\varepsilon_{ijk}$ 是 Levi-Civita 符号。物理上，经典角动量的 Poisson 括号满足同样的结构：
+\[
+  \{L_i,L_j\}=\sum_k \varepsilon_{ijk}L_k.
+\]
+因此角动量分量本身实现了 $\mathfrak{so}(3)$ 的一个经典表示。
+
+\begin{remark}
+这正是“角动量是旋转生成元”的精确含义：它并非仅仅是一个几何叉积公式，而是旋转 Lie 群在相空间上的无穷小作用对应的守恒函数。
+\end{remark}
+
+\subsection{指数映射：由无穷小到有限变换}
+
+若 $X\in \mathfrak g$ 是 Lie 代数元，则指数映射定义有限变换
+\[
+  \exp(\varepsilon X)\in G.
+\]
+对矩阵 Lie 群，这就是通常的矩阵指数级数
+\[
+  \exp(\varepsilon X)=I+\varepsilon X+\frac{\varepsilon^2}{2!}X^2+\cdots.
+\]
+
+在旋转问题中，$X$ 表示绕某轴的无穷小转动生成元，而 $\exp(\varepsilon X)$ 则给出有限角度旋转。物理上，我们常先找到无穷小变换下的守恒量，再通过指数映射理解完整对称群的作用。
+
+\subsection{相空间对称性与正则变换}
+
+在 Hamilton 语言中，一个可观测量 $G(q,p)$ 可生成无穷小正则变换
+\[
+  \delta f = \varepsilon\{f,G\}.
+\]
+若该变换保持 Hamiltonian 不变，即
+\[
+  \{H,G\}=0,
+\]
+则 $G$ 守恒。这就是 Noether 观点在相空间中的重述：\emph{守恒量就是生成对称变换的 Hamilton 函数。}
+
+例如：
+\begin{itemize}
+  \item $G=p_x$ 生成 $x$ 方向平移；
+  \item $G=L_z$ 生成绕 $z$ 轴旋转；
+  \item $G=H$ 自身生成时间演化。
+\end{itemize}
+
+因此，Lie 代数不只出现在抽象群论中，也直接体现在 Poisson 括号的代数运算里。
+
+\subsection{向量场、算符与场论的延伸}
+
+这一框架向后延伸极其自然：
+\begin{enumerate}
+  \item 在量子力学中，可观测量变为 Hilbert 空间上的算符，Poisson 括号被对易子替代：
+  \[
+    \{f,g\}\quad \leadsto\quad \frac{1}{i\hbar}[\hat f,\hat g].
+  \]
+  \item 在场论中，构形空间不再是有限维流形，而是函数空间；Noether 定理由守恒量推广为守恒流。
+  \item 规范对称性、Lorentz 对称性、内部对称性等都可以用 Lie 群及其表示统一描述。
+\end{enumerate}
+
+因此，分析力学并不是经典力学的边角料，而是现代物理语言的入口。
+
+\section{回顾与统一}
+
+现在回看本书前面的守恒律，我们会发现它们并非分散事实，而是同一原理的不同投影。
+
+\begin{itemize}
+  \item 第 4 章讨论动量时，我们从相互作用与系统观点得到总动量守恒；在本章中，它被重释为\emph{整体空间平移对称性}的 Noether 量。
+  \item 第 5 章讨论功与能时，我们得到机械能守恒；在本章中，它被重释为\emph{时间平移对称性}的 Noether 量。
+  \item 第 6 章处理中心力与开普勒问题时，我们得到角动量守恒与面积速度守恒；在本章中，它被重释为\emph{旋转对称性}的 Noether 量。
+\end{itemize}
+
+\begin{law}[守恒律的统一图景]
+在正则经典体系中，只要某个连续一参数 Lie 群作用保持作用量不变（或至多差一个全导数），就存在相应的守恒量。动量、能量、角动量并不是三条互不相关的经验规律，而是 Noether 定理的三种最基本实例。
+\end{law}
+
+这种统一有两个层面的意义。
+
+第一，\textbf{数学层面}：动力学方程可以从变分原理推出；守恒律可以从 Lie 群作用推出；Hamilton 结构则把它们装入辛几何与 Poisson 代数。于是“方程—对称性—守恒量”不再是平行的三套内容，而成为同一几何结构的不同切面。
+
+第二，\textbf{物理层面}：实验中真正稳固的往往不是个别数值，而是某种不变性。我们之所以能定义能量，是因为物理规律不依赖于“什么时候开始计时”；我们之所以能定义动量，是因为物理规律不依赖于“空间原点选在哪里”；我们之所以能定义角动量，是因为物理规律不依赖于“坐标轴朝向哪里”。
+
+\begin{remark}
+“物理学研究的对象是什么？”从分析力学的观点看，一个极深刻的回答是：\emph{物理学在很大程度上研究对称性，以及对称性破缺后仍然留下的结构。} Noether 定理告诉我们，守恒律并不是偶然赠品，而是对称性的影子。
+\end{remark}
+
+至此，我们已经从牛顿方程出发，经由作用量、Euler--Lagrange 方程、Noether 定理与 Hamilton 正则方程，看到一条贯穿经典物理的统一主线。它既能解释单摆、振子、行星与带电粒子的具体运动，也为进一步学习量子力学、规范场论与现代几何物理准备了语言。

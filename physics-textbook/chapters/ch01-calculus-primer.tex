@@ -802,6 +802,169 @@
 \]
 称为\textbf{终端速度}。这类“先快后慢地趋于稳定”的行为，在很多实际系统中都会出现。
 
+\subsection{二阶常微分方程预览}
+
+一阶微分方程描述的是“变化率怎样决定”；二阶微分方程则进一步描述“变化率的变化率怎样决定”。在力学中，这一点尤其自然，因为牛顿第二定律
+\[
+  m\dv[2]{x}{t}=F
+\]
+直接把加速度与受力联系起来，所以它本身就是一个二阶常微分方程。
+
+\begin{definition}
+若未知函数只依赖一个自变量，并且方程中出现的最高阶导数是二阶，则称该方程为\textbf{二阶常微分方程}。
+\end{definition}
+
+很多物理模型在近似后都可写成常系数齐次形式
+\[
+  a\dv[2]{y}{t}+b\dv{y}{t}+cy=0,\qquad a\ne 0.
+\]
+这类方程虽然比一阶方程复杂一些，但仍可以借助代数方法系统求解。
+
+\begin{theorem}[特征方程法]
+对于二阶常系数齐次方程
+\[
+  a\dv[2]{y}{t}+b\dv{y}{t}+cy=0,
+\]
+设试探解为 $y=\mathrm{e}^{rt}$，代入得
+\[
+  ar^2+br+c=0.
+\]
+这个二次方程称为\textbf{特征方程}。设其根为 $r$，则原方程的通解由根的类型决定：
+\begin{enumerate}
+  \item 若有两个不同实根 $r_1\ne r_2$，则
+  \[
+    y(t)=C_1\mathrm{e}^{r_1 t}+C_2\mathrm{e}^{r_2 t};
+  \]
+  \item 若有重根 $r_1=r_2=r$，则
+  \[
+    y(t)=(C_1+C_2 t)\mathrm{e}^{rt};
+  \]
+  \item 若有共轭复根 $r=\alpha\pm i\beta$，则
+  \[
+    y(t)=\mathrm{e}^{\alpha t}\qty(C_1\cos \beta t+C_2\sin \beta t).
+  \]
+\end{enumerate}
+其中复根对应的正弦、余弦项正是振动与波动反复出现的数学来源。
+\end{theorem}
+
+\begin{example}[简谐振子]
+质量为 $m$、劲度系数为 $k$ 的弹簧振子满足
+\[
+  m\dv[2]{x}{t}+kx=0.
+\]
+其特征方程为
+\[
+  mr^2+k=0,
+\]
+所以
+\[
+  r=\pm i\sqrt{\frac{k}{m}}=\pm i\omega,
+  \qquad \omega=\sqrt{\frac{k}{m}}.
+\]
+因此通解为
+\[
+  x(t)=A\cos \omega t+B\sin \omega t.
+\]
+这说明：即使回复力始终指向平衡位置，系统也不会静止不动，而会以角频率 $\omega$ 来回振荡。这正是简谐运动的数学原型。
+\end{example}
+
+\begin{remark}
+后面章节中的阻尼振动、受迫振动以及 RLC 电路，都会落在二阶微分方程的框架中。它们往往对应非零的 $\dv{x}{t}$ 项或非齐次项，系统求解方法见附录 B。
+\end{remark}
+
+\subsection{偏微分方程初步}
+
+前面讨论的未知函数大多只依赖一个变量，例如位置 $x(t)$ 依赖时间，或粒子数 $N(t)$ 依赖时间。但在物理学中，许多量同时依赖空间与时间，例如弦上位移 $u(x,t)$、温度场 $T(x,t)$、电势 $\phi(x,y,z)$。这时我们需要用\textbf{偏导数}来描述它们的变化。
+
+\begin{definition}
+若函数 $u=u(x,t)$ 同时依赖多个自变量，则对其中一个变量求导、并把其余变量暂时看作常数，得到的导数称为\textbf{偏导数}。例如
+\[
+  \pdv{u}{x},\qquad \pdv{u}{t},\qquad \pdv[2]{u}{x}
+\]
+分别表示 $u$ 对 $x$ 的一阶偏导、对 $t$ 的一阶偏导，以及对 $x$ 的二阶偏导。
+\end{definition}
+
+\begin{definition}
+含有未知函数及其偏导数的方程，称为\textbf{偏微分方程}（PDE）。若未知函数只依赖一个变量、只出现常导数，则称为常微分方程（ODE）。
+\end{definition}
+
+ODE 更像“沿着一条时间线追踪系统怎样演化”，PDE 则同时关心“不同位置之间怎样相互耦合”。在连续介质、热学、电磁学与量子力学中，PDE 是最核心的数学语言。
+
+\begin{example}[物理中最重要的三类 PDE]
+下面三类方程几乎贯穿整个理论物理：
+\begin{enumerate}
+  \item \textbf{波动方程}
+  \[
+    \pdv[2]{u}{t}=c^2\pdv[2]{u}{x},
+  \]
+  它描述弦振动、声波传播，也描述真空中的电磁波；
+  \item \textbf{热传导（扩散）方程}
+  \[
+    \pdv{u}{t}=\alpha\pdv[2]{u}{x},
+  \]
+  它表示温度或浓度会从高处向低处逐渐扩散；
+  \item \textbf{拉普拉斯方程}
+  \[
+    \pdv[2]{\phi}{x}+\pdv[2]{\phi}{y}=0,
+  \]
+  它描述无源区域中的电势、引力势等平衡场。
+\end{enumerate}
+若空间中存在源项，则常得到泊松方程；而麦克斯韦方程组本身则是一组彼此耦合的 PDE。
+\end{example}
+
+\begin{theorem}[分离变量的基本思想]
+当 PDE 的边界条件足够规则时，常可尝试把未知函数写成几个单变量函数的乘积。例如对一维波动方程设
+\[
+  u(x,t)=X(x)T(t).
+\]
+代入后常能把一个 PDE 化成两个 ODE。这样做称为\textbf{分离变量法}。
+\end{theorem}
+
+\begin{example}[驻波解的由来]
+考虑长度为 $L$、两端固定的弦，其横向位移 $u(x,t)$ 满足
+\[
+  \pdv[2]{u}{t}=c^2\pdv[2]{u}{x},
+  \qquad u(0,t)=u(L,t)=0.
+\]
+设 $u(x,t)=X(x)T(t)$，代入得
+\[
+  X(x)\dv[2]{T}{t}=c^2\dv[2]{X}{x}T(t).
+\]
+两边同时除以 $c^2XT$，得到
+\[
+  \frac{1}{c^2T}\dv[2]{T}{t}=\frac{1}{X}\dv[2]{X}{x}=-k^2.
+\]
+于是 PDE 被分成两个 ODE：
+\[
+  \dv[2]{X}{x}+k^2X=0,
+  \qquad
+  \dv[2]{T}{t}+c^2k^2T=0.
+\]
+由边界条件 $X(0)=X(L)=0$ 可知，只有当
+\[
+  k_n=\frac{n\pi}{L},\qquad n=1,2,3,\dots
+\]
+时才有非零解；相应的空间部分为
+\[
+  X_n(x)=\sin\frac{n\pi x}{L}.
+\]
+时间部分则是
+\[
+  T_n(t)=A_n\cos \omega_n t+B_n\sin \omega_n t,
+  \qquad
+  \omega_n=\frac{n\pi c}{L}.
+\]
+因此每一个驻波模态都可写成
+\[
+  u_n(x,t)=\qty(A_n\cos \omega_n t+B_n\sin \omega_n t)\sin\frac{n\pi x}{L}.
+\]
+真实的弦振动通常不是单一模态，而是许多这样的驻波叠加而成；把初始形状分解成这些模态的工具，就是 Fourier 级数，详见附录 B。
+\end{example}
+
+\begin{remark}
+热方程与拉普拉斯方程也常用分离变量法：前者给出一组随时间指数衰减的空间模态，后者则把边界值问题化成熟悉的常微分方程。后面的振动与波、电势、电磁波等章节，都会不断用到这些思想。
+\end{remark}
+
 \section{矢量与矢量运算}
 
 \subsection{标量与矢量}
