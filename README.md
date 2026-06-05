@@ -4,6 +4,18 @@
 
 所有 PDF 集中存放在 `pdf/` 目录，共 **1339 页**。
 
+> 📥 **[点击这里下载全部 PDF](https://github.com/szylover/chinese-math-physics/releases/tag/v1.0)**（GitHub Release 资源下载）
+
+---
+
+## 🖥️ Claude Code 技术分析
+
+### 深入剖析 Claude Code — `claude-code-book/`（17 章）
+
+基于 2026-03-31 泄露源码的全面技术分析书籍。涵盖架构设计、QueryEngine 查询引擎、上下文处理与 System Prompt、工具系统 (40+ 工具)、权限安全模型、五层上下文压缩管线、多智能体协调、MCP 协议、React + Ink 终端 UI、Feature Flag 与条件编译等。
+
+👉 [阅读全书](./claude-code-book/README.md)
+
 ---
 
 ## 📖 数学部分
@@ -79,6 +91,7 @@ cd physics-textbook && lualatex main.tex && lualatex main.tex
 ## 目录结构
 
 ```
+├── claude-code-book/          # 《深入剖析 Claude Code》技术书 (17章)
 ├── linear-algebra-book/       # 线性代数
 ├── abstract-algebra-book/     # 抽象代数
 ├── modular-forms-textbook/    # 模形式教科书
