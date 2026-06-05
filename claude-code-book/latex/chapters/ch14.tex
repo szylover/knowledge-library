@@ -1,0 +1,129 @@
+\chapter{IDE 桥接与远程会话}
+
+\section{桥接系统概述}
+
+Claude Code 通过桥接系统（Bridge System）实现与 IDE 的双向通信。支持 VS Code 和 JetBrains 等主流 IDE。
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+┌─────────────┐         ┌──────────────────┐
+│   VS Code   │◄──JWT──►│   Claude Code    │
+│  Extension  │  Bridge │   CLI Process    │
+└─────────────┘         └──────────────────┘
+       │                        │
+       │    JSON-RPC 消息        │
+       │◄──────────────────────►│
+       │                        │
+\end{lstlisting}
+
+\section{桥接架构}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+src/bridge/
+├── bridgeMain.ts                  # 桥主循环
+├── bridgeMessaging.ts             # 消息协议
+├── bridgePermissionCallbacks.ts   # 权限回调
+├── replBridge.ts                  # REPL 会话桥
+├── jwtUtils.ts                    # JWT 认证
+└── sessionRunner.ts               # 会话执行管理
+\end{lstlisting}
+
+\subsection{认证}
+
+桥接使用 \textbf{JWT（JSON Web Token）} 进行身份验证，确保只有授权的 IDE 扩展可以连接到 CLI 进程。
+
+\subsection{消息协议}
+
+基于 JSON-RPC 的双向消息协议，支持：
+\begin{itemize}[nosep]
+  \item IDE $\rightarrow$ CLI：用户输入、命令请求
+  \item CLI $\rightarrow$ IDE：流式响应、工具调用通知、权限请求
+\end{itemize}
+
+\subsection{权限回调}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// bridgePermissionCallbacks.ts
+// IDE 接管权限对话框的显示
+// CLI 发送权限请求 → IDE 显示对话框 → 用户决策 → 回传给 CLI
+\end{lstlisting}
+
+\section{远程会话}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+src/remote/
+├── RemoteSessionManager.ts    # 远程会话管理器
+└── ...
+\end{lstlisting}
+
+Claude Code 支持远程会话——在一台机器上运行 CLI，从另一台机器（或移动设备）访问：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { createRemoteSessionConfig } from './remote/RemoteSessionManager.js'
+import { getRemoteSessionUrl } from './constants/product.js'
+\end{lstlisting}
+
+\subsection{Teleport}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { teleportToRemoteWithErrorHandling } from './utils/teleport.js'
+\end{lstlisting}
+
+"Teleport" 功能允许将本地会话传送到远程环境：
+\begin{itemize}[nosep]
+  \item 验证 Git 状态
+  \item 处理分支切换
+  \item 恢复远程会话
+  \item 处理仓库不匹配
+\end{itemize}
+
+\subsection{跨平台传递}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import desktop from './commands/desktop/index.js'    // → 桌面应用
+import mobile from './commands/mobile/index.js'      // → 移动应用
+\end{lstlisting}
+
+\section{服务器模式}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+src/server/
+├── createDirectConnectSession.ts
+└── ...
+\end{lstlisting}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { createDirectConnectSession, DirectConnectError } from './server/createDirectConnectSession.js'
+\end{lstlisting}
+
+Claude Code 可以作为服务器运行，接受来自其他客户端的直接连接。
+
+\section{LSP 集成}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { initializeLspServerManager } from './services/lsp/manager.js'
+\end{lstlisting}
+
+Claude Code 集成了 \textbf{LSP（Language Server Protocol）}，提供代码智能功能：
+\begin{itemize}[nosep]
+  \item 符号跳转
+  \item 类型信息
+  \item 代码补全建议
+  \item 诊断信息
+\end{itemize}
+
+LSP 通过 \code{LSPTool} 暴露给 LLM，使其能够利用语言服务器的能力进行更精确的代码分析。
+
+\section{设计启示}
+
+\subsection{CLI 优先，IDE 其次}
+
+Claude Code 的核心是 CLI 工具，IDE 集成通过桥接层实现。这种架构确保了：
+\begin{itemize}[nosep]
+  \item CLI 可以独立使用
+  \item IDE 扩展是可选的增强
+  \item 不同 IDE 共享相同的后端逻辑
+\end{itemize}
+
+\bigskip\noindent\rule{\textwidth}{0.4pt}\bigskip
+
+\textbf{下一章}：\href{./chapter-15-cost-telemetry.md}{成本追踪与遥测}

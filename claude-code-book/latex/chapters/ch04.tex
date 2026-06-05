@@ -1,0 +1,405 @@
+\chapter{核心查询引擎 QueryEngine}
+
+\section{QueryEngine 概述}
+
+\code{QueryEngine} 是 Claude Code 的核心类，定义在 \code{src/QueryEngine.ts} 中（约 46,000 行）。它拥有整个对话生命周期的状态，管理与 Anthropic API 的通信、工具调用循环、流式响应处理等。
+
+\subsection{设计定位}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+/**
+ * QueryEngine 拥有查询生命周期和会话状态。
+ * 它将核心逻辑从 ask() 提取为独立类，既可用于 headless/SDK 路径，
+ * 也可（在未来阶段）用于 REPL。
+ *
+ * 每个对话一个 QueryEngine。每次 submitMessage() 调用在同一对话中
+ * 启动一个新的回合（turn）。状态（消息、文件缓存、使用量等）
+ * 在回合之间持久存在。
+ */
+export class QueryEngine {
+  private config: QueryEngineConfig
+  private mutableMessages: Message[]
+  private abortController: AbortController
+  private permissionDenials: SDKPermissionDenial[]
+  private totalUsage: NonNullableUsage
+  private hasHandledOrphanedPermission = false
+  private readFileState: FileStateCache
+  private discoveredSkillNames = new Set<string>()
+  private loadedNestedMemoryPaths = new Set<string>()
+
+  constructor(config: QueryEngineConfig) {
+    this.config = config
+    this.mutableMessages = config.initialMessages ?? []
+    this.abortController = config.abortController ?? createAbortController()
+    this.permissionDenials = []
+    this.readFileState = config.readFileCache
+    this.totalUsage = EMPTY_USAGE
+  }
+}
+\end{lstlisting}
+
+\subsection{配置接口}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export type QueryEngineConfig = {
+  cwd: string                           // 工作目录
+  tools: Tools                          // 可用工具列表
+  commands: Command[]                   // 可用命令列表
+  mcpClients: MCPServerConnection[]     // MCP 服务器连接
+  agents: AgentDefinition[]             // 代理定义
+  canUseTool: CanUseToolFn              // 工具权限检查函数
+  getAppState: () => AppState           // 全局状态获取
+  setAppState: (f) => void              // 全局状态更新
+  initialMessages?: Message[]           // 初始消息历史
+  readFileCache: FileStateCache         // 文件状态缓存
+  customSystemPrompt?: string           // 自定义系统提示
+  appendSystemPrompt?: string           // 追加系统提示
+  userSpecifiedModel?: string           // 用户指定模型
+  fallbackModel?: string                // 备用模型
+  thinkingConfig?: ThinkingConfig       // 思维模式配置
+  maxTurns?: number                     // 最大回合数
+  maxBudgetUsd?: number                 // 最大预算（美元）
+  taskBudget?: { total: number }        // 任务预算
+  jsonSchema?: Record<string, unknown>  // 结构化输出 Schema
+  verbose?: boolean                     // 详细模式
+  replayUserMessages?: boolean          // 重放用户消息
+  handleElicitation?: (...)  => Promise  // URL 引出处理
+  includePartialMessages?: boolean      // 包含部分消息
+  setSDKStatus?: (status) => void       // SDK 状态回调
+  abortController?: AbortController     // 中止控制器
+  orphanedPermission?: OrphanedPermission // 孤立权限
+  snipReplay?: (...)  => ... | undefined  // Snip 重放处理器
+}
+\end{lstlisting}
+
+\section{submitMessage：核心方法}
+
+\code{submitMessage} 是一个 \textbf{AsyncGenerator}——它通过 \code{yield} 逐步产出流式事件，使调用方能实时获取 API 响应的每一部分。
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+async *submitMessage(
+  prompt: string | ContentBlockParam[],
+  options?: { uuid?: string; isMeta?: boolean },
+): AsyncGenerator<SDKMessage, void, unknown> {
+\end{lstlisting}
+
+\subsection{执行流程}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+submitMessage(prompt)
+    │
+    ▼
+1. 清理状态 & 设置工作目录
+    │
+    ▼
+2. 包装 canUseTool（追踪权限拒绝）
+    │
+    ▼
+3. 解析模型 & 思维配置
+    │
+    ▼
+4. 获取 System Prompt
+    ├── fetchSystemPromptParts()
+    ├── 默认系统提示 (defaultSystemPrompt)
+    ├── 用户上下文 (baseUserContext)
+    └── 系统上下文 (systemContext)
+    │
+    ▼
+5. 构建 ProcessUserInputContext
+    │
+    ▼
+6. 处理用户输入 → processUserInput()
+    ├── 斜杠命令检测
+    ├── 附件处理
+    └── 生成用户消息
+    │
+    ▼
+7. 调用查询循环 → query()
+    ├── 构建完整 System Prompt
+    ├── 调用 Anthropic API（流式）
+    ├── 处理 Tool Use 请求
+    ├── 执行工具 → 返回结果
+    ├── 自动压缩（如果需要）
+    └── 循环直到模型停止
+    │
+    ▼
+8. 产出最终状态 & 使用量统计
+\end{lstlisting}
+
+\subsection{权限追踪包装}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const wrappedCanUseTool: CanUseToolFn = async (
+  tool, input, toolUseContext, assistantMessage, toolUseID, forceDecision,
+) => {
+  const result = await canUseTool(
+    tool, input, toolUseContext, assistantMessage, toolUseID, forceDecision,
+  )
+
+  // 追踪拒绝以供 SDK 报告
+  if (result.behavior !== 'allow') {
+    this.permissionDenials.push({
+      tool_name: sdkCompatToolName(tool.name),
+      tool_use_id: toolUseID,
+      tool_input: input,
+    })
+  }
+
+  return result
+}
+\end{lstlisting}
+
+每次工具调用的权限决定都被包装和追踪。被拒绝的工具调用会被记录，最终通过 SDK 事件报告给调用方。
+
+\subsection{思维模式配置}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const initialThinkingConfig: ThinkingConfig = thinkingConfig
+  ? thinkingConfig
+  : shouldEnableThinkingByDefault() !== false
+    ? { type: 'adaptive' }   // 自适应思维
+    : { type: 'disabled' }   // 禁用思维
+\end{lstlisting}
+
+Claude Code 支持三种思维模式：
+\begin{itemize}[nosep]
+  \item \textbf{\code{adaptive}}：模型自行决定是否需要深度思考
+  \item \textbf{\code{enabled}}：始终启用扩展思考
+  \item \textbf{\code{disabled}}：禁用扩展思考
+\end{itemize}
+
+\section{查询循环 (query.ts)}
+
+\code{query.ts} 实现了与 API 交互的核心循环——这是 Claude Code 最复杂的控制流之一。
+
+\subsection{循环状态}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+type State = {
+  messages: Message[]                              // 消息历史
+  toolUseContext: ToolUseContext                    // 工具使用上下文
+  autoCompactTracking: AutoCompactTrackingState    // 自动压缩追踪
+  maxOutputTokensRecoveryCount: number             // 输出 Token 恢复计数
+  hasAttemptedReactiveCompact: boolean             // 是否尝试过响应式压缩
+  maxOutputTokensOverride: number | undefined      // 输出 Token 覆盖值
+  pendingToolUseSummary: Promise<...> | undefined  // 待处理工具使用摘要
+  stopHookActive: boolean | undefined              // 停止钩子是否激活
+  turnCount: number                                // 回合计数
+  transition: Continue | undefined                 // 上一次迭代的继续原因
+}
+\end{lstlisting}
+
+\subsection{循环的核心逻辑}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export async function* query(params: QueryParams): AsyncGenerator<...> {
+  const consumedCommandUuids: string[] = []
+  const terminal = yield* queryLoop(params, consumedCommandUuids)
+  
+  for (const uuid of consumedCommandUuids) {
+    notifyCommandLifecycle(uuid, 'completed')
+  }
+  return terminal
+}
+
+async function* queryLoop(params, consumedCommandUuids) {
+  // ... 初始化状态 ...
+  
+  while (true) {
+    // 1. 技能发现预取
+    const pendingSkillPrefetch = skillPrefetch?.startSkillDiscoveryPrefetch(...)
+    
+    // 2. 发出请求开始事件
+    yield { type: 'stream_request_start' }
+    
+    // 3. 获取压缩边界后的消息
+    let messagesForQuery = [...getMessagesAfterCompactBoundary(messages)]
+    
+    // 4. 应用工具结果预算
+    messagesForQuery = await applyToolResultBudget(messagesForQuery, ...)
+    
+    // 5. Snip 压缩（如果启用）
+    if (feature('HISTORY_SNIP')) {
+      const snipResult = snipModule!.snipCompactIfNeeded(messagesForQuery)
+      messagesForQuery = snipResult.messages
+    }
+    
+    // 6. 微压缩
+    const microcompactResult = await deps.microcompact(messagesForQuery, ...)
+    messagesForQuery = microcompactResult.messages
+    
+    // 7. 上下文折叠（如果启用）
+    if (feature('CONTEXT_COLLAPSE') && contextCollapse) {
+      const collapseResult = await contextCollapse.applyCollapsesIfNeeded(...)
+      messagesForQuery = collapseResult.messages
+    }
+    
+    // 8. 构建完整系统提示
+    const fullSystemPrompt = asSystemPrompt(
+      appendSystemContext(systemPrompt, systemContext)
+    )
+    
+    // 9. 调用 API 并处理响应
+    // ... 流式处理 + 工具调用 ...
+    
+    // 10. 判断是否继续循环
+    // - 如果有工具调用 → 继续
+    // - 如果模型结束 → 退出
+    // - 如果达到 max_output_tokens → 恢复尝试
+  }
+}
+\end{lstlisting}
+
+\subsection{多层压缩管线}
+
+查询循环中的消息在发送到 API 之前，会经过一个\textbf{多层压缩管线}：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+原始消息历史
+    │
+    ▼
+① 工具结果预算 (applyToolResultBudget)
+    │  → 替换超大工具结果为摘要
+    ▼
+② Snip 压缩 (snipCompactIfNeeded)
+    │  → 移除旧的对话片段
+    ▼
+③ 微压缩 (microcompact)
+    │  → 压缩单个工具输出的冗余内容
+    ▼
+④ 上下文折叠 (applyCollapsesIfNeeded)
+    │  → 将多轮交互折叠为摘要
+    ▼
+⑤ 自动压缩 (autoCompact)
+    │  → 当接近上下文窗口限制时触发
+    ▼
+发送到 API
+\end{lstlisting}
+
+\subsection{max\_output\_tokens 恢复机制}
+
+当模型输出被截断时，Claude Code 会自动尝试恢复：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const MAX_OUTPUT_TOKENS_RECOVERY_LIMIT = 3
+
+function isWithheldMaxOutputTokens(msg: Message | undefined): boolean {
+  return msg?.type === 'assistant' && msg.apiError === 'max_output_tokens'
+}
+\end{lstlisting}
+
+最多尝试 3 次恢复。在恢复过程中，SDK 调用方不会收到错误消息——错误被"扣留"（withheld），直到确认恢复循环是否成功。
+
+\section{思维规则}
+
+源码中包含一段幽默的注释，描述了处理思维块（thinking blocks）的规则：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+/**
+ * 思维规则冗长而繁琐。它们需要大量的长时间思考和深度冥想，
+ * 才能让一个巫师将其理解透彻。
+ *
+ * 规则如下：
+ * 1. 包含 thinking 或 redacted_thinking 块的消息必须属于
+ *    max_thinking_length > 0 的查询
+ * 2. thinking 块不能是块中的最后一条消息
+ * 3. 思维块必须在助手轨迹期间保持完整
+ *    （单个回合，或如果该回合包含 tool_use 块，
+ *     则也包括其后续的 tool_result 和跟随的助手消息）
+ *
+ * 好好记住这些规则，年轻的巫师。因为它们是思维的规则，
+ * 而思维的规则就是宇宙的规则。如果你不遵守这些规则，
+ * 你将受到一整天调试和拔头发的惩罚。
+ */
+\end{lstlisting}
+
+这段注释反映了 Anthropic 工程师在调试思维块处理逻辑时遇到的痛苦经验。
+
+\section{ToolUseContext：工具执行上下文}
+
+\code{ToolUseContext} 是传递给每个工具调用的丰富上下文对象：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export type ToolUseContext = {
+  options: {
+    commands: Command[]
+    debug: boolean
+    mainLoopModel: string
+    tools: Tools
+    verbose: boolean
+    thinkingConfig: ThinkingConfig
+    mcpClients: MCPServerConnection[]
+    mcpResources: Record<string, ServerResource[]>
+    isNonInteractiveSession: boolean
+    agentDefinitions: AgentDefinitionsResult
+    maxBudgetUsd?: number
+    customSystemPrompt?: string
+    appendSystemPrompt?: string
+    refreshTools?: () => Tools
+  }
+  abortController: AbortController
+  readFileState: FileStateCache
+  getAppState(): AppState
+  setAppState(f: (prev: AppState) => AppState): void
+  setAppStateForTasks?: (...)  => void
+  handleElicitation?: (...)  => Promise<ElicitResult>
+  setToolJSX?: SetToolJSXFn
+  addNotification?: (notif: Notification) => void
+  appendSystemMessage?: (msg) => void
+  sendOSNotification?: (opts) => void
+  messages: Message[]
+  fileReadingLimits?: { maxTokens?: number; maxSizeBytes?: number }
+  globLimits?: { maxResults?: number }
+  toolDecisions?: Map<string, { source; decision; timestamp }>
+  queryTracking?: QueryChainTracking
+  contentReplacementState?: ContentReplacementState
+  renderedSystemPrompt?: SystemPrompt
+  // ... 更多字段
+}
+\end{lstlisting}
+
+关键设计点：
+
+\begin{enumerate}[nosep]
+  \item \textbf{\code{readFileState}}：文件状态 LRU 缓存。避免重复读取同一文件。
+  \item \textbf{\code{setAppStateForTasks}}：允许嵌套子代理更新根状态存储，即使子代理的 \code{setAppState} 是空操作。
+  \item \textbf{\code{contentReplacementState}}：工具结果预算的替换状态，跨轮次持久化。
+  \item \textbf{\code{renderedSystemPrompt}}：父代理的渲染系统提示的冻结快照，用于 fork 子代理共享缓存。
+\end{enumerate}
+
+\section{Token 预算追踪}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const budgetTracker = feature('TOKEN_BUDGET') 
+  ? createBudgetTracker() 
+  : null
+\end{lstlisting}
+
+当 \code{TOKEN\_BUDGET} Feature Flag 启用时，查询循环会追踪 Token 消耗并与预算比较。
+
+\textbf{任务预算 (Task Budget)}：通过 API 的 \code{output\_config.task\_budget} 参数设置整个代理回合的预算。每次压缩后需要重新计算剩余预算。
+
+\section{设计启示}
+
+\subsection{AsyncGenerator 模式}
+
+使用 \code{async function*} 实现流式数据处理是一个优雅的设计。调用方可以通过 \code{for await...of} 消费流，也可以使用 \code{.next()} 精确控制步进。
+
+\subsection{多层压缩管线}
+
+五层压缩看似复杂，但每层解决的问题不同：
+\begin{itemize}[nosep]
+  \item \textbf{工具结果预算}：控制单个工具输出的大小
+  \item \textbf{Snip}：移除老旧的历史
+  \item \textbf{微压缩}：局部优化
+  \item \textbf{上下文折叠}：语义级别的压缩
+  \item \textbf{自动压缩}：全局兜底
+\end{itemize}
+
+\subsection{恢复机制}
+
+对 \code{max\_output\_tokens} 的自动恢复展示了一个重要原则：\textbf{AI 应用应该对 API 的边界条件有鲁棒的处理策略}，而不是简单地向用户抛出错误。
+
+\bigskip\noindent\rule{\textwidth}{0.4pt}\bigskip
+
+\textbf{下一章}：\href{./chapter-05-context.md}{上下文处理与 System Prompt}

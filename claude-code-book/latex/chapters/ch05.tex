@@ -1,0 +1,329 @@
+\chapter{上下文处理与 System Prompt}
+
+\section{上下文的重要性}
+
+在 LLM 应用中，上下文（Context）的构建质量直接决定了模型的表现。Claude Code 对上下文处理的设计展现了工业级 AI 应用的精细程度。
+
+上下文分为两个层次：
+\begin{enumerate}[nosep]
+  \item \textbf{系统上下文 (System Context)}：关于运行环境的信息（Git 状态、日期等）
+  \item \textbf{用户上下文 (User Context)}：来自 CLAUDE.md 配置文件的项目特定指令
+\end{enumerate}
+
+\section{context.ts 源码分析}
+
+\subsection{Git 状态收集}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export const getGitStatus = memoize(async (): Promise<string | null> => {
+  const isGit = await getIsGit()
+  if (!isGit) return null
+
+  try {
+    // 并行执行 5 个 Git 命令
+    const [branch, mainBranch, status, log, userName] = await Promise.all([
+      getBranch(),
+      getDefaultBranch(),
+      execFileNoThrow(gitExe(), ['--no-optional-locks', 'status', '--short'], {
+        preserveOutputOnError: false,
+      }).then(({ stdout }) => stdout.trim()),
+      execFileNoThrow(gitExe(), ['--no-optional-locks', 'log', '--oneline', '-n', '5'], {
+        preserveOutputOnError: false,
+      }).then(({ stdout }) => stdout.trim()),
+      execFileNoThrow(gitExe(), ['config', 'user.name'], {
+        preserveOutputOnError: false,
+      }).then(({ stdout }) => stdout.trim()),
+    ])
+
+    // 状态超过 2000 字符时截断
+    const truncatedStatus = status.length > MAX_STATUS_CHARS
+      ? status.substring(0, MAX_STATUS_CHARS) +
+        '\n... (truncated because it exceeds 2k characters. If you need more information, run "git status" using BashTool)'
+      : status
+
+    return [
+      `This is the git status at the start of the conversation...`,
+      `Current branch: ${branch}`,
+      `Main branch (you will usually use this for PRs): ${mainBranch}`,
+      ...(userName ? [`Git user: ${userName}`] : []),
+      `Status:\n${truncatedStatus || '(clean)'}`,
+      `Recent commits:\n${log}`,
+    ].join('\n\n')
+  } catch (error) {
+    logError(error)
+    return null
+  }
+})
+\end{lstlisting}
+
+\textbf{关键设计点}：
+
+\begin{enumerate}[nosep]
+  \item \textbf{\code{Promise.all} 并行执行}：5 个 Git 命令同时运行，而非串行等待。
+  \item \textbf{\code{--no-optional-locks}}：避免与其他 Git 进程产生锁冲突。
+  \item \textbf{\code{memoize}}：结果缓存，整个对话期间只执行一次。
+  \item \textbf{截断保护}：Git status 超过 2000 字符时截断，并提示模型使用 BashTool 获取完整信息。
+  \item \textbf{快照语义}："这是对话开始时的 git status。注意这个状态是时间快照，不会在对话期间更新。"
+\end{enumerate}
+
+\subsection{系统上下文}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export const getSystemContext = memoize(
+  async (): Promise<{ [k: string]: string }> => {
+    // 在远程模式下或禁用 Git 指令时跳过 Git 状态
+    const gitStatus =
+      isEnvTruthy(process.env.CLAUDE_CODE_REMOTE) ||
+      !shouldIncludeGitInstructions()
+        ? null
+        : await getGitStatus()
+
+    // 缓存破坏注入（仅 Anthropic 内部使用）
+    const injection = feature('BREAK_CACHE_COMMAND')
+      ? getSystemPromptInjection()
+      : null
+
+    return {
+      ...(gitStatus && { gitStatus }),
+      ...(injection ? { cacheBreaker: `[CACHE_BREAKER: ${injection}]` } : {}),
+    }
+  },
+)
+\end{lstlisting}
+
+\textbf{缓存破坏器 (Cache Breaker)}：这是一个内部调试机制。由于 Anthropic API 支持 Prompt Caching（提示缓存），修改系统提示会使缓存失效。通过注入一个 \code{[CACHE\_BREAKER: ...]} 标记，可以在不修改实际提示内容的情况下强制刷新缓存。
+
+\subsection{用户上下文}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export const getUserContext = memoize(
+  async (): Promise<{ [k: string]: string }> => {
+    // 多种条件决定是否加载 CLAUDE.md
+    const shouldDisableClaudeMd =
+      isEnvTruthy(process.env.CLAUDE_CODE_DISABLE_CLAUDE_MDS) ||
+      (isBareMode() && getAdditionalDirectoriesForClaudeMd().length === 0)
+    
+    const claudeMd = shouldDisableClaudeMd
+      ? null
+      : getClaudeMds(filterInjectedMemoryFiles(await getMemoryFiles()))
+    
+    // 缓存供 yoloClassifier 读取（避免循环依赖）
+    setCachedClaudeMdContent(claudeMd || null)
+
+    return {
+      ...(claudeMd && { claudeMd }),
+      currentDate: `Today's date is ${getLocalISODate()}.`,
+    }
+  },
+)
+\end{lstlisting}
+
+\textbf{CLAUDE.md 机制}：
+
+CLAUDE.md 是 Claude Code 的项目配置文件，类似于 \code{.editorconfig} 或 \code{.eslintrc}。开发者可以在项目中放置 CLAUDE.md 文件来定制 Claude 的行为。
+
+文件发现遵循层级：
+\begin{enumerate}[nosep]
+  \item 项目根目录的 \code{CLAUDE.md}
+  \item 当前工作目录的 \code{CLAUDE.md}
+  \item 用户全局配置中的 CLAUDE.md
+  \item 通过 \code{--add-dir} 添加的额外目录
+\end{enumerate}
+
+\subsection{系统提示注入控制}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+let systemPromptInjection: string | null = null
+
+export function setSystemPromptInjection(value: string | null): void {
+  systemPromptInjection = value
+  // 注入变更时立即清除上下文缓存
+  getUserContext.cache.clear?.()
+  getSystemContext.cache.clear?.()
+}
+\end{lstlisting}
+
+当注入内容发生变化时，所有上下文缓存都会被清除。这确保了下一次查询使用最新的注入内容。
+
+\section{System Prompt 的构建}
+
+\subsection{构建流程}
+
+在 \code{QueryEngine.ts} 中，System Prompt 通过 \code{fetchSystemPromptParts} 构建：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const {
+  defaultSystemPrompt,
+  userContext: baseUserContext,
+  systemContext,
+} = await fetchSystemPromptParts({
+  tools,
+  mainLoopModel: initialMainLoopModel,
+  additionalWorkingDirectories: Array.from(
+    initialAppState.toolPermissionContext.additionalWorkingDirectories.keys()
+  ),
+  mcpClients,
+  customSystemPrompt: customPrompt,
+})
+\end{lstlisting}
+
+\subsection{Prompt 的分层结构}
+
+最终发送给 API 的系统提示由多个部分组成：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+┌─────────────────────────────────────────────┐
+│ System Prompt (完整)                         │
+│                                             │
+│ ┌─────────────────────────────────────────┐ │
+│ │ ① 默认系统提示 (defaultSystemPrompt)     │ │
+│ │   - 角色定义                            │ │
+│ │   - 基本行为准则                         │ │
+│ │   - 安全限制                            │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ ┌─────────────────────────────────────────┐ │
+│ │ ② 工具描述 (来自 tools 数组)             │ │
+│ │   - 每个工具的名称、输入 schema          │ │
+│ │   - 工具使用指南                         │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ ┌─────────────────────────────────────────┐ │
+│ │ ③ 用户上下文 (userContext)               │ │
+│ │   - CLAUDE.md 内容                      │ │
+│ │   - 当前日期                            │ │
+│ │   - 记忆文件内容                         │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ ┌─────────────────────────────────────────┐ │
+│ │ ④ 系统上下文 (systemContext)             │ │
+│ │   - Git 状态                            │ │
+│ │   - 缓存破坏器 (如果有)                  │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ ┌─────────────────────────────────────────┐ │
+│ │ ⑤ 自定义/追加提示                       │ │
+│ │   - customSystemPrompt (替换)           │ │
+│ │   - appendSystemPrompt (追加)           │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ ┌─────────────────────────────────────────┐ │
+│ │ ⑥ 协调器上下文 (如果启用)               │ │
+│ │   - Worker 可用工具                     │ │
+│ │   - MCP 服务器列表                      │ │
+│ │   - Scratchpad 目录                    │ │
+│ └─────────────────────────────────────────┘ │
+└─────────────────────────────────────────────┘
+\end{lstlisting}
+
+\subsection{Prompt 缓存优化}
+
+Claude Code 非常注重 Prompt Cache 的命中率：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// 工具池排序以保证缓存稳定性
+// 服务器的 cache_policy 在最后一个匹配的内置工具后放置缓存断点
+// 扁平排序会让 MCP 工具与内置工具交错，使所有下游缓存键失效
+const byName = (a: Tool, b: Tool) => a.name.localeCompare(b.name)
+return uniqBy(
+  [...builtInTools].sort(byName).concat(allowedMcpTools.sort(byName)),
+  'name',
+)
+\end{lstlisting}
+
+关键策略：
+\begin{itemize}[nosep]
+  \item \textbf{内置工具排在前面}，作为连续前缀
+  \item \textbf{两组分别按名称排序}，保证顺序稳定
+  \item \textbf{避免交错}：MCP 工具不会插入到内置工具之间
+\end{itemize}
+
+\section{记忆系统 (Memory)}
+
+\subsection{CLAUDE.md 层级}
+
+Claude Code 支持多层级的 CLAUDE.md 文件：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+~/.claude/CLAUDE.md              ← 全局（用户级别）
+$PROJECT_ROOT/CLAUDE.md          ← 项目根目录
+$PROJECT_ROOT/.claude/CLAUDE.md  ← 项目 .claude 目录
+$CWD/CLAUDE.md                   ← 当前工作目录
+\end{lstlisting}
+
+\subsection{持久记忆目录 (memdir)}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { loadMemoryPrompt } from './memdir/memdir.js'
+\end{lstlisting}
+
+除了 CLAUDE.md，Claude Code 还有一个 \code{memdir/} 系统用于存储持久化记忆。这些记忆通过 \code{/memory} 命令管理，可以跨会话保留。
+
+\subsection{自动记忆提取}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { extractMemories } from './services/extractMemories/'
+\end{lstlisting}
+
+Claude Code 可以自动从对话中提取有价值的记忆信息，并将其保存到记忆目录中。
+
+\section{附件系统}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import {
+  createAttachmentMessage,
+  filterDuplicateMemoryAttachments,
+  getAttachmentMessages,
+  startRelevantMemoryPrefetch,
+} from './utils/attachments.js'
+\end{lstlisting}
+
+在查询循环中，附件（Attachments）作为额外的上下文信息注入：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// 在循环开始时启动记忆预取
+using pendingMemoryPrefetch = startRelevantMemoryPrefetch(
+  state.messages,
+  state.toolUseContext,
+)
+\end{lstlisting}
+
+\textbf{\code{using} 关键字}：这里使用了 TypeScript 5.2+ 的 \code{using} 声明（Explicit Resource Management）。\code{pendingMemoryPrefetch} 实现了 \code{[Symbol.dispose]}，在 generator 退出的任何路径上都会自动清理资源并记录遥测。
+
+\section{嵌套记忆路径去重}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+private loadedNestedMemoryPaths = new Set<string>()
+\end{lstlisting}
+
+当子代理（通过 \code{AgentTool} 生成）需要加载 CLAUDE.md 时，存在一个微妙的去重问题：
+
+> \code{readFileState} 是一个 LRU 缓存，在繁忙的会话中会驱逐条目。因此它的 \code{.has()} 检查不足以防止重复注入——同一个 CLAUDE.md 可能被注入数十次。\code{loadedNestedMemoryPaths} 提供了一个稳定的去重集合。
+
+\section{设计启示}
+
+\subsection{分层上下文模型}
+
+将上下文分为系统级、项目级、用户级三层，允许在不同粒度上定制行为。这种模式可以推广到任何需要多层配置的 LLM 应用。
+
+\subsection{缓存友好的设计}
+
+Claude Code 在多个层面优化 Prompt Cache：
+\begin{enumerate}[nosep]
+  \item 工具排序稳定
+  \item 上下文部分按缓存断点分段
+  \item 变化频率低的内容排在前面（系统提示 > 工具 > 用户上下文 > Git 状态）
+\end{enumerate}
+
+\subsection{快照 vs 实时}
+
+Git 状态采用快照语义（对话开始时获取一次），而非实时更新。这是一个深思熟虑的设计：
+\begin{itemize}[nosep]
+  \item 实时更新会导致上下文频繁变化，破坏缓存
+  \item 模型需要通过 BashTool 主动获取最新状态
+  \item 减少了不必要的 Token 消耗
+\end{itemize}
+
+\bigskip\noindent\rule{\textwidth}{0.4pt}\bigskip
+
+\textbf{下一章}：\href{./chapter-06-tool-system.md}{工具系统 (Tool System)}

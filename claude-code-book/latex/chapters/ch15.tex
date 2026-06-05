@@ -1,0 +1,223 @@
+\chapter{成本追踪与遥测}
+
+\section{成本追踪系统}
+
+Claude Code 实现了精细的成本追踪系统，让用户实时了解 API 使用费用。
+
+\subsection{核心数据结构}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+type ModelUsage = {
+  inputTokens: number
+  outputTokens: number
+  cacheReadInputTokens: number
+  cacheCreationInputTokens: number
+  webSearchRequests: number
+  costUSD: number
+  contextWindow: number
+  maxOutputTokens: number
+}
+\end{lstlisting}
+
+\subsection{成本计算}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export function addToTotalSessionCost(
+  cost: number,
+  usage: Usage,
+  model: string,
+): number {
+  // 1. 更新模型使用量统计
+  const modelUsage = addToTotalModelUsage(cost, usage, model)
+  addToTotalCostState(cost, modelUsage, model)
+
+  // 2. OpenTelemetry 计数器
+  getCostCounter()?.add(cost, attrs)
+  getTokenCounter()?.add(usage.input_tokens, { ...attrs, type: 'input' })
+  getTokenCounter()?.add(usage.output_tokens, { ...attrs, type: 'output' })
+  getTokenCounter()?.add(usage.cache_read_input_tokens ?? 0, {
+    ...attrs, type: 'cacheRead'
+  })
+
+  // 3. 递归处理 Advisor 使用量
+  for (const advisorUsage of getAdvisorUsage(usage)) {
+    const advisorCost = calculateUSDCost(advisorUsage.model, advisorUsage)
+    totalCost += addToTotalSessionCost(advisorCost, advisorUsage, advisorUsage.model)
+  }
+  
+  return totalCost
+}
+\end{lstlisting}
+
+\subsection{Fast Mode 追踪}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const attrs = isFastModeEnabled() && usage.speed === 'fast'
+  ? { model, speed: 'fast' }
+  : { model }
+\end{lstlisting}
+
+Fast Mode（快速模式）下的使用量单独标记。
+
+\subsection{格式化输出}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export function formatTotalCost(): string {
+  return chalk.dim(
+    `Total cost:            ${costDisplay}\n` +
+    `Total duration (API):  ${formatDuration(getTotalAPIDuration())}\n` +
+    `Total duration (wall): ${formatDuration(getTotalDuration())}\n` +
+    `Total code changes:    ${getTotalLinesAdded()} lines added, ` +
+    `${getTotalLinesRemoved()} lines removed\n` +
+    `${modelUsageDisplay}`
+  )
+}
+\end{lstlisting}
+
+输出示例：
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+Total cost:            $0.1234
+Total duration (API):  12.3s
+Total duration (wall): 45.6s
+Total code changes:    42 lines added, 13 lines removed
+Usage by model:
+        claude-sonnet-4-20260514:  15,234 input, 3,456 output, 12,000 cache read, 2,000 cache write ($0.0234)
+\end{lstlisting}
+
+\section{会话成本持久化}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export function saveCurrentSessionCosts(fpsMetrics?: FpsMetrics): void {
+  saveCurrentProjectConfig(current => ({
+    ...current,
+    lastCost: getTotalCostUSD(),
+    lastAPIDuration: getTotalAPIDuration(),
+    lastTotalInputTokens: getTotalInputTokens(),
+    lastTotalOutputTokens: getTotalOutputTokens(),
+    lastSessionId: getSessionId(),
+    lastFpsAverage: fpsMetrics?.averageFps,
+    lastFpsLow1Pct: fpsMetrics?.low1PctFps,
+    lastModelUsage: Object.fromEntries(
+      Object.entries(getModelUsage()).map(([model, usage]) => [model, {
+        inputTokens: usage.inputTokens,
+        outputTokens: usage.outputTokens,
+        cacheReadInputTokens: usage.cacheReadInputTokens,
+        cacheCreationInputTokens: usage.cacheCreationInputTokens,
+        webSearchRequests: usage.webSearchRequests,
+        costUSD: usage.costUSD,
+      }])
+    ),
+  }))
+}
+\end{lstlisting}
+
+成本在会话切换前保存，支持通过 \code{/resume} 恢复成本数据。
+
+\section{OpenTelemetry 集成}
+
+\begin{lstlisting}[breaklines=true]
+{
+  "@opentelemetry/api": "^1.9.1",
+  "@opentelemetry/api-logs": "^0.214.0",
+  "@opentelemetry/core": "^2.6.1",
+  "@opentelemetry/resources": "^2.6.1",
+  "@opentelemetry/sdk-logs": "^0.214.0",
+  "@opentelemetry/sdk-metrics": "^2.6.1",
+  "@opentelemetry/sdk-trace-base": "^2.6.1",
+  "@opentelemetry/semantic-conventions": "^1.40.0"
+}
+\end{lstlisting}
+
+Claude Code 集成了完整的 OpenTelemetry 全家桶：
+\begin{itemize}[nosep]
+  \item \textbf{Traces}：请求链路追踪
+  \item \textbf{Metrics}：Token 计数器、成本计数器
+  \item \textbf{Logs}：结构化日志
+\end{itemize}
+
+\subsection{懒加载优化}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// OpenTelemetry (~400KB) 和 gRPC (~700KB) 通过动态 import() 延迟加载
+// 只在实际需要发送遥测时才加载
+\end{lstlisting}
+
+\section{分析事件}
+
+所有遥测事件使用 \code{tengu\_} 前缀（Claude Code 内部代号"天狗"）：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+logEvent('tengu_startup_telemetry', {
+  is_git: isGit,
+  worktree_count: worktreeCount,
+  gh_auth_status: ghAuthStatus,
+  sandbox_enabled: SandboxManager.isSandboxingEnabled(),
+  // ...
+})
+
+logEvent('tengu_managed_settings_loaded', {
+  keyCount: allKeys.length,
+  keys: allKeys.join(','),
+})
+
+logEvent('tengu_coordinator_mode_switched', {
+  to: sessionMode,
+})
+
+logEvent('tengu_advisor_tool_token_usage', {
+  advisor_model: advisorUsage.model,
+  input_tokens: advisorUsage.input_tokens,
+  cost_usd_micros: Math.round(advisorCost * 1_000_000),
+})
+\end{lstlisting}
+
+\subsection{安全类型标记}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+type AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS = string
+\end{lstlisting}
+
+这个冗长的类型名是一个\textbf{代码审查辅助工具}：每次将字符串作为分析元数据传递时，开发者必须显式将其断言为这个类型，确认该值不包含代码或文件路径（隐私保护）。
+
+\section{诊断日志}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { logForDiagnosticsNoPII } from './utils/diagLogs.js'
+
+logForDiagnosticsNoPII('info', 'git_status_started')
+logForDiagnosticsNoPII('info', 'git_commands_completed', {
+  duration_ms: Date.now() - gitCmdsStart,
+  status_length: status.length,
+})
+logForDiagnosticsNoPII('error', 'git_status_failed', {
+  duration_ms: Date.now() - startTime,
+})
+\end{lstlisting}
+
+\code{NoPII}（No Personally Identifiable Information）后缀表明这些日志不包含个人可识别信息。
+
+\section{启动性能分析}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { profileCheckpoint, profileReport } from './utils/startupProfiler.js'
+
+profileCheckpoint('main_tsx_entry')
+// ... 模块加载 ...
+profileCheckpoint('main_tsx_imports_loaded')
+\end{lstlisting}
+
+启动分析器在关键点放置检查点，测量每个阶段的耗时。
+
+\section{设计启示}
+
+\subsection{隐私优先的遥测}
+
+\code{AnalyticsMetadata\_I\_VERIFIED\_THIS\_IS\_NOT\_CODE\_OR\_FILEPATHS} 和 \code{logForDiagnosticsNoPII} 展示了如何在类型系统层面强制执行隐私策略。
+
+\subsection{多维成本追踪}
+
+按模型、按 Token 类型（输入/输出/缓存读/缓存写）、按功能（主循环/Advisor）的多维追踪，使得成本分析可以精确到每个维度。
+
+\bigskip\noindent\rule{\textwidth}{0.4pt}\bigskip
+
+\textbf{下一章}：\href{./chapter-16-plugins-skills.md}{插件与技能系统}

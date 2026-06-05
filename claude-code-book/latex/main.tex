@@ -1,0 +1,85 @@
+% ============================================================================
+% main.tex — 《深入剖析 Claude Code：Anthropic AI 编程助手架构与实现》
+% ============================================================================
+\documentclass[12pt, a4paper, openany]{book}
+
+\input{preamble}
+
+% ============================================================================
+\begin{document}
+
+\raggedbottom
+
+% --- 封面 ---
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[violet!40!black] (current page.north west) rectangle
+      ([yshift=-0.6cm]current page.north east);
+    \fill[violet!60!black] ([yshift=-2.5cm]current page.north west) rectangle
+      ([yshift=-7.5cm]current page.north east);
+    \fill[violet!40!black] ([yshift=1.8cm]current page.south west) rectangle
+      ([yshift=2.2cm]current page.south east);
+  \end{tikzpicture}
+
+  \centering
+  \vspace*{2.2cm}
+
+  {\color{white}\fontsize{32}{40}\selectfont\bfseries 深入剖析 Claude Code\par}
+  \vspace{0.5cm}
+  {\color{white!90}\Large Anthropic AI 编程助手架构与实现\par}
+  \vspace{0.3cm}
+  {\color{white!70}\large\itshape 基于 2026-03-31 泄露源码的全面技术分析\par}
+
+  \vspace{3cm}
+
+  {\large\itshape 1,900 个源文件 · 512,000+ 行 TypeScript\par}
+  \vspace{0.3cm}
+  {\normalsize 从启动流程到多智能体协调，全面拆解现代 AI 编程助手\par}
+
+  \vfill
+
+  {\Large\bfseries SZY\par}
+  \vspace{0.3cm}
+  {\normalsize \today\par}
+  \vspace{2.5cm}
+\end{titlepage}
+
+% --- 目录 ---
+\tableofcontents
+
+% --- Part I: 基础架构 ---
+\part{基础架构}
+\input{chapters/ch01}
+\input{chapters/ch02}
+\input{chapters/ch03}
+
+% --- Part II: 核心引擎 ---
+\part{核心引擎}
+\input{chapters/ch04}
+\input{chapters/ch05}
+\input{chapters/ch06}
+\input{chapters/ch07}
+
+% --- Part III: 安全与资源管理 ---
+\part{安全与资源管理}
+\input{chapters/ch08}
+\input{chapters/ch09}
+
+% --- Part IV: 高级功能 ---
+\part{高级功能}
+\input{chapters/ch10}
+\input{chapters/ch11}
+\input{chapters/ch12}
+
+% --- Part V: 运营与扩展 ---
+\part{运营与扩展}
+\input{chapters/ch13}
+\input{chapters/ch14}
+\input{chapters/ch15}
+\input{chapters/ch16}
+
+% --- Part VI: 总结 ---
+\part{总结}
+\input{chapters/ch17}
+
+\end{document}

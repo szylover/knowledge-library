@@ -1,0 +1,201 @@
+\chapter{命令系统 (Command System)}
+
+\section{概述}
+
+命令系统管理用户通过 \code{/} 前缀调用的斜杠命令。这些命令提供了直接的用户交互功能，不通过 LLM 处理。命令注册表在 \code{src/commands.ts}（约 25,000 行）中管理。
+
+\section{命令注册}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// commands.ts — 静态导入
+import commit from './commands/commit.js'
+import compact from './commands/compact/index.js'
+import config from './commands/config/index.js'
+import doctor from './commands/doctor/index.js'
+import memory from './commands/memory/index.js'
+import review, { ultrareview } from './commands/review.js'
+import vim from './commands/vim/index.js'
+// ... 50+ 命令导入
+
+// 条件导入（Feature Flag 控制）
+const voiceCommand = feature('VOICE_MODE')
+  ? require('./commands/voice/index.js').default
+  : null
+
+const proactive = feature('PROACTIVE') || feature('KAIROS')
+  ? require('./commands/proactive.js').default
+  : null
+
+const bridge = feature('BRIDGE_MODE')
+  ? require('./commands/bridge/index.js').default
+  : null
+
+// 仅内部用户
+const agentsPlatform = process.env.USER_TYPE === 'ant'
+  ? require('./commands/agents-platform/index.js').default
+  : null
+\end{lstlisting}
+
+\section{命令分类}
+
+\subsection{Git 操作}
+
+\begin{longtable}{ll}
+\toprule
+命令 & 功能 \\
+\midrule
+\code{/commit} & 创建 Git 提交（自动生成提交信息） \\
+\code{/commit-push-pr} & 提交、推送并创建 PR \\
+\code{/diff} & 查看当前变更 \\
+\code{/pr\textbackslash\{\}\_comments} & 查看 PR 评论 \\
+\code{/review} & 代码审查 \\
+\code{/security-review} & 安全审查 \\
+\bottomrule
+\end{longtable}
+
+\subsection{会话管理}
+
+\begin{longtable}{ll}
+\toprule
+命令 & 功能 \\
+\midrule
+\code{/compact} & 压缩对话上下文 \\
+\code{/resume} & 恢复之前的会话 \\
+\code{/share} & 分享会话 \\
+\code{/session} & 会话管理 \\
+\code{/rename} & 重命名会话 \\
+\code{/clear} & 清除对话历史 \\
+\bottomrule
+\end{longtable}
+
+\subsection{配置与状态}
+
+\begin{longtable}{ll}
+\toprule
+命令 & 功能 \\
+\midrule
+\code{/config} & 设置管理 \\
+\code{/memory} & 持久记忆管理 \\
+\code{/doctor} & 环境诊断 \\
+\code{/cost} & 查看使用费用 \\
+\code{/status} & 查看状态 \\
+\code{/usage} & 查看使用量 \\
+\code{/theme} & 切换主题 \\
+\bottomrule
+\end{longtable}
+
+\subsection{工具与扩展}
+
+\begin{longtable}{ll}
+\toprule
+命令 & 功能 \\
+\midrule
+\code{/mcp} & MCP 服务器管理 \\
+\code{/skills} & 技能管理 \\
+\code{/tasks} & 任务管理 \\
+\code{/init} & 初始化项目配置 \\
+\code{/init-verifiers} & 初始化验证器 \\
+\bottomrule
+\end{longtable}
+
+\subsection{交互模式}
+
+\begin{longtable}{ll}
+\toprule
+命令 & 功能 \\
+\midrule
+\code{/vim} & 切换 Vim 模式 \\
+\code{/keybindings} & 键绑定配置 \\
+\code{/color} & 颜色设置 \\
+\bottomrule
+\end{longtable}
+
+\subsection{认证}
+
+\begin{longtable}{ll}
+\toprule
+命令 & 功能 \\
+\midrule
+\code{/login} & 登录 \\
+\code{/logout} & 登出 \\
+\code{/install-github-app} & 安装 GitHub App \\
+\code{/install-slack-app} & 安装 Slack App \\
+\bottomrule
+\end{longtable}
+
+\subsection{跨平台}
+
+\begin{longtable}{ll}
+\toprule
+命令 & 功能 \\
+\midrule
+\code{/desktop} & 传递到桌面应用 \\
+\code{/mobile} & 传递到移动应用 \\
+\code{/ide} & IDE 集成 \\
+\code{/teleport} & 远程传送会话 \\
+\bottomrule
+\end{longtable}
+
+\subsection{Feature Flag 控制的命令}
+
+\begin{longtable}{lll}
+\toprule
+命令 & Feature Flag & 功能 \\
+\midrule
+\code{/voice} & \code{VOICE\textbackslash\{\}\_MODE} & 语音输入 \\
+\code{/proactive} & \code{PROACTIVE} / \code{KAIROS} & 主动模式 \\
+\code{/bridge} & \code{BRIDGE\textbackslash\{\}\_MODE} & IDE 桥接 \\
+\code{/assistant} & \code{KAIROS} & 助手模式 \\
+\code{/workflows} & \code{WORKFLOW\textbackslash\{\}\_SCRIPTS} & 工作流管理 \\
+\code{/force-snip} & \code{HISTORY\textbackslash\{\}\_SNIP} & 强制历史片段裁剪 \\
+\bottomrule
+\end{longtable}
+
+\section{命令与工具的交叉}
+
+命令系统与工具系统有一个有趣的交叉点——\code{getSlashCommandToolSkills()}：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { getSlashCommandToolSkills } from './commands.js'
+\end{lstlisting}
+
+某些斜杠命令可以被注册为"工具技能"，使得 LLM 不仅可以在用户主动调用时使用它们，还可以在认为合适时自主调用。
+
+\section{远程模式命令过滤}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { filterCommandsForRemoteMode, getCommands } from './commands.js'
+\end{lstlisting}
+
+在远程模式下，某些不适用的命令（如 \code{/desktop}、\code{/vim}）会被自动过滤。
+
+\section{命令生命周期}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { notifyCommandLifecycle } from './utils/commandLifecycle.js'
+
+// 在查询循环完成后通知命令完成
+for (const uuid of consumedCommandUuids) {
+  notifyCommandLifecycle(uuid, 'completed')
+}
+\end{lstlisting}
+
+每个命令有明确的生命周期追踪：启动 $\rightarrow$ 执行 $\rightarrow$ 完成/失败。这支持异步命令的状态追踪和错误报告。
+
+\section{设计启示}
+
+\subsection{命令 vs 工具的边界}
+
+Claude Code 将\textbf{用户发起的操作}（命令）与\textbf{LLM 发起的操作}（工具）分离，但允许交叉。这种设计提供了清晰的心智模型：
+\begin{itemize}[nosep]
+  \item 命令：用户主动控制，即时反馈
+  \item 工具：LLM 自主调用，异步执行
+\end{itemize}
+
+\subsection{按需加载}
+
+只在需要时加载命令实现（通过 Feature Flag 控制），保持 CLI 的启动速度。
+
+\bigskip\noindent\rule{\textwidth}{0.4pt}\bigskip
+
+\textbf{下一章}：\href{./chapter-08-permissions.md}{权限与安全模型}

@@ -1,0 +1,200 @@
+\chapter{权限与安全模型}
+
+\section{概述}
+
+Claude Code 的权限系统是其最关键的安全机制。每次 LLM 尝试调用工具时，都必须通过权限检查。这个系统确保 AI 不会在未经用户授权的情况下执行危险操作。
+
+\section{权限模式}
+
+Claude Code 定义了多种权限模式：
+
+\begin{longtable}{ll}
+\toprule
+模式 & 行为 \\
+\midrule
+\code{default} & 标准模式——危险操作需要用户确认 \\
+\code{plan} & 计划模式——只允许只读操作，不执行修改 \\
+\code{bypassPermissions} & 绕过权限——所有操作自动批准（危险） \\
+\code{auto} & 自动模式——使用分类器自动判断是否安全 \\
+\bottomrule
+\end{longtable}
+
+\subsection{计划模式}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// EnterPlanModeTool — LLM 可以主动进入计划模式
+// 进入时保存当前权限模式
+prePlanMode?: PermissionMode
+
+// ExitPlanModeV2Tool — 退出时恢复之前的模式
+\end{lstlisting}
+
+计划模式是 Claude Code 的一个独特功能：LLM 可以主动切换到只读模式进行分析和规划，然后退出到执行模式实施变更。
+
+\subsection{自动模式与分类器}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const autoModeStateModule = feature('TRANSCRIPT_CLASSIFIER')
+  ? require('./utils/permissions/autoModeState.js')
+  : null
+\end{lstlisting}
+
+自动模式使用\textbf{对话分类器}（Transcript Classifier）分析工具调用的安全性。分类器在权限对话框显示之前运行，可以自动批准被认为安全的操作。
+
+\section{权限规则}
+
+权限规则按来源分组（\code{ToolPermissionRulesBySource}），支持三种决策：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+type ToolPermissionContext = {
+  alwaysAllowRules: ToolPermissionRulesBySource  // 始终允许
+  alwaysDenyRules: ToolPermissionRulesBySource   // 始终拒绝
+  alwaysAskRules: ToolPermissionRulesBySource    // 始终询问
+}
+\end{lstlisting}
+
+\subsection{规则匹配}
+
+拒绝规则的匹配支持前缀模式，特别用于 MCP 工具：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// 可以拒绝整个 MCP 服务器的所有工具
+// 规则 "mcp__server" 会匹配 "mcp__server__tool1", "mcp__server__tool2" 等
+\end{lstlisting}
+
+\subsection{工具级别过滤}
+
+被全面拒绝的工具在模型看到工具列表之前就被移除：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export function filterToolsByDenyRules(tools, permissionContext) {
+  return tools.filter(tool => !getDenyRuleForTool(permissionContext, tool))
+}
+\end{lstlisting}
+
+\section{权限检查流程}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+LLM 请求调用工具
+    │
+    ▼
+1. 检查 blanket deny 规则 → 如果匹配，拒绝
+    │
+    ▼
+2. 检查 alwaysAllow 规则 → 如果匹配，允许
+    │
+    ▼
+3. 检查 alwaysAsk 规则 → 如果匹配，提示用户
+    │
+    ▼
+4. 根据 mode 决定：
+   ├── default → 显示权限对话框
+   ├── plan → 拒绝写操作
+   ├── auto → 运行分类器
+   │    ├── 安全 → 允许
+   │    └── 不确定 → 显示对话框
+   └── bypassPermissions → 允许
+    │
+    ▼
+5. 记录决策到 toolDecisions Map
+\end{lstlisting}
+
+\section{拒绝追踪}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// QueryEngine.ts 中的权限包装
+const wrappedCanUseTool = async (...) => {
+  const result = await canUseTool(...)
+  
+  if (result.behavior !== 'allow') {
+    this.permissionDenials.push({
+      tool_name: sdkCompatToolName(tool.name),
+      tool_use_id: toolUseID,
+      tool_input: input,
+    })
+  }
+  
+  return result
+}
+\end{lstlisting}
+
+所有拒绝都被记录并通过 SDK 事件报告。这支持外部集成（如 VS Code 扩展）显示权限拒绝信息。
+
+\subsection{本地拒绝追踪}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// 异步子代理的 setAppState 是空操作，
+// 没有本地追踪的话拒绝计数永远不会累积
+localDenialTracking?: DenialTrackingState
+\end{lstlisting}
+
+当子代理的拒绝次数超过阈值时，会自动回退到向用户提示（prompting）模式。
+
+\section{后台代理的权限}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+shouldAvoidPermissionPrompts?: boolean
+\end{lstlisting}
+
+后台代理（如通过 \code{AgentTool} 生成的子代理）无法显示 UI，因此权限提示被自动拒绝。这要求后台代理只执行已预先授权的操作。
+
+\section{危险权限剥离}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import {
+  removeDangerousPermissions,
+  stripDangerousPermissionsForAutoMode,
+} from './utils/permissions/permissionSetup.js'
+\end{lstlisting}
+
+某些权限在自动模式下被主动剥离——即使用户配置了 \code{alwaysAllow}，某些高风险操作在自动模式下仍需要确认。
+
+\section{沙箱系统}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { SandboxManager } from './utils/sandbox/sandbox-adapter.js'
+
+// 启动遥测中记录沙箱状态
+sandbox_enabled: SandboxManager.isSandboxingEnabled(),
+are_unsandboxed_commands_allowed: SandboxManager.areUnsandboxedCommandsAllowed(),
+is_auto_bash_allowed_if_sandbox_enabled: SandboxManager.isAutoAllowBashIfSandboxedEnabled(),
+\end{lstlisting}
+
+沙箱系统为 Bash 命令提供额外的隔离层：
+\begin{itemize}[nosep]
+  \item 启用沙箱时，命令在受限环境中执行
+  \item 可以配置是否允许非沙箱命令
+  \item 沙箱内的 Bash 命令可以自动批准
+\end{itemize}
+
+\section{Scratchpad 目录}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// coordinatorMode.ts
+if (scratchpadDir && isScratchpadGateEnabled()) {
+  content += `\nScratchpad directory: ${scratchpadDir}\n` +
+    `Workers can read and write here without permission prompts.`
+}
+\end{lstlisting}
+
+Scratchpad 是一个特殊目录，Worker 代理可以在其中自由读写而无需权限提示。这为多代理协作提供了安全的共享空间。
+
+\section{设计启示}
+
+\subsection{纵深防御}
+
+权限系统体现了纵深防御原则：
+\begin{enumerate}[nosep]
+  \item \textbf{工具列表过滤}：拒绝的工具不暴露给模型
+  \item \textbf{调用时检查}：每次调用都经过权限验证
+  \item \textbf{沙箱执行}：即使允许，也在受限环境中执行
+  \item \textbf{追踪与审计}：所有决策都被记录
+\end{enumerate}
+
+\subsection{渐进式信任}
+
+从 \code{plan}（只读）到 \code{default}（需确认）到 \code{auto}（自动判断）到 \code{bypassPermissions}（全部允许），提供了渐进式的信任层级。
+
+\bigskip\noindent\rule{\textwidth}{0.4pt}\bigskip
+
+\textbf{下一章}：\href{./chapter-09-context-compression.md}{上下文压缩与 Token 管理}

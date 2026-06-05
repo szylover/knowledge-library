@@ -1,0 +1,320 @@
+\chapter{上下文压缩与 Token 管理}
+
+\section{问题背景}
+
+LLM 的上下文窗口是有限的。Claude 的上下文窗口约为 200K tokens，但在长时间的编程会话中，消息历史可以轻松超过这个限制。Claude Code 设计了一套多层压缩系统来解决这个问题。
+
+\section{五层压缩管线}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+原始消息历史
+    │
+    ▼
+① 工具结果预算 (Tool Result Budget)
+    │  控制单个工具输出的大小
+    ▼
+② Snip 压缩 (History Snip)
+    │  移除旧的对话片段
+    ▼
+③ 微压缩 (Microcompact)
+    │  压缩单个工具输出的冗余
+    ▼
+④ 上下文折叠 (Context Collapse)
+    │  多轮交互折叠为摘要
+    ▼
+⑤ 自动压缩 (Auto Compact)
+    │  接近窗口限制时的全局压缩
+    ▼
+发送到 API
+\end{lstlisting}
+
+\section{第一层：工具结果预算}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+messagesForQuery = await applyToolResultBudget(
+  messagesForQuery,
+  toolUseContext.contentReplacementState,
+  persistReplacements ? records =>
+    void recordContentReplacement(records, toolUseContext.agentId).catch(logError)
+    : undefined,
+  new Set(
+    toolUseContext.options.tools
+      .filter(t => !Number.isFinite(t.maxResultSizeChars))
+      .map(t => t.name),
+  ),
+)
+\end{lstlisting}
+
+\textbf{工作原理}：
+\begin{itemize}[nosep]
+  \item 每个工具可以定义 \code{maxResultSizeChars} 限制
+  \item 超出限制的工具结果被替换为摘要
+  \item 替换决策通过 \code{contentReplacementState} 持久化
+  \item 支持会话恢复时重建替换状态
+\end{itemize}
+
+\textbf{与微压缩的关系}：工具结果预算在微压缩之前运行。由于缓存微压缩完全通过 \code{tool\_use\_id} 操作（不检查内容），内容替换对它是透明的，两者可以干净地组合。
+
+\section{第二层：Snip 压缩}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+if (feature('HISTORY_SNIP')) {
+  const snipResult = snipModule!.snipCompactIfNeeded(messagesForQuery)
+  messagesForQuery = snipResult.messages
+  snipTokensFreed = snipResult.tokensFreed
+  if (snipResult.boundaryMessage) {
+    yield snipResult.boundaryMessage
+  }
+}
+\end{lstlisting}
+
+Snip 压缩是一种基于"片段"的压缩方式：
+\begin{itemize}[nosep]
+  \item 标识旧的对话片段
+  \item 移除不再需要的旧片段
+  \item 通过 \code{snipReplay} 回调处理 snip 边界
+  \item 释放的 Token 数量传递给自动压缩阈值计算
+\end{itemize}
+
+\subsection{Snip 边界处理}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// QueryEngine 配置中的 snipReplay 回调
+snipReplay?: (
+  yieldedSystemMsg: Message,
+  store: Message[],
+) => { messages: Message[]; executed: boolean } | undefined
+\end{lstlisting}
+
+snipReplay 被注入到 QueryEngine 中，使得 Feature Flag 控制的字符串保持在门控模块内，QueryEngine 保持可测试。
+
+\section{第三层：微压缩}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const microcompactResult = await deps.microcompact(
+  messagesForQuery,
+  toolUseContext,
+  querySource,
+)
+messagesForQuery = microcompactResult.messages
+\end{lstlisting}
+
+微压缩处理单个工具输出中的冗余信息，例如：
+\begin{itemize}[nosep]
+  \item 重复的文件列表
+  \item 冗长的命令输出
+  \item 重复的错误信息
+\end{itemize}
+
+\subsection{缓存微压缩}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const pendingCacheEdits = feature('CACHED_MICROCOMPACT')
+  ? microcompactResult.compactionInfo?.pendingCacheEdits
+  : undefined
+\end{lstlisting}
+
+缓存微压缩是一种优化：使用 Anthropic API 的缓存编辑功能，延迟边界消息直到 API 响应后才发送（使用实际的 \code{cache\_deleted\_input\_tokens} 而非估计值）。
+
+\section{第四层：上下文折叠}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+if (feature('CONTEXT_COLLAPSE') && contextCollapse) {
+  const collapseResult = await contextCollapse.applyCollapsesIfNeeded(
+    messagesForQuery,
+    toolUseContext,
+    querySource,
+  )
+  messagesForQuery = collapseResult.messages
+}
+\end{lstlisting}
+
+\textbf{设计特点}：
+\begin{itemize}[nosep]
+  \item 上下文折叠在自动压缩之前运行
+  \item 如果折叠使 Token 数降到自动压缩阈值以下，自动压缩就不会触发
+  \item 折叠视图是\textbf{读时投影}，不修改 REPL 的完整历史
+  \item 摘要消息存储在折叠存储中，而非 REPL 消息数组
+  \item \code{projectView()} 在每次查询入口重放提交日志
+\end{itemize}
+
+\section{第五层：自动压缩}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import {
+  calculateTokenWarningState,
+  isAutoCompactEnabled,
+  type AutoCompactTrackingState,
+} from './services/compact/autoCompact.js'
+
+import { buildPostCompactMessages } from './services/compact/compact.js'
+\end{lstlisting}
+
+自动压缩是最后的安全网：
+\begin{itemize}[nosep]
+  \item 当 Token 使用接近上下文窗口限制时自动触发
+  \item 使用 LLM 生成整个对话的摘要
+  \item 替换原有消息历史为摘要 + 最近的消息
+  \item 通过 \code{/compact} 命令也可以手动触发
+\end{itemize}
+
+\subsection{响应式压缩}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const reactiveCompact = feature('REACTIVE_COMPACT')
+  ? require('./services/compact/reactiveCompact.js')
+  : null
+\end{lstlisting}
+
+响应式压缩是自动压缩的一个变种——当 API 返回 "prompt too long" 错误时触发，是对主动压缩的被动补充。
+
+\section{Token 计数与估算}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import {
+  doesMostRecentAssistantMessageExceed200k,
+  finalContextTokensFromLastResponse,
+  tokenCountWithEstimation,
+} from './utils/tokens.js'
+\end{lstlisting}
+
+Token 计数使用两种策略：
+\begin{enumerate}[nosep]
+  \item \textbf{精确计数}：从 API 响应的 \code{usage} 字段获取
+  \item \textbf{估算}：在 API 调用之前，使用估算方法预测 Token 数量
+\end{enumerate}
+
+\section{Token 预算系统}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const budgetTracker = feature('TOKEN_BUDGET')
+  ? createBudgetTracker()
+  : null
+\end{lstlisting}
+
+Token 预算系统（\code{TOKEN\_BUDGET} Feature Flag）追踪每个回合的 Token 消耗：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import {
+  getCurrentTurnTokenBudget,
+  getTurnOutputTokens,
+  incrementBudgetContinuationCount,
+} from './bootstrap/state.js'
+
+import { createBudgetTracker, checkTokenBudget } from './query/tokenBudget.js'
+\end{lstlisting}
+
+\subsection{任务预算}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// API 的 task_budget (output_config.task_budget)
+// 与 tokenBudget 的 +500k 自动继续功能不同
+// `total` 是整个代理回合的预算
+// `remaining` 从累积 API 使用量中计算
+taskBudget?: { total: number }
+\end{lstlisting}
+
+任务预算通过 API 的 \code{output\_config.task\_budget} 参数控制。压缩后需要重新计算剩余预算：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// 跨压缩边界的 task_budget.remaining 追踪
+// 未压缩时服务器可以看到完整历史并自行处理倒计时
+// 压缩后服务器只看到摘要，会低估消耗
+// remaining 告诉它压缩前的最终窗口
+let taskBudgetRemaining: number | undefined = undefined
+\end{lstlisting}
+
+\section{max\_output\_tokens 恢复}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const MAX_OUTPUT_TOKENS_RECOVERY_LIMIT = 3
+
+function isWithheldMaxOutputTokens(msg) {
+  return msg?.type === 'assistant' && msg.apiError === 'max_output_tokens'
+}
+\end{lstlisting}
+
+当模型输出被 \code{max\_output\_tokens} 截断时：
+\begin{enumerate}[nosep]
+  \item 错误消息被"扣留"，不发送给 SDK 调用方
+  \item 自动向 API 发送继续请求
+  \item 最多重试 3 次
+  \item 只有确认恢复失败后才将错误报告给调用方
+\end{enumerate}
+
+\section{成本追踪}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// cost-tracker.ts
+export function addToTotalSessionCost(
+  cost: number,
+  usage: Usage,
+  model: string,
+): number {
+  const modelUsage = addToTotalModelUsage(cost, usage, model)
+  addToTotalCostState(cost, modelUsage, model)
+
+  // OpenTelemetry 计数器
+  getCostCounter()?.add(cost, attrs)
+  getTokenCounter()?.add(usage.input_tokens, { ...attrs, type: 'input' })
+  getTokenCounter()?.add(usage.output_tokens, { ...attrs, type: 'output' })
+  getTokenCounter()?.add(usage.cache_read_input_tokens ?? 0, {
+    ...attrs, type: 'cacheRead'
+  })
+  getTokenCounter()?.add(usage.cache_creation_input_tokens ?? 0, {
+    ...attrs, type: 'cacheCreation'
+  })
+
+  // 处理 advisor 使用量
+  for (const advisorUsage of getAdvisorUsage(usage)) {
+    const advisorCost = calculateUSDCost(advisorUsage.model, advisorUsage)
+    totalCost += addToTotalSessionCost(advisorCost, advisorUsage, advisorUsage.model)
+  }
+  return totalCost
+}
+\end{lstlisting}
+
+成本追踪记录：
+\begin{itemize}[nosep]
+  \item 每个模型的输入/输出 Token
+  \item 缓存读取/创建 Token
+  \item 网页搜索请求数
+  \item Advisor（辅助模型）的使用量
+  \item USD 成本计算
+\end{itemize}
+
+\subsection{会话成本持久化}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export function saveCurrentSessionCosts(fpsMetrics?: FpsMetrics): void {
+  saveCurrentProjectConfig(current => ({
+    ...current,
+    lastCost: getTotalCostUSD(),
+    lastAPIDuration: getTotalAPIDuration(),
+    lastTotalInputTokens: getTotalInputTokens(),
+    lastTotalOutputTokens: getTotalOutputTokens(),
+    lastSessionId: getSessionId(),
+    // ...
+  }))
+}
+\end{lstlisting}
+
+成本在会话切换前保存到项目配置中，支持跨会话的成本恢复。
+
+\section{设计启示}
+
+\subsection{多层防御}
+
+五层压缩不是冗余设计，每层解决不同粒度的问题。这种"洋葱式"架构确保了即使某一层未能充分压缩，后续层仍能处理。
+
+\subsection{缓存感知}
+
+压缩系统与 Prompt Cache 深度集成。例如，缓存微压缩利用缓存编辑 API 避免不必要的缓存失效。
+
+\subsection{预算管理}
+
+Token 预算和成本追踪的细粒度设计，使得企业用户可以精确控制 AI 的资源消耗。
+
+\bigskip\noindent\rule{\textwidth}{0.4pt}\bigskip
+
+\textbf{下一章}：\href{./chapter-10-coordinator.md}{多智能体协调 (Coordinator Mode)}

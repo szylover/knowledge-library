@@ -1,0 +1,403 @@
+\chapter{工具系统 (Tool System)}
+
+\section{架构概述}
+
+工具系统是 Claude Code 的核心特性——它赋予了 LLM "手脚"，使其能够真正执行软件工程任务。所有工具的注册和管理通过 \code{src/tools.ts} 完成，而工具的类型定义在 \code{src/Tool.ts}（约 29,000 行）中。
+
+\section{工具类型定义}
+
+\subsection{核心接口}
+
+每个工具必须实现一组标准接口：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export type ToolInputJSONSchema = {
+  type: 'object'
+  properties?: { [x: string]: unknown }
+  [x: string]: unknown
+}
+
+// Tool 的核心字段（从源码推断）
+interface Tool {
+  name: string                        // 工具名称（唯一标识）
+  description: string                 // 工具描述（给 LLM 看的）
+  inputSchema: ToolInputJSONSchema    // 输入参数 JSON Schema
+  isEnabled(): boolean                // 是否启用
+  
+  // 权限相关
+  mcpInfo?: {                         // MCP 工具信息
+    serverName: string
+    toolName: string
+  }
+  
+  // 执行相关
+  maxResultSizeChars?: number         // 最大结果大小
+}
+\end{lstlisting}
+
+\subsection{权限上下文}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export type ToolPermissionContext = DeepImmutable<{
+  mode: PermissionMode
+  additionalWorkingDirectories: Map<string, AdditionalWorkingDirectory>
+  alwaysAllowRules: ToolPermissionRulesBySource
+  alwaysDenyRules: ToolPermissionRulesBySource
+  alwaysAskRules: ToolPermissionRulesBySource
+  isBypassPermissionsModeAvailable: boolean
+  isAutoModeAvailable?: boolean
+  strippedDangerousRules?: ToolPermissionRulesBySource
+  shouldAvoidPermissionPrompts?: boolean
+  awaitAutomatedChecksBeforeDialog?: boolean
+  prePlanMode?: PermissionMode
+}>
+\end{lstlisting}
+
+关键字段说明：
+
+\begin{longtable}{ll}
+\toprule
+字段 & 说明 \\
+\midrule
+\code{mode} & 权限模式：\code{default} / \code{plan} / \code{bypassPermissions} / \code{auto} \\
+\code{alwaysAllowRules} & 始终允许的规则（按来源分组） \\
+\code{alwaysDenyRules} & 始终拒绝的规则（按来源分组） \\
+\code{shouldAvoidPermissionPrompts} & 后台代理使用：无法显示 UI 时自动拒绝 \\
+\code{prePlanMode} & 进入计划模式前的权限模式，退出时恢复 \\
+\bottomrule
+\end{longtable}
+
+\section{工具注册表 (tools.ts)}
+
+\subsection{静态工具注册}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { AgentTool } from './tools/AgentTool/AgentTool.js'
+import { BashTool } from './tools/BashTool/BashTool.js'
+import { FileEditTool } from './tools/FileEditTool/FileEditTool.js'
+import { FileReadTool } from './tools/FileReadTool/FileReadTool.js'
+import { FileWriteTool } from './tools/FileWriteTool/FileWriteTool.js'
+import { GlobTool } from './tools/GlobTool/GlobTool.js'
+import { GrepTool } from './tools/GrepTool/GrepTool.js'
+import { WebFetchTool } from './tools/WebFetchTool/WebFetchTool.js'
+import { WebSearchTool } from './tools/WebSearchTool/WebSearchTool.js'
+import { SkillTool } from './tools/SkillTool/SkillTool.js'
+// ... 更多工具
+\end{lstlisting}
+
+\subsection{条件工具注册}
+
+许多工具通过 Feature Flag 或环境变量条件加载：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// 仅内部用户可用
+const REPLTool = process.env.USER_TYPE === 'ant'
+  ? require('./tools/REPLTool/REPLTool.js').REPLTool
+  : null
+
+// 需要 Feature Flag
+const SleepTool = feature('PROACTIVE') || feature('KAIROS')
+  ? require('./tools/SleepTool/SleepTool.js').SleepTool
+  : null
+
+// 触发器相关工具
+const cronTools = feature('AGENT_TRIGGERS')
+  ? [
+      require('./tools/ScheduleCronTool/CronCreateTool.js').CronCreateTool,
+      require('./tools/ScheduleCronTool/CronDeleteTool.js').CronDeleteTool,
+      require('./tools/ScheduleCronTool/CronListTool.js').CronListTool,
+    ]
+  : []
+
+// 协调器模式
+const coordinatorModeModule = feature('COORDINATOR_MODE')
+  ? require('./coordinator/coordinatorMode.js')
+  : null
+
+// Web 浏览器工具
+const WebBrowserTool = feature('WEB_BROWSER_TOOL')
+  ? require('./tools/WebBrowserTool/WebBrowserTool.js').WebBrowserTool
+  : null
+\end{lstlisting}
+
+\subsection{懒加载（打破循环依赖）}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// 懒加载以打破循环依赖：tools.ts -> TeamCreateTool -> ... -> tools.ts
+const getTeamCreateTool = () =>
+  require('./tools/TeamCreateTool/TeamCreateTool.js').TeamCreateTool
+const getTeamDeleteTool = () =>
+  require('./tools/TeamDeleteTool/TeamDeleteTool.js').TeamDeleteTool
+const getSendMessageTool = () =>
+  require('./tools/SendMessageTool/SendMessageTool.js').SendMessageTool
+\end{lstlisting}
+
+\subsection{完整工具列表}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export function getAllBaseTools(): Tools {
+  return [
+    AgentTool,                     // 子代理生成
+    TaskOutputTool,                // 任务输出
+    BashTool,                      // Shell 命令
+    // 嵌入式搜索工具检测
+    ...(hasEmbeddedSearchTools() ? [] : [GlobTool, GrepTool]),
+    ExitPlanModeV2Tool,            // 退出计划模式
+    FileReadTool,                  // 文件读取
+    FileEditTool,                  // 文件编辑
+    FileWriteTool,                 // 文件写入
+    NotebookEditTool,              // Notebook 编辑
+    WebFetchTool,                  // URL 获取
+    TodoWriteTool,                 // Todo 写入
+    WebSearchTool,                 // 网页搜索
+    TaskStopTool,                  // 任务停止
+    AskUserQuestionTool,           // 向用户提问
+    SkillTool,                     // 技能执行
+    EnterPlanModeTool,             // 进入计划模式
+    // 条件工具...
+    ...(isTodoV2Enabled()
+      ? [TaskCreateTool, TaskGetTool, TaskUpdateTool, TaskListTool]
+      : []),
+    ...(isWorktreeModeEnabled()
+      ? [EnterWorktreeTool, ExitWorktreeTool]
+      : []),
+    getSendMessageTool(),          // 代理间消息
+    ...(isAgentSwarmsEnabled()
+      ? [getTeamCreateTool(), getTeamDeleteTool()]
+      : []),
+    BriefTool,                     // 简要输出
+    ListMcpResourcesTool,          // 列出 MCP 资源
+    ReadMcpResourceTool,           // 读取 MCP 资源
+    ...(isToolSearchEnabledOptimistic() ? [ToolSearchTool] : []),
+    // ... 更多条件工具
+  ]
+}
+\end{lstlisting}
+
+\textbf{嵌入式搜索工具}：在 Anthropic 内部构建中，\code{bfs}（fast find）和 \code{ugrep}（fast grep）被嵌入到 Bun 二进制文件中。当这些工具可用时，\code{GlobTool} 和 \code{GrepTool} 就不需要了——Shell 中的 find/grep 已被别名为这些快速工具。
+
+\section{工具分类详解}
+
+\subsection{文件操作工具}
+
+\begin{longtable}{lll}
+\toprule
+工具 & 功能 & 关键特性 \\
+\midrule
+\code{FileReadTool} & 读取文件 & 支持图片、PDF、Notebook；LRU 缓存 \\
+\code{FileWriteTool} & 创建/覆盖文件 & 完整文件写入 \\
+\code{FileEditTool} & 部分编辑 & 字符串替换，精确匹配 \\
+\code{NotebookEditTool} & Jupyter Notebook & 单元格级别操作 \\
+\code{GlobTool} & 文件搜索 & picomatch 模式匹配 \\
+\code{GrepTool} & 内容搜索 & ripgrep 后端 \\
+\bottomrule
+\end{longtable}
+
+\subsection{执行工具}
+
+\begin{longtable}{lll}
+\toprule
+工具 & 功能 & 关键特性 \\
+\midrule
+\code{BashTool} & Shell 命令 & 支持 Bash 和 PowerShell \\
+\code{PowerShellTool} & PowerShell 命令 & Windows 专用 \\
+\code{LSPTool} & 语言服务器 & 代码智能：跳转、补全、诊断 \\
+\bottomrule
+\end{longtable}
+
+\subsection{网络工具}
+
+\begin{longtable}{ll}
+\toprule
+工具 & 功能 \\
+\midrule
+\code{WebFetchTool} & 获取 URL 内容 \\
+\code{WebSearchTool} & 执行网页搜索 \\
+\code{WebBrowserTool} & 浏览器自动化（Feature Flag 控制） \\
+\bottomrule
+\end{longtable}
+
+\subsection{代理与协调工具}
+
+\begin{longtable}{ll}
+\toprule
+工具 & 功能 \\
+\midrule
+\code{AgentTool} & 生成子代理执行复杂任务 \\
+\code{TeamCreateTool} & 创建团队级并行代理 \\
+\code{TeamDeleteTool} & 删除团队代理 \\
+\code{SendMessageTool} & 代理间消息传递 \\
+\code{TaskCreateTool} & 创建任务 \\
+\code{TaskUpdateTool} & 更新任务状态 \\
+\code{TaskStopTool} & 停止运行中的任务 \\
+\bottomrule
+\end{longtable}
+
+\subsection{模式控制工具}
+
+\begin{longtable}{ll}
+\toprule
+工具 & 功能 \\
+\midrule
+\code{EnterPlanModeTool} & 进入计划模式（只读，不执行） \\
+\code{ExitPlanModeV2Tool} & 退出计划模式 \\
+\code{EnterWorktreeTool} & 进入 Git Worktree 隔离环境 \\
+\code{ExitWorktreeTool} & 退出 Worktree \\
+\bottomrule
+\end{longtable}
+
+\subsection{特殊工具}
+
+\begin{longtable}{ll}
+\toprule
+工具 & 功能 \\
+\midrule
+\code{SkillTool} & 执行预定义或自定义技能 \\
+\code{ToolSearchTool} & 延迟工具发现（当工具数量多时） \\
+\code{SleepTool} & 主动模式下的等待 \\
+\code{CronCreateTool} & 创建定时触发器 \\
+\code{SyntheticOutputTool} & 结构化输出生成 \\
+\code{BriefTool} & 简要输出模式 \\
+\code{AskUserQuestionTool} & 向用户提出交互式问题 \\
+\bottomrule
+\end{longtable}
+
+\section{工具过滤机制}
+
+\subsection{拒绝规则过滤}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export function filterToolsByDenyRules<T extends { name: string; mcpInfo?: ... }>(
+  tools: readonly T[],
+  permissionContext: ToolPermissionContext,
+): T[] {
+  return tools.filter(tool => !getDenyRuleForTool(permissionContext, tool))
+}
+\end{lstlisting}
+
+工具在到达 LLM 之前就被过滤。一个被全面拒绝（blanket deny）的工具根本不会出现在模型的工具列表中。
+
+\subsection{REPL 模式工具隐藏}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+if (isReplModeEnabled()) {
+  const replEnabled = allowedTools.some(tool =>
+    toolMatchesName(tool, REPL_TOOL_NAME)
+  )
+  if (replEnabled) {
+    // 隐藏原始工具——它们通过 REPL 的 VM 上下文间接可用
+    allowedTools = allowedTools.filter(
+      tool => !REPL_ONLY_TOOLS.has(tool.name)
+    )
+  }
+}
+\end{lstlisting}
+
+在 REPL 模式下，底层工具（Bash、FileRead 等）被隐藏，因为它们通过 REPL 的 VM 上下文间接可用。
+
+\subsection{简单模式}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+if (isEnvTruthy(process.env.CLAUDE_CODE_SIMPLE)) {
+  const simpleTools: Tool[] = [BashTool, FileReadTool, FileEditTool]
+  // 协调器模式下额外添加 AgentTool 和 TaskStopTool
+  if (feature('COORDINATOR_MODE') && coordinatorModeModule?.isCoordinatorMode()) {
+    simpleTools.push(AgentTool, TaskStopTool, getSendMessageTool())
+  }
+  return filterToolsByDenyRules(simpleTools, permissionContext)
+}
+\end{lstlisting}
+
+简单模式只提供三个基本工具：Bash、读取、编辑。
+
+\section{工具池组装}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export function assembleToolPool(
+  permissionContext: ToolPermissionContext,
+  mcpTools: Tools,
+): Tools {
+  const builtInTools = getTools(permissionContext)
+  const allowedMcpTools = filterToolsByDenyRules(mcpTools, permissionContext)
+
+  // 排序以保证 prompt cache 稳定性
+  const byName = (a: Tool, b: Tool) => a.name.localeCompare(b.name)
+  return uniqBy(
+    [...builtInTools].sort(byName).concat(allowedMcpTools.sort(byName)),
+    'name',  // 内置工具在名称冲突时优先
+  )
+}
+\end{lstlisting}
+
+组装策略：
+\begin{enumerate}[nosep]
+  \item 获取内置工具（经过模式过滤和启用检查）
+  \item 获取 MCP 工具（经过拒绝规则过滤）
+  \item 内置工具作为连续前缀排序
+  \item MCP 工具在后面排序
+  \item 通过 \code{uniqBy} 去重（内置工具优先级更高）
+\end{enumerate}
+
+\section{ToolUseContext 深入}
+
+每次工具执行时传入的上下文对象包含丰富的运行时信息：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export type ToolUseContext = {
+  // 配置
+  options: {
+    commands: Command[]
+    tools: Tools
+    mcpClients: MCPServerConnection[]
+    mcpResources: Record<string, ServerResource[]>
+    mainLoopModel: string
+    thinkingConfig: ThinkingConfig
+    agentDefinitions: AgentDefinitionsResult
+    refreshTools?: () => Tools  // MCP 服务器中途连接时刷新
+  }
+  
+  // 控制
+  abortController: AbortController      // 中止信号
+  readFileState: FileStateCache          // 文件读取缓存
+  
+  // 状态
+  getAppState(): AppState
+  setAppState(f: (prev: AppState) => AppState): void
+  messages: Message[]                    // 当前对话消息
+
+  // 限制
+  fileReadingLimits?: { maxTokens?; maxSizeBytes? }
+  globLimits?: { maxResults? }
+  
+  // 权限追踪
+  toolDecisions?: Map<string, { source; decision; timestamp }>
+  localDenialTracking?: DenialTrackingState
+  
+  // UI 交互
+  setToolJSX?: SetToolJSXFn             // 设置工具 UI
+  addNotification?: (notif) => void     // 添加通知
+  sendOSNotification?: (opts) => void   // OS 级别通知
+  
+  // 子代理
+  agentId?: AgentId                      // 子代理 ID
+  agentType?: string                     // 代理类型名称
+}
+\end{lstlisting}
+
+\section{设计启示}
+
+\subsection{声明式工具定义}
+
+每个工具是自包含的模块——定义自己的输入 Schema、权限模型和执行逻辑。这种模式使得添加新工具极其简单，不需要修改任何中心化的路由逻辑。
+
+\subsection{条件加载与死代码消除}
+
+通过 \code{feature()} 和 \code{process.env} 的条件加载，确保未使用的工具代码在构建时被完全移除。这对控制 bundle 大小至关重要。
+
+\subsection{工具池的缓存感知排序}
+
+将内置工具排在前面并保持稳定排序，使得 Prompt Cache 可以跨请求复用。这种"缓存感知"的设计在高频调用场景下可以显著降低成本。
+
+\bigskip\noindent\rule{\textwidth}{0.4pt}\bigskip
+
+\textbf{下一章}：\href{./chapter-07-command-system.md}{命令系统 (Command System)}

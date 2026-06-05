@@ -1,0 +1,278 @@
+\chapter{启动流程与初始化}
+
+\section{入口文件分析}
+
+Claude Code 的入口文件是 \code{src/main.tsx}。这是整个应用中最大的文件之一，包含了从 CLI 参数解析到 REPL 启动的完整初始化链路。
+
+\subsection{并行预取：启动优化的精髓}
+
+\code{main.tsx} 的前几行代码展现了 Claude Code 对启动性能的极致追求：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// 这些副作用必须在所有其他 import 之前运行：
+// 1. profileCheckpoint 在重量级模块求值开始前标记入口
+// 2. startMdmRawRead 启动 MDM 子进程 (plutil/reg query)，使其与
+//    后续 ~135ms 的 import 并行运行
+// 3. startKeychainPrefetch 并行启动两个 macOS 钥匙串读取
+//    (OAuth + 遗留 API key)
+
+import { profileCheckpoint } from './utils/startupProfiler.js';
+profileCheckpoint('main_tsx_entry');
+
+import { startMdmRawRead } from './utils/settings/mdm/rawRead.js';
+startMdmRawRead();
+
+import { startKeychainPrefetch } from './utils/secureStorage/keychainPrefetch.js';
+startKeychainPrefetch();
+\end{lstlisting}
+
+\textbf{关键洞察}：JavaScript 模块的 \code{import} 语句在执行时会触发模块求值（module evaluation），这个过程需要约 135ms。Claude Code 利用这段"免费"的时间，将 I/O 密集型操作（如读取系统设置和钥匙串）提前启动，使其与模块加载并行执行。
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+时间线：
+0ms    ─── profileCheckpoint('main_tsx_entry')
+       ├── startMdmRawRead()        ← 启动 MDM 子进程（非阻塞）
+       ├── startKeychainPrefetch()  ← 启动钥匙串读取（非阻塞）
+       │
+       │   ┌──────────────────────────────────────┐
+       │   │ 模块求值（~135ms）                     │
+       │   │ - import chalk, React, Commander...   │
+       │   │ - import services, tools, commands... │
+       │   └──────────────────────────────────────┘
+       │
+       │   ┌──────────────────────────────────────┐
+       │   │ MDM 读取 & 钥匙串读取 并行进行         │
+       │   │ （在模块求值期间已完成）                 │
+       │   └──────────────────────────────────────┘
+       │
+135ms  ─── profileCheckpoint('main_tsx_imports_loaded')
+           ← 此时 MDM 和 Keychain 数据通常已就绪
+\end{lstlisting}
+
+\subsection{反调试保护}
+
+在启动阶段还有一个安全措施——反调试检测：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// 如果非内部用户使用调试/检查模式运行，直接退出
+if ("external" !== 'ant' && isBeingDebugged()) {
+  process.exit(1);
+}
+\end{lstlisting}
+
+\code{isBeingDebugged()} 检查三个信号：
+\begin{enumerate}[nosep]
+  \item \code{process.execArgv} 中的 \code{--inspect} / \code{--debug} 标志
+  \item \code{NODE\_OPTIONS} 环境变量中的检查标志
+  \item Node.js inspector 模块是否激活
+\end{enumerate}
+
+注意 \code{"external" !== 'ant'} 这个条件：在内部构建中，字符串 \code{"external"} 会被替换为 \code{"ant"}，使得内部用户可以自由调试。
+
+\subsection{配置迁移系统}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const CURRENT_MIGRATION_VERSION = 11;
+
+function runMigrations(): void {
+  if (getGlobalConfig().migrationVersion !== CURRENT_MIGRATION_VERSION) {
+    migrateAutoUpdatesToSettings();
+    migrateBypassPermissionsAcceptedToSettings();
+    migrateEnableAllProjectMcpServersToSettings();
+    resetProToOpusDefault();
+    migrateSonnet1mToSonnet45();
+    migrateLegacyOpusToCurrent();
+    migrateSonnet45ToSonnet46();
+    migrateOpusToOpus1m();
+    migrateReplBridgeEnabledToRemoteControlAtStartup();
+    // ...
+    saveGlobalConfig(prev => ({
+      ...prev,
+      migrationVersion: CURRENT_MIGRATION_VERSION
+    }));
+  }
+}
+\end{lstlisting}
+
+这个迁移系统的设计特点：
+\begin{itemize}[nosep]
+  \item \textbf{版本号控制}：只有当配置版本号不匹配时才执行迁移
+  \item \textbf{幂等性}：每个迁移函数自身处理"已迁移"状态
+  \item \textbf{模型演进追踪}：可以清晰看到 Anthropic 的模型命名变化历史（Sonnet 1M $\rightarrow$ Sonnet 4.5 $\rightarrow$ Sonnet 4.6、Opus $\rightarrow$ Opus 1M 等）
+\end{itemize}
+
+\section{初始化流程}
+
+\subsection{Commander.js 命令注册}
+
+\code{main.tsx} 使用 Commander.js 定义了丰富的 CLI 选项：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const program = new CommanderCommand()
+  .name('claude')
+  .description('Claude Code CLI')
+  .option('-p, --print <prompt>', '单次执行模式（非交互式）')
+  .option('--model <model>', '指定模型')
+  .option('--permission-mode <mode>', '权限模式')
+  .option('--tools <preset>', '工具预设')
+  .option('--add-dir <path...>', '添加额外工作目录')
+  .option('--bare', '精简模式')
+  .option('--verbose', '详细输出')
+  // ... 更多选项
+\end{lstlisting}
+
+\subsection{两种运行模式}
+
+Claude Code 有两种主要运行模式：
+
+\textbf{Print 模式 (\code{-p})} — 非交互式，单次执行：
+\begin{lstlisting}[language=bash,breaklines=true]
+claude -p "请解释这个函数的作用" 
+\end{lstlisting}
+
+\textbf{REPL 模式} — 交互式，持续对话：
+\begin{lstlisting}[language=bash,breaklines=true]
+claude  # 直接启动交互式会话
+\end{lstlisting}
+
+\subsection{信任对话框}
+
+在交互模式下，首次使用时会显示信任对话框：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+function prefetchSystemContextIfSafe(): void {
+  const isNonInteractiveSession = getIsNonInteractiveSession();
+
+  // 非交互模式下，信任是隐式的
+  if (isNonInteractiveSession) {
+    void getSystemContext();
+    return;
+  }
+
+  // 交互模式下，只在信任已建立时才预取
+  const hasTrust = checkHasTrustDialogAccepted();
+  if (hasTrust) {
+    void getSystemContext();
+  }
+  // 否则等待信任建立后再获取
+}
+\end{lstlisting}
+
+\textbf{安全考量}：\code{getSystemContext()} 会执行 \code{git status} 等 Git 命令。Git 命令可以通过 hooks 和配置（如 \code{core.fsmonitor}、\code{diff.external}）执行任意代码。因此，在用户确认信任当前目录之前，不会执行任何 Git 命令。
+
+\section{延迟预取}
+
+Claude Code 将非关键的预取操作延迟到首次渲染之后：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+export function startDeferredPrefetches(): void {
+  // 如果只是测量启动性能，跳过所有预取
+  if (isEnvTruthy(process.env.CLAUDE_CODE_EXIT_AFTER_FIRST_RENDER)) {
+    return;
+  }
+  
+  // --bare 模式：跳过所有预取
+  if (isBareMode()) {
+    return;
+  }
+
+  // 这些在首次渲染之后运行，不阻塞初始画面：
+  // - initUser：用户信息初始化
+  // - getUserContext：CLAUDE.md 读取
+  // - tips：使用提示
+  // - countFiles：文件计数
+  // - modelCapabilities：模型能力查询
+  // - change detectors：设置/技能变更检测
+}
+\end{lstlisting}
+
+\textbf{设计原则}：将用户\textbf{感知到的启动时间}与\textbf{实际初始化时间}分离。用户看到界面（首次渲染）后，后台继续完成剩余初始化。
+
+\section{GrowthBook 功能开关初始化}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { initializeGrowthBook } from './services/analytics/growthbook.js';
+\end{lstlisting}
+
+GrowthBook 是 Claude Code 使用的功能开关（Feature Flag）服务。它在启动时初始化，用于：
+\begin{itemize}[nosep]
+  \item 控制 A/B 测试
+  \item 灰度发布新功能
+  \item 远程配置管理
+\end{itemize}
+
+与 \code{bun:bundle} 的编译时 Feature Flag 不同，GrowthBook 提供的是\textbf{运行时功能开关}，可以在不更新版本的情况下远程开关功能。
+
+\section{会话管理}
+
+\subsection{会话 ID}
+
+每次启动都会生成一个唯一的会话 ID：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const sessionId = getSessionId(); // UUID v4
+\end{lstlisting}
+
+会话 ID 用于：
+\begin{itemize}[nosep]
+  \item 关联遥测数据
+  \item 持久化会话记录
+  \item 恢复（Resume）会话
+\end{itemize}
+
+\subsection{并发会话检测}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { countConcurrentSessions, registerSession } from 'src/utils/concurrentSessions.js';
+\end{lstlisting}
+
+Claude Code 支持多个实例同时运行，并通过文件锁机制追踪并发会话数量。
+
+\section{遥测与启动日志}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+async function logStartupTelemetry(): Promise<void> {
+  if (isAnalyticsDisabled()) return;
+  
+  const [isGit, worktreeCount, ghAuthStatus] = await Promise.all([
+    getIsGit(),
+    getWorktreeCount(),
+    getGhAuthStatus()
+  ]);
+  
+  logEvent('tengu_startup_telemetry', {
+    is_git: isGit,
+    worktree_count: worktreeCount,
+    gh_auth_status: ghAuthStatus,
+    sandbox_enabled: SandboxManager.isSandboxingEnabled(),
+    auto_updater_disabled: isAutoUpdaterDisabled(),
+    // ...
+  });
+}
+\end{lstlisting}
+
+注意内部代号 \textbf{"tengu"}（天狗）— 这是 Claude Code 的内部项目名。所有遥测事件都以 \code{tengu\_} 为前缀。
+
+\section{设计启示}
+
+\subsection{利用模块求值时间}
+
+在 JavaScript/TypeScript 应用中，模块加载是一段"不可避免"的开销。Claude Code 展示了如何将这段时间变废为宝：在模块求值开始前启动异步 I/O 操作，让它们与模块加载并行进行。
+
+\subsection{分层初始化}
+
+将初始化分为多个阶段：
+\begin{enumerate}[nosep]
+  \item \textbf{最早}：性能关键的异步 I/O（MDM、Keychain）
+  \item \textbf{模块加载期间}：自动完成（JavaScript 引擎的工作）
+  \item \textbf{首次渲染前}：必要的同步初始化
+  \item \textbf{首次渲染后}：延迟预取（不影响用户感知）
+\end{enumerate}
+
+\subsection{安全优先}
+
+在信任建立之前不执行可能危险的操作（如 Git 命令），体现了安全与性能之间的平衡。
+
+\bigskip\noindent\rule{\textwidth}{0.4pt}\bigskip
+
+\textbf{下一章}：\href{./chapter-04-query-engine.md}{核心查询引擎 QueryEngine}

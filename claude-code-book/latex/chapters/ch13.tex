@@ -1,0 +1,196 @@
+\chapter{Feature Flag 与条件编译}
+
+\section{双层 Feature Flag 系统}
+
+Claude Code 使用两层 Feature Flag 系统，分别在编译时和运行时控制功能：
+
+\begin{longtable}{llll}
+\toprule
+层次 & 机制 & 作用时机 & 管理方式 \\
+\midrule
+\textbf{编译时} & \code{bun:bundle} & Build/Run & 代码中静态定义 \\
+\textbf{运行时} & GrowthBook & 应用启动后 & 远程控制面板 \\
+\bottomrule
+\end{longtable}
+
+\section{编译时 Feature Flag (\code{bun:bundle})}
+
+\subsection{工作原理}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { feature } from 'bun:bundle'
+
+// 编译时：如果 VOICE_MODE 未启用，整个分支被移除
+const voiceCommand = feature('VOICE_MODE')
+  ? require('./commands/voice/index.js').default
+  : null
+\end{lstlisting}
+
+Bun 的 bundler 在编译时将 \code{feature()} 调用替换为 \code{true} 或 \code{false} 常量，然后通过死代码消除（Tree Shaking）移除不可达的代码分支。
+
+\subsection{开发环境 Polyfill}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// plugins/bunBundleDev.ts
+plugin({
+  name: 'bun-bundle-dev',
+  setup(build) {
+    build.module('bun:bundle', () => ({
+      exports: {
+        feature(flag: string): boolean {
+          return enabledFlags.has(flag)
+        },
+      },
+      loader: 'object',
+    }))
+  },
+})
+\end{lstlisting}
+
+开发时通过环境变量控制：
+
+\begin{lstlisting}[language=bash,breaklines=true]
+FEATURE_FLAGS=KAIROS,VOICE_MODE bun run src/main.tsx
+\end{lstlisting}
+
+\subsection{已知 Feature Flag 列表}
+
+从源码中提取的所有编译时 Feature Flag：
+
+\begin{longtable}{lll}
+\toprule
+Flag & 功能 & 影响范围 \\
+\midrule
+\code{PROACTIVE} & 主动模式 & SleepTool, proactive 命令 \\
+\code{KAIROS} & 助手模式 & assistant 模块, SendUserFileTool, PushNotificationTool \\
+\code{KAIROS\textbackslash\{\}\_BRIEF} & 简要模式 & brief 命令 \\
+\code{KAIROS\textbackslash\{\}\_PUSH\textbackslash\{\}\_NOTIFICATION} & 推送通知 & PushNotificationTool \\
+\code{KAIROS\textbackslash\{\}\_GITHUB\textbackslash\{\}\_WEBHOOKS} & GitHub Webhook & SubscribePRTool \\
+\code{BRIDGE\textbackslash\{\}\_MODE} & IDE 桥接 & bridge 命令, remoteControlServer \\
+\code{DAEMON} & 守护进程 & remoteControlServer 命令 \\
+\code{VOICE\textbackslash\{\}\_MODE} & 语音输入 & voice 命令 \\
+\code{AGENT\textbackslash\{\}\_TRIGGERS} & 代理触发器 & CronCreate/Delete/ListTool \\
+\code{AGENT\textbackslash\{\}\_TRIGGERS\textbackslash\{\}\_REMOTE} & 远程触发 & RemoteTriggerTool \\
+\code{MONITOR\textbackslash\{\}\_TOOL} & 监控工具 & MonitorTool \\
+\code{COORDINATOR\textbackslash\{\}\_MODE} & 协调器模式 & coordinatorMode 模块 \\
+\code{HISTORY\textbackslash\{\}\_SNIP} & 历史裁剪 & SnipTool, snipCompact \\
+\code{CONTEXT\textbackslash\{\}\_COLLAPSE} & 上下文折叠 & CtxInspectTool, contextCollapse \\
+\code{CACHED\textbackslash\{\}\_MICROCOMPACT} & 缓存微压缩 & microcompact 缓存编辑 \\
+\code{REACTIVE\textbackslash\{\}\_COMPACT} & 响应式压缩 & reactiveCompact \\
+\code{TOKEN\textbackslash\{\}\_BUDGET} & Token 预算 & tokenBudget 追踪 \\
+\code{OVERFLOW\textbackslash\{\}\_TEST\textbackslash\{\}\_TOOL} & 溢出测试 & OverflowTestTool \\
+\code{TERMINAL\textbackslash\{\}\_PANEL} & 终端面板 & TerminalCaptureTool \\
+\code{WEB\textbackslash\{\}\_BROWSER\textbackslash\{\}\_TOOL} & 浏览器工具 & WebBrowserTool \\
+\code{TRANSCRIPT\textbackslash\{\}\_CLASSIFIER} & 对话分类器 & autoModeState \\
+\code{BREAK\textbackslash\{\}\_CACHE\textbackslash\{\}\_COMMAND} & 缓存破坏 & systemPromptInjection \\
+\code{UDS\textbackslash\{\}\_INBOX} & UDS 收件箱 & ListPeersTool \\
+\code{WORKFLOW\textbackslash\{\}\_SCRIPTS} & 工作流脚本 & WorkflowTool \\
+\code{BG\textbackslash\{\}\_SESSIONS} & 后台会话 & taskSummary \\
+\code{EXPERIMENTAL\textbackslash\{\}\_SKILL\textbackslash\{\}\_SEARCH} & 技能搜索 & skillSearch \\
+\code{TEMPLATES} & 模板 & job classifier \\
+\code{CCR\textbackslash\{\}\_REMOTE\textbackslash\{\}\_SETUP} & 远程设置 & remote-setup 命令 \\
+\bottomrule
+\end{longtable}
+
+\section{运行时 Feature Flag (GrowthBook)}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import {
+  initializeGrowthBook,
+  refreshGrowthBookAfterAuthChange,
+  getFeatureValue_CACHED_MAY_BE_STALE,
+  checkStatsigFeatureGate_CACHED_MAY_BE_STALE,
+} from './services/analytics/growthbook.js'
+\end{lstlisting}
+
+\subsection{缓存策略}
+
+函数名 \code{\_CACHED\_MAY\_BE\_STALE} 暗示了一个重要设计：
+\begin{itemize}[nosep]
+  \item GrowthBook 值在启动时获取并缓存
+  \item 缓存值可能过期但仍被使用
+  \item 这避免了每次检查时的网络请求
+  \item 认证变更后会刷新
+\end{itemize}
+
+\subsection{使用场景}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// Scratchpad 功能门
+function isScratchpadGateEnabled(): boolean {
+  return checkStatsigFeatureGate_CACHED_MAY_BE_STALE('tengu_scratch')
+}
+\end{lstlisting}
+
+运行时 Flag 用于：
+\begin{itemize}[nosep]
+  \item A/B 测试新功能
+  \item 灰度发布
+  \item 远程紧急开关
+  \item 用户分群
+\end{itemize}
+
+\section{环境变量控制}
+
+除了两层 Feature Flag，Claude Code 还大量使用环境变量：
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// 用户类型
+process.env.USER_TYPE === 'ant'          // 内部用户
+
+// 功能开关
+process.env.CLAUDE_CODE_COORDINATOR_MODE // 协调器模式
+process.env.CLAUDE_CODE_SIMPLE           // 简单模式
+process.env.CLAUDE_CODE_REMOTE           // 远程模式
+process.env.CLAUDE_CODE_VERIFY_PLAN      // 验证计划
+process.env.ENABLE_LSP_TOOL             // LSP 工具
+process.env.CLAUDE_CODE_DISABLE_CLAUDE_MDS // 禁用 CLAUDE.md
+
+// 测试
+process.env.NODE_ENV === 'test'          // 测试模式
+\end{lstlisting}
+
+\section{构建时常量}
+
+\begin{lstlisting}[breaklines=true]
+# bunfig.toml
+[define]
+"MACRO.VERSION" = '"1.0.0-dev"'
+"MACRO.BUILD_TIME" = '""'
+"MACRO.PACKAGE_URL" = '"@anthropic-ai/claude-code"'
+\end{lstlisting}
+
+\code{MACRO.*} 常量在构建时由 Bun 的 \code{--define} 注入，用于嵌入版本号、构建时间等信息。
+
+\section{内部 vs 外部构建}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// 代码中有许多这样的条件
+if ("external" !== 'ant') {
+  // 外部构建的行为
+}
+\end{lstlisting}
+
+字符串 \code{"external"} 在内部构建中被替换为 \code{"ant"}。这通过 Bun 的 define 系统实现：
+\begin{itemize}[nosep]
+  \item \textbf{外部构建}：\code{"external" !== 'ant'} $\rightarrow$ \code{true} $\rightarrow$ 执行外部逻辑
+  \item \textbf{内部构建}：\code{"ant" !== 'ant'} $\rightarrow$ \code{false} $\rightarrow$ 跳过（执行内部逻辑）
+\end{itemize}
+
+\section{设计启示}
+
+\subsection{编译时 vs 运行时}
+
+两层 Flag 服务于不同目的：
+\begin{itemize}[nosep]
+  \item \textbf{编译时}：减小 bundle 大小，消除未使用代码
+  \item \textbf{运行时}：支持远程控制和灰度发布
+\end{itemize}
+
+\subsection{命名规范}
+
+\code{\_CACHED\_MAY\_BE\_STALE} 后缀是优秀的 API 设计——函数名本身就传达了使用注意事项。
+
+\bigskip\noindent\rule{\textwidth}{0.4pt}\bigskip
+
+\textbf{下一章}：\href{./chapter-14-bridge-remote.md}{IDE 桥接与远程会话}

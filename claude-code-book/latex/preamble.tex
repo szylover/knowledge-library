@@ -1,0 +1,142 @@
+% ============================================================================
+% preamble.tex — 《深入剖析 Claude Code》
+% 技术书专用：代码高亮、表格、架构图
+% ============================================================================
+
+% --- 中文支持 (XeLaTeX) ---
+\usepackage{ctex}
+\usepackage{fontspec}
+
+% --- 页面布局 ---
+\usepackage[
+  a4paper,
+  top=2.5cm, bottom=2.5cm,
+  left=2.5cm, right=2.5cm
+]{geometry}
+
+% --- 基础排版 ---
+\usepackage{enumitem}
+\usepackage{parskip}
+\setlength{\parskip}{0.4em}
+\setlength{\parindent}{0em}
+
+% --- 图表 ---
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+
+% --- 绘图 ---
+\usepackage{tikz}
+\usetikzlibrary{
+  positioning, calc, arrows.meta,
+  decorations.pathreplacing,
+  shapes.geometric, fit,
+}
+
+% --- 代码高亮 ---
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codebg}{HTML}{F8F8F8}
+\definecolor{codeframe}{HTML}{DDDDDD}
+\definecolor{keyword}{HTML}{0000FF}
+\definecolor{string}{HTML}{A31515}
+\definecolor{comment}{HTML}{008000}
+\definecolor{identifier}{HTML}{267F99}
+
+\lstdefinelanguage{TypeScript}{
+  keywords={abstract, any, as, async, await, boolean, break, case, catch,
+    class, const, constructor, continue, debugger, declare, default,
+    delete, do, else, enum, export, extends, false, finally, for,
+    from, function, get, if, implements, import, in, instanceof,
+    interface, is, keyof, let, module, namespace, never, new, null,
+    number, object, of, package, private, protected, public, readonly,
+    require, return, set, static, string, super, switch, symbol, this,
+    throw, true, try, type, typeof, undefined, unique, unknown, var,
+    void, while, with, yield},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  morestring=[b]`,
+}
+
+\lstset{
+  basicstyle=\small\ttfamily,
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{codeframe},
+  breaklines=true,
+  breakatwhitespace=false,
+  tabsize=2,
+  showstringspaces=false,
+  keywordstyle=\color{keyword}\bfseries,
+  stringstyle=\color{string},
+  commentstyle=\color{comment}\itshape,
+  identifierstyle=\color{black},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+  xleftmargin=16pt,
+  framexleftmargin=16pt,
+  aboveskip=1em,
+  belowskip=0.8em,
+  language=TypeScript,
+  escapeinside={(*@}{@*)},
+  literate={→}{$\rightarrow$}1,
+}
+
+% 行内代码
+\newcommand{\code}[1]{\texttt{\small #1}}
+
+% --- 交叉引用与超链接 ---
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=green!40!black,
+  urlcolor=cyan!50!black,
+}
+
+% --- 彩色框 ---
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable, skins, listings}
+
+% 概念框
+\newtcolorbox{conceptbox}[1][]{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=blue!4, colframe=blue!40!black,
+  boxrule=0.6pt, left=8pt, right=8pt, top=8pt, bottom=8pt,
+  fonttitle=\bfseries,
+  title={#1},
+}
+
+% 要点框
+\newtcolorbox{keypoint}[1][]{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=orange!5, colframe=orange!50!black,
+  boxrule=0.6pt, left=8pt, right=8pt, top=8pt, bottom=8pt,
+  fonttitle=\bfseries,
+  title={#1},
+}
+
+% 注意框
+\newtcolorbox{notebox}{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=gray!6, colframe=gray!50,
+  boxrule=0.6pt, left=8pt, right=8pt, top=8pt, bottom=8pt,
+}
+
+% --- 章节标题样式 ---
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}
+  {\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-20pt}{30pt}

@@ -1,0 +1,179 @@
+\chapter{插件与技能系统}
+
+\section{插件系统}
+
+Claude Code 的插件系统允许通过第三方扩展来增强功能。
+
+\subsection{架构}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+src/plugins/
+├── bundled/           # 内置插件
+│   └── index.ts       # 内置插件初始化
+└── ...
+
+src/services/plugins/
+├── pluginLoader.ts    # 插件加载器
+└── pluginCliCommands.ts # 插件 CLI 命令
+
+src/utils/plugins/
+├── installedPluginsManager.ts # 已安装插件管理
+├── managedPlugins.ts          # 托管插件
+├── pluginDirectories.ts       # 插件目录
+├── cacheUtils.ts              # 缓存工具
+├── orphanedPluginFilter.ts    # 孤立插件过滤
+└── pluginLoader.ts            # 插件加载逻辑
+\end{lstlisting}
+
+\subsection{插件加载}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { initBuiltinPlugins } from './plugins/bundled/index.js'
+import { loadAllPluginsCacheOnly } from './utils/plugins/pluginLoader.js'
+
+// 启动时初始化内置插件
+initBuiltinPlugins()
+
+// 缓存优先加载所有插件
+const { enabled, errors } = await loadAllPluginsCacheOnly()
+\end{lstlisting}
+
+\subsection{插件管理命令}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import {
+  VALID_INSTALLABLE_SCOPES,
+  VALID_UPDATE_SCOPES,
+} from './services/plugins/pluginCliCommands.js'
+\end{lstlisting}
+
+支持安装、更新、删除插件，以及按作用域（全局/项目/用户）管理。
+
+\subsection{版本管理}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { initializeVersionedPlugins } from './utils/plugins/installedPluginsManager.js'
+import { cleanupOrphanedPluginVersionsInBackground } from './utils/plugins/cacheUtils.js'
+\end{lstlisting}
+
+插件支持版本管理，并在后台清理孤立版本。
+
+\subsection{托管插件}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { getManagedPluginNames } from './utils/plugins/managedPlugins.js'
+\end{lstlisting}
+
+"托管插件"是由 Anthropic 或企业管理员配置的插件，用户无法自行修改。
+
+\section{技能系统}
+
+技能（Skills）是可复用的工作流定义，类似于"预设的操作序列"。
+
+\subsection{架构}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+src/skills/
+├── bundled/           # 内置技能
+│   └── index.ts       # 内置技能初始化
+└── ...
+\end{lstlisting}
+
+\subsection{内置技能初始化}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { initBundledSkills } from './skills/bundled/index.js'
+\end{lstlisting}
+
+\subsection{技能工具}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { SkillTool } from './tools/SkillTool/SkillTool.js'
+\end{lstlisting}
+
+\code{SkillTool} 是 LLM 调用技能的入口。通过它，模型可以执行预定义的工作流，如 \code{/commit}（提交代码）、\code{/verify}（验证变更）等。
+
+\subsection{技能发现}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+// 技能发现预取——每次迭代运行
+const pendingSkillPrefetch = skillPrefetch?.startSkillDiscoveryPrefetch(
+  null,
+  messages,
+  toolUseContext,
+)
+\end{lstlisting}
+
+技能发现在查询循环的每次迭代中运行，与模型流式输出和工具执行并行。这替代了之前在 \code{getAttachmentMessages} 中的阻塞式发现路径。
+
+\subsection{技能搜索}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+const clearSkillIndexCache = feature('EXPERIMENTAL_SKILL_SEARCH')
+  ? require('./services/skillSearch/localSearch.js').clearSkillIndexCache
+  : null
+\end{lstlisting}
+
+实验性技能搜索功能支持在大量技能中进行全文搜索。
+
+\subsection{斜杠命令技能}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { getSlashCommandToolSkills } from './commands.js'
+\end{lstlisting}
+
+某些斜杠命令可以注册为技能，使得 LLM 可以自主调用它们。
+
+\section{技能变更检测}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { skillChangeDetector } from './utils/skills/skillChangeDetector.js'
+\end{lstlisting}
+
+当技能文件发生变更时，系统能检测并重新加载，无需重启。
+
+\section{遥测}
+
+\begin{lstlisting}[language=TypeScript,breaklines=true]
+import { logSkillsLoaded } from './utils/telemetry/skillLoadedEvent.js'
+import { logPluginsEnabledForSession } from './utils/telemetry/pluginTelemetry.js'
+import { logPluginLoadErrors } from './utils/telemetry/pluginTelemetry.js'
+
+// 记录加载的技能
+void logSkillsLoaded(getCwd(), getContextWindowForModel(model, getSdkBetas()))
+
+// 记录启用的插件
+logPluginsEnabledForSession(enabled, managedNames, getPluginSeedDirs())
+
+// 记录插件加载错误
+logPluginLoadErrors(errors, managedNames)
+\end{lstlisting}
+
+\section{设计启示}
+
+\subsection{技能 vs 工具 vs 命令}
+
+Claude Code 的三层扩展模型：
+
+\begin{longtable}{llll}
+\toprule
+层次 & 目的 & 调用者 & 粒度 \\
+\midrule
+\textbf{工具 (Tool)} & 原子操作 & LLM & 低（读文件、执行命令） \\
+\textbf{技能 (Skill)} & 工作流 & LLM / 用户 & 中（提交、审查） \\
+\textbf{命令 (Command)} & 用户操作 & 用户 & 高（配置、诊断） \\
+\bottomrule
+\end{longtable}
+
+\subsection{渐进式扩展}
+
+\begin{itemize}[nosep]
+  \item 内置插件/技能提供基础功能
+  \item 用户可以添加自定义技能
+  \item 企业可以通过托管插件统一配置
+  \item 第三方可以发布开源插件
+\end{itemize}
+
+\bigskip\noindent\rule{\textwidth}{0.4pt}\bigskip
+
+\textbf{下一章}：\href{./chapter-17-patterns.md}{设计模式与工程实践总结}
