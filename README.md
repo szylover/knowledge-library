@@ -18,6 +18,16 @@
 
 ---
 
+## 🤖 AI Agent 转行指南
+
+### 从零到一：AI Agent 工程师转行与面试完全指南 — `ai-agent-book/`（20 章）
+
+面向传统软件工程师的 AI Agent 转行路线图。涵盖行业全景与岗位分析、LLM/Embedding/RAG 基础、Agent 架构模式（ReAct/Function Calling/多智能体）、MCP 与 A2A 通信协议、LangChain/OpenAI SDK 实战、框架横评与选型、工程化部署，以及 50+ 面试理论题精讲、6 个系统设计案例和编程实操题。附 30/60/90 天学习路线图。
+
+👉 [阅读全书](./ai-agent-book/README.md)
+
+---
+
 ## 📖 数学部分
 
 ### 线性代数 — `linear-algebra-book/`（241 页）
@@ -91,6 +101,7 @@ cd physics-textbook && lualatex main.tex && lualatex main.tex
 ## 目录结构
 
 ```
+├── ai-agent-book/             # 《AI Agent 转行与面试指南》(20章)
 ├── claude-code-book/          # 《深入剖析 Claude Code》技术书 (17章)
 ├── linear-algebra-book/       # 线性代数
 ├── abstract-algebra-book/     # 抽象代数
