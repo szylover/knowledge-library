@@ -1,0 +1,150 @@
+% ============================================================================
+% preamble.tex — 包、字体、排版、代码环境、自定义彩框
+% 《Airbnb 面试通关手册》
+% ============================================================================
+
+% --- 中文支持 (XeLaTeX) ---
+\usepackage{ctex}
+\usepackage{fontspec}
+
+% 等宽字体：DejaVu Sans Mono（渲染代码 / 框图制表符；需安装到系统字体）
+\setmonofont{DejaVu Sans Mono}[Scale=0.92]
+
+% --- 页面布局 ---
+\usepackage[
+  a4paper,
+  top=2.4cm, bottom=2.4cm,
+  left=2.3cm, right=2.3cm
+]{geometry}
+
+% --- 数学 ---
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+
+% --- 图表 ---
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+
+% --- 绘图 ---
+\usepackage{tikz}
+\usetikzlibrary{positioning, calc, arrows.meta, fit, backgrounds, shapes.geometric}
+
+% --- 颜色 ---
+\usepackage{xcolor}
+\definecolor{abred}{HTML}{FF5A5F}     % Airbnb 品牌红
+\definecolor{abdark}{HTML}{484848}
+\definecolor{abgray}{HTML}{767676}
+\definecolor{codebg}{HTML}{F7F7F9}
+\definecolor{codekw}{HTML}{0033B3}
+\definecolor{codestr}{HTML}{067D17}
+\definecolor{codecmt}{HTML}{8C8C8C}
+\definecolor{codetype}{HTML}{8000A0}
+
+% --- 超链接与交叉引用 ---
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=abred!70!black,
+  citecolor=green!40!black,
+  urlcolor=cyan!55!black,
+  bookmarksnumbered=true,
+}
+\usepackage[nameinlink]{cleveref}
+
+% --- 代码高亮 (listings, 纯 LaTeX, 无需 python) ---
+\usepackage{xstring}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codebg},
+  keywordstyle=\color{codekw}\bfseries,
+  stringstyle=\color{codestr},
+  commentstyle=\color{codecmt}\itshape,
+  numberstyle=\tiny\color{abgray},
+  numbers=left, numbersep=8pt,
+  frame=single, framesep=5pt, rulecolor=\color{gray!30},
+  breaklines=true, breakatwhitespace=false,
+  showstringspaces=false,
+  tabsize=2,
+  columns=fullflexible,
+  keepspaces=true,
+  xleftmargin=14pt, xrightmargin=4pt,
+  aboveskip=8pt, belowskip=8pt,
+}
+% C++ 别名（含常见 STL 类型着色）
+\lstdefinestyle{cpp}{
+  language=C++,
+  morekeywords={auto, vector, string, unordered_map, unordered_set, map, set,
+    priority_queue, queue, deque, pair, size_t, int64_t, nullptr, override,
+    constexpr, string_view},
+  emph={int, long, bool, char, double, void, struct, class},
+  emphstyle=\color{codetype},
+}
+\lstnewenvironment{cpp}{\lstset{style=cpp}}{}
+
+% --- 彩色定理框 ---
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable, skins}
+
+% ============================================================================
+% 自定义结构化彩框：本书面经的核心“设计思想”载体
+% ============================================================================
+
+% 设计思想 / 核心心法（红框）
+\newtcolorbox{idea}[1][核心思想]{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=abred!5, colframe=abred!80!black,
+  boxrule=0.8pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries, title={【设计思想】#1},
+}
+
+% 陷阱 / 易错点（橙框）
+\newtcolorbox{pitfall}[1][常见陷阱]{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=orange!6, colframe=orange!70!black,
+  boxrule=0.7pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries, title={【陷阱】#1},
+}
+% 追问 / Follow-up（蓝框）
+\newtcolorbox{followup}[1][面试官追问]{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=blue!4, colframe=blue!55!black,
+  boxrule=0.7pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries, title={【追问】#1},
+}
+% 复杂度 / 要点速记（绿框）
+\newtcolorbox{keypoint}[1][要点]{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=green!4, colframe=green!45!black,
+  boxrule=0.7pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries, title={【要点】#1},
+}
+
+% ============================================================================
+% 题目标题命令：\problem{编号}{标题}{难度}
+% ============================================================================
+\newcommand{\difficulty}[1]{%
+  \IfStrEqCase{#1}{%
+    {Easy}{\textcolor{green!50!black}{\textbf{Easy}}}%
+    {Medium}{\textcolor{orange!80!black}{\textbf{Medium}}}%
+    {Hard}{\textcolor{abred!80!black}{\textbf{Hard}}}%
+  }[\textbf{#1}]%
+}
+\newcommand{\problem}[3]{%
+  \section{#2}%
+  \noindent{\small\textcolor{abgray}{LeetCode #1 \quad|\quad 难度：}\difficulty{#3}}\par
+  \vspace{4pt}\hrule height 0.4pt \vspace{8pt}%
+}
+
+% 常用记号
+\newcommand{\bigO}[1]{\ensuremath{O(#1)}}
+\newcommand{\code}[1]{\texttt{#1}}

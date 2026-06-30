@@ -1,0 +1,94 @@
+\chapter{可复用的分布式设计思想}
+
+前面几章在具体题目里反复用到了一批“心法”。这一章把它们集中拎出来、独立讲透——因为面试官追问到深处时，考的就是你对这些通用思想的理解。把这章当成一份“设计模式备忘录”。
+
+\section{幂等性（Idempotency）}
+
+\textbf{幂等}：同一个操作执行一次和执行多次，结果相同。在分布式系统里，网络重试、消息重投、用户重复点击无处不在，幂等是\textbf{正确性的地基}。
+
+\begin{idea}[用幂等键把“最多一次”变成“恰好一次”的体验]
+实现幂等的通用手段是\textbf{幂等键（idempotency key）}：客户端为一次逻辑操作生成唯一 ID，服务端在处理前先查“这个 key 处理过没有”。第一次处理并记录结果，后续重复请求直接返回上次结果。这样即使底层是“至少一次”投递，用户感知到的也是“恰好一次”。支付、下单、消息消费都靠它。
+\end{idea}
+
+\begin{lstlisting}
+处理请求(req):
+    if 存在(req.idempotencyKey):
+        return 取回上次结果(req.idempotencyKey)   # 重复请求，直接返回
+    result = 真正执行(req)
+    保存结果(req.idempotencyKey, result)            # 原子地记录
+    return result
+\end{lstlisting}
+
+\begin{pitfall}[“查-再-写”之间的竞态]
+上面伪代码的“查”和“写”如果不是原子的，两个并发重复请求可能都通过了检查。解决：用数据库唯一约束（把 idempotencyKey 设为唯一索引，第二个插入直接失败），或用 \code{INSERT ... ON CONFLICT}/\code{SETNX} 这类原子原语。\textbf{唯一约束是最朴素也最可靠的最后防线。}
+\end{pitfall}
+
+\section{强一致并发控制：悲观锁 vs 乐观锁}
+
+“同一资源不能被两个人同时占用”是订房、抢票、库存的共同内核。两种武器：
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+\toprule
+ & \textbf{悲观锁} & \textbf{乐观锁} \\
+\midrule
+做法 & \code{SELECT ... FOR UPDATE} 先锁住 & 读时记 version，写时 CAS 校验 \\
+适合 & 冲突频繁、临界区短 & 冲突少（读多写少） \\
+代价 & 持锁期间阻塞他人、可能死锁 & 冲突时需重试 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{idea}[乐观锁的本质是“先干活，提交时再验票”]
+乐观锁不预先加锁，而是假设“多半不会冲突”：读出数据连同一个版本号，修改后提交时用 \code{UPDATE ... WHERE version = 旧值} 做原子校验。若影响行数为 0，说明期间有人改过，本次作废重试。它把“串行化”的代价从“所有人排队”降到“只有真正冲突的人重试”，在读多写少场景下吞吐远高于悲观锁。
+\end{idea}
+
+\section{Saga 与补偿事务}
+
+跨多个服务的操作（下单 -> 扣款 -> 占库存）无法用一个数据库事务包住。\textbf{Saga} 把它拆成一串本地事务，每步配一个\textbf{补偿动作}；任意一步失败，就反向执行已完成步骤的补偿，把系统拉回一致状态。
+
+\begin{lstlisting}
+正向: 创建订单 -> 冻结房源 -> 扣款 -> 确认订单
+补偿: 取消订单 <- 释放房源 <- 退款 <- (无)
+若“扣款”失败 -> 执行“释放房源” -> 执行“取消订单”
+\end{lstlisting}
+
+\begin{idea}[用“最终一致 + 补偿”替代“分布式强一致”]
+两阶段提交（2PC）能给跨服务强一致，但它同步阻塞、协调者单点、性能差，工业界少用。Saga 用\textbf{一系列本地事务 + 异步补偿}换取高可用与高吞吐，代价是中间态短暂可见（最终一致）。这正是“把强一致范围收到最小”思想的延伸：只在单个本地事务里要强一致，跨服务用补偿兜底。
+\end{idea}
+
+\section{缓存策略与失效}
+
+读多写少的系统几乎都靠缓存扛流量。要点：
+
+\begin{itemize}
+  \item \textbf{Cache-Aside（旁路缓存）}：读时先查缓存，未命中再查库并回填；写时更新库并\textbf{删除}缓存（而非更新缓存）。
+  \item \textbf{失效优于更新}：写后删缓存比写后更新缓存更不容易产生脏数据。
+  \item \textbf{三大故障}：缓存\emph{穿透}（查不存在的 key，用布隆过滤器/空值缓存挡）、\emph{击穿}（热点 key 过期瞬间打穿，用互斥重建/逻辑过期）、\emph{雪崩}（大量 key 同时过期，过期时间加随机抖动）。
+\end{itemize}
+
+\begin{pitfall}[缓存与数据库的双写不一致]
+“先写库再删缓存”在极端并发下仍有窄窗口不一致。务实的兜底：给缓存设合理 TTL（最终自愈），关键路径用\emph{延迟双删}或订阅 binlog 异步失效。面试时点出“这里存在窄窗口，用 TTL + 异步失效兜底”，比假装完美更得分。
+\end{pitfall}
+
+\section{水平分片（Sharding）}
+
+单库扛不住时按某个 key 把数据拆到多库。
+
+\begin{itemize}
+  \item \textbf{分片键选择}是成败关键：要让负载均匀、且高频查询能落在单片。订房系统常按 \code{listingId} 或地域分片。
+  \item \textbf{一致性哈希}让扩缩容时只迁移少量数据。
+  \item \textbf{热点}：明星房源/大 V 会让单片过载，需二级拆分或单独处理。
+\end{itemize}
+
+\section{限流与熔断}
+
+\begin{itemize}
+  \item \textbf{限流}：令牌桶（允许突发）、漏桶（平滑输出）、滑动窗口计数。保护系统不被打垮。
+  \item \textbf{熔断}：下游故障时快速失败（打开断路器），避免线程被拖死引发雪崩；半开状态试探恢复。
+  \item \textbf{降级}：高峰期关掉非核心功能（如推荐），保住核心链路（下单）。
+\end{itemize}
+
+\begin{keypoint}[一张思想地图]
+\textbf{幂等}保正确、\textbf{乐观/悲观锁}防并发冲突、\textbf{Saga}做跨服务一致、\textbf{缓存}扛读、\textbf{分片}扛写与存储、\textbf{限流熔断}保稳定。任何系统设计题，几乎都是这六件工具的排列组合。
+\end{keypoint}

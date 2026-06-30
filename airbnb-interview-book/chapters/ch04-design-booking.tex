@@ -1,0 +1,361 @@
+\chapter{设计订房系统}
+
+订房（Booking）是 Airbnb 业务的心脏，也是系统设计面试里出现频率最高的一题。它的迷人之处在于：表面上只是“点一下按钮把房子订下来”，但只要面试官追问一句“如果两个人同时订同一间房的同一晚怎么办”，整道题就立刻从 CRUD 升级成一道关于\textbf{并发控制、一致性与分布式事务}的硬核设计题。
+
+本章严格按照系统设计答题五步法展开：需求澄清、容量估算、高层架构、数据模型与 API、深挖核心难点。其中第五步——\textbf{如何防止同一房源同一日期段被重复预订（超卖）}——是整章的灵魂，我们会把三种并发方案掰开揉碎对比。
+
+\begin{idea}[先做简单版本，再演进]
+系统设计面试不是比谁一上来就掏出最复杂的架构。正确的节奏是：先澄清需求、画一个能跑通的最小可用版本（单库单表 + 事务），再由面试官的追问驱动你逐步演进（加缓存、分库分表、引入消息队列、做异地多活）。一上来就讲 Redlock、Saga、CRDT，反而暴露你“为了炫技而设计”。\textbf{所有的复杂度都应该是被某个具体需求逼出来的}，能说清“为什么需要”比“知道有这个东西”重要得多。
+\end{idea}
+
+\section{第一步：需求澄清}
+
+不要急着画框图。先用两三分钟和面试官对齐边界，这一步本身就是考点。
+
+\subsection{功能性需求}
+
+\begin{itemize}
+  \item 房客可以查询某房源在某日期段（check-in / check-out）是否可订。
+  \item 房客可以发起预订，系统锁定该日期段，进入待支付状态。
+  \item 房客完成支付后，预订确认；超时未支付则自动释放库存。
+  \item 房客与房东都可以取消预订（触发退款与库存释放）。
+  \item 同一房源、同一晚\textbf{绝不能}被两个有效订单同时占用（核心约束）。
+\end{itemize}
+
+\subsection{非功能性需求}
+
+\begin{itemize}
+  \item \textbf{强一致性优先于可用性}：宁可让用户重试，也绝不能超卖。订房是“钱货两讫”的强一致场景，这与社交 feed 那种“最终一致就行”的场景有本质区别。
+  \item \textbf{高可用}：搜索与浏览路径要 4 个 9；下单路径允许略低，但要快速失败而非阻塞。
+  \item \textbf{延迟}：可用性查询 p95 < 200ms；下单 p99 < 1s。
+  \item \textbf{幂等}：用户网络抖动重复点击“预订”，不能产生两笔订单。
+\end{itemize}
+
+\begin{keypoint}[一致性定调]
+订房系统的库存写路径是\textbf{强一致（CP）}场景：在 CAP 三选二里，当网络分区发生时，我们选择牺牲部分可用性（拒绝/重试），也要保证不超卖。但读路径（搜索、房源详情）可以是\textbf{最终一致（AP）}，容忍秒级延迟。把同一个系统拆成“强一致的写核心”与“最终一致的读外围”，是本章最重要的架构直觉。
+\end{keypoint}
+
+\section{第二步：容量估算}
+
+估算的目的不是算出精确数字，而是判断\textbf{瓶颈在哪、要不要分片、热点有多热}。给出假设、推导数量级即可。
+
+\begin{keypoint}[容量估算（数量级）]
+假设：
+\begin{itemize}
+  \item 平台活跃房源 $\approx 6 \times 10^6$（600 万）。
+  \item 日活跃用户 DAU $\approx 1 \times 10^8$（1 亿），其中真正下单的转化率很低。
+  \item 每天成功预订 $\approx 2 \times 10^6$（200 万单）。
+\end{itemize}
+推导：
+\[
+  \text{写 QPS}_{avg} = \frac{2\times10^6}{86400} \approx 23 \text{ 单/秒}
+\]
+写入并不大，但\textbf{峰值}可达均值的 10--20 倍（约 300--500 QPS），且高度集中在热门房源 / 节假日。
+\[
+  \text{可用性查询 QPS}_{avg} = \frac{1\times10^8 \times 5}{86400} \approx 5800 \text{/秒}
+\]
+（假设每个 DAU 平均看 5 次日历），峰值可破 10 万 QPS。
+存储：每单约 1KB，一年 $\approx 7.3\times10^8$ 单 $\times$ 1KB $\approx$ 730 GB/年，可控；但日历可用性数据（房源 $\times$ 未来一年每一天）规模更大，是缓存重点。
+\end{keypoint}
+
+结论：\textbf{写不大但要强一致且有热点；读极大且可缓存}。这直接决定了后面的架构——库存写走关系型数据库 + 行级锁，读走 Redis 缓存。
+
+\section{第三步：高层架构}
+
+先画一个清晰的最小架构，再标注每个组件的职责。优先用 ASCII 框图，稳妥且符合本书风格。
+
+\begin{lstlisting}
+                         +-------------------+
+        客户端  ----->   |   API Gateway     |  鉴权/限流/路由
+        (App/Web)        +---------+---------+
+                                   |
+            +----------------------+----------------------+
+            |                      |                      |
+            v                      v                      v
+   +----------------+   +------------------+   +-------------------+
+   | Search Service |   | Booking Service  |   | Payment Service   |
+   | (读, 最终一致) |   | (写, 强一致核心) |   | (与第三方网关对接)|
+   +-------+--------+   +---------+--------+   +---------+---------+
+           |                      |                      |
+           v                      v                      v
+   +----------------+   +------------------+   +-------------------+
+   | Elasticsearch  |   |  Booking DB      |   |  Payment DB       |
+   | (倒排+地理索引)|   |  (MySQL/Postgres |   |  (账目, 流水)     |
+   +----------------+   |  按房源分片)     |   +-------------------+
+                        +---------+--------+
+                                  |
+            availability cache    |     events
+            +---------+ <---------+----------> +---------------+
+            |  Redis  |                        |  Kafka (MQ)   |
+            +---------+                        +-------+-------+
+                                                       |
+                              +------------------------+------------------+
+                              v                        v                  v
+                      Notification Svc        Reconciliation       Timeout Worker
+                      (通知房东房客)          (对账)               (超时回滚库存)
+\end{lstlisting}
+
+\textbf{关键设计选择}：
+
+\begin{itemize}
+  \item \textbf{库存（库存就是“日历可用性”）放在关系型数据库}，因为它需要事务和约束来保证不超卖。NoSQL 也能做，但要自己实现条件更新，关系库开箱即用。
+  \item \textbf{支付服务独立}，与订房解耦。订房只负责“锁库存 + 建订单（PENDING）”，支付成功后通过事件回调把订单推进到 CONFIRMED。
+  \item \textbf{Kafka 承载异步副作用}：发通知、对账、超时回滚都不该卡在下单主链路上。
+  \item \textbf{Timeout Worker} 消费“订单创建”事件，到期检查未支付则补偿释放库存。
+\end{itemize}
+
+\begin{idea}[解耦：把副作用赶出主链路]
+下单主链路只做\textbf{必须强一致、必须同步完成}的两件事：扣库存、建订单。发邮件、发推送、更新搜索索引、记录埋点、对账——这些都是“副作用”，应该通过消息队列异步化。这样做有三个好处：主链路更快（p99 更低）、主链路更稳（下游挂了不影响下单）、各消费者可独立扩缩容与重试。这条“同步做核心、异步做外围”的分界线，几乎适用于所有写密集系统。
+\end{idea}
+
+\section{第四步：数据模型与核心 API}
+
+\subsection{数据模型}
+
+核心是把“库存”建模成一张可以加约束的表。有两种主流建模方式：
+
+\textbf{方式 A：按“房源 + 日期”一行一天（推荐用于强约束）}
+
+\begin{lstlisting}
+-- 每个房源的每一天一行；可订与否一目了然
+CREATE TABLE room_availability (
+    listing_id   BIGINT      NOT NULL,
+    date         DATE        NOT NULL,
+    status       TINYINT     NOT NULL,   -- 0=可订, 1=已占用, 2=房东关闭
+    booking_id   BIGINT      NULL,       -- 占用它的订单
+    version      INT         NOT NULL DEFAULT 0,  -- 乐观锁版本号
+    PRIMARY KEY (listing_id, date)       -- 天然防止同一天两行
+);
+
+CREATE TABLE bookings (
+    booking_id   BIGINT      PRIMARY KEY,
+    listing_id   BIGINT      NOT NULL,
+    guest_id     BIGINT      NOT NULL,
+    check_in     DATE        NOT NULL,
+    check_out    DATE        NOT NULL,   -- 半开区间 [check_in, check_out)
+    status       VARCHAR(16) NOT NULL,   -- PENDING/CONFIRMED/CANCELLED/EXPIRED
+    idempotency_key VARCHAR(64) UNIQUE,  -- 幂等键, 防重复下单
+    amount_cents BIGINT      NOT NULL,
+    currency     CHAR(3)     NOT NULL,
+    created_at   TIMESTAMP   NOT NULL,
+    expires_at   TIMESTAMP   NULL        -- PENDING 的支付截止时刻
+);
+\end{lstlisting}
+
+方式 A 的杀手锏：把多天预订拆成多行，配合主键 \code{(listing\_id, date)} 与事务，超卖问题在数据库层就被天然约束住了。代价是：订一周要写 7 行，长租场景行数膨胀。
+
+\textbf{方式 B：一行一个预订，存日期区间（省空间，但要自己查重叠）}
+
+\begin{lstlisting}
+-- bookings 表直接存 [check_in, check_out) 区间
+-- 下单前必须查：是否存在与新区间重叠的有效订单
+-- 两个区间 [a1,a2) 与 [b1,b2) 重叠的充要条件：a1 < b2 AND b1 < a2
+SELECT 1 FROM bookings
+ WHERE listing_id = :lid
+   AND status IN ('PENDING','CONFIRMED')
+   AND check_in < :new_check_out
+   AND :new_check_in < check_out
+ LIMIT 1;   -- 命中则冲突
+\end{lstlisting}
+
+\begin{idea}[区间重叠判定是可迁移的基本功]
+判断两个半开区间 $[a_1, a_2)$ 与 $[b_1, b_2)$ 是否重叠，记住一个对称式即可：\textbf{$a_1 < b_2$ 且 $b_1 < a_2$}。等价地，“不重叠”当且仅当一个区间整体在另一个左边或右边（$a_2 \le b_1$ 或 $b_2 \le a_1$）。这个判定在日历、会议室预订、限流时间窗、基因组区间、CPU 调度里反复出现。务必用\textbf{半开区间 $[\text{in}, \text{out})$} 建模——check-out 当天房子是空的、可被下一位房客 check-in，半开区间让“连住交接”天然不冲突。
+\end{idea}
+
+\subsection{核心 API 契约}
+
+\begin{lstlisting}
+# 查询可用性 (读, 走缓存)
+GET /v1/listings/{listingId}/availability?check_in=2026-07-01&check_out=2026-07-05
+-> 200 { "available": true, "price_cents": 120000, "currency": "USD" }
+
+# 发起预订 (写, 强一致). 客户端生成 Idempotency-Key
+POST /v1/bookings
+Header: Idempotency-Key: 8f3c...e91   # 同一 key 重复请求返回同一结果
+Body: {
+  "listing_id": 998877,
+  "guest_id": 12345,
+  "check_in": "2026-07-01",
+  "check_out": "2026-07-05"
+}
+-> 201 { "booking_id": 55, "status": "PENDING", "expires_at": "...", "pay_url": "..." }
+-> 409 { "error": "DATES_UNAVAILABLE" }   # 已被占用, 让前端刷新日历
+
+# 确认支付 (通常由支付回调驱动, 也支持查询)
+POST /v1/bookings/{bookingId}/confirm
+-> 200 { "status": "CONFIRMED" }
+
+# 取消
+POST /v1/bookings/{bookingId}/cancel
+-> 200 { "status": "CANCELLED", "refund": {...} }
+\end{lstlisting}
+
+\begin{idea}[幂等键：分布式系统的安全带]
+网络是不可靠的：客户端发了请求没收到响应，不知道服务端到底成没成，于是重试。如果“发起预订”不是幂等的，一次重试就可能变成两笔订单、两次扣款。解法是\textbf{幂等键（Idempotency-Key）}：客户端为每次“逻辑操作”生成一个唯一 key 放进请求头，服务端用它做唯一约束。第一次请求落库并记录 key 与结果；后续携带同一 key 的请求直接\textbf{返回首次的结果}，而不重复执行副作用。幂等是“至少一次投递”的世界里实现“恰好一次效果”的关键，它和重试、超时、消息队列消费是一套组合拳。
+\end{idea}
+
+\section{第五步（核心难点）：如何防止超卖}
+
+这是整道题的胜负手。同一房源、同一晚被两笔订单占用，就是“超卖”。我们对比三种并发控制方案，讲清各自的适用边界与坑。
+
+\subsection{方案 A：数据库事务 + 悲观锁（SELECT ... FOR UPDATE）}
+
+思路：在一个事务里，先用 \code{FOR UPDATE} 锁住目标行，再检查并更新，最后提交。锁住期间别的事务只能等待。
+
+\begin{lstlisting}
+BEGIN;
+-- 锁住这次入住涉及的所有日期行 (方式 A 建模)
+SELECT status FROM room_availability
+ WHERE listing_id = 998877
+   AND date >= '2026-07-01' AND date < '2026-07-05'
+ FOR UPDATE;                       -- 悲观锁: 其他事务在此阻塞
+
+-- 应用层校验: 若任意一天 status != 0 则冲突, 回滚
+UPDATE room_availability
+   SET status = 1, booking_id = 55
+ WHERE listing_id = 998877
+   AND date >= '2026-07-01' AND date < '2026-07-05'
+   AND status = 0;                 -- 再次确认仍可订
+
+-- 受影响行数必须等于天数(4), 否则说明有人抢先, 回滚
+INSERT INTO bookings (...) VALUES (...);
+COMMIT;
+\end{lstlisting}
+
+\textbf{优点}：语义最直观，强一致，数据库帮你保证原子性与隔离性。\textbf{缺点}：锁持有期间吞吐受限；热门房源会成为锁热点，事务排队；若事务里夹了慢操作（比如调用支付）会长时间持锁——\textbf{所以绝不能在持锁事务里做外部调用}。
+
+\begin{pitfall}[在持锁事务里调用支付——经典死亡操作]
+新手最常见的错误：在 \code{BEGIN ... COMMIT} 之间，锁住库存后\textbf{同步调用第三方支付网关}，等支付成功再提交。支付可能耗时几秒甚至超时，这把数据库行锁持有了几秒，热门房源的并发下单瞬间雪崩，连接池被占满，整个服务被一笔慢支付拖垮。正确做法：事务只做“锁库存 + 建 PENDING 订单”然后\textbf{立刻提交}；支付在事务\textbf{之外}异步进行，成功后再用一个新事务把订单推进到 CONFIRMED。“数据库事务要短、要快、绝不跨网络”是铁律。
+\end{pitfall}
+
+\subsection{方案 B：乐观并发控制（version / CAS）}
+
+思路：不提前加锁，假设冲突很少。读出数据连同版本号，更新时用 \code{WHERE version = :old\_version} 做条件更新（CAS）；若受影响行数为 0，说明有人抢先改过，本次失败、让上层重试。
+
+\begin{lstlisting}
+-- 读: 拿到当前 status 与 version
+SELECT status, version FROM room_availability
+ WHERE listing_id = 998877 AND date = '2026-07-01';   -- 设 version=7
+
+-- 写: 条件更新, 只有 version 仍是 7 才成功 (Compare-And-Swap)
+UPDATE room_availability
+   SET status = 1, booking_id = 55, version = version + 1
+ WHERE listing_id = 998877 AND date = '2026-07-01'
+   AND status = 0 AND version = 7;
+-- affected_rows == 1 -> 抢到; == 0 -> 有人抢先, 失败重试
+\end{lstlisting}
+
+\textbf{优点}：无锁、吞吐高，适合\textbf{冲突概率低}的场景（绝大多数房源的绝大多数日期并不抢手）。\textbf{缺点}：高冲突（爆款房源、秒杀式抢订）下重试风暴严重，性能反而不如悲观锁。多天预订要保证全部成功否则回滚，逻辑更复杂。
+
+\begin{idea}[乐观锁 vs 悲观锁：赌的是“冲突率”]
+两者的本质区别是对冲突概率的\textbf{下注方向}。悲观锁假设“冲突很常见”，所以先上锁、宁可让人等；乐观锁假设“冲突很罕见”，所以先干活、出事了再重试。选择标准很简单：\textbf{读多写少、冲突稀疏 -> 乐观锁}（重试代价低，省掉了加锁开销）；\textbf{写多、热点集中、冲突频繁 -> 悲观锁}（重试代价高，不如老老实实排队）。这个判断框架可以原样迁移到库存、账户余额、计数器、文档协同编辑等所有并发更新场景。Airbnb 大多数房源冷门，乐观锁是不错的默认值；对极少数爆款房源可降级为悲观锁或排队。
+\end{idea}
+
+\subsection{方案 C：Redis 分布式锁——能用，但别当成银弹}
+
+思路：下单前先用 \code{SET key value NX PX 30000} 抢一把分布式锁（key 形如 \code{lock:listing:998877:2026-07-01}），抢到才进 DB 操作，完事释放。它能在\textbf{请求到达数据库之前}就挡掉大部分并发，给 DB 减压。
+
+\begin{lstlisting}
+-- 加锁: NX=不存在才设置, PX=30s 自动过期(防死锁), value=唯一token
+SET lock:listing:998877:2026-07-01 <token> NX PX 30000
+
+-- 释放: 必须用 Lua 保证"判断token归属"与"删除"原子, 防误删他人锁
+EVAL "if redis.call('get',KEYS[1])==ARGV[1]
+       then return redis.call('del',KEYS[1]) else return 0 end"
+     1 lock:listing:998877:2026-07-01 <token>
+\end{lstlisting}
+
+\begin{pitfall}[Redis 锁的三个致命风险——别拿它替代 DB 约束]
+\begin{enumerate}
+  \item \textbf{锁过期 vs 业务未完成}：PX 设 30s，但业务卡了 31s，锁自动释放，第二个人拿到锁，两人同时操作——超卖。加“看门狗”续租能缓解，但增加复杂度。
+  \item \textbf{Redlock 争议}：单点 Redis 挂了锁就没了；用多节点 Redlock 又被 Martin Kleppmann 质疑在时钟漂移、GC 停顿下并不安全。这是工业界至今没有定论的争论。
+  \item \textbf{它只是“优化”不是“保证”}：Redis 锁能减少冲突到达 DB，但\textbf{不能作为正确性的最后防线}。释放锁的瞬间、网络分区、进程暂停都可能破坏互斥。
+\end{enumerate}
+正确姿势：把 Redis 锁当作\textbf{第一道减压阀}（挡掉 99\% 的并发），但\textbf{最终正确性必须由数据库的唯一约束 / 条件更新兜底}。即“Redis 抢锁是为了快，DB 约束是为了对”。永远要有一个不依赖时钟、不依赖锁的强一致兜底。
+\end{pitfall}
+
+\subsection{三方案对比与推荐}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l l l X@{}}
+\toprule
+\textbf{方案} & \textbf{一致性} & \textbf{吞吐} & \textbf{适用场景} \\
+\midrule
+悲观锁 FOR UPDATE & 强 & 中（锁排队） & 高冲突热点；逻辑要求绝对正确 \\
+乐观锁 version/CAS & 强 & 高（低冲突时） & 读多写少、冲突稀疏的常态房源 \\
+Redis 分布式锁 & 弱（需 DB 兜底） & 很高 & 作为前置减压阀，不可独立保证正确性 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{面试推荐答法}：默认用\textbf{乐观锁（方案 B）}应对常态低冲突，配合 \code{(listing\_id, date)} 主键 / 唯一约束做最终兜底；对极少数爆款房源，前置一层 \textbf{Redis 减压（方案 C）+ 数据库条件更新}；当冲突确实剧烈时局部退化为\textbf{悲观锁（方案 A）}。核心结论是一句话：\textbf{Redis 用来快，数据库用来对，二者职责分明}。
+
+\section{预订生命周期：状态机与超时回滚}
+
+预订是一个有明确生命周期的实体，用\textbf{状态机}建模能让流程清晰、不留中间态漏洞。
+
+\begin{lstlisting}
+        创建(锁库存)
+            |
+            v
+        +---------+   支付成功   +-----------+
+        | PENDING | -----------> | CONFIRMED |
+        +---------+              +-----------+
+          |     |                      |
+   超时未付|     |用户取消              |入住后/房东取消
+          v     v                      v
+      +---------+   +-----------+   +-----------+
+      | EXPIRED |   | CANCELLED |   | COMPLETED |
+      +---------+   +-----------+   +-----------+
+       (释放库存)   (释放+退款)     (结算给房东)
+\end{lstlisting}
+
+\textbf{支付与预订解耦}后，PENDING 是个危险的中间态：库存被锁住但钱还没到。如果用户关掉页面再也不回来，库存会被永久占用。解决方案是\textbf{超时回滚}：下单时写入 \code{expires\_at}（如 15 分钟后），并发一条延时事件到 Kafka；Timeout Worker 到期检查——若仍是 PENDING，则用\textbf{补偿事务}把订单置为 EXPIRED 并释放库存。
+
+\begin{idea}[Saga 与补偿事务：跨服务一致性的务实解法]
+“锁库存 -> 扣款 -> 确认订单”跨越订房、支付两个服务两个数据库，无法用单个 ACID 事务覆盖。强行上两阶段提交（2PC）会带来同步阻塞与协调者单点，工业界很少在高并发链路用。更务实的是 \textbf{Saga 模式}：把长事务拆成一串本地事务，每步都配一个\textbf{补偿动作}（反向操作）。任一步失败，就按相反顺序执行已完成步骤的补偿，把系统“扳回”一致状态。例如支付失败 -> 补偿“释放库存 + 订单置 EXPIRED”。Saga 放弃了过程中的强隔离（允许出现短暂中间态），换来了高可用与可扩展，是微服务跨服务一致性的主流答案。配合幂等键，补偿动作可安全重试。
+\end{idea}
+
+\begin{pitfall}[超时释放与延迟到账的竞态]
+设想：订单 15 分钟超时，Timeout Worker 第 15 分 0 秒把它置为 EXPIRED、释放了库存；但支付回调在第 15 分 1 秒姗姗来迟，把订单确认了——结果是“库存已释放、订单却 CONFIRMED”，甚至别人已经订走了这几天，造成\textbf{超卖 + 一笔需要退款的幽灵订单}。防御要点：状态机转移必须是\textbf{带条件的原子更新}（\code{UPDATE ... WHERE status='PENDING'}），EXPIRED 之后任何确认都必须失败并触发自动退款；支付服务侧也要校验订单仍处于可确认状态。一切状态推进都要“先看当前态、再用 CAS 推进”，绝不无条件覆盖。
+\end{pitfall}
+
+\section{瓶颈、容错与扩展}
+
+\subsection{分片（Sharding）}
+
+按 \code{listing\_id} 哈希分片，把不同房源的库存与订单打散到不同库。好处：同一房源的所有日期落在同一分片，下单事务是\textbf{单分片本地事务}，无需分布式事务。坏处：爆款房源会造成\textbf{分片热点}。缓解：对超热房源做单独隔离 / 排队，或把“房源 $\times$ 日期范围”二级打散。
+
+\subsection{缓存可用性，读写分离}
+
+可用性查询 QPS 是写的几百倍，且读多写少，用 Redis 缓存房源日历。\textbf{写路径成功扣库存后，主动失效或更新对应缓存}（write-through 或先改库再删缓存）。读走只读副本，进一步分担主库压力。
+
+\begin{idea}[缓存失效：先改库，再删缓存]
+缓存与数据库的一致性是经典难题。推荐 \textbf{Cache-Aside + 先更新数据库、再删除缓存}（而非更新缓存）。删除而非更新，是因为“删”是幂等的、并发下不易产生脏值；下次读未命中自然回源重建。即便如此仍有极小概率的并发竞态（读旧值回填），可用\textbf{延迟双删}或给缓存设较短 TTL 兜底。记住：\textbf{缓存是性能优化，不是真相来源（source of truth）}；数据库才是真相。任何“缓存对了但数据库错了”的设计都是本末倒置。
+\end{idea}
+
+\subsection{限流与熔断}
+
+API Gateway 层做\textbf{限流}（令牌桶 / 漏桶）防止恶意刷单与突发洪峰压垮库存库；对支付等外部依赖做\textbf{熔断}（连续失败则快速失败并降级），避免级联雪崩。下单失败要给用户清晰反馈（“手慢了，请刷新日历”）而非长时间转圈。
+
+\subsection{容灾与多活}
+
+库存库做主从复制 + 自动故障转移。跨区域可做\textbf{异地多活}，但库存的强一致要求使跨区域写很棘手——常见折中是按房源地理位置就近\textbf{单元化（cell-based）}：某房源的库存只在其归属单元强一致写，跨单元只读复制。这把“全局强一致”降级为“单元内强一致 + 单元间最终一致”，是大规模系统的常见妥协。
+
+\begin{followup}[追问：双十一级别的爆款房源，乐观锁重试风暴怎么办？]
+回答分层：(1) 承认乐观锁在极高冲突下会重试风暴，吞吐反降。(2) 第一招\textbf{排队削峰}：把对热点房源的下单请求送入一个串行队列（每房源一个 partition），由单消费者顺序处理，把并发冲突变成串行无冲突——本质是用排队消除竞争。(3) 第二招\textbf{热点隔离}：识别爆款房源并路由到专用资源池 / 专库，避免拖累普通房源。(4) 退一步，对该房源局部改用悲观锁，让冲突在 DB 内排队而非应用层空转重试。(5) 产品手段：库存预扣 + 倒计时支付，提前过滤无效流量。关键是表达“我知道乐观锁不是万能的，会按冲突强度切换策略”。
+\end{followup}
+
+\begin{followup}[追问：如何保证支付与订单状态最终一致？万一支付成功但确认订单的写失败了？]
+这是 Saga 的核心容错点。要点：(1) 支付服务以\textbf{支付流水}为权威记录，订房服务以\textbf{订单状态}为权威记录，两者通过事件/消息驱动同步。(2) “确认订单”这一步必须\textbf{幂等且可重试}——支付成功事件投递到 Kafka，订房消费者消费时用幂等键保证重复消费只生效一次；若确认写失败，消息不 ack，会被\textbf{重新投递}直到成功。(3) 引入\textbf{对账（reconciliation）}定时任务：扫描“支付成功但订单未确认”或“订单确认但无支付”的不一致记录，自动补偿或人工介入。(4) 用户侧看到的是“支付处理中”，确认完成后再通知。本质是：\textbf{异步消息保证最终一致 + 对账兜底 + 幂等消费}三件套，这是所有涉及钱的系统的标准配置。
+\end{followup}
+
+\begin{keypoint}[本章速记]
+\begin{itemize}
+  \item 写强一致（库存不超卖）、读最终一致（可用性可缓存），一个系统两种一致性。
+  \item 防超卖三方案：悲观锁（高冲突）、乐观锁 CAS（低冲突，默认）、Redis 锁（前置减压，不可独立保证正确）。\textbf{Redis 求快，DB 约束求对}。
+  \item 用半开区间 $[\text{in},\text{out})$ 建模日期，重叠判定 $a_1<b_2 \wedge b_1<a_2$。
+  \item 幂等键防重复下单；事务要短、绝不在持锁事务里调外部服务。
+  \item 支付与订房解耦，用状态机 + Saga 补偿 + 超时回滚 + 对账保证最终一致。
+\end{itemize}
+\end{keypoint}

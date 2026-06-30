@@ -1,0 +1,59 @@
+\chapter{Airbnb 面试全景}
+
+在动手刷题之前，先花十分钟把整个流程、各轮的权重、以及 Airbnb 独有的文化考察看清楚。很多技术很强的候选人，恰恰栽在“不知道对方在考什么”上。
+
+\section{整体流程}
+
+Airbnb 软件工程师（SWE）的面试通常分为三个阶段：
+
+\begin{enumerate}
+  \item \textbf{招聘人电话沟通（Recruiter Phone Screen）}：聊背景、动机、时间线，轻量，重点是确认匹配度与意向。
+  \item \textbf{技术电话面（Technical Phone Screen）}：一轮算法编码，约 45 分钟，在共享编辑器（CoderPad）上完成。
+  \item \textbf{Onsite / 虚拟现场（4--5 轮）}：
+  \begin{itemize}
+    \item \textbf{算法编码 $\times 2$}：Airbnb 特色是“真实场景题”，常常需要多步迭代、面向对象建模，而不是纯粹的 LeetCode 套路。
+    \item \textbf{系统设计 $\times 1$}（资深岗必有）。
+    \item \textbf{跨职能 / 行为面 $\times 1$--$2$}：Airbnb 极度重视文化匹配，这一轮权重很高。
+  \end{itemize}
+\end{enumerate}
+
+\begin{idea}[把面试当成一次“协作”，而不是一次“考试”]
+Airbnb 的工程文化强调协作与沟通。面试官在评估的不只是“你能不能解出来”，而是“我愿不愿意每天和这个人一起写代码”。因此：主动澄清需求、边写边解释思路、被指出问题时大方修正——这些“软信号”在 Airbnb 的评分卡里权重很高。沉默地闷头写出最优解，反而可能拿不到 strong hire。
+\end{idea}
+
+\section{各轮在考什么}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l l X@{}}
+\toprule
+\textbf{轮次} & \textbf{核心考点} & \textbf{Airbnb 侧重} \\
+\midrule
+算法编码 & 数据结构、建模 & 真实场景、可扩展代码、迭代追加需求 \\
+系统设计 & 分布式架构 & 双边市场、防超卖、信任与防欺诈、全球规模 \\
+行为面 & 文化与协作 & core values 故事、冲突处理、利他 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{keypoint}[一句话区分]
+\textbf{算法轮}考“你写的代码能不能继续长大”；\textbf{设计轮}考“你做每个取舍说不说得出为什么”；\textbf{行为轮}考“你是不是 Airbnb 想要的那种人”。
+\end{keypoint}
+
+\section{Airbnb 的核心价值观（Core Values）}
+
+行为面几乎完全围绕这四条价值观展开，建议\textbf{每一条都准备 1--2 个真实的 STAR 故事}（见第四部分）：
+
+\begin{itemize}
+  \item \textbf{Champion the Mission}：认同“让人有归属感（belong anywhere）”的使命。
+  \item \textbf{Be a Host}：利他、为他人着想、主动帮助队友。
+  \item \textbf{Embrace the Adventure}：拥抱不确定，成长心态，敢啃硬骨头。
+  \item \textbf{Every Frame Matters}：注重细节，追求卓越，对自己的产出有主人翁意识。
+\end{itemize}
+
+\begin{pitfall}[最容易被低估的一轮]
+很多技术过硬的候选人把行为面当成“走过场”，临场编故事，结果细节经不起追问而失分。事实上，文化匹配轮在 Airbnb 是\textbf{可以一票否决}的。务必提前把故事写下来、讲顺。
+\end{pitfall}
+
+\section{时间线与建议}
+
+从初面到 onsite 通常 2--4 周，结果一般一周内出。建议把准备拆成三块并行推进：\textbf{算法（每天 1--2 题，重质不重量）}、\textbf{系统设计（吃透 2--3 个核心题）}、\textbf{行为故事（写 6--8 个 STAR）}。具体节奏见最后一章的两周冲刺计划。

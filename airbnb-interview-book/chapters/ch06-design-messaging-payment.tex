@@ -1,0 +1,253 @@
+\chapter{设计消息与支付系统}
+
+本章把两道高频系统设计题合在一起：\textbf{消息/通知系统}与\textbf{支付/信任系统}。它们看似无关，却共享同一组分布式心法——\textbf{幂等消费、最终一致、消息驱动解耦、不丢不重}。前者考的是“海量异步消息如何可靠扇出且不丢不重”，后者考的是“涉及真金白银时如何做到绝对正确且抗欺诈”。Airbnb 作为\textbf{双边市场（two-sided marketplace）}，对支付与信任安全（trust \& safety）的重视到了近乎偏执的程度，这一点要在答题中反复体现。
+
+\section{第一部分：消息与通知系统}
+
+\subsection{第一步：需求澄清}
+
+\textbf{功能性}：
+
+\begin{itemize}
+  \item 房东与房客之间的\textbf{实时一对一消息}（预订前咨询、入住沟通）。
+  \item \textbf{系统通知}：预订确认、支付成功、入住提醒等（一对多扇出）。
+  \item 多端同步、离线消息存储、消息历史拉取。
+  \item 已读/未读状态、送达回执。
+\end{itemize}
+
+\textbf{非功能性}：
+
+\begin{itemize}
+  \item \textbf{不丢消息}（at-least-once 投递）+ \textbf{不重复展示}（消费端幂等去重）。
+  \item 实时性：在线用户端到端延迟 < 1s。
+  \item 高可用、可水平扩展到亿级用户。
+  \item 消息有序：同一会话内消息按发送顺序展示。
+\end{itemize}
+
+\begin{keypoint}[容量估算（数量级）]
+假设 DAU $\approx 1\times10^8$，人均每天收发 20 条消息（含系统通知）：
+\[
+  \text{消息写 QPS}_{avg} = \frac{1\times10^8 \times 20}{86400} \approx 2.3\times10^4 \text{/秒}
+\]
+峰值约 $2\times10^5$/秒。每条消息约 1KB，日增 $\approx 2\times10^9 \times 1\text{KB} = 2$ TB/天——消息存储要\textbf{可水平扩展、冷热分层}（近期热数据快存，历史冷数据归档）。在线长连接数：若 10\% DAU 同时在线 $= 10^7$ 条长连接，需要一层可水平扩展的\textbf{连接网关}。
+\end{keypoint}
+
+\subsection{第二步：高层架构}
+
+\begin{lstlisting}
+   发送方                                                    接收方
+  (App/Web)                                                (App/Web)
+     |   WebSocket / 长连接                  WebSocket / 长连接   ^
+     v                                                           |
+ +------------------+                                  +------------------+
+ | Connection GW A  |   (维护在线长连接, 有状态)       | Connection GW B  |
+ +--------+---------+                                  +---------+--------+
+          |  发消息 (REST/RPC)                                   ^
+          v                                                      | push
+ +------------------+      +----------------+        +------------------+
+ |  Message Service | ---> |  Kafka (MQ)    | -----> |  Fan-out Worker  |
+ |  (写入/校验)     |      | 分区: by convId|        |  (查在线状态/推送)|
+ +--------+---------+      +----------------+        +--------+---------+
+          |                                                   |
+          v                                                   v
+ +------------------+    +------------------+        +------------------+
+ |  Message Store   |    | Presence Service |        | Push (APNs/FCM)  |
+ |  (会话/消息, 分片)|    | (在线状态, Redis)|        | 离线推送         |
+ +------------------+    +------------------+        +------------------+
+\end{lstlisting}
+
+\textbf{要点}：连接网关（Connection Gateway）维护海量 WebSocket 长连接，是\textbf{有状态}组件；Message Service 负责落库与校验；Kafka 做\textbf{异步扇出与削峰}；Presence 服务记录谁在线（决定走实时推送还是离线推送）。
+
+\subsection{第三步：推还是拉？}
+
+\begin{idea}[推拉结合：在线推、离线拉、历史拉]
+消息送达有两种基本范式。\textbf{推（push）}：服务端主动经长连接把消息推给在线用户，实时性好，但要维护长连接、用户离线时推送会浪费。\textbf{拉（pull）}：客户端定时来问“有没有新消息”，实现简单、对服务端无状态友好，但实时性差、空轮询浪费。生产系统几乎都用\textbf{推拉结合}：用户\textbf{在线时用推}（长连接实时下发）；\textbf{离线时落库 + 走 APNs/FCM 离线推送}；\textbf{重新上线时用拉}（按 last\_seen 游标拉取离线期间堆积的消息历史）。这个“实时增量用推、批量补齐用拉”的组合，同样适用于 feed 流、通知中心、协同编辑。\textbf{别在“纯推”或“纯拉”里钻牛角尖，混合才是工程答案。}
+\end{idea}
+
+\subsection{第四步：数据模型}
+
+\begin{lstlisting}
+-- 会话表 (一对一/群)
+CREATE TABLE conversations (
+    conv_id      BIGINT PRIMARY KEY,
+    type         TINYINT,            -- 0=一对一, 1=系统通知
+    participants JSON,               -- 参与者列表
+    updated_at   TIMESTAMP
+);
+
+-- 消息表: 按 conv_id 分片, 会话内按 seq 严格有序
+CREATE TABLE messages (
+    conv_id      BIGINT NOT NULL,
+    seq          BIGINT NOT NULL,    -- 会话内单调递增序号(保证有序)
+    message_id   BIGINT NOT NULL,    -- 全局唯一(雪花ID), 幂等去重用
+    sender_id    BIGINT NOT NULL,
+    body         TEXT,
+    created_at   TIMESTAMP,
+    PRIMARY KEY (conv_id, seq)
+);
+
+-- 每个用户在每个会话的已读位置(已读/未读由此推导)
+CREATE TABLE read_cursors (
+    user_id      BIGINT,
+    conv_id      BIGINT,
+    last_read_seq BIGINT,            -- 已读到的 seq
+    PRIMARY KEY (user_id, conv_id)
+);
+\end{lstlisting}
+
+\begin{idea}[已读未读：别为每条消息存一个标志位，存一个游标]
+“已读/未读”最朴素的实现是给每条消息每个接收者存一个布尔位——但这会产生海量小写、空间和写压力都爆炸。更优雅的做法是：每个用户在每个会话只存一个 \textbf{last\_read\_seq（已读到的序号）}。某条消息是否已读，由“它的 seq 是否 $\le$ last\_read\_seq”推导；未读数 = 会话最新 seq $-$ last\_read\_seq。这把“每消息每人一条状态”压缩成“每会话每人一个游标”，写入量从 $O(\text{消息数})$ 降到 $O(1)$。\textbf{用一个单调游标代替海量离散状态位}，是处理“进度/水位”类问题的通用技巧（也用于消费位点、播放进度、同步位点）。
+\end{idea}
+
+\subsection{第五步：不丢、不重、有序}
+
+\begin{idea}[at-least-once + 幂等消费 = 恰好一次效果]
+分布式消息几乎不可能做到传输层“恰好一次（exactly-once）”投递——网络会重传，确认会丢失。工业界的标准答案是：\textbf{投递保证 at-least-once（至少一次，宁可重复也不丢）}，再在\textbf{消费端用幂等去重}把“至少一次”变成“恰好一次的效果”。具体做法：每条消息带\textbf{全局唯一 message\_id}，消费方维护一个“已处理 ID 集合”（或在落库时对 message\_id 加唯一约束），重复到来的同一 ID 直接跳过。这套“可靠投递靠重试、最终正确靠幂等”的组合拳，是订房、支付、通知所有异步链路的共同基石——本书反复出现，请刻进肌肉记忆。
+\end{idea}
+
+\begin{pitfall}[用时间戳排序消息——时钟不可靠]
+新手常用“消息创建时间戳”给会话内消息排序。这在分布式下\textbf{不可靠}：多台服务器时钟有漂移、可能回拨，两条消息可能拿到相同甚至倒序的时间戳，导致会话里消息\textbf{乱序}。正确做法是为每个会话维护一个\textbf{单调递增的序号 seq}（由会话所在分片集中分配，或用逻辑时钟），消息严格按 seq 排序与去重。需要全局唯一且大致有序的 ID 时用\textbf{雪花算法（Snowflake）}（时间高位 + 机器 + 序列）。记住：\textbf{分布式系统里，永远不要把物理墙钟当作排序或唯一性的依据}，要用逻辑序号 / 单调计数器。
+\end{pitfall}
+
+\subsection{扇出（Fan-out）}
+
+一对一消息扇出简单；\textbf{系统通知 / 群发}需要扇出给大量接收者。沿用 feed 系统的经验：\textbf{写扩散（push/fan-out-on-write）}在发送时就把消息写进每个接收者的收件箱，读快写重，适合普通用户；\textbf{读扩散（pull/fan-out-on-read）}读时再聚合，写轻读重，适合超大群/广播。常\textbf{混合}：普通会话写扩散，超大广播读扩散。
+
+\begin{followup}[追问：如何保证同一会话的消息严格有序，即使并发发送？]
+要点：(1) \textbf{把有序性收敛到单一序列化点}——同一 conv\_id 的所有消息都路由到\textbf{同一个 Kafka 分区}（按 conv\_id 做 partition key），Kafka 保证单分区内有序消费。(2) seq 的分配也要在单点串行：由该会话归属的分片/服务实例\textbf{原子自增}分配 seq，避免并发拿到重复或乱序 seq。(3) 客户端按 seq 排序渲染，对乱序到达的消息按 seq 插入正确位置；若发现 seq 空洞（中间缺号）则触发\textbf{拉取补齐}。(4) 跨会话之间无需全局有序，只需会话内有序，这大大降低了难度。核心思想：\textbf{把“全局有序”这个昂贵需求缩小为“分区内/会话内有序”，再用单分区单写者来保证}。
+\end{followup}
+
+\section{第二部分：支付与信任系统}
+
+支付是“一个字节都不能错”的系统。Airbnb 的特殊性在于它是\textbf{双边市场}：钱从房客来，要（在合适时机）付给房东，平台居中托管、抽佣、处理退款拒付，还要防双边欺诈。
+
+\subsection{第一步：需求澄清}
+
+\textbf{功能性}：
+
+\begin{itemize}
+  \item 房客支付（信用卡/钱包/多种本地支付方式），\textbf{多币种}。
+  \item 平台\textbf{托管（escrow）}：钱先到平台，入住后再结算给房东（保护双方）。
+  \item 退款、部分退款、拒付（chargeback）处理。
+  \item 对账、流水可审计。
+  \item \textbf{反欺诈与信任安全}：识别盗卡、虚假房源、刷单。
+\end{itemize}
+
+\textbf{非功能性}：\textbf{绝对的强一致与正确性}、完整可审计、幂等、合规（PCI-DSS，不自存卡号）。
+
+\begin{idea}[钱的系统：宁可慢、不可错；强一致压倒一切]
+和搜索“宁可旧不可错地拒绝”不同，支付系统的最高准则是\textbf{正确性绝对优先于可用性与延迟}。任何不确定的状态，宁可让交易\textbf{挂起人工核验}，也不能错误地多扣、少付、重复扣款。这意味着：所有金额操作都要\textbf{强一致（DB 事务）}、\textbf{幂等}、\textbf{全程留痕可审计}，并以\textbf{对账}作为最终防线。设计取舍上，支付系统坦然接受更高的延迟和更复杂的流程来换取“一分钱都不错”。把这条价值观讲出来，本身就是面试加分项。
+\end{idea}
+
+\subsection{第二步：高层架构}
+
+\begin{lstlisting}
+   房客下单
+      |
+      v
+ +------------------+    幂等键     +-------------------+
+ | Payment Service  | <-----------  |  Booking Service  |
+ | (编排/状态机)    |               +-------------------+
+ +----+--------+----+
+      |        |  tokenize (不存卡号, PCI 合规)
+      |        v
+      |   +-------------------+      +-----------------------+
+      |   |  Vault / Token    |      |  第三方支付网关       |
+      |   |  (卡号代币化)     |----> |  (Stripe/Adyen/Braintree)|
+      |   +-------------------+      +-----------+-----------+
+      v                                          | 异步回调(webhook)
+ +------------------+    +----------------+       v
+ |  Ledger DB       |    |  Kafka         |  +-----------------+
+ |  (复式记账,流水) |<-->|  (事件)        |  | Webhook Handler |
+ +------------------+    +-------+--------+  +-----------------+
+                                 |
+              +------------------+------------------+
+              v                  v                  v
+       Fraud / Risk        Payout Service      Reconciliation
+       (反欺诈打分)        (结算给房东)        (对账, 兜底)
+\end{lstlisting}
+
+\subsection{第三步：核心设计}
+
+\textbf{1）幂等支付 API}：与订房同理，每次支付请求带\textbf{幂等键}；支付服务对同一 key 只执行一次扣款，重复请求返回首次结果。这是防止“网络重试导致重复扣款”的生命线。
+
+\begin{lstlisting}
+POST /v1/payments
+Header: Idempotency-Key: pay_8f3c...e91
+Body: {
+  "booking_id": 55,
+  "amount_cents": 72000, "currency": "USD",
+  "payment_method_token": "tok_visa_..."   # 代币, 非真实卡号
+}
+-> 201 { "payment_id": 9001, "status": "AUTHORIZED" }   # 先授权, 后扣款
+-> 200 (同一 Idempotency-Key 重试) 返回与首次完全相同的结果
+\end{lstlisting}
+
+\textbf{2）授权与捕获分离（auth + capture）}：先\textbf{授权（authorize）}冻结额度，入住前/确认时再\textbf{捕获（capture）}实际扣款，符合托管语义，也便于失败时直接取消授权而非退款。
+
+\textbf{3）复式记账（double-entry ledger）}：用会计的\textbf{复式记账}建模资金流——每笔交易至少两条分录，借贷必相等，账目天然自洽、可审计。
+
+\begin{idea}[复式记账：让钱永不凭空产生或消失]
+处理金钱，\textbf{不要用“给余额字段加加减减”}，而要用会计沿用数百年的\textbf{复式记账（double-entry bookkeeping）}：每笔资金流动记为成对的分录——一方借（debit）、一方贷（credit），且\textbf{全系统所有分录之和恒为零}。房客付 720 -> 平台托管账户 +720、房客应付 -720；入住后结算 -> 平台 -650、房东 +650、平台佣金 +70。这样做的威力在于：钱\textbf{永远不会凭空产生或消失}，任何不平衡立刻暴露 bug；账本\textbf{只追加不修改（append-only）}，天然可审计、可重放、可对账。这是所有严肃支付/钱包系统的标准建模，远胜于一个可变的 balance 字段。
+\end{idea}
+
+\textbf{4）多币种}：金额一律存\textbf{最小货币单位的整数（如分）+ 货币代码}，\textbf{绝不用浮点数}存钱；汇率换算记录\textbf{换算时点的汇率快照}，结算与展示分离。
+
+\begin{pitfall}[用浮点数存钱——经典且致命]
+\code{float}/\code{double} 无法精确表示 \code{0.1} 这类十进制小数，累加会产生 \code{0.1+0.2=0.30000000000000004} 的误差，在金融场景累积成真实的对不上账。\textbf{永远用整数最小单位（分/厘）或定点 Decimal 类型存储和计算金额}，货币代码单独存。同时警惕：不同货币最小单位不同（日元无小数、某些货币三位小数），汇率换算要明确\textbf{四舍五入规则与舍入方向}并留痕，否则双边市场里几分钱的系统性偏差会演变成对账噩梦。
+\end{pitfall}
+
+\textbf{5）第三方网关集成与 PCI 合规}：\textbf{平台绝不自存原始卡号}，把卡号\textbf{代币化（tokenize）}交给 Stripe/Adyen 等合规网关，自己只存 token。网关结果常通过\textbf{异步 webhook}回调（支付是异步的！授权可能几秒后才最终成功/失败），所以支付状态机必须能处理异步回调与重复回调（幂等）。
+
+\subsection{退款、拒付与状态机}
+
+\begin{lstlisting}
+   created
+      |
+      v  authorize
+  +------------+  capture   +-----------+  payout   +----------+
+  | AUTHORIZED | ---------> | CAPTURED  | --------> | SETTLED  |
+  +-----+------+            +-----+-----+           +----------+
+        | void                    | refund
+        v                         v
+  +-----------+            +-----------+        +------------+
+  | CANCELLED |            | REFUNDED  |        | CHARGEBACK |
+  +-----------+            +-----------+        | (拒付/争议) |
+                                               +------------+
+\end{lstlisting}
+
+每一次状态推进都是\textbf{带条件的原子更新 + 一条 ledger 分录}。退款是\textbf{反向资金流}（同样复式记账），拒付（chargeback）是持卡人向发卡行发起的争议，需要冻结、举证、风控介入。
+
+\subsection{反欺诈与信任安全}
+
+\begin{idea}[双边市场的信任是核心资产，反欺诈要双向]
+单边电商只防“买家用盗卡”；Airbnb 这种\textbf{双边市场}要同时防\textbf{两侧}：房客侧（盗卡支付、拒付欺诈、虚假评价），房东侧（虚假房源、钓鱼、洗钱）。信任一旦崩塌，双边都会流失，所以 trust \& safety 是\textbf{平台的核心资产而非附属功能}。设计上：风控以\textbf{异步打分 + 同步硬规则}结合——下单链路用轻量同步规则拦截明显欺诈（黑名单、风控分阈值），同时把交易事件送入\textbf{异步风控/ML 管线}做深度评估，可疑交易\textbf{挂起人工审核}（宁可慢、不可错的又一体现）。把“反欺诈是双向的、信任是资产”讲出来，能体现你理解 Airbnb 的业务本质。
+\end{idea}
+
+\begin{pitfall}[把支付确认同步卡在第三方网关回调上]
+和订房章的“持锁调支付”同源：不要让用户的下单请求\textbf{同步阻塞等待第三方网关返回最终结果}。网关授权可能耗时数秒甚至走异步 webhook，同步等待会拖垮链路、占满连接。正确做法：下单时创建支付记录置为\textbf{PENDING/AUTHORIZING}\textbf{立即返回}，真正的结果由网关\textbf{异步 webhook}驱动状态机推进；webhook 必须\textbf{幂等}（同一事件可能重复回调）且\textbf{验签}（防伪造回调）。用户侧展示“支付处理中”，最终态用推送/轮询告知。\textbf{所有跨外部网络的调用都应异步化、幂等化，绝不同步阻塞核心链路。}
+\end{pitfall}
+
+\subsection{对账：最终的安全网}
+
+无论设计多严密，分布式系统总会有边界情况导致平台账本与第三方网关、银行的记录不一致。\textbf{对账（reconciliation）}是不可或缺的最终防线：定时拉取网关流水，与本地 ledger 逐笔比对，自动修复可补偿的差异、标记需人工介入的差异。这与订房章的对账、消息系统的幂等去重一脉相承——\textbf{异步最终一致系统，必须有一个独立的对账/校验回路来兜底}。
+
+\begin{followup}[追问：支付成功但订单确认失败（或反之），钱和订单如何最终一致？]
+这正是跨服务一致性的核心（呼应订房章 Saga）。要点：(1) \textbf{支付服务与订房服务各自持有权威记录}（支付流水 vs 订单状态），通过\textbf{事件驱动}异步同步，不强求两库同事务。(2) 关键操作\textbf{幂等且可重试}：支付成功事件投到 Kafka，订房侧消费以幂等键保证只生效一次；确认失败则消息不 ack、\textbf{重投直至成功}。(3) 用 \textbf{Saga 补偿}：若订单最终无法确认（如房源已失效），触发\textbf{自动退款}补偿动作把钱退回，系统回到一致。(4) \textbf{对账兜底}：定时扫描“收了钱但订单没确认”“订单确认但没收到钱”的不一致，自动补偿或人工处理。(5) 用户侧呈现“处理中”，避免展示中间态。一句话：\textbf{异步消息保最终一致 + 幂等消费 + Saga 补偿 + 对账兜底}，是涉钱系统的标准四件套。
+\end{followup}
+
+\begin{followup}[追问：同一笔支付的 webhook 被重复回调，甚至乱序到达，怎么处理？]
+要点：(1) \textbf{幂等}：每个 webhook 事件有唯一 event\_id，处理前先查“是否已处理过该 event\_id”，重复的直接返回 200 并跳过副作用——\textbf{绝不能因重复回调而重复入账}。(2) \textbf{验签}：校验网关签名，拒绝伪造回调（钱的系统尤其要防伪造）。(3) \textbf{乱序容错}：webhook 可能乱序（“capture 成功”先于“authorize 成功”到达）。用\textbf{状态机的合法转移约束 + 事件时间戳/版本号}处理——只接受合法的状态前进，对“过期/逆向”的事件丢弃或缓存等待前置事件。把状态推进写成\textbf{带条件的 CAS}（\code{WHERE status=...}），非法转移自然失败。(4) 对账兜底任何遗漏。本质仍是：\textbf{幂等去重 + 状态机约束 + 对账}，与消息系统的不丢不重一脉相承。
+\end{followup}
+
+\begin{keypoint}[本章速记]
+\begin{itemize}
+  \item 消息：推拉结合（在线推、离线/上线拉）；at-least-once 投递 + 幂等去重 = 恰好一次效果。
+  \item 会话内有序靠\textbf{单调 seq + 同一会话路由到同一分区}，不靠墙钟时间戳；唯一 ID 用雪花算法。
+  \item 已读未读用\textbf{单个 last\_read\_seq 游标}代替海量状态位；扇出按规模选写扩散/读扩散。
+  \item 支付：正确性绝对优先；金额用整数最小单位（绝不用浮点）；幂等支付 API；卡号代币化（PCI 合规）。
+  \item 用\textbf{复式记账}让钱不凭空增减、账本只追加可审计；auth/capture 分离支持托管。
+  \item 第三方网关 webhook 必须幂等 + 验签 + 容忍乱序；双边市场反欺诈要双向；\textbf{对账}是最终安全网。
+  \item 跨服务一致性统一靠：异步消息 + 幂等消费 + Saga 补偿 + 对账兜底。
+\end{itemize}
+\end{keypoint}

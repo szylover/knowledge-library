@@ -1,0 +1,74 @@
+% ============================================================================
+% main.tex — 《Airbnb 面试通关手册》
+% 编译：xelatex（两遍，生成目录与书签）；或 tectonic -X compile main.tex
+% ============================================================================
+\documentclass[11pt, a4paper, openany]{book}
+
+\input{preamble}
+
+\begin{document}
+
+\raggedbottom
+
+% --------------------------------------------------------------------------
+% 封面
+% --------------------------------------------------------------------------
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[abred] (current page.north west) rectangle
+      ([yshift=-0.6cm]current page.north east);
+    \fill[abred!85!black] ([yshift=-2.5cm]current page.north west) rectangle
+      ([yshift=-8.0cm]current page.north east);
+    \fill[abdark] ([yshift=1.6cm]current page.south west) rectangle
+      ([yshift=2.0cm]current page.south east);
+  \end{tikzpicture}
+
+  \centering
+  \vspace*{2.0cm}
+
+  {\color{white}\fontsize{40}{48}\selectfont\bfseries Airbnb 面试通关手册\par}
+  \vspace{0.6cm}
+  {\color{white!92}\LARGE 算法 \;·\; 系统设计 \;·\; 设计思想 \;·\; 行为面\par}
+
+  \vspace{3.2cm}
+
+  {\large\itshape 一本把“怎么想”讲清楚的面经\par}
+  \vspace{0.3cm}
+  {\normalsize 不只给答案，更给可迁移的设计心法\par}
+
+  \vfill
+
+  {\Large\bfseries SZY\par}
+  \vspace{0.3cm}
+  {\normalsize \today\par}
+  \vspace{2.2cm}
+\end{titlepage}
+
+% --------------------------------------------------------------------------
+\frontmatter
+\input{chapters/preface}
+\tableofcontents
+\newpage
+
+% --------------------------------------------------------------------------
+\mainmatter
+
+\part{面试全景}
+\include{chapters/ch00-overview}
+
+\part{算法编码}
+\include{chapters/ch01-coding-mindset}
+\include{chapters/ch02-coding-problems}
+
+\part{系统设计}
+\include{chapters/ch03-design-methodology}
+\include{chapters/ch04-design-booking}
+\include{chapters/ch05-design-search}
+\include{chapters/ch06-design-messaging-payment}
+\include{chapters/ch07-design-principles}
+
+\part{行为面与冲刺}
+\include{chapters/ch08-behavioral}
+\include{chapters/ch09-resources-plan}
+
+\end{document}

@@ -1,0 +1,786 @@
+\chapter{高频题精解}
+
+如果说大厂的算法面普遍是“在白板上证明你刷过题”，那么 Airbnb 的算法面更像是“在白板上证明你能写出未来同事愿意维护的代码”。这是一个被很多候选人忽视、却决定成败的差别。
+
+Airbnb 的高频题有几条非常稳定的特征。第一，\textbf{偏真实场景模拟}：文本排版、倒水、分页、键值存储——这些题目几乎都能在产品里找到对应的影子，而不是凭空构造的数学谜题。第二，\textbf{偏多步迭代}：一道题往往不是“给一个输入、求一个输出”就结束，而是要你维护状态、按规则一步步推进，过程本身就是答案。第三，\textbf{偏面向对象建模与可扩展性}：迭代器、键值库、分页器，本质都是在问“你能不能设计一个干净的类，让它日后好扩展”。第四，\textbf{不爱冷门 DP}：你几乎不会在 Airbnb 的电面里遇到状态压缩 DP 或斜率优化，但你极可能遇到一道看似简单、却在你写完后被追加三次新需求的模拟题。
+
+这就引出 Airbnb 面试最核心的潜规则：\textbf{面试官会在你写完后追加新需求}。“如果空格要从右往左分配呢？”“如果嵌套列表可以无限深呢？”“如果同一个 host 的房源也要限制跨页相邻呢？”——他们考的从来不是你能不能写出第一版，而是你的第一版有没有给第二版留出空间。因此，本章每道题除了给出最优解，都会用【设计思想】框提炼\textbf{可迁移的心法}，并用【追问】框预演面试官最可能抛出的下一个问题。请把注意力放在“怎么想”和“怎么扩展”上，而不是把代码背下来。
+
+下面逐题精解 10 道 Airbnb 高频题。建议你先盖住题解，自己推一遍思路，再对照阅读。
+
+% ===========================================================================
+\problem{68}{文本左右对齐 (Text Justification)}{Hard}
+
+\subsection*{题意}
+给定一个单词数组 \code{words} 和一个最大行宽 \code{maxWidth}，把这些单词排成若干行，使每一行恰好为 \code{maxWidth} 个字符，做到\textbf{左右两端对齐}（justify）。规则：
+\begin{itemize}
+  \item 每行尽量多塞单词；相邻单词间至少一个空格。
+  \item 一行有多个单词时，空格要\textbf{尽量均匀}地分配到各单词间隙；若不能均分，则\textbf{左侧的间隙分得更多}。
+  \item \textbf{最后一行}以及\textbf{只有一个单词的行}采用\textbf{左对齐}（单词间单空格，行尾补空格）。
+\end{itemize}
+例：\code{words = ["This","is","an","example","of","text","justification."]}，\code{maxWidth = 16}，输出
+\begin{lstlisting}
+"This    is    an"
+"example  of text"
+"justification.  "
+\end{lstlisting}
+
+\subsection*{思路推导}
+这道题没有任何算法技巧，纯粹是\textbf{把人类排版规则翻译成代码}，难点全在边界。不要试图一口气写完，要把问题切成两个正交的子问题：
+
+第一步，\textbf{贪心分行}。从左到右扫描，维护“当前行已选单词”和“它们的总长度”。判断单词 \code{w} 能否加入当前行的条件是：已有单词长度之和 + 已有单词数（每个单词后至少一个空格）+ \code{w.size()} $\le$ \code{maxWidth}。一旦放不下，就结算当前行、另起一行。这一步保证“每行尽量多塞单词”。
+
+第二步，\textbf{对每一行做空格分配}。设当前行有 \code{k} 个单词、字母总数为 \code{letters}，则要填充的空格总数为 \code{maxWidth - letters}，要分配到 \code{k-1} 个间隙。
+\[
+\text{gap} = \left\lfloor \frac{\text{maxWidth}-\text{letters}}{k-1} \right\rfloor,\qquad
+\text{extra} = (\text{maxWidth}-\text{letters}) \bmod (k-1).
+\]
+前 \code{extra} 个间隙各多放一个空格（“余数给左边”）。这恰好对应“尽量均匀、不能均分则左侧更多”。
+
+第三步，\textbf{两个特例走左对齐}：最后一行、以及任何只有一个单词的行（此时 \code{k-1=0} 会除零）。它们用单空格连接，再在行尾补足空格。
+
+把这三步分别写成小逻辑，整道题就清晰了。先分行、再格式化，是处理一切排版题的通用骨架。
+
+\begin{idea}[把“人类规则”拆成正交的小步骤]
+这类模拟题的杀手锏是\textbf{分治式建模}：先识别出几个互不干扰的子规则（分行 / 行内空格 / 特例左对齐），分别实现、分别验证，再组合。新手最大的错误是想用一个嵌套 if 一次性处理所有情况，结果余数、除零、末行三类边界互相纠缠。记住：\textbf{当一段逻辑里出现“尽量均匀 + 余数偏向某侧 + 个别特例”时，几乎一定要拆成独立函数}。这种拆分能力会在系统设计里反复用到。
+\end{idea}
+
+\begin{cpp}
+class Solution {
+public:
+    vector<string> fullJustify(vector<string>& words, int maxWidth) {
+        vector<string> result;
+        int n = words.size();
+        int i = 0;
+        while (i < n) {
+            // 第一步：贪心确定本行单词区间 [i, j)
+            int j = i;
+            int letters = 0;              // 本行字母总数（不含空格）
+            while (j < n &&
+                   letters + words[j].size() + (j - i) <= (size_t)maxWidth) {
+                letters += words[j].size();
+                ++j;
+            }
+            int wordCount = j - i;        // 本行单词数
+            string line;
+
+            // 第二步 / 第三步：判断是否为末行或单词行（左对齐）
+            bool isLastLine = (j == n);
+            if (wordCount == 1 || isLastLine) {
+                for (int k = i; k < j; ++k) {
+                    if (k > i) line += ' ';
+                    line += words[k];
+                }
+                line += string(maxWidth - line.size(), ' '); // 行尾补空格
+            } else {
+                int totalSpaces = maxWidth - letters;
+                int gaps = wordCount - 1;
+                int gap = totalSpaces / gaps;     // 每个间隙的基础空格数
+                int extra = totalSpaces % gaps;   // 余数，从左侧间隙开始多给
+                for (int k = i; k < j; ++k) {
+                    line += words[k];
+                    if (k < j - 1) {              // 最后一个单词后不加空格
+                        int spaces = gap + (k - i < extra ? 1 : 0);
+                        line += string(spaces, ' ');
+                    }
+                }
+            }
+            result.push_back(line);
+            i = j;
+        }
+        return result;
+    }
+};
+\end{cpp}
+
+\begin{keypoint}[复杂度]
+设所有单词总字符数为 $N$。分行扫描每个单词一次，格式化每行时填充的字符数总和为 \bigO{N}，故时间 \bigO{N}，额外空间 \bigO{N}（输出本身）。
+\end{keypoint}
+
+\begin{pitfall}[三类边界]
+（1）\textbf{除零}：单词行 \code{k=1} 时 \code{gaps=0}，必须走左对齐分支，否则 \code{totalSpaces / gaps} 崩溃。（2）\textbf{末行}：即使有多个单词也是左对齐，不要均分空格。（3）\textbf{装词判断}的 \code{(j - i)} 代表“已有单词各需要一个尾随空格”，容易写成 \code{(j - i + 1)} 或漏掉，导致每行少装一个词。
+\end{pitfall}
+
+\begin{followup}[“如果要求右侧间隙分得更多呢？”]
+只需把多分配空格的条件从“前 \code{extra} 个间隙”改成“后 \code{extra} 个间隙”：把判断 \code{(k - i < extra)} 改为 \code{(j - 1 - k <= extra)} 之类的对称写法。这正是面试官想看的——你把“余数分配方向”抽象成了一个可调参数，而不是写死在循环里。可以主动提：“我把空格分配策略独立出来，未来无论左偏、右偏还是居中都只改一处。”
+\end{followup}
+
+% ===========================================================================
+\problem{341}{扁平化嵌套列表迭代器 (Flatten Nested List Iterator)}{Medium}
+
+\subsection*{题意}
+给定一个嵌套的整数列表，每个元素要么是一个整数，要么是一个列表（其元素同样可能是整数或列表，可无限嵌套）。实现迭代器类 \code{NestedIterator}，支持 \code{hasNext()} 与 \code{next()}，按深度优先顺序逐个返回所有整数。给定接口：
+\begin{lstlisting}
+class NestedInteger {
+  public:
+    bool isInteger() const;             // 是否为单个整数
+    int getInteger() const;             // 取整数（仅当 isInteger() 为真）
+    const vector<NestedInteger>& getList() const; // 取子列表
+};
+\end{lstlisting}
+例：\code{[[1,1],2,[1,1]]} 迭代输出 \code{1 1 2 1 1}；\code{[1,[4,[6]]]} 输出 \code{1 4 6}。
+
+\subsection*{思路推导}
+有两条路线，面试官想听你比较它们。
+
+\textbf{路线 A：构造时预处理（eager）}。在构造函数里递归地把整棵树拍扁，存进一个 \code{vector<int>}，再用一个下标游标遍历。实现最简单，\code{next}/\code{hasNext} 都是 \bigO{1}。缺点：构造时就把所有数读进内存，若列表极大或后续根本不会遍历完，就浪费了时间和空间——这违背了迭代器“惰性”的初衷。
+
+\textbf{路线 B：栈式惰性展开（lazy）}。迭代器的精髓是\textbf{用时才算}。用一个栈保存“尚未展开的指针”。关键技巧：栈里存的不是值，而是\textbf{列表的迭代位置}，这样才能在中途暂停。一个干净的实现是：栈中保存若干 \code{vector<NestedInteger>} 的“当前指针 + 结束指针”对。每次 \code{hasNext} 时，反复检查栈顶：若栈顶当前元素是列表，则弹出并把该子列表压栈（展开一层）；若是整数，就停下，说明有下一个值。这样只在需要时展开一层，未触及的深层分支永远不会被计算。
+
+为什么 Airbnb 偏爱这道题？因为它是\textbf{纯粹的面向对象 + 迭代器设计}题，没有花哨算法，却能看出你是否理解“接口契约”“惰性求值”“状态封装”。下面给出更易写对的栈式实现：把每个待处理列表用 \code{(指针 begin, 指针 end)} 表示，避免反向压栈。
+
+\begin{idea}[迭代器 = 把“遍历状态”显式存进对象]
+递归遍历的状态藏在\textbf{函数调用栈}里，函数一返回状态就没了；而迭代器要求“随时暂停、随时继续”，所以必须把那条调用栈\textbf{手动搬到一个显式的数据结构（栈）里}。这是“递归转迭代”的通用心法：\textbf{凡是需要可暂停/可恢复的遍历，就把隐式调用栈显式化}。同样的思路可用于二叉树中序迭代器、文件系统惰性遍历、协程式生成器。
+\end{idea}
+
+\begin{cpp}
+class NestedIterator {
+    // 栈中每个元素是一个区间 [cur, end)，表示某层列表尚未处理的部分
+    struct Frame {
+        vector<NestedInteger>::const_iterator cur, end;
+    };
+    vector<Frame> stk;
+
+    // 把栈顶整理到“栈顶区间的当前元素是一个整数”或栈空为止
+    void advance() {
+        while (!stk.empty()) {
+            Frame& top = stk.back();
+            if (top.cur == top.end) {       // 当前层处理完，回退
+                stk.pop_back();
+                continue;
+            }
+            if (top.cur->isInteger()) return; // 找到下一个整数，停下
+            // 当前元素是列表：先把指针后移，再展开该子列表（压栈）
+            const auto& lst = top.cur->getList();
+            ++top.cur;                       // 注意：先移动，避免引用失效后重读
+            stk.push_back({lst.begin(), lst.end()});
+        }
+    }
+public:
+    NestedIterator(vector<NestedInteger>& nestedList) {
+        stk.push_back({nestedList.begin(), nestedList.end()});
+        advance();
+    }
+    int next() {
+        int val = stk.back().cur->getInteger();
+        ++stk.back().cur;   // 消费掉当前整数
+        advance();          // 预备下一个
+        return val;
+    }
+    bool hasNext() {
+        return !stk.empty();
+    }
+};
+\end{cpp}
+
+\begin{keypoint}[复杂度]
+设整数总数为 $N$、列表节点总数为 $M$。整个迭代过程每个节点恰好进栈、出栈一次，总计 \bigO{N+M}；\code{next}/\code{hasNext} 摊还 \bigO{1}。空间为栈的最大深度，即嵌套的最大层数 \bigO{D}，优于 eager 方案的 \bigO{N}。
+\end{keypoint}
+
+\begin{pitfall}[引用失效与展开顺序]
+在 \code{advance} 里展开子列表时，必须\textbf{先 \code{++top.cur} 再 push}。因为 \code{push\_back} 可能触发栈底层 \code{vector} 扩容，使先前取得的引用 \code{top} 失效；先移动指针、用局部引用 \code{lst} 保存子列表（子列表对象本身不在栈内、不会被搬动），就安全了。这是 C++ 迭代器/引用失效的经典坑。
+\end{pitfall}
+
+\begin{followup}[“如果还要支持 \code{remove()} 或反向迭代呢？”]
+栈式方案天然支持惰性，但反向迭代需要双端展开，代价较大；此时可以坦诚指出：“如果访问模式是双向或随机的，惰性栈不再划算，我会退回 eager 拍扁成数组，用下标支持 \bigO{1} 随机访问。”这恰好把【设计思想】里 eager/lazy 的权衡讲圆——\textbf{迭代器的最优实现取决于访问模式}，没有银弹。
+\end{followup}
+
+% ===========================================================================
+\problem{269}{火星词典 (Alien Dictionary)}{Hard}
+
+\subsection*{题意}
+有一种火星语言，使用小写英文字母，但字母表顺序未知。给定一个按该语言\textbf{字典序升序}排列的单词列表 \code{words}，推断出一种合法的字母表顺序（以字符串返回）。若顺序非法返回空串；若有多解返回任意一个。
+例：\code{["wrt","wrf","er","ett","rftt"]} 则一个合法顺序为 \code{"wertf"}。
+
+\subsection*{思路推导}
+关键洞察：\textbf{相邻两个单词的第一处不同字符，揭示了一条顺序关系}。比较 \code{"wrt"} 和 \code{"wrf"}，前两个字符相同，第三个 \code{t} 与 \code{f} 不同，于是可断定 \code{t} 排在 \code{f} 前面（\code{t -> f}）。把每对相邻单词都这样比较，就得到一组形如 \code{a -> b} 的偏序约束。
+
+“从一堆偏序约束中排出一个全序”——这正是\textbf{拓扑排序}的定义。于是算法成型：
+\begin{enumerate}
+  \item \textbf{建图}：节点是出现过的所有字母；对每对相邻单词，找到第一处不同字符 \code{c1, c2}，加一条边 \code{c1 -> c2}（注意去重，避免重复加入度）。
+  \item \textbf{拓扑排序}（Kahn 算法 / BFS）：把所有入度为 0 的字母入队，逐个出队并追加到答案、削减其后继入度，新变为 0 的入队。
+  \item \textbf{环检测}：若最终排出的字母数少于图中字母总数，说明存在环（约束矛盾），返回空串。
+\end{enumerate}
+
+还有一个\textbf{致命边界}：如果前一个单词是后一个单词的\textbf{前缀且更长}，例如 \code{["abc","ab"]}，这在合法字典序里不可能出现（短的应在前），必须判为非法、返回空串。很多人只比较到较短长度就忽略了这一点。
+
+\begin{idea}[“求一个满足所有约束的顺序” = 拓扑排序]
+当题目把信息描述成\textbf{两两之间的先后/依赖关系}，并要你\textbf{排出一个全局顺序}时，几乎都是拓扑排序的伪装：课程表、编译依赖、任务调度、版本升级路径都是同一题。心法分三步：\textbf{抽取局部约束 -> 建有向图 -> 拓扑排序并顺便检测环}。难点往往不在排序本身（模板固定），而在“如何从原始输入正确抽取出边”，以及识别那些让图非法的隐藏边界。
+\end{idea}
+
+\begin{cpp}
+class Solution {
+public:
+    string alienOrder(vector<string>& words) {
+        unordered_map<char, unordered_set<char>> graph; // 邻接表（去重）
+        unordered_map<char, int> indeg;                 // 入度
+
+        // 初始化所有出现过的字母，入度记为 0
+        for (const string& w : words)
+            for (char c : w) indeg[c] = 0;
+
+        // 逐对相邻单词建图
+        for (int i = 0; i + 1 < (int)words.size(); ++i) {
+            const string& a = words[i];
+            const string& b = words[i + 1];
+            int len = min(a.size(), b.size());
+            int j = 0;
+            while (j < len && a[j] == b[j]) ++j;
+            if (j == len) {
+                // 前缀边界：前者更长却是后者前缀 -> 非法
+                if (a.size() > b.size()) return "";
+            } else {
+                // 找到第一处不同：a[j] 在 b[j] 之前
+                if (!graph[a[j]].count(b[j])) {
+                    graph[a[j]].insert(b[j]);
+                    ++indeg[b[j]];
+                }
+            }
+        }
+
+        // Kahn 拓扑排序
+        queue<char> q;
+        for (auto& [c, d] : indeg)
+            if (d == 0) q.push(c);
+
+        string order;
+        while (!q.empty()) {
+            char c = q.front(); q.pop();
+            order += c;
+            for (char nxt : graph[c])
+                if (--indeg[nxt] == 0) q.push(nxt);
+        }
+
+        // 若未排完所有字母，存在环 -> 非法
+        return order.size() == indeg.size() ? order : "";
+    }
+};
+\end{cpp}
+
+\begin{keypoint}[复杂度]
+设单词总字符数为 $C$、不同字母数为 $V$（$\le 26$）、边数为 $E$。建图 \bigO{C}，拓扑排序 \bigO{V+E}。由于字母至多 26 个，整体近似 \bigO{C}，空间 \bigO{V+E}。
+\end{keypoint}
+
+\begin{pitfall}[两个最常漏的边界]
+（1）\textbf{前缀非法}：\code{["abc","ab"]} 必须返回空串——别只比到 \code{min} 长度就收工。（2）\textbf{孤立字母}：只在某个单词里出现、不参与任何约束的字母也必须出现在答案里，所以要先用所有字母初始化 \code{indeg}，而不是只把建图时遇到的字母入图。（3）\textbf{重复边}导致入度被重复 \code{++}，必须用 \code{set} 去重，否则该节点入度永远减不到 0，被误判成环。
+\end{pitfall}
+
+\begin{followup}[“DFS 也能做拓扑排序，你为什么选 BFS？”]
+两者都对。可答：“Kahn（BFS）的环检测最直观——排完发现少了节点就是有环，不需要维护三色状态；而且天然支持按入度顺序输出，便于在多解中挑字典序最小解（把队列换成优先队列即可）。DFS 版需要在递归里区分‘正在访问’和‘已完成’两种状态来检测后向边，略易写错。”这番比较正是面试官想听的取舍说明。
+\end{followup}
+
+% ===========================================================================
+\problem{39}{组合总和 (Combination Sum)}{Medium}
+
+\subsection*{题意}
+给定一个\textbf{无重复}正整数数组 \code{candidates} 和目标值 \code{target}，找出所有使数字和为 \code{target} 的组合。\textbf{同一个数字可以被无限次重复选取}。组合不计顺序（\code{[2,2,3]} 与 \code{[2,3,2]} 视为同一个），返回所有不重复组合。
+例：\code{candidates = [2,3,6,7]}，\code{target = 7} 则输出 \code{[[2,2,3],[7]]}。
+
+\subsection*{思路推导}
+“找出所有满足条件的组合”是\textbf{回溯（backtracking）}的典型信号——我们要枚举一棵决策树的所有合法叶子。核心要回答三个问题：决策是什么？如何避免重复？如何剪枝？
+
+\textbf{决策结构}：在每一步，我们决定“从某个起点开始，选哪个候选数”。由于一个数可重复选，选了 \code{candidates[i]} 之后，下一层仍然\textbf{允许再从 \code{i} 开始}（而不是 \code{i+1}）。
+
+\textbf{去重}：组合不计顺序，若不加约束，\code{[2,3]} 和 \code{[3,2]} 会被各算一次。解决办法是\textbf{规定选取下标单调不减}：每层递归传入一个起始下标 \code{start}，只考虑 \code{candidates[start..]}，绝不回头。这样每个组合只会按“下标升序”这一种方式被生成一次，天然去重。
+
+\textbf{剪枝}：先把 \code{candidates} 排序。在循环里，一旦 \code{candidates[i] > remain}（剩余目标），由于后面的数更大，可直接 \code{break} 整个分支，避免无谓递归。
+
+把这三点装进标准回溯模板：进入时检查 \code{remain==0} 收集答案；否则从 \code{start} 起逐个尝试，选入 -> 递归 -> 撤销（回溯）。
+
+\begin{idea}[回溯三件套：选择、约束、撤销]
+所有“枚举全部方案”的题都可套同一骨架：\textbf{(1) 做选择}（把元素加入当前路径）；\textbf{(2) 带着新状态递归}；\textbf{(3) 撤销选择}（弹出，恢复现场）。控制\textbf{重复}的通用手法是“强加一个单调顺序”——要么下标不减（允许重复取则传 \code{i}，不允许则传 \code{i+1}），要么值不减。控制\textbf{效率}的通用手法是“排序 + 提前剪枝”。把这三件套刻进肌肉记忆，子集、全排列、组合、分割回文串都是它的变体。
+\end{idea}
+
+\begin{cpp}
+class Solution {
+    vector<vector<int>> result;
+    vector<int> path;                 // 当前组合路径
+
+    void backtrack(vector<int>& cand, int start, int remain) {
+        if (remain == 0) {            // 凑齐目标，收集一个解
+            result.push_back(path);
+            return;
+        }
+        for (int i = start; i < (int)cand.size(); ++i) {
+            if (cand[i] > remain) break;   // 排序后剪枝：更大的数都不可能
+            path.push_back(cand[i]);       // 选择
+            // 允许重复选，故下一层仍从 i 开始（不是 i+1）
+            backtrack(cand, i, remain - cand[i]);
+            path.pop_back();               // 撤销选择
+        }
+    }
+public:
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end()); // 排序以便剪枝
+        backtrack(candidates, 0, target);
+        return result;
+    }
+};
+\end{cpp}
+
+\begin{keypoint}[复杂度]
+设解的个数为 $S$、每个解平均长度为 $L$。回溯树的节点数受解的数量与目标深度约束，复制每个解需 \bigO{L}，总体可粗略记为 \bigO{S \cdot L} 量级（指数级上界 \bigO{N^{T/m}}，其中 $m$ 为最小候选值）；递归深度 \bigO{T/m}，额外空间 \bigO{L}。
+\end{keypoint}
+
+\begin{followup}[“如果每个数字最多用一次（LC 40），且数组含重复元素呢？”]
+两处改动：（1）递归时传 \code{i+1} 而非 \code{i}，禁止重复使用同一元素；（2）\textbf{同一层去重}——在 \code{for} 循环里加 \code{if (i > start \&\& cand[i] == cand[i-1]) continue;}，跳过本层重复值，避免生成重复组合。能当场说出“传 \code{i} 还是 \code{i+1}”和“层内去重”这两个旋钮，说明你真正理解了回溯的去重机制，而不是背模板。
+\end{followup}
+
+% ===========================================================================
+\problem{981}{基于时间的键值存储 (Time Based Key-Value Store)}{Medium}
+
+\subsection*{题意}
+设计 \code{TimeMap} 类，支持：
+\begin{itemize}
+  \item \code{set(key, value, timestamp)}：存储一条带时间戳的键值。
+  \item \code{get(key, timestamp)}：返回该 \code{key} 在\textbf{时间戳不超过 \code{timestamp}} 的所有写入中，时间戳\textbf{最大}的那个 \code{value}；若不存在返回空串。
+\end{itemize}
+保证对同一 \code{key} 的 \code{set} 调用其 \code{timestamp} \textbf{严格递增}。
+例：\code{set("foo","bar",1)}；\code{get("foo",1)->"bar"}；\code{get("foo",3)->"bar"}；\code{set("foo","bar2",4)}；\code{get("foo",4)->"bar2"}。
+
+\subsection*{思路推导}
+拆成两层。外层：不同 \code{key} 互不相干，用一个 \code{unordered\_map<string, ...>} 把每个 \code{key} 映射到它自己的时间序列。内层：对单个 \code{key}，\code{get} 要做的是“在一串时间戳里找不超过 \code{t} 的最大者”，这是\textbf{有序数据上的查找}。
+
+注意题目的金句：“同一 \code{key} 的 \code{timestamp} 严格递增”。这意味着每个 \code{key} 的时间序列\textbf{天然按时间戳有序}，我们只需把 \code{(timestamp, value)} 顺序 \code{push\_back} 进一个 \code{vector}，它就是排好序的。于是 \code{get} 变成经典的\textbf{二分查找}：找最后一个 \code{timestamp <= t} 的元素。
+
+用 \code{upper\_bound} 最干净：它返回第一个\textbf{严格大于} \code{t} 的位置 \code{it}，那么 \code{it} 前一个元素就是我们要的“不超过 \code{t} 的最大时间戳”。若 \code{it} 已是开头，说明所有记录都比 \code{t} 晚，返回空串。为了能对 \code{(timestamp, value)} 的 \code{vector} 用 \code{upper\_bound} 且只比较时间戳，可自定义比较器，或干脆\textbf{只对时间戳数组手写二分}。下面实现把时间戳和值分别讨论，逻辑最直白。
+
+\begin{idea}[“最近不超过 X” = 有序结构上的二分（前驱查询）]
+凡是出现“小于等于某值中的最大”“大于等于某值中的最小”这类\textbf{前驱/后继查询}，第一反应应是\textbf{把数据维护成有序结构再二分}（有序数组 + \code{lower/upper\_bound}，或平衡树 \code{map::lower\_bound}）。本题更进一步给了“写入时间戳递增”的福利，省去了排序，直接 \code{push\_back} 即有序——\textbf{读题时要敏锐捕捉这种“输入自带有序性”的暗示}，它常常把 \bigO{n\log n} 降到 \bigO{\log n}。
+\end{idea}
+
+\begin{cpp}
+class TimeMap {
+    // 每个 key 对应一个按 timestamp 递增的 (timestamp, value) 序列
+    unordered_map<string, vector<pair<int, string>>> store;
+public:
+    TimeMap() {}
+
+    void set(string key, string value, int timestamp) {
+        // 因 timestamp 严格递增，直接尾插即保持有序
+        store[key].push_back({timestamp, value});
+    }
+
+    string get(string key, int timestamp) {
+        auto it = store.find(key);
+        if (it == store.end()) return "";
+        const auto& arr = it->second;
+        // 手写二分：找第一个 timestamp 严格大于查询值的位置（等价 upper_bound）
+        int lo = 0, hi = arr.size();      // 在 [lo, hi) 上二分
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (arr[mid].first <= timestamp) lo = mid + 1; // 仍可行，右移
+            else hi = mid;
+        }
+        // 循环结束后 lo 为第一个 > timestamp 的下标
+        if (lo == 0) return "";           // 没有任何记录 <= timestamp
+        return arr[lo - 1].second;        // 前一个即“不超过 t 的最大者”
+    }
+};
+\end{cpp}
+
+\begin{keypoint}[复杂度]
+\code{set} 摊还 \bigO{1}（尾插）。\code{get} 为单 \code{key} 序列上的二分，\bigO{\log n}，其中 $n$ 为该 \code{key} 的写入次数。总空间 \bigO{N}，$N$ 为所有写入总数。
+\end{keypoint}
+
+\begin{pitfall}[二分边界与“严格大于”]
+要找的是“$\le t$ 的最大”，对应 \code{upper\_bound}（第一个 $> t$）再退一位，而\textbf{不是} \code{lower\_bound}（第一个 $\ge t$）。若误用 \code{lower\_bound}，当存在恰好等于 \code{t} 的时间戳时会少取一位、取到前一个值。手写二分时记牢不变式：循环结束 \code{lo} 指向第一个严格大于 \code{t} 的位置，答案在 \code{lo-1}；\code{lo==0} 表示无解。
+\end{pitfall}
+
+\begin{followup}[“如果 \code{set} 的时间戳不保证递增了呢？”]
+两条路：（1）改用 \code{std::map<int,string>}（红黑树）按时间戳排序，\code{get} 用 \code{upper\_bound} 仍是 \bigO{\log n}，\code{set} 变 \bigO{\log n}；（2）仍用 \code{vector} 但 \code{set} 时插入到正确位置（\bigO{n}）或先收集后排序。可主动权衡：“如果写多读少且乱序，我倾向 \code{map}；如果写入基本有序、偶有乱序，\code{vector} + 偶尔排序的均摊成本更低。”
+\end{followup}
+
+% ===========================================================================
+\problem{295}{数据流的中位数 (Find Median from Data Stream)}{Hard}
+
+\subsection*{题意}
+设计数据结构支持两种操作：\code{addNum(num)} 不断加入整数；\code{findMedian()} 返回当前所有已加入数字的中位数（偶数个时为中间两数的平均）。
+例：依次 \code{addNum(1)}、\code{addNum(2)} 则 \code{findMedian()->1.5}；再 \code{addNum(3)} 则 \code{findMedian()->2}。
+
+\subsection*{思路推导}
+朴素做法是维护一个有序数组，\code{findMedian} \bigO{1} 但 \code{addNum} 要插入到正确位置，\bigO{n}；在数据流场景下太慢。我们想要的是“随时拿到中间元素”，却\textbf{不需要整个序列完全有序}——只要能快速取到“中间那一两个”。
+
+这引出经典的\textbf{对顶堆（two heaps）}结构：把数据从中间劈成两半。
+\begin{itemize}
+  \item \textbf{大顶堆} \code{lo} 存较小的一半，堆顶是这半的最大值；
+  \item \textbf{小顶堆} \code{hi} 存较大的一半，堆顶是这半的最小值。
+\end{itemize}
+只要维持两条不变式：(1) \code{lo} 里每个数 $\le$ \code{hi} 里每个数；(2) 两堆大小相差不超过 1（约定 \code{lo} 至多比 \code{hi} 多一个）。那么中位数就在两个堆顶之间：总数为奇则取 \code{lo} 堆顶；为偶则取两堆顶的平均。这两个堆顶恰是“中间的一两个元素”，\bigO{1} 可得。
+
+\code{addNum} 的维护：先把新数放进 \code{lo}（并把 \code{lo} 堆顶弹给 \code{hi}，保证跨堆有序），再做\textbf{再平衡}——若 \code{hi} 比 \code{lo} 多，则把 \code{hi} 堆顶移回 \code{lo}。这样两条不变式始终成立。每次操作只涉及常数次堆的弹出/插入，\bigO{\log n}。
+
+\begin{idea}[对顶堆：当你只关心“中间/第 k 个”而非全序]
+若问题需要\textbf{动态地、反复地访问某个分位点}（中位数、第 $k$ 大、滑动窗口中值），不要去维护完整有序序列。\textbf{用两个堆把数据从关注点处一分为二}：一侧大顶堆、一侧小顶堆，让关注的元素永远浮在两个堆顶。这个“在临界点处对半切、用两个相反方向的堆夹住它”的思想，是处理流式分位数问题的标准武器，也能推广到“维护滑动窗口中位数”等变体。
+\end{idea}
+
+\begin{cpp}
+class MedianFinder {
+    priority_queue<int> lo;                              // 大顶堆：较小的一半
+    priority_queue<int, vector<int>, greater<int>> hi;   // 小顶堆：较大的一半
+public:
+    MedianFinder() {}
+
+    void addNum(int num) {
+        // 1) 先入大顶堆，再把其最大值让给小顶堆，保证 lo 所有元素 <= hi
+        lo.push(num);
+        hi.push(lo.top());
+        lo.pop();
+        // 2) 再平衡：约定 lo 的规模 >= hi，且至多多 1
+        if (hi.size() > lo.size()) {
+            lo.push(hi.top());
+            hi.pop();
+        }
+    }
+
+    double findMedian() {
+        if (lo.size() > hi.size())        // 总数为奇，中位数在 lo 堆顶
+            return lo.top();
+        // 总数为偶，取两堆顶平均（注意转 double 避免整型溢出/截断）
+        return (lo.top() + (double)hi.top()) / 2.0;
+    }
+};
+\end{cpp}
+
+\begin{keypoint}[复杂度]
+\code{addNum} 涉及常数次堆操作，\bigO{\log n}；\code{findMedian} 仅读两个堆顶，\bigO{1}。空间 \bigO{n}。
+\end{keypoint}
+
+\begin{pitfall}[平衡方向与求和溢出]
+（1）\textbf{再平衡只需一个方向}：因为入队套路固定（先进 \code{lo} 再吐给 \code{hi}），只可能出现 \code{hi} 比 \code{lo} 多的情况，故只判一个方向；若两个方向都判反而易写出震荡。（2）\textbf{偶数取平均}时 \code{lo.top()+hi.top()} 在两者都接近 \code{INT\_MAX} 时会整型溢出，务必先转 \code{double} 再相加。
+\end{pitfall}
+
+\begin{followup}[“如果数字都在 0..100 的小范围内，能做到 \bigO{1} 吗？”]
+能。改用\textbf{计数桶}：开一个长度 101 的频次数组，\code{addNum} \bigO{1} 计数，\code{findMedian} 时累加频次找到中位位置，固定 \bigO{100}=\bigO{1}。当数值域很小，桶/计数往往碾压通用堆方案。能根据“数据范围”这一约束切换到更专用的数据结构，是面试官眼里的加分点。另一个常见追问：“99\% 的查询只要中位数附近”——可答可缓存上次结果并惰性更新。
+\end{followup}
+
+% ===========================================================================
+\problem{336}{回文对 (Palindrome Pairs)}{Hard}
+
+\subsection*{题意}
+给定一组\textbf{互不相同}的单词 \code{words}，找出所有下标对 \code{(i, j)}（\code{i != j}）使得 \code{words[i] + words[j]} 拼接后是回文串。返回所有这样的下标对。
+例：\code{["abcd","dcba","lls","s","sssll"]} 则输出 \code{[[0,1],[1,0],[3,2],[2,4]]}（如 \code{words[3]+words[2]="s"+"lls"="slls"} 是回文）。
+
+\subsection*{思路推导}
+暴力是 \bigO{n^2 \cdot k}：枚举每一对、各判一次回文（$k$ 为词长）。我们要把“配对”这一维用\textbf{哈希}降下来。
+
+核心洞察：固定单词 \code{w}，问“哪个单词 \code{x} 能让 \code{w+x} 或 \code{x+w} 成为回文”。把 \code{w} 在某个切点切成两段 \code{left = w[0..i)} 与 \code{right = w[i..]}。分两种情况：
+\begin{enumerate}
+  \item 若 \code{left} 本身是回文，那么只要存在另一个单词等于 \code{reverse(right)}，把它接在 \code{w} \textbf{前面}，即 \code{x + w}，整体就是回文。因为 \code{x = reverse(right)}，\code{x + left + right}：\code{x} 与 \code{right} 互为镜像、中间 \code{left} 自回文。
+  \item 若 \code{right} 本身是回文，那么只要存在单词等于 \code{reverse(left)}，把它接在 \code{w} \textbf{后面}，即 \code{w + x}，整体回文。
+\end{enumerate}
+于是算法：把所有单词的\textbf{反转串}建一个 \code{哈希表 reverse(word) -> 下标}。对每个单词 \code{w}，枚举所有切点 \code{i in [0..len]}，按上面两种情况查表。注意处理空串与避免自配对、避免重复计数（在切点遍历里对 \code{i==0} 的情形只在一种分支处理，防止同一对被记两次）。
+
+\begin{idea}[把“配对搜索”转成“查表”：拆分 + 反转 + 哈希]
+$O(n^2)$ 的配对枚举常能被\textbf{哈希预处理}砍掉一维：与其问“这两个能不能配”，不如对每个元素\textbf{算出它需要的‘另一半’长什么样，再去表里查那一半是否存在}（两数之和、回文对都是此模式）。本题的额外巧思是\textbf{在元素内部枚举切点}，把一个长匹配拆成“一段自满足 + 另一段去表里找镜像”。这种“拆成‘自洽部分 + 待匹配部分’”的分解，是字符串/前后缀类难题的通用解法（Trie 是它的另一种载体）。
+\end{idea}
+
+\begin{cpp}
+class Solution {
+    bool isPalindrome(const string& s, int l, int r) { // 判断 s[l..r] 是否回文
+        while (l < r) if (s[l++] != s[r--]) return false;
+        return true;
+    }
+public:
+    vector<vector<int>> palindromePairs(vector<string>& words) {
+        unordered_map<string, int> rev;   // reverse(word) -> 其下标
+        for (int i = 0; i < (int)words.size(); ++i) {
+            string r(words[i].rbegin(), words[i].rend());
+            rev[r] = i;
+        }
+        vector<vector<int>> result;
+        for (int i = 0; i < (int)words.size(); ++i) {
+            const string& w = words[i];
+            int n = w.size();
+            for (int j = 0; j <= n; ++j) {           // 枚举切点 [0..n]
+                // 情况一：前缀 w[0..j) 回文 -> 找等于 reverse(w[j..]) 的词接前面
+                if (isPalindrome(w, 0, j - 1)) {
+                    string suf = w.substr(j);
+                    string need(suf.rbegin(), suf.rend());
+                    auto it = rev.find(need);
+                    if (it != rev.end() && it->second != i)
+                        result.push_back({it->second, i});
+                }
+                // 情况二：后缀 w[j..) 回文 -> 找等于 reverse(w[0..j)) 的词接后面
+                // j < n 防止与情况一在整词回文时重复计数（j==n 已在情况一处理）
+                if (j < n && isPalindrome(w, j, n - 1)) {
+                    string pre = w.substr(0, j);
+                    string need(pre.rbegin(), pre.rend());
+                    auto it = rev.find(need);
+                    if (it != rev.end() && it->second != i)
+                        result.push_back({i, it->second});
+                }
+            }
+        }
+        return result;
+    }
+};
+\end{cpp}
+
+\begin{keypoint}[复杂度]
+设单词数 $n$、最大词长 $k$。建表 \bigO{n k}。主循环对每个词枚举 \bigO{k} 个切点，每个切点做 \bigO{k} 的回文判断与子串/哈希操作，故 \bigO{n k^2}。空间 \bigO{n k}。相比暴力 \bigO{n^2 k} 大幅改进（$k \ll n$ 时尤甚）。
+\end{keypoint}
+
+\begin{pitfall}[重复计数与空串]
+（1）\textbf{重复}：当整个词本身回文时，情况一（\code{j==n}）和情况二（\code{j==0}）会把同一对算两次，故用 \code{j < n} 把情况二的端点排除。（2）\textbf{空串}：若 \code{words} 含空串 \code{""}，它能与任意回文词配对，切点遍历到端点时自然覆盖，但要确保回文判断对空区间返回真（\code{l>r} 时返回 \code{true}）。（3）别忘了 \code{it->second != i} 排除自配对。
+\end{pitfall}
+
+\begin{followup}[“能否用 Trie 把复杂度降到更优？”]
+可以。把所有单词的\textbf{反转串}插入 Trie，并在每个节点记录“以此为前缀、其剩余后缀为回文的单词下标”。查询某词 \code{w} 时沿 Trie 走，遇到完整匹配且剩余部分回文即成对。这样把每次切点的哈希查找均摊为沿树下行，整体仍约 \bigO{n k^2} 但常数更小、且利于前缀复用、更省内存。面试中能说清“哈希版好写、Trie 版更省内存”的取舍即可，通常不必现场写完 Trie。
+\end{followup}
+
+% ===========================================================================
+\problem{773}{滑动谜题 (Sliding Puzzle)}{Hard}
+
+\subsection*{题意}
+一个 $2\times 3$ 的棋盘，格子里是 0..5，其中 0 表示空格。每次可把 0 与其上下左右相邻的数字交换。求把棋盘变成目标 \code{[[1,2,3],[4,5,0]]} 所需的\textbf{最少移动步数}；若无法达成返回 $-1$。
+例：\code{[[1,2,3],[4,0,5]]} 只需 1 步（交换 0 与 5）则返回 1；\code{[[1,2,3],[5,4,0]]} 返回 $-1$。
+
+\subsection*{思路推导}
+“求最少步数”且“每步代价相同”——这是\textbf{无权图最短路}，标准答案是\textbf{BFS}。难点不在 BFS 本身，而在如何把“棋盘状态”变成可入队、可去重的对象。
+
+\textbf{状态编码}：$2\times 3$ 棋盘共 6 个格子，把它按行展开成长度 6 的字符串，例如 \code{[[1,2,3],[4,0,5]]} 编码为 \code{"123405"}。字符串可直接放进 \code{unordered\_set} 做 visited 判重，目标状态是 \code{"123450"}。
+
+\textbf{邻接关系}：在一维字符串里，0 所在下标 \code{z} 能和哪些下标交换？把二维相邻预先压成一张固定的邻接表：下标 0 的邻居是 \{1,3\}，1 是 \{0,2,4\}，2 是 \{1,5\}，3 是 \{0,4\}，4 是 \{1,3,5\}，5 是 \{2,4\}。每次找到 0 的位置，按邻接表交换生成新状态。
+
+于是就是教科书 BFS：起点状态入队，逐层扩展，第一次到达 \code{"123450"} 时的层数即答案；队列空仍未达则返回 $-1$。状态空间至多 $6! = 720$ 种，极小，BFS 秒解。
+
+\begin{idea}[最短步数 + 状态转移 = 状态空间 BFS]
+当题目是“从初始局面经过若干等价代价的操作，最少多少步到达目标”，把每个\textbf{局面看作图的一个节点}、每个\textbf{合法操作看作一条边}，答案就是 BFS 最短路。三个关键动作：\textbf{(1) 设计紧凑可哈希的状态编码}（本题用字符串）；\textbf{(2) 写出状态转移（邻接）}；\textbf{(3) 用 visited 去重防止指数爆炸}。八数码、华容道、倒水量杯、最少操作变换字符串，全是这一模式。状态编码的优劣直接决定能不能跑得动。
+\end{idea}
+
+\begin{cpp}
+class Solution {
+public:
+    int slidingPuzzle(vector<vector<int>>& board) {
+        // 0 在一维下标处可交换的邻居（由 2x3 相邻关系压平而来）
+        const vector<vector<int>> neighbors = {
+            {1, 3}, {0, 2, 4}, {1, 5}, {0, 4}, {1, 3, 5}, {2, 4}
+        };
+        string start, target = "123450";
+        for (auto& row : board)
+            for (int x : row) start += ('0' + x);
+
+        unordered_set<string> visited{start};
+        queue<string> q;
+        q.push(start);
+        int steps = 0;
+        while (!q.empty()) {
+            int sz = q.size();
+            while (sz--) {                      // 逐层扩展
+                string cur = q.front(); q.pop();
+                if (cur == target) return steps;
+                int z = cur.find('0');          // 空格位置
+                for (int nb : neighbors[z]) {
+                    string nxt = cur;
+                    swap(nxt[z], nxt[nb]);      // 交换 0 与邻居
+                    if (!visited.count(nxt)) {
+                        visited.insert(nxt);
+                        q.push(nxt);
+                    }
+                }
+            }
+            ++steps;
+        }
+        return -1;                              // 无法达到目标
+    }
+};
+\end{cpp}
+
+\begin{keypoint}[复杂度]
+状态空间至多 $6!=720$ 个排列，每个状态扩展常数条边，故时间与空间均为 \bigO{(R\cdot C)!} 量级，本题即 \bigO{720}，实际瞬时完成。
+\end{keypoint}
+
+\begin{pitfall}[一维邻接表别写错]
+把二维相邻硬编码成一维邻接表时极易把下标算错（尤其跨行的 0/3、2/5 不相邻）。稳妥做法是按 \code{r=z/C, c=z\%C} 现算四方向并过滤越界，避免手抄邻接表出错；本题盘面固定，预存邻接表更快，但务必逐项核对。另外 \textbf{visited 要在入队时立刻标记}，不要等出队再标，否则同一状态会被重复入队、可能超时。
+\end{pitfall}
+
+\begin{followup}[“如果是 $3\times 3$ 八数码、状态空间更大呢？”]
+$3\times 3$ 有 $9!=362880$ 个状态，BFS 仍可行但偏慢。可升级为 \textbf{A* 搜索}：用“各数字到目标位置的曼哈顿距离之和”作启发函数（它是可采纳的下界），用优先队列按 \code{已走步数 + 启发值} 扩展，能大幅减少访问状态数。还可用\textbf{双向 BFS}从起点与终点同时搜、在中间相遇。能说出“BFS 保证最优但盲目，A* 用启发剪枝”这层关系即达标。
+\end{followup}
+
+% ===========================================================================
+\problem{755}{倒水 (Pour Water)}{Medium}
+
+\subsection*{题意}
+给定一维高度数组 \code{heights} 表示地形，从下标 \code{K} 正上方依次倒下 \code{V} 单位水，每个单位水滴遵循物理规则下落与流动，求最终地形+水的高度数组。单滴水规则（优先级从高到低）：
+\begin{enumerate}
+  \item 若它能往\textbf{左}流到一个更低处（沿途不上升、最终落点严格低于当前位置），就流到左边最近的最低点；
+  \item 否则若能往\textbf{右}流到更低处，就流到右边最近的最低点；
+  \item 否则停在原地 \code{K} 上方。
+\end{enumerate}
+“高度”指地形高度加已有水高度之和。
+例：\code{heights=[2,1,1,2,1,2,2]}, \code{V=4}, \code{K=3} 则结果为 \code{[2,2,2,3,2,2,2]}。
+
+\subsection*{思路推导}
+这是 Airbnb 最经典的\textbf{物理模拟}题，考点不是算法而是\textbf{把自然语言规则精确翻译成代码、并处理好优先级与平台（平地）情形}。最稳的策略是\textbf{一次只模拟一滴水}，重复 \code{V} 次；每滴独立、互不干扰，远比想批量处理简单可靠。
+
+对单滴水，从落点 \code{cur = K} 开始，分别尝试左、右两个方向，规则完全对称：
+
+\textbf{向某方向探流}：从 \code{cur} 沿该方向逐格前进，维护一个“候选落点” \code{best}（初值为 \code{cur}）。前进时：若下一格高度\textbf{大于}当前 \code{best} 高度，说明遇到上坡，水翻不过去，停止探索；若下一格高度\textbf{小于} \code{best} 高度，把 \code{best} 更新为这一格（找到了更低的落点）；若相等（平地），继续走但暂不更新 \code{best}（保证“流到最近的最低点”——多个等高最低点取最靠近 \code{cur} 的那个，因为我们只在严格更低时才更新 \code{best}）。
+
+最终：若向左探得 \code{best != cur}（左边确有更低落点），水落在左 \code{best}；否则同样探右；都不行就落在 \code{cur}。把对应位置高度 \code{+1}，进入下一滴。
+
+把“探一个方向”写成一个带方向参数 \code{dir in {-1,+1}} 的函数，左右复用同一份逻辑，是这道题写干净的关键。
+
+\begin{idea}[模拟题：固定“最小可独立单元”，把规则翻译成对称的小函数]
+面对物理/业务模拟，先找到\textbf{最小可独立处理的单元}（这里是“一滴水”），逐个处理而非整体处理，复杂度换来正确性。再把\textbf{对称的规则}（向左/向右流动镜像一致）抽成\textbf{带方向参数的同一函数}，避免左右两套近乎重复、却各藏一个 off-by-one 的代码。模拟题的失分点几乎全在“规则优先级”和“平地/边界”的细节，把规则逐条写成注释、对照实现，是稳过的笨办法也是好办法。
+\end{idea}
+
+\begin{cpp}
+class Solution {
+public:
+    vector<int> pourWater(vector<int>& heights, int V, int K) {
+        int n = heights.size();
+        // 逐滴模拟，每滴互不影响
+        for (int drop = 0; drop < V; ++drop) {
+            int cur = K;
+            // 依次尝试方向：先左(-1)后右(+1)，符合题目优先级
+            for (int dir : {-1, 1}) {
+                int best = cur;                 // 该方向上的最佳落点
+                int p = cur;
+                while (p + dir >= 0 && p + dir < n &&
+                       heights[p + dir] <= heights[p]) {
+                    p += dir;
+                    if (heights[p] < heights[best])
+                        best = p;               // 仅在严格更低时更新，取最近最低点
+                }
+                if (best != cur) {              // 此方向找到更低落点
+                    cur = best;
+                    break;                       // 左侧成功则不再看右侧
+                }
+            }
+            ++heights[cur];                      // 水滴最终停在 cur
+        }
+        return heights;
+    }
+};
+\end{cpp}
+
+\begin{keypoint}[复杂度]
+每滴水最坏向某方向走 \bigO{n}，共 \code{V} 滴，故时间 \bigO{V \cdot n}，原地修改、额外空间 \bigO{1}。
+\end{keypoint}
+
+\begin{pitfall}[平地“最近最低点”与方向优先级]
+（1）\textbf{平地处理}：探流时遇到等高格要\textbf{继续走但不更新 best}，否则会停在远处的等高点而非最近的最低点；只有严格更低才更新 best，保证取到“最近的最低”。（2）\textbf{优先级}：必须先彻底判左、左不行才判右，不能左右一起比；代码用 \code{for dir in \{-1,1\} ... break} 显式保证顺序。（3）流动条件是\textbf{相对前一格不上升}（\code{heights[p+dir] <= heights[p]}），而不是相对起点 \code{cur}，写错会让水翻越本不该翻越的小坡。
+\end{pitfall}
+
+\begin{followup}[“如果 \code{V} 很大（百万级），如何加速？”]
+逐滴 \bigO{Vn} 会退化。可观察到水会先填满 \code{K} 周围的“盆地”，可用\textbf{批量灌水}：在当前左右最近的“墙”之间求出可容纳的水量，一次性灌到下一个临界水位，把 \code{V} 个单位分摊处理，类似“接雨水”的双指针/分层填充。能指出“单滴模拟正确但不可扩展，批量按水位填充可降到接近线性”，正是面试官期待的可扩展性思考。
+\end{followup}
+
+% ===========================================================================
+\problem{Airbnb 高频 OOD}{分页去重 (Display Pages / Pagination)}{Medium}
+
+\subsection*{题意}
+给定一组房源记录，每条形如 \code{"hostId,score,city,..."}（逗号分隔，第一个字段是 \code{hostId}，第二个是评分 \code{score}）。要求把它们分页输出，每页 \textbf{12} 条，规则：
+\begin{itemize}
+  \item 总体\textbf{按 \code{score} 降序}排列；
+  \item \textbf{同一页内，同一个 \code{hostId} 的房源不能出现两次}（即一页里 host 不重复）；
+  \item 若在某一页中，剩余还没用过的记录里再也找不到“host 未在本页出现过”的记录（即一整轮扫描都无法继续满足约束），则\textbf{放宽限制}，允许把剩下的记录按序填入，直到这一页满或数据耗尽，然后开新页。
+\end{itemize}
+输出最终的记录顺序（页与页之间可用空行或分隔符标识）。这是 Airbnb 经典的 OOD/业务模拟题，重点在\textbf{把业务规则建模成可扩展的分页器}。
+
+\subsection*{思路推导}
+先厘清数据流：输入已能按 \code{score} 降序排序（或我们先排序）。难点是“同页 host 不重复，且无法满足时放宽”。
+
+\textbf{朴素思路}：每开一页，维护一个 \code{usedHosts} 集合，从头扫描剩余记录，遇到 host 不在集合里的就选入、加入集合、从剩余列表删除；扫到 12 条或扫完一轮为止。若某轮一条都没选上（剩余全是已用 host），就放宽：直接按序填满本页。问题：每次从头扫 + 删除元素，复杂度高且代码乱。
+
+\textbf{更干净的队列模型}：把按 score 排好序的记录放进一个\textbf{队列} \code{q}（队首 score 最高）。逐条出队尝试放入当前页：
+\begin{itemize}
+  \item 若当前页 \code{usedHosts} 不含此 host（或已处于“放宽”状态），就把它放入当前页，记录其 host；
+  \item 否则（host 冲突且未放宽），\textbf{暂存}到一个 \code{skipped} 缓冲队列，留待后续页。
+\end{itemize}
+何时翻页或放宽？维护“自上次成功放入以来连续跳过的计数”或用更稳的判定：当我们\textbf{遍历完一轮主队列}仍未填满本页，说明剩下的全是冲突 host，则进入放宽模式把 \code{skipped} 直接灌入。最稳妥、最易讲清的实现是\textbf{每页独立处理}：开一页 -> 用一个 \code{usedHosts} -> 遍历主队列，能放就放、不能放就留；若一整轮没放进任何新记录（且页未满），则放宽，把队首直接放入。页满 12 条则结算开新页。
+
+下面给出面向对象的 \code{Paginator}：把“记录解析”“一页的装填规则”“放宽策略”分离，便于将来扩展（改页大小、改去重键、改放宽策略）。我们用一个 \code{deque} 作主队列、按顺序尝试，配合 \code{usedHosts}；当遍历指针走完一圈没有任何放入时触发放宽。
+
+\begin{idea}[业务规则建模：把“数据流 + 约束 + 降级策略”拆成可替换的部件]
+OOD 模拟题考的不是算法，而是\textbf{能不能把业务规则拆成正交、可替换的部件}，因为面试官\textbf{一定会追加新需求}。本题至少有四个可变点：\textbf{页大小}、\textbf{去重键}（今天是 hostId，明天可能是 city）、\textbf{排序键}（score）、\textbf{降级/放宽策略}。好的设计把它们各自参数化：去重键抽成一个“从记录提取 key 的函数”，放宽策略抽成一个独立判断。这样当面试官说“现在改成 city 不重复、每页 10 条、放宽时优先同城”，你只改一两个部件而非重写。\textbf{记住：Airbnb 的 OOD 题，可扩展性就是正确答案的一部分。}
+\end{idea}
+
+\begin{cpp}
+class Paginator {
+    int pageSize;
+    // 从一条记录中提取去重键（此处为 hostId）。抽成函数便于将来替换去重维度
+    static string extractHostId(const string& record) {
+        return record.substr(0, record.find(','));
+    }
+public:
+    explicit Paginator(int pageSize = 12) : pageSize(pageSize) {}
+
+    // 输入已按 score 降序排好；返回分页后的记录顺序（外层 vector 为各页）
+    vector<vector<string>> paginate(const vector<string>& sortedRecords) {
+        deque<string> q(sortedRecords.begin(), sortedRecords.end());
+        vector<vector<string>> pages;
+
+        while (!q.empty()) {
+            vector<string> page;                  // 当前页
+            unordered_set<string> usedHosts;      // 本页已出现的 host
+            int scanned = 0;                      // 本轮已检查的记录数
+            int queueLenAtRoundStart = q.size();  // 用于判断“扫完一轮无进展”
+            bool relaxed = false;                 // 是否已放宽 host 去重约束
+
+            while ((int)page.size() < pageSize && !q.empty()) {
+                string record = q.front(); q.pop_front();
+                string host = extractHostId(record);
+
+                if (relaxed || !usedHosts.count(host)) {
+                    // 可以放入本页
+                    page.push_back(record);
+                    usedHosts.insert(host);
+                    scanned = 0;                  // 有进展，重置“连续跳过”计数
+                    queueLenAtRoundStart = q.size();
+                } else {
+                    // host 冲突：暂时放回队尾，留待后续页
+                    q.push_back(record);
+                    ++scanned;
+                    // 若一整轮（队列原长度）都没放进任何记录，则放宽约束
+                    if (scanned >= queueLenAtRoundStart)
+                        relaxed = true;
+                }
+            }
+            pages.push_back(page);
+        }
+        return pages;
+    }
+};
+\end{cpp}
+
+\begin{keypoint}[复杂度]
+排序 \bigO{N \log N}（若输入未排序）。分页阶段每条记录被放入一次、最多被“放回队尾”常数轮，整体近似 \bigO{N} 到 \bigO{N \cdot P}（$P$ 为页数，放宽判定带来的额外扫描有限）。空间 \bigO{N}。
+\end{keypoint}
+
+\begin{pitfall}[放宽时机与死循环]
+最危险的 bug 是\textbf{放回队尾导致死循环}：当本页已满或剩余全是冲突 host 却没有放宽开关时，记录会被无限放回。必须有一个明确的“扫完一轮无进展即放宽”的判据（本实现用 \code{scanned >= queueLenAtRoundStart}）。另一个易错点：放宽是\textbf{针对当前页}的局部状态，开新页时要重置 \code{relaxed} 与 \code{usedHosts}，否则后续页会无谓地丢失去重约束。
+\end{pitfall}
+
+\begin{followup}[“现在改成按 city 去重、每页 10 条、放宽时优先同城；还要支持流式输入”]
+这正是 Airbnb 式的连环追问，逐条应答：（1）\textbf{改去重键}：把 \code{extractHostId} 泛化为可注入的 \code{keyExtractor}（如 \code{std::function<string(const string\&)>}），构造时传入“取 city”的提取器即可，主逻辑一行不改。（2）\textbf{改页大小}：已是构造参数。（3）\textbf{放宽策略}：把放宽时的选取逻辑抽成策略对象（\code{RelaxPolicy}），默认“按序”，可替换为“优先同城”。（4）\textbf{流式输入}：把一次性 \code{vector} 改为\textbf{逐页惰性生成}（\code{nextPage()} 迭代器接口），内部用堆维护 top-score、按需取数，避免一次加载全部。能把“四个可变点各自参数化”讲清楚，就完整命中了这道题的考点——\textbf{可扩展的业务建模}。
+\end{followup}
+
+% ===========================================================================
+\section{小结：十道题背后的同一套思维工具}
+
+回看这十道题，会发现它们反复调用的是同一批可迁移的“思维工具”：
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l l X@{}}
+\toprule
+\textbf{思维工具} & \textbf{代表题} & \textbf{触发信号} \\
+\midrule
+分治式规则建模 & 68 文本对齐、755 倒水、Pagination & “把人类/业务规则翻译成代码” \\
+迭代器 / 状态显式化 & 341 嵌套迭代器 & “可暂停、可恢复的遍历” \\
+拓扑排序 & 269 火星词典 & “从两两先后约束排出全序” \\
+回溯三件套 & 39 组合总和 & “枚举所有满足条件的方案” \\
+有序结构 + 二分 & 981 时间键值 & “小于等于某值中的最大” \\
+对顶堆 & 295 数据流中位数 & “动态访问中位/第 k 个” \\
+拆分 + 哈希配对 & 336 回文对 & “把 \bigO{n^2} 配对降一维” \\
+状态空间 BFS & 773 滑动谜题 & “最少步数 + 等价代价转移” \\
+可扩展 OOD 建模 & Pagination & “面试官会追加新需求” \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+把这些信号刻进直觉，比记住任何一道题的代码都重要。Airbnb 面试的下半场往往不是“你会不会做这道题”，而是“当我把题改成另一个样子，你能不能稳稳接住”。下一章我们进入系统设计，你会看到\textbf{乐观锁、分层缓存、对顶堆式的负载均衡}——它们和本章的思维工具，其实是同一批武器在更大尺度上的投影。
+

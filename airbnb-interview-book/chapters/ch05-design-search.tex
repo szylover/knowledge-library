@@ -1,0 +1,275 @@
+\chapter{设计房源搜索}
+
+如果说订房系统考的是\textbf{写一致性}，那么房源搜索考的就是\textbf{读规模}。用户在地图上拖动、输入“7 月 1 日到 5 日、巴黎、2 居室、可带宠物、预算每晚 200 美元以内”，期望几百毫秒内返回一屏既相关又当下可订的房源。这背后糅合了\textbf{地理检索、多维过滤、可用性约束、相关性排序、分层缓存}五个难点，是 Airbnb 系统设计面试的另一道经典大题。
+
+本章同样按五步法展开，重点讲清两件事：\textbf{地理空间索引怎么选（GeoHash / S2 / QuadTree）}，以及\textbf{“日期可用性”这种高频变化的维度如何与搜索引擎结合}。
+
+\begin{idea}[读多写少系统的设计基调]
+搜索是典型的\textbf{读远大于写}系统：房源信息一天可能才更新几次，但每秒有上万次查询。这类系统的设计基调与订房恰好相反——可以\textbf{大胆牺牲强一致换取读性能}：用倒排索引、用多级缓存、用只读副本、容忍索引比数据库晚几秒（最终一致）。记住这条分界：\textbf{钱和库存要强一致，浏览和搜索可最终一致}。把系统按“读外围 / 写核心”切开，分别采用 AP 与 CP 策略，是贯穿本书的架构主线。
+\end{idea}
+
+\section{第一步：需求澄清}
+
+\subsection{功能性需求}
+
+\begin{itemize}
+  \item 地理检索：给定地图视野（中心点 + 半径，或一个矩形边界框 bounding box）返回范围内房源。
+  \item 多维过滤：日期可用性、价格区间、房型（整租/合租）、卧室数、设施（WiFi/泳池/宠物）、评分等。
+  \item 排序与个性化：按相关性、价格、距离、评分排序，并对用户做个性化打分。
+  \item 分页：稳定、无重复、无遗漏地翻页。
+\end{itemize}
+
+\subsection{非功能性需求}
+
+\begin{itemize}
+  \item \textbf{低延迟}：搜索 p95 < 300ms，地图拖动要近实时。
+  \item \textbf{高可用}：搜索是流量入口，要 4 个 9；宁可返回稍旧的数据，也不要返回错误。
+  \item \textbf{最终一致}：房源新增 / 改价 / 可用性变化，容许秒级延迟体现在搜索结果里。
+  \item \textbf{高吞吐}：峰值读 QPS 十万级。
+\end{itemize}
+
+\section{第二步：容量估算}
+
+\begin{keypoint}[容量估算（数量级）]
+假设：活跃房源 $\approx 6\times10^6$；DAU $\approx 1\times10^8$；人均每天 10 次搜索。
+\[
+  \text{搜索 QPS}_{avg} = \frac{1\times10^8 \times 10}{86400} \approx 1.16\times10^4 \text{/秒}
+\]
+峰值按均值 8--10 倍计 $\approx 10^5$ QPS。
+索引数据量：每房源索引文档约 2KB（含地理坐标、设施、价格、文本），$6\times10^6 \times 2\text{KB} \approx 12$ GB——\textbf{完全可以放进内存 / 分布式倒排索引}，这决定了我们能用 Elasticsearch 这类内存型搜索引擎。
+可用性数据：$6\times10^6$ 房源 $\times$ 未来 365 天 $\approx 2.2\times10^9$ 个“房源-日”状态位，是搜索预过滤的难点（后面详述）。
+\end{keypoint}
+
+结论：\textbf{索引数据可全量入内存，瓶颈不在存储而在“高 QPS 的复杂多维查询 + 高频变化的可用性维度”}。
+
+\section{第三步：高层架构}
+
+\begin{lstlisting}
+                          +-------------------+
+       客户端  -------->   |   API Gateway     |  鉴权/限流/AB分流
+       (地图/列表)         +---------+---------+
+                                    |
+                                    v
+                          +-------------------+      +----------------+
+                          |  Search Service   | <--> |  Edge / CDN    |
+                          | (查询编排/打分)   |      |  Cache (热查询)|
+                          +----+----------+---+      +----------------+
+                               |          |
+              geo + filter     |          |  ranking features
+                    +----------+          +-----------+
+                    v                                 v
+          +-------------------+              +-------------------+
+          |  Elasticsearch    |              |  Ranking / ML Svc |
+          |  (倒排+geo索引,   |              |  (相关性, 个性化) |
+          |   分片+副本)      |              +-------------------+
+          +---------+---------+
+                    ^
+                    | 近实时索引 (CDC / 事件)
+                    |
+   +----------------+-----------------+------------------------+
+   |                |                 |                        |
++--------+   +--------------+   +--------------+        +---------------+
+|Listing |   | Availability |   | Pricing Svc  |        |  Kafka (CDC)  |
+| DB     |   | Service/DB   |   |              |  ----> |  binlog 流    |
++--------+   +--------------+   +--------------+        +---------------+
+ (真相来源)   (库存/日历)        (动态定价)
+\end{lstlisting}
+
+\textbf{关键设计选择}：
+
+\begin{itemize}
+  \item \textbf{数据库是真相来源（source of truth），搜索引擎是派生的读视图}。房源写入 Listing DB，通过\textbf{变更数据捕获（CDC）}把 binlog 推到 Kafka，再由索引管线近实时更新 Elasticsearch。
+  \item \textbf{Search Service 做编排}：解析查询、调 ES 拿候选集、调 Ranking 服务重排、组装结果、读缓存。
+  \item \textbf{多级缓存}：CDN/边缘缓存热门城市的“无个性化”结果，应用层缓存 geo 网格结果。
+\end{itemize}
+
+\begin{idea}[CQRS：把“写模型”和“读模型”分开]
+Listing DB 为了写得规范，是高度规范化（normalized）的关系表；但搜索需要的是\textbf{反规范化（denormalized）、为查询优化的宽文档}。与其在一个模型里两头将就，不如\textbf{读写分离到不同模型}——这就是 CQRS（命令查询职责分离）。写走 DB，读走 ES；二者用事件管线（CDC + Kafka）异步同步，天然是最终一致。这个模式的可迁移价值在于：\textbf{当读和写的访问模式差异巨大时，不要硬塞进同一个存储，用派生视图各自优化}。代价是要接受同步延迟与一份冗余数据，但对读密集系统这笔买卖非常划算。
+\end{idea}
+
+\section{第四步：数据模型与核心 API}
+
+\subsection{搜索文档（Elasticsearch）}
+
+\begin{lstlisting}
+{
+  "listing_id": 998877,
+  "title": "Cozy loft near Eiffel Tower",
+  "location": { "lat": 48.8584, "lon": 2.2945 },   // geo_point 类型
+  "s2_cells": ["47a1b2", "47a1b3"],                  // 预计算的S2 cell IDs
+  "city": "Paris", "country": "FR",
+  "room_type": "entire_home",
+  "bedrooms": 2,
+  "amenities": ["wifi", "pets_allowed", "pool"],     // 倒排过滤
+  "price_per_night_cents": 18000,
+  "rating": 4.87, "review_count": 213,
+  "instant_book": true,
+  "updated_at": 1719734400
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+# 核心搜索 API
+GET /v1/search?
+    bbox=48.80,2.25,48.90,2.36          # 地图边界框 (minLat,minLon,maxLat,maxLon)
+    &check_in=2026-07-01&check_out=2026-07-05
+    &guests=2&min_price=100&max_price=250
+    &room_type=entire_home&amenities=wifi,pets_allowed
+    &sort=relevance&page_token=eyJ...   # 游标分页 token
+->
+200 {
+  "results": [ { "listing_id": 998877, "price_cents": 18000, ... }, ... ],
+  "next_page_token": "eyJ...",          # 不用 offset, 用游标
+  "total_approx": 1240                  # 近似总数即可
+}
+\end{lstlisting}
+
+\section{第五步（核心难点一）：地理空间索引}
+
+“找出地图框内的房源”看似简单，但二维范围查询用普通 B-Tree 索引会很糟（经纬度两个维度无法同时用一个有序索引高效裁剪）。专门的地理索引把\textbf{二维空间映射成一维有序键}，从而能用前缀 / 范围查询。三种主流方案：
+
+\subsection{GeoHash：把经纬度交错编码成字符串前缀}
+
+GeoHash 把地球递归二分，将 (lat, lon) 交错编码成一个 Base32 字符串。\textbf{前缀越长，网格越小、越精确}；\textbf{共享前缀越长的两点，地理上越接近}。查询时把目标区域转成若干 GeoHash 前缀，做前缀匹配即可。
+
+\begin{itemize}
+  \item \textbf{优点}：实现简单、可读、天然支持前缀范围查询，几乎所有数据库都能存字符串前缀。
+  \item \textbf{缺点（关键）}：\textbf{边界问题}——两个物理上紧邻的点，可能恰好落在网格边界两侧，前缀完全不同（比如赤道、本初子午线附近，或仅仅是网格分界线两侧）。所以查询必须\textbf{同时检索目标网格 + 周围 8 个邻居网格}，否则会漏掉近在咫尺却跨格的房源。此外 GeoHash 的网格在高纬度会变形（经线收敛）。
+\end{itemize}
+
+\subsection{S2：把球面映射到立方体的 Hilbert 曲线}
+
+Google S2 把地球当作真正的\textbf{球面}，投影到外接立方体的 6 个面，再在每个面上用\textbf{希尔伯特曲线（Hilbert curve）}把二维 cell 编号成一维 64 位整数。
+
+\begin{itemize}
+  \item \textbf{优点}：直接在球面上建模，\textbf{没有 GeoHash 那种经纬度矩形在两极严重变形的问题}，全球 cell 面积更均匀；希尔伯特曲线保证“一维上相邻的 cell，空间上也大概率相邻”，局部性极好；支持多分辨率 cell（cell level），能用一组不同大小的 cell 精确覆盖任意圆/多边形区域；64 位整数比字符串更省更快。
+  \item \textbf{缺点}：实现与心智模型更复杂，覆盖区域要算 cell covering。
+  \item \textbf{为什么 S2 适合球面}：因为它从一开始就在球面/立方体上做等积性更好的划分，而 GeoHash 本质是在“经纬度平面矩形”上切分，纬度越高越失真。这正是 Uber、Google 等用 S2 的原因。
+\end{itemize}
+
+\subsection{QuadTree：按密度自适应细分的四叉树}
+
+QuadTree 把空间递归地分成四个象限，\textbf{哪里点密就在哪里继续细分}，是一棵深度不均的树。
+
+\begin{itemize}
+  \item \textbf{优点}：\textbf{自适应密度}——曼哈顿这种房源稠密区自动分得很细，撒哈拉沙漠这种稀疏区保持粗粒度，查询时每个叶子节点的候选数较均衡。
+  \item \textbf{缺点}：通常是\textbf{内存中的树结构}，需要构建与维护、再平衡，分布式持久化不如前两者“一维 key”那么自然；动态插入删除有成本。
+\end{itemize}
+
+\begin{idea}[空间降维：把二维问题变成一维有序键]
+GeoHash 和 S2 的共同精髓是\textbf{用空间填充曲线（space-filling curve）把二维坐标降成一维有序键}，从而复用我们最熟悉的一维有序结构（B-Tree、排序、范围扫描、前缀匹配）。这是一个极其通用的降维思想：高维 / 空间 / 多属性的“邻近查询”，常常可以通过某种保局部性（locality-preserving）的编码，转化为一维上的范围查询。理解了这一点，GeoHash 的前缀、S2 的 Hilbert 编号就不再是魔法，而是同一思想的不同实现。面试里能讲清“为什么要降维、降维保住了什么性质（局部性）、丢了什么（边界精度）”，远胜于背诵 API。
+\end{idea}
+
+\begin{pitfall}[GeoHash 边界遗漏：只查中心格会漏房源]
+最常见的地理检索 bug：用户在地图上的位置恰好靠近某个 GeoHash 网格的边界，你只检索了它所在的那个网格，结果\textbf{把紧邻边界另一侧、明明很近的房源漏掉了}。正确做法是检索\textbf{中心格 + 周围 8 个邻居格}（共 9 格）再做精确距离过滤；或者干脆用 S2 的 cell covering 算法生成能完整覆盖查询圆的一组 cell。另一个相关陷阱：直接用经纬度差的欧氏距离当真实距离——地球是球面，应使用 \textbf{Haversine（半正矢）} 公式算大圆距离，否则高纬度误差很大。
+\end{pitfall}
+
+\textbf{方案选择小结}：
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l l X@{}}
+\toprule
+\textbf{方案} & \textbf{键类型} & \textbf{适用与取舍} \\
+\midrule
+GeoHash & 字符串前缀 & 简单通用，但有边界问题、高纬变形 \\
+S2 & 64位整数 cell & 球面均匀、局部性好，最适合全球尺度，复杂度高 \\
+QuadTree & 内存树 & 自适应密度，适合分布不均，分布式持久化较难 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+面试可答：\textbf{全球尺度、追求精度与均匀性选 S2}；\textbf{快速落地、已有支持 GeoHash 的存储选 GeoHash（注意补邻居格）}；\textbf{单机内存、密度极不均选 QuadTree}。Elasticsearch 内置 \code{geo\_point} + BKD-tree 也能直接做 bounding box / 距离查询，工程上常直接用它。
+
+\section{核心难点二：多维过滤与倒排索引}
+
+设施、房型、城市这类\textbf{离散属性}用\textbf{倒排索引（inverted index）}：为每个取值维护一个“包含它的房源 ID 列表（posting list）”，多个过滤条件就是对多个 posting list 求\textbf{交集}。价格、卧室数这类\textbf{数值范围}用 ES 的 \code{range} 查询（底层 BKD-tree）。这正是 Elasticsearch / Lucene 的拿手好戏，所以工程上直接用 ES 承载“geo + 多维过滤 + 文本相关性”一站式查询。
+
+\begin{lstlisting}
+# Elasticsearch 查询骨架: filter(不打分,可缓存) + must(打分)
+{
+  "query": { "bool": {
+    "filter": [                                  # 布尔过滤, 结果可缓存
+      { "geo_bounding_box": { "location": {...} } },
+      { "terms": { "amenities": ["wifi","pets_allowed"] } },
+      { "range": { "price_per_night_cents": { "gte":10000, "lte":25000 } } },
+      { "term": { "room_type": "entire_home" } }
+    ],
+    "must": [                                     # 参与相关性打分
+      { "match": { "title": "eiffel loft" } }
+    ]
+  }}
+}
+\end{lstlisting}
+
+\begin{idea}[过滤与打分分离：filter 可缓存，query 才打分]
+搜索引擎里有个值得迁移的设计：把\textbf{“硬条件过滤”与“相关性打分”分开}。过滤（filter context）只回答“符不符合”——是布尔结果，\textbf{与查询词无关、可被缓存复用}（同样的“巴黎+WiFi+整租”过滤位图能服务无数次不同关键词的搜索）。打分（query context）才计算“有多相关”，是连续分数、随查询变化。这种“先用廉价的、可缓存的布尔过滤大幅缩小候选集，再对小候选集做昂贵的打分/排序”的两阶段范式，在搜索、推荐、广告检索里无处不在——\textbf{便宜的粗筛在前，昂贵的精排在后}。
+\end{idea}
+
+\section{核心难点三：日期可用性如何融入搜索}
+
+这是 Airbnb 搜索最棘手的部分：用户几乎总会带日期，而\textbf{可用性是高频变化的}（每次成功预订都会改变某些房源某些日期的状态）。把每天的可用性实时同步进搜索索引代价高昂。两种策略：
+
+\subsection{预过滤（pre-filter）vs 后过滤（post-filter）}
+
+\begin{itemize}
+  \item \textbf{预过滤}：把可用性也做进索引（比如索引每个房源“已被占用的日期范围”或一个按天的 bitmap），搜索时直接用日期条件过滤。优点：结果集干净、分页准确；缺点：\textbf{可用性变化要近实时回灌索引}，写放大严重，索引更新压力大。
+  \item \textbf{后过滤}：搜索先忽略日期，返回地理 + 属性匹配的候选集，\textbf{再调用 Availability 服务批量核验这批候选在目标日期是否可订}，过滤掉不可订的。优点：索引无需承载高频可用性更新，职责清晰；缺点：可能要多取一些候选以补偿被过滤掉的，分页与总数变得不精确。
+\end{itemize}
+
+\begin{idea}[预过滤 vs 后过滤：在“索引新鲜度成本”与“查询召回成本”间权衡]
+这是一个普遍的检索权衡。\textbf{预过滤}把约束前置进索引，查询快但索引维护贵、新鲜度难保证；\textbf{后过滤}保持索引简单，把约束推迟到查询时核验，索引轻但查询要多捞候选、结果可能不足。选择取决于\textbf{该维度的变化频率与基数}：变化慢、基数低的维度（城市、房型）适合预过滤进索引；变化极快的维度（实时可用性、动态价格）更适合后过滤或近实时局部更新。实务中常\textbf{混合}：用粗粒度可用性（如“这个月是否还有空档”）做预过滤的廉价初筛，再用后过滤精确核验具体日期。\textbf{把易变的留到最后、把稳定的固化到索引}，是新鲜度与性能间的经典折中。
+\end{idea}
+
+\begin{pitfall}[后过滤导致分页“缺斤短两”与重复]
+用后过滤时，ES 返回 20 条候选，经可用性核验后只剩 12 条可订——这一页就“缩水”了，若简单按 ES 的 offset 翻页，下一页还会因为重新过滤而\textbf{重复或遗漏}。两个要点：(1) 用\textbf{游标分页（cursor / search\_after）}而非 offset 分页——offset 在数据变化时极易重复/跳漏，且深翻页（offset 很大）性能灾难；游标基于上一页最后一条的排序值定位，稳定且高效。(2) 后过滤时\textbf{超量召回}（over-fetch，比如要 20 条就先取 60 条候选）以补偿过滤损耗，并把“总数”作为\textbf{近似值}呈现而非精确值。搜索结果的“大约 1200 间房源”本来就不需要精确。
+\end{pitfall}
+
+\section{核心难点四：排序、个性化与分层缓存}
+
+\subsection{两阶段排序}
+
+先用 ES 的轻量打分（BM25 文本相关性 + 简单 boost）粗排出 top-N 候选，再把这 N 条送入\textbf{Ranking/ML 服务}做精排：综合相关性、价格竞争力、房东质量、历史转化、以及\textbf{个性化特征}（用户历史偏好、设备、地域）。这正是前述“便宜粗筛 + 昂贵精排”范式的落地。
+
+\subsection{分层缓存}
+
+\begin{itemize}
+  \item \textbf{边缘/CDN 缓存}：对\textbf{无个性化、无日期}的热门查询（“巴黎热门房源”）整页缓存，命中即返回，TTL 短（分钟级）。
+  \item \textbf{应用层缓存}：缓存 geo 网格 + 常见过滤组合的候选 ID 列表。
+  \item \textbf{个性化结果不缓存或按用户短缓存}：因为千人千面，缓存命中率低。
+\end{itemize}
+
+\begin{pitfall}[个性化与缓存的天然矛盾]
+新手容易想“把搜索结果都缓存起来就快了”，但\textbf{个性化和缓存是天生的敌人}：结果越个性化（千人千面），缓存键的基数越爆炸、命中率越低，缓存几乎失效。务实的分层策略是：\textbf{把可缓存的与不可缓存的拆开}——地理+属性的\textbf{过滤候选集}是用户无关的，可大力缓存；\textbf{个性化精排}放在候选集之上对小集合实时计算、不缓存或仅按用户做秒级短缓存。即“共享的粗筛结果重度缓存，私有的精排实时计算”。这条“分离可缓存层与个性化层”的思路，对推荐、信息流系统同样适用。
+\end{pitfall}
+
+\section{瓶颈、容错与扩展}
+
+\subsection{ES 分片与副本}
+
+按地理（如国家/大区）或哈希对索引\textbf{分片}，每片多\textbf{副本}既扛读 QPS 又做容灾。地理分片的好处是“巴黎的搜索只打到欧洲分片”，但要警惕\textbf{热点城市分片过载}，必要时对超热城市单独拆片。
+
+\subsection{近实时索引管线}
+
+房源/价格/可用性的变更通过 CDC -> Kafka -> 索引 worker 写入 ES，达成\textbf{秒级最终一致}。要保证管线的\textbf{幂等}（同一变更重复消费不出错）与\textbf{有序}（同一房源的多次更新按序应用，可用版本号/时间戳做 last-write-wins）。
+
+\subsection{数据新鲜度的取舍}
+
+搜索结果允许\textbf{稍旧}：用户看到一间“几秒前刚被订走”的房源，点进去再提示不可订，是可以接受的体验（在下单环节由强一致的库存校验兜底）。\textbf{绝不能反过来}——为了搜索的新鲜度去拖累或强同步库存写路径。搜索的最终一致，正是靠订房环节的强一致来兜底。
+
+\begin{followup}[追问：用户搜索时看到可订，点进去却已被订走，怎么办？]
+这是最终一致系统的必然现象，关键是\textbf{分层兜底而非追求搜索绝对准确}。(1) 坦诚承认：搜索索引是最终一致的，存在秒级窗口，强行让搜索实时准确代价过高且没必要。(2) \textbf{真正的正确性防线在下单环节}——用户点击预订时，由强一致的库存服务（见订房章）做权威校验，不可订就明确提示并刷新。(3) 体验优化：对\textbf{即时预订（instant book）}房源可在结果页做一次轻量可用性复核以减少“扑空”；可用性变化高频的房源可缩短其索引 TTL、提高回灌优先级。(4) 度量“搜索-下单转化中的扑空率”，超阈值才加强同步。核心表达：\textbf{把强一致放在唯一真正需要它的地方（下单），其余环节用最终一致换性能}。
+\end{followup}
+
+\begin{followup}[追问：深翻页（看到第 100 页）为什么慢？怎么解决？]
+要点：(1) 解释 \textbf{offset 深翻页的代价}——\code{from=10000,size=20} 要求每个分片都取出前 10020 条再丢弃前 10000 条，协调节点还要归并，越往后越慢且耗内存，这是 ES（及大多数数据库 OFFSET）的通病。(2) 解决：用\textbf{游标分页 search\_after}，基于上一页最后一条的排序值（如 \code{[score, listing\_id]}）继续，跳过前面的扫描，复杂度与页码无关。(3) 产品上\textbf{限制最大可翻页数}——没人会真翻到第 500 页，搜索体验应靠“缩小过滤条件”而非无限翻页。(4) 游标分页还顺带解决了数据变动时 offset 分页的\textbf{重复/遗漏}问题。本质：\textbf{用“记住上次位置”代替“数过前面多少个”}。
+\end{followup}
+
+\begin{keypoint}[本章速记]
+\begin{itemize}
+  \item 读多写少，基调是\textbf{最终一致换读性能}；DB 是真相、ES 是派生读视图（CQRS + CDC 同步）。
+  \item 地理索引降维三选：GeoHash（简单、有边界问题）、S2（球面均匀、局部性好、全球首选）、QuadTree（自适应密度）。空间填充曲线把二维变一维有序键。
+  \item 多维过滤用倒排索引求交；filter 可缓存、query 才打分（粗筛在前、精排在后）。
+  \item 可用性融合：预过滤（索引新鲜度贵）vs 后过滤（查询多召回），按维度变化频率权衡，常混合。
+  \item 用游标分页防深翻页慢与重复；分离“可缓存粗筛”与“个性化精排”；搜索的最终一致由下单的强一致兜底。
+\end{itemize}
+\end{keypoint}

@@ -1,0 +1,73 @@
+\chapter{资源清单与两周冲刺}
+
+最后一章是纯操作手册：免费资源 + 一份可以照着执行的两周计划。
+
+\section{免费资源清单}
+
+\subsection{系统设计}
+\begin{itemize}
+  \item \textbf{System Design Primer}（GitHub: \code{donnemartin/system-design-primer}）：免费的系统设计圣经，必读。
+  \item \textbf{Hello Interview}（hellointerview.com）：目前口碑最好的系统设计教程，含 Airbnb 类题，部分免费。
+  \item \textbf{Bilibili / YouTube}：搜“Airbnb 系统设计”“设计订房系统”，有手把手带做的视频。
+\end{itemize}
+
+\subsection{算法刷题}
+\begin{itemize}
+  \item \textbf{LeetCode（leetcode.cn）}：按公司标签筛 Airbnb；本书第二部分的十道题都给了编号。
+  \item \textbf{免费公司题库}（GitHub）：搜 \code{krishnadey30/LeetCode-Questions-CompanyWise}、\code{liquidslr/leetcode-company-wise-problems} 等仓库，CSV 形式整理了各公司高频题，免费替代付费题单。
+\end{itemize}
+
+\subsection{真实面经}
+\begin{itemize}
+  \item \textbf{一亩三分地（1point3acres）}：北美中文面经最全，搜 Airbnb VO，最近一年的帖子信息密度最高（部分需积分）。
+  \item \textbf{Glassdoor}：搜 Airbnb -> Interview 标签，真实 onsite 题，免费需登录。
+  \item \textbf{LeetCode 讨论区 / 牛客网}：搜 “Airbnb” 看候选人复盘。
+\end{itemize}
+
+\section{两周冲刺计划}
+
+假设你每天能投入 2--3 小时。原则：\textbf{算法重质不重量、系统设计吃透少数核心、行为故事尽早动笔}。
+
+\subsection{第一周：建立框架}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\toprule
+\textbf{天} & \textbf{任务} \\
+\midrule
+D1 & 通读本书第一、二部分；做 LeetCode 68（文本对齐）、341（嵌套迭代器） \\
+D2 & 做 269（火星词典）、39（组合总和）；复盘拓扑排序与回溯模板 \\
+D3 & 做 981（时间键值）、295（数据流中位数）；总结哈希+二分、对顶堆 \\
+D4 & 做 336（回文对）、773（滑动谜题）；练状态编码 BFS \\
+D5 & 做 755（倒水）、分页去重（OOD）；重点练“可扩展代码”习惯 \\
+D6 & 读系统设计方法论 + 设计思想章；手绘订房系统架构图一遍 \\
+D7 & 吃透“设计订房系统”（防超卖）：默写三种并发方案与取舍 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{第二周：查漏 + 模拟}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\toprule
+\textbf{天} & \textbf{任务} \\
+\midrule
+D8  & 吃透“设计搜索系统”：geo 索引（S2/GeoHash）+ 分层缓存 \\
+D9  & 吃透“设计消息/支付系统”：幂等、Saga、反欺诈 \\
+D10 & 写 6--8 个 STAR 行为故事，对应四条价值观 \\
+D11 & 重做前一周做错/不熟的算法题（只挑薄弱的，不贪多） \\
+D12 & 全真模拟：找人或自录，1 轮算法 + 1 轮系统设计 \\
+D13 & 全真模拟：1 轮行为面；逐个故事压三个追问 \\
+D14 & 总复盘：过一遍本书所有【设计思想】【陷阱】框；早睡 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{idea}[冲刺期最重要的一件事]
+不是多刷题，而是\textbf{把少数核心题真正吃透到能讲给别人听}。Airbnb 的题会变形、会追加需求，背答案没用；但如果你能把“防超卖的乐观锁”“对顶堆维护中位数”这些\emph{思想}讲透，再变形的题你也能现场推导出来。质量永远大于数量。
+\end{idea}
+
+\begin{keypoint}[面试当天]
+提前测好设备与共享编辑器；准备好纸笔和水；保持“边写边说”的协作姿态；不会时大方说思路、请求提示，而不是沉默死磕。祝你拿到 offer。
+\end{keypoint}
