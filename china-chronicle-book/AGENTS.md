@@ -108,3 +108,4 @@
 - 每完成一个事件簇、国家 dossier、地图、账本批次或 PDF 构建，更新 `PROGRESS.md`。
 - 在工作消息中明确报告：当前卷、已登记事件数、刚完成的文件、下一步文件。
 - 进度以已核对且进入事件账本/正文的事件数衡量，不以 AI 生成字数或 PDF 厚度衡量。
+- 只允许发布一份 PDF：`../pdf/china-chronicle-book.pdf`（仓库根 `pdf/`）。不得在 `china-chronicle-book/` 内创建或提交 `pdf/` 子目录、重复 PDF 或任何二进制构建副本。
