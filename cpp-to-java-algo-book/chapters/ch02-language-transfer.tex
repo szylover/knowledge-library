@@ -1,0 +1,83 @@
+\chapter{语言迁移：从值、指针和模板到引用、对象和泛型}
+
+\section{值、引用与 \code{null}}
+
+C++ 中你会区分值、引用和指针；Java 只有\textbf{基本类型的值}和\textbf{对象引用的值}。对象引用可以为 \code{null}，但不能做指针算术，也没有显式 \code{delete}。
+
+\begin{cpp}
+void append(vector<int>& v, int x) {
+    v.push_back(x);       // 修改调用者的 vector
+}
+\end{cpp}
+
+\begin{javacode}
+void append(List<Integer> list, int x) {
+    list.add(x);          // 引用按值传递，但指向同一个对象
+}
+\end{javacode}
+
+``引用按值传递'' 是 Java 初学者最容易混淆的点：你可以修改 \code{list} 指向的对象，不能通过给参数重新赋值来替换调用者变量。
+
+\begin{javacode}
+void wrong(List<Integer> list) {
+    list = new ArrayList<>();  // 只改了局部变量
+    list.add(42);
+}
+\end{javacode}
+
+\section{数组优先于 \code{ArrayList} 的场景}
+
+你的 \code{coin-change.cxx} 使用 \code{vector<int> dp(amount + 1, INF)}。Java 直接用原始数组更快、更少装箱：
+
+\begin{javacode}
+int[] dp = new int[amount + 1];
+Arrays.fill(dp, INF);
+dp[0] = 0;
+\end{javacode}
+
+当大小动态变化或需要库算法时，再选 \code{ArrayList<Integer>}。算法题中，\code{int[]}、\code{int[][]}、\code{char[]} 常常优于 \code{List<Integer>}。
+
+\begin{transfer}[C++ 的 \code{vector<int>} 不总是 Java 的 \code{ArrayList<Integer>}]
+固定长度 DP、邻接矩阵、计数数组：用 \code{int[]}。需要 \code{push\_back} 的动态结果、邻接表外层：用 \code{ArrayList<Integer>}。后者会发生 \code{int} 到 \code{Integer} 的装箱。
+\end{transfer}
+
+\section{类、内部类和节点}
+
+你的链表、树、图节点在 C++ 中通常带 \code{Node*}。Java 中使用类字段：
+
+\begin{javacode}
+class ListNode {
+    int val;
+    ListNode next;
+    ListNode(int val) { this.val = val; }
+}
+
+class TreeNode {
+    int val;
+    TreeNode left, right;
+    TreeNode(int val) { this.val = val; }
+}
+\end{javacode}
+
+不要因为习惯裸指针而给每个节点加手动释放逻辑；没有外部引用的对象会由 GC 回收。真正需要警惕的是\textbf{不必要地保留引用}，例如把每次 DFS 的节点都塞进全局 List。
+
+\section{泛型的两条规则}
+
+\begin{enumerate}
+  \item Java 泛型不能直接放基本类型：写 \code{List<Integer>}，不能写 \code{List<int>}。
+  \item 泛型没有 C++ 模板的编译期特化能力：不要试图把 Java 泛型当成 template 元编程。
+\end{enumerate}
+
+\begin{javacode}
+Map<String, List<Integer>> graph = new HashMap<>();
+graph.computeIfAbsent("A", ignored -> new ArrayList<>()).add(3);
+\end{javacode}
+
+\begin{pitfall}[整数溢出]
+C++ 里你可能会随手写 \code{long long}；Java 中务必主动写 \code{long}。特别是面积、路径和、乘法和比较器：
+\begin{javacode}
+long area = (long) width * height;
+Arrays.sort(points, (a, b) -> Integer.compare(a[0], b[0]));
+\end{javacode}
+不要写 \code{a[0] - b[0]} 当 comparator：溢出会破坏排序器传递性。
+\end{pitfall}

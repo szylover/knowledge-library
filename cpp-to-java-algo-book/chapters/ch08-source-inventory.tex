@@ -1,0 +1,63 @@
+\chapter{Leet C++ 源码全量索引}
+
+本书参考的目录包含 47 份 C++ 解法和一个 Treap 头文件。下面的索引不是题目答案，而是把每份现有代码接到 Java 训练动作上；按这张表逐题改写，能够覆盖你的全部既有习惯。
+
+\small
+\begin{longtable}{@{}p{.43\linewidth}p{.22\linewidth}p{.25\linewidth}@{}}
+\toprule
+源文件 & 主要 C++ 习惯 & Java 迁移重点 \\
+\midrule
+\endhead
+\code{3sum.cxx} & sort + 双指针 & \code{Arrays.sort}、数组下标 \\
+\code{3sum-closest.cxx} & 双指针、距离比较 & \code{long} 与 \code{Math.abs} \\
+\code{airbnb-pagination-dedup.cxx} & 分页、去重 & \code{LinkedHashSet}、状态封装 \\
+\code{best-time-to-buy-and-sell-stock.cxx} & 单遍扫描 & \code{Math.min/max} \\
+\code{binary-tree-maximum-path-sum.cxx} & DFS + 引用答案 & 成员变量/递归返回值 \\
+\code{clone-graph.cxx} & \code{Node*}、BFS & \code{Map<Node,Node>}、\code{ArrayDeque} \\
+\code{coin-change.cxx} & \code{vector} DP & \code{int[]}、\code{Arrays.fill} \\
+\code{combination-sum.cxx} & 回溯 & \code{ArrayList} 路径复制 \\
+\code{container-with-most-water.cxx} & 双指针 & 数组与边界 \\
+\code{course-schedule.cxx} & 手写邻接链表 & \code{List<List<Integer>>}、拓扑排序 \\
+\code{edit-distance.cxx} & 二维 DP & \code{int[][]} \\
+\code{fhq-treap.cxx} / \code{.h} & 裸节点、split/merge & 内部类、递归不变量 \\
+\code{find-first-and-last-position*.cxx} & 二分边界 & 半开区间模板 \\
+\code{find-median-from-data-stream.cxx} & 双 \code{priority\_queue} & \code{PriorityQueue} 堆方向 \\
+\code{flatten-nested-list-iterator.cxx} & 迭代器 & \code{Iterator<Integer>}、栈 \\
+\code{generate-parentheses.cxx} & DFS 构造字符串 & \code{StringBuilder} 回溯 \\
+\code{house-robber.cxx} & 线性 DP & 滚动变量 \\
+\code{integer-to-roman.cxx} & 映射与拼接 & 数组表、\code{StringBuilder} \\
+\code{kruskal.cxx} & 并查集 & \code{int[]} parent/rank \\
+\code{letter-combinations*.cxx} & 递归组合 & \code{List<String>} \\
+\code{longest-common-subsequence.cxx} & 二维 DP & 数组初始化 \\
+\code{longest-happy-prefix.cxx} & KMP 前缀函数 & \code{char[]} \\
+\code{longest-increasing-subsequence.cxx} & patience sorting & \code{Arrays.binarySearch} 或手写二分 \\
+\code{longest-palindromic-substring.cxx} & 中心扩展/DP & 字符串索引 \\
+\code{lru-cache.cxx} & 手写双向链表 & \code{LinkedHashMap} 或节点引用 \\
+\code{maximal-rectangle.cxx} & 单调栈 & \code{ArrayDeque<Integer>} \\
+\code{merge-k-sorted-lists.cxx} & 堆 + 节点 & \code{PriorityQueue<ListNode>} \\
+\code{minimum-path-sum.cxx} & 网格 DP & 原地/一维 DP \\
+\code{next-permutation.cxx} & 原地数组操作 & \code{swap} helper \\
+\code{number-of-islands.cxx} & DFS/BFS 网格 & \code{boolean[][]}、显式队列 \\
+\code{pour-water.cxx} & 模拟 & 清晰的状态机循环 \\
+\code{regular-expression-matching.cxx} & 递归/DP & memo key 或二维表 \\
+\code{remove-nth-node-from-end.cxx} & 快慢指针 & dummy node 引用 \\
+\code{reverse-integer.cxx} & 数字溢出 & \code{long} 中间值 \\
+\code{reverse-nodes-in-k-group.cxx} & 链表分组 & 引用重连顺序 \\
+\code{shortest-palindrome.cxx} & KMP & \code{StringBuilder.reverse()} \\
+\code{sliding-puzzle.cxx} & BFS 状态编码 & \code{HashSet<String>} \\
+\code{string-to-integer-atoi.cxx} & 解析/溢出 & 边界与 \code{long} \\
+\code{substring-with-concatenation*.cxx} & 滑窗 + 哈希 & \code{HashMap} 计数 \\
+\code{swap-nodes-in-pairs.cxx} & 链表指针 & dummy node \\
+\code{test.cxx} & 本地测试 & JUnit/简单 main \\
+\code{text-justification.cxx} & 字符串布局 & \code{StringBuilder} \\
+\code{time-based-key-value-store.cxx} & map + upper bound & \code{HashMap} + 手写二分 \\
+\code{Trapping-Rain-Water.cxx} & 双指针/单调栈 & \code{int[]}、\code{Deque} \\
+\code{valid-sudoku.cxx} & 集合/位标记 & \code{boolean[]} 或 bit mask \\
+\code{zigzag-conversion.cxx} & 多行字符收集 & \code{StringBuilder[]} \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\begin{transfer}[推荐改写顺序]
+先做股票、硬币兑换、课程表、图克隆、数据流中位数和 LRU。这六题分别覆盖 Java 数组、DP、Collections、对象引用、Comparator 和设计题；其余题会自然变成同一种语言。
+\end{transfer}

@@ -1,0 +1,58 @@
+\chapter{Java 刷题工作流：写得快，也要写得稳}
+
+\section{LeetCode 模板}
+
+\begin{javacode}
+import java.util.*;
+
+class Solution {
+    public int solve(int[] nums) {
+        // 1. 定义不变量
+        // 2. 处理空输入和边界
+        // 3. 写主循环
+        return 0;
+    }
+}
+\end{javacode}
+
+如果题目提供 \code{ListNode}、\code{TreeNode}、\code{Node}，不要重复定义。提交前删除 \code{main}、调试输出和本地 helper 的冲突定义。
+
+\section{从你代码库抽出的题型清单}
+
+\begin{longtable}{@{}p{.26\linewidth}p{.27\linewidth}p{.37\linewidth}@{}}
+\toprule
+你的 C++ 文件 & 核心模式 & Java 首选工具 \\
+\midrule
+\endhead
+\code{3sum.cxx}、\code{container-with-most-water.cxx} & 排序 + 双指针 & \code{Arrays.sort}、数组下标 \\
+\code{course-schedule.cxx}、\code{number-of-islands.cxx} & 图搜索、拓扑排序 & \code{ArrayList}、\code{ArrayDeque}、\code{boolean[]} \\
+\code{merge-k-sorted-lists.cxx}、\code{find-median-from-data-stream.cxx} & 堆 & \code{PriorityQueue} + Comparator \\
+\code{coin-change.cxx}、\code{edit-distance.cxx}、\code{LCS} & DP & \code{int[]}、\code{int[][]} \\
+\code{lru-cache.cxx}、\code{time-based-key-value-store.cxx} & 设计题 & \code{HashMap}、\code{LinkedHashMap}、二分 \\
+\code{fhq-treap.cxx}、\code{kruskal.cxx} & 高级数据结构 & 内部类、\code{record}、\code{long} \\
+\code{regular-expression-matching.cxx}、\code{shortest-palindrome.cxx} & 字符串/DP & \code{char[]}、\code{StringBuilder} \\
+\bottomrule
+\end{longtable}
+
+\section{提交前 90 秒检查}
+
+\begin{enumerate}
+  \item \textbf{空输入}：\code{null}、空数组、单节点、容量 0 是否处理？
+  \item \textbf{整数}：路径和、乘积、平均数是否需要 \code{long}？
+  \item \textbf{Comparator}：是否用了 \code{Integer.compare} 而不是相减？
+  \item \textbf{堆方向}：Java 默认小顶堆；大顶堆是否传了 \code{Comparator.reverseOrder()}？
+  \item \textbf{队列}：是否使用 \code{ArrayDeque}，且没有放 \code{null}？
+  \item \textbf{状态重置}：成员变量 \code{answer}、\code{visited} 是否在 public 方法开头重置？
+\end{enumerate}
+
+\section{性能不降级的三个动作}
+
+\begin{enumerate}
+  \item 频繁索引的数值状态用 \code{int[]}，不要无脑 \code{List<Integer>}。
+  \item 字符串构造用 \code{StringBuilder}。
+  \item 需要容量时预分配：\code{new ArrayList<>(expectedSize)}，但不要为了微优化牺牲可读性。
+\end{enumerate}
+
+\begin{pitfall}[递归深度]
+Java 栈通常比 C++ 算法环境更容易在极深 DFS 时溢出。普通二叉树题可递归；链状图、十万节点树、\code{number-of-islands} 的极端输入，更安全的是显式 \code{ArrayDeque}。
+\end{pitfall}

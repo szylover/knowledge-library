@@ -1,0 +1,64 @@
+\usepackage{ctex}
+\usepackage{fontspec}
+\setmonofont{DejaVu Sans Mono}[Scale=0.88]
+\usepackage[a4paper,top=2.25cm,bottom=2.25cm,left=2.2cm,right=2.2cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx,array,longtable,enumitem,xcolor,hyperref,tikz}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable,skins}
+
+\definecolor{navy}{HTML}{143B63}
+\definecolor{blue}{HTML}{2675C6}
+\definecolor{ink}{HTML}{1D2733}
+\definecolor{soft}{HTML}{F4F7FA}
+\definecolor{java}{HTML}{B03A2E}
+\definecolor{comment}{HTML}{73808C}
+
+\hypersetup{colorlinks=true,linkcolor=navy,citecolor=navy,urlcolor=blue,bookmarksnumbered=true}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{soft},
+  frame=single,
+  rulecolor=\color{blue!25},
+  numbers=left,
+  numberstyle=\tiny\color{comment},
+  numbersep=8pt,
+  breaklines=true,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  xleftmargin=14pt,
+  framexleftmargin=14pt,
+  aboveskip=8pt,
+  belowskip=8pt,
+  keywordstyle=\color{navy}\bfseries,
+  commentstyle=\color{comment}\itshape,
+  stringstyle=\color{java},
+}
+\lstnewenvironment{cpp}{\lstset{language=C++,morekeywords={vector,unordered_map,unordered_set,priority_queue,queue,pair,auto,nullptr}}}{}
+\lstnewenvironment{javacode}{\lstset{language=Java,morekeywords={ArrayList,HashMap,HashSet,PriorityQueue,Deque,ArrayDeque,Collections,Comparator,var,record}}}{}
+
+\newtcolorbox{transfer}[1][迁移结论]{
+  enhanced,breakable,arc=3pt,
+  colback=blue!4,colframe=blue!65!black,
+  boxrule=.7pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
+  fonttitle=\bfseries,title={#1}
+}
+\newtcolorbox{pitfall}[1][C++ 程序员常踩坑]{
+  enhanced,breakable,arc=3pt,
+  colback=orange!6,colframe=orange!70!black,
+  boxrule=.7pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
+  fonttitle=\bfseries,title={#1}
+}
+\newtcolorbox{drill}[1][立即练习]{
+  enhanced,breakable,arc=3pt,
+  colback=green!5,colframe=green!50!black,
+  boxrule=.7pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
+  fonttitle=\bfseries,title={#1}
+}
+
+\newcommand{\cplusplus}{\texttt{C++}}
+\newcommand{\javaword}{\texttt{Java}}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\bigO}[1]{\ensuremath{O(#1)}}

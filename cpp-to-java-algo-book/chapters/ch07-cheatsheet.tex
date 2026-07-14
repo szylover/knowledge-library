@@ -1,0 +1,69 @@
+\chapter{速查表与最后冲刺}
+
+\section{最常用 Java 片段}
+
+\begin{javacode}
+// 邻接表
+List<List<Integer>> graph = new ArrayList<>();
+for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
+
+// 访问标记
+boolean[] visited = new boolean[n];
+
+// BFS
+Deque<Integer> queue = new ArrayDeque<>();
+queue.offer(start);
+while (!queue.isEmpty()) {
+    int current = queue.poll();
+}
+
+// 最小堆 / 最大堆
+PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+PriorityQueue<Integer> maxHeap =
+    new PriorityQueue<>(Comparator.reverseOrder());
+
+// 哈希表默认容器
+Map<Integer, List<Integer>> groups = new HashMap<>();
+groups.computeIfAbsent(key, ignored -> new ArrayList<>()).add(value);
+
+// 排序
+Arrays.sort(nums);
+Arrays.sort(points, (a, b) -> Integer.compare(a[0], b[0]));
+\end{javacode}
+
+\section{C++ 到 Java 的高频替换}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\toprule
+当你想写 C++ & Java 中先想 \\
+\midrule
+\code{nullptr} & \code{null}，并先决定在哪里检查 \\
+\code{new Node(...)} + \code{delete} & \code{new Node(...)}；只维护可达关系 \\
+\code{vector<int> dp} & \code{int[] dp} \\
+\code{unordered_map[key]} & \code{getOrDefault} 或 \code{computeIfAbsent} \\
+\code{priority_queue<int>} & \code{PriorityQueue<Integer>}（最小堆）\\
+\code{greater<int>} & \code{Comparator.reverseOrder()}（用于最大堆）\\
+\code{sort(v.begin(),v.end())} & \code{Arrays.sort(array)} 或 \code{list.sort(...)} \\
+\code{INT_MIN} & \code{Integer.MIN_VALUE} \\
+\code{long long} & \code{long} \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{你应该保留的 C++ 优点}
+
+\begin{itemize}
+  \item 写代码前先说清楚复杂度和不变量；
+  \item 图、树、堆题先定义状态，再动手；
+  \item 对边界、空指针、哨兵和溢出保持敏感；
+  \item 手写 LRU、Treap 的经历保留了数据结构直觉，不要因为 Java 有库就丢掉。
+\end{itemize}
+
+\begin{transfer}[毕业标准]
+当你看到 ``图 + 依赖关系'' 时，第一反应是拓扑排序；看到 ``流数据中位数'' 时，第一反应是双堆；看到 Java 时，第一反应也应当是相同的算法，只是顺手拿起 \code{ArrayDeque}、\code{HashMap}、\code{PriorityQueue} 和 \code{StringBuilder}。
+\end{transfer}
+
+\begin{drill}[最终模拟]
+限时 45 分钟，用 Java 完成以下三题：课程表、LRU Cache、数据流中位数。完成后逐项执行第六章的 90 秒检查。若你卡住的是 API，就重做本章速查；若你卡住的是状态设计，回到对应 C++ 解法先读不变量，不要急着看 Java 答案。
+\end{drill}

@@ -1,0 +1,75 @@
+\chapter{七天迁移路线：算法不变，默认动作变}
+
+\section{先盘点你的现有能力}
+
+你的代码库不是 ``Hello World'' 级别：\code{course-schedule.cxx} 用拓扑排序，\code{find-median-from-data-stream.cxx} 用双堆，\code{time-based-key-value-store.cxx} 用哈希表加二分，\code{lru-cache.cxx} 手写双向链表，\code{fhq-treap.cxx} 维护随机平衡树。这些核心思想在 Java 中全部成立。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+\toprule
+已有 C++ 能力 & Java 中保持不变 & 需要重新形成肌肉记忆的部分 \\
+\midrule
+复杂度分析 & \bigO{n}、\bigO{n\log n} 不变 & 装箱、对象分配、GC 影响常数 \\
+DFS/BFS/DP & 状态设计和递推不变 & \code{ArrayDeque}、二维数组、递归深度 \\
+STL 选型 & 哈希、堆、排序思想不变 & Collections API 与 Comparator \\
+节点/图建模 & 邻接表和引用关系不变 & 没有析构；引用可为 \code{null} \\
+手写数据结构 & 不变量不变 & 优先选标准库，少管理生命周期 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{transfer}[最重要的迁移原则]
+不要逐行翻译 C++。先写出算法的\textbf{数据流与不变量}，再选择 Java 容器。逐行翻译最容易把 \code{new/delete}、指针算术、宏和 STL iterator 的偶然形式一起带过去。
+\end{transfer}
+
+\section{一周安排}
+
+\begin{enumerate}[label=\textbf{Day \arabic*:},leftmargin=2.5cm]
+  \item \textbf{语法与工具链}：类、引用、数组、泛型、编译运行；把 3Sum 改写成 Java。
+  \item \textbf{Collections}：把 \code{vector}、\code{unordered\_map}、\code{set}、\code{queue}、\code{priority\_queue} 全部过一遍。
+  \item \textbf{对象与节点}：改写反转链表、图克隆、LRU；理解对象引用不是 C++ 原始指针。
+  \item \textbf{图与树}：改写课程表、岛屿数量、二叉树最大路径和。
+  \item \textbf{DP 与字符串}：改写硬币兑换、LCS、编辑距离、正则匹配。
+  \item \textbf{堆、二分和排序}：改写数据流中位数、时间键值存储、合并 K 链表。
+  \item \textbf{限时模拟}：任选三题，强制只写 Java，复盘 API 卡点。
+\end{enumerate}
+
+\section{先装什么}
+
+\begin{javacode}
+// Main.java：本地最小运行方式
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(new Solution().solve());
+    }
+}
+\end{javacode}
+
+刷题环境通常只要求一个 \code{class Solution}。本地建议用 JDK 21 或更高版本，IDE 用 IntelliJ IDEA。你会想念 \code{bits/stdc++.h}；Java 的正确替代不是一份万能头文件，而是一组稳定的 imports：
+
+\begin{javacode}
+import java.util.*;
+import java.util.function.*;
+\end{javacode}
+
+\begin{pitfall}[不要机械追求 ``零 GC'']
+LeetCode Java 的首要优化顺序是：算法复杂度、错误的容器选择、字符串拼接、重复排序，然后才是对象数量。为了避免几个对象而把代码写成 C 风格数组和全局状态，通常得不偿失。
+\end{pitfall}
+
+\section{从 C++ 调试习惯切换}
+
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+\toprule
+问题 & C++ 常用动作 & Java 常用动作 \\
+\midrule
+看容器内容 & \code{cout << v[i]} & \code{System.out.println(list)} \\
+断言不变量 & \code{assert(x)} & \code{assert x;}（运行时需开启 \code{-ea}）\\
+快速哈希 & \code{unordered\_map} & \code{HashMap} \\
+64 位整数 & \code{long long} & \code{long} \\
+无穷大 & \code{INT\_MAX / 3} & \code{Integer.MAX\_VALUE / 3} \\
+\bottomrule
+\end{tabularx}
+
+\begin{drill}
+不看答案，把 \code{best-time-to-buy-and-sell-stock.cxx} 改成 Java。要求：只用一个 \code{int minPrice} 和一个 \code{int best}；这题的目的不是算法，而是让 ``数组遍历 + Math.max/min'' 成为自然动作。
+\end{drill}

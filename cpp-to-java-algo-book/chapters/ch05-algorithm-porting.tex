@@ -1,0 +1,122 @@
+\chapter{把你的题逐类改写：图、树、DP 与二分}
+
+\section{课程表：从手写邻接链表到 \code{ArrayList}}
+
+你的 \code{course-schedule.cxx} 用数组 \code{edge[3000]} 加链表节点，完全正确，但需要手动分配节点。Java 的邻接表直接表达为 ``每个课程对应一个动态列表''：
+
+\begin{javacode}
+boolean canFinish(int numCourses, int[][] prerequisites) {
+    List<List<Integer>> graph = new ArrayList<>();
+    for (int i = 0; i < numCourses; i++) graph.add(new ArrayList<>());
+
+    int[] indegree = new int[numCourses];
+    for (int[] pair : prerequisites) {
+        int course = pair[0], prerequisite = pair[1];
+        graph.get(prerequisite).add(course);
+        indegree[course]++;
+    }
+
+    Deque<Integer> queue = new ArrayDeque<>();
+    for (int course = 0; course < numCourses; course++) {
+        if (indegree[course] == 0) queue.offer(course);
+    }
+
+    int finished = 0;
+    while (!queue.isEmpty()) {
+        int course = queue.poll();
+        finished++;
+        for (int next : graph.get(course)) {
+            if (--indegree[next] == 0) queue.offer(next);
+        }
+    }
+    return finished == numCourses;
+}
+\end{javacode}
+
+\begin{transfer}[你原来的算法一行都没变]
+初始化入度、入队零入度节点、弹出节点后减少后继入度、统计处理数量：这四步原样保留。变的是 ``Node* 链表'' 换成 ``List<Integer>''。
+\end{transfer}
+
+\section{二叉树最大路径和：返回值与全局答案}
+
+你的 C++ 写法将 \code{ans} 以引用传入 DFS。Java 常用一个成员变量，或者返回一个 record；前者最适合刷题：
+
+\begin{javacode}
+class Solution {
+    private int answer = Integer.MIN_VALUE;
+
+    public int maxPathSum(TreeNode root) {
+        gain(root);
+        return answer;
+    }
+
+    private int gain(TreeNode node) {
+        if (node == null) return 0;
+
+        int left = Math.max(0, gain(node.left));
+        int right = Math.max(0, gain(node.right));
+        answer = Math.max(answer, node.val + left + right);
+        return node.val + Math.max(left, right);
+    }
+}
+\end{javacode}
+
+这里可以比原代码更简洁：负贡献在递归返回后立即归零，因此不需要用 \code{INT\_MIN} 当空节点返回值。
+
+\section{硬币兑换：数组、哨兵和循环方向}
+
+\begin{javacode}
+int coinChange(int[] coins, int amount) {
+    int inf = Integer.MAX_VALUE / 3;
+    int[] dp = new int[amount + 1];
+    Arrays.fill(dp, inf);
+    dp[0] = 0;
+
+    for (int coin : coins) {
+        for (int value = coin; value <= amount; value++) {
+            dp[value] = Math.min(dp[value], dp[value - coin] + 1);
+        }
+    }
+    return dp[amount] == inf ? -1 : dp[amount];
+}
+\end{javacode}
+
+\begin{pitfall}[循环方向不是语法问题]
+你的 C++ 已经写对：金额从小到大遍历，意味着同一种硬币可重复使用（完全背包）。Java 改写时不要因为换语言而反转循环；循环方向编码的是题意。
+\end{pitfall}
+
+\section{二分：不要照搬 iterator，照搬不变量}
+
+\code{find-first-and-last-position-of-element-in-sorted-array.cxx} 和 TimeMap 的核心是二分边界。Java 里最可读的模板：
+
+\begin{javacode}
+int firstAtLeast(int[] nums, int target) {
+    int left = 0, right = nums.length; // [left, right)
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] < target) left = mid + 1;
+        else right = mid;
+    }
+    return left;
+}
+\end{javacode}
+
+要找最后一个不大于 \code{target} 的元素，计算 \code{firstAtLeast(nums, target + 1) - 1}，但要注意 \code{target == Integer.MAX\_VALUE} 时不应直接加一。
+
+\section{字符串：\code{StringBuilder} 是你的默认工具}
+
+你题库里的 Z 字形变换、整数转罗马、文本两端对齐、最短回文都涉及构造字符串。Java 的 \code{String} 不可变：
+
+\begin{javacode}
+StringBuilder builder = new StringBuilder();
+for (char ch : chars) {
+    builder.append(ch);
+}
+return builder.toString();
+\end{javacode}
+
+循环里的 \code{answer += ch} 会持续创建新 String，复杂度可能从线性退化。C++ 的 \code{string::push\_back} 对应 Java 的 \code{StringBuilder.append}。
+
+\begin{drill}
+依次改写 \code{course-schedule.cxx}、\code{coin-change.cxx}、\code{binary-tree-maximum-path-sum.cxx}。每题先写注释：状态是什么？不变量是什么？Java 容器为什么是这个？
+\end{drill}

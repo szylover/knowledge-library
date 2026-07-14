@@ -1,0 +1,46 @@
+\chapter{你的 Java 迁移题单}
+
+下面是本次指定的完整题单。不要按 LeetCode 编号顺序硬刷；按 Java 需要形成的新习惯分组，才能把 C++ 的算法能力快速迁移过来。
+
+\section{第一组：数组、双指针、排序与基础 API}
+
+\begin{itemize}
+  \item \textbf{1 两数之和（简单）}：\code{HashMap} 的第一题；建立 ``查补数再插当前值'' 的默认动作。
+  \item \textbf{11 盛最多水的容器（中等）、15 三数之和（中等）、16 最接近的三数之和（中等）、42 接雨水（困难）}：数组下标与双指针。
+  \item \textbf{31 下一个排列（中等）、34 查找第一个和最后一个位置（中等）、48 旋转图像（中等）}：原地数组修改、二分边界与矩阵坐标。
+  \item \textbf{121 买卖股票的最佳时机（简单）}：\code{Math.min}/\code{Math.max} 和单遍状态。
+  \item \textbf{36 有效的数独（中等）}：\code{boolean[]}、bit mask 或 \code{HashSet} 的取舍。
+\end{itemize}
+
+\section{第二组：对象引用、链表与设计题}
+
+\begin{itemize}
+  \item \textbf{2 两数相加（中等）、19 删除倒数第 N 个结点（中等）、24 两两交换节点（中等）、25 K 个一组翻转链表（困难）}：\code{ListNode}、dummy node 和引用重连。
+  \item \textbf{23 合并 K 个升序链表（困难）}：\code{PriorityQueue<ListNode>} 与 Comparator。
+  \item \textbf{133 克隆图（中等）}：\code{Map<Node, Node>}，用对象身份而非节点值做 key。
+  \item \textbf{146 LRU 缓存（中等）、460 LFU 缓存（困难）、981 基于时间的键值存储（中等）}：\code{HashMap}、\code{LinkedHashMap}、双向链表和手写二分。
+  \item \textbf{341 扁平化嵌套列表迭代器（中等）}：\code{Iterator} 与 \code{ArrayDeque}。
+\end{itemize}
+
+\section{第三组：字符串、栈和构造}
+
+\begin{itemize}
+  \item \textbf{3 无重复字符的最长子串（中等）、30 串联所有单词（困难）}：滑动窗口与字符/单词计数。
+  \item \textbf{5 最长回文子串（中等）、214 最短回文串（困难）、336 回文对（困难）、1392 最长快乐前缀（困难）}：中心扩展、KMP、哈希与 \code{char[]}。
+  \item \textbf{6 Z 字形变换（中等）、12 整数转罗马（中等）、17 电话号码组合（中等）、22 括号生成（中等）、68 文本左右对齐（困难）}：\code{StringBuilder} 与回溯。
+  \item \textbf{7 整数反转（中等）、8 atoi（中等）}：\code{long} 中间值与溢出边界。
+  \item \textbf{10 正则表达式匹配（困难）、32 最长有效括号（困难）、459 重复的子字符串（简单）}：DP、栈和字符串周期。
+\end{itemize}
+
+\section{第四组：DP、树、图、堆与最短路}
+
+\begin{itemize}
+  \item \textbf{39 组合总和（中等）、64 最小路径和（中等）、72 编辑距离（中等）、85 最大矩形（困难）、198 打家劫舍（中等）、300 最长递增子序列（中等）、322 零钱兑换（中等）、1143 最长公共子序列（中等)}：\code{int[]}、\code{int[][]} 与循环方向。
+  \item \textbf{124 二叉树最大路径和（困难）}：递归返回值与成员答案字段。
+  \item \textbf{127 单词接龙（困难）、200 岛屿数量（中等）、207 课程表（中等）、695 岛屿最大面积（中等）、733 图像渲染（简单）、743 网络延迟时间（中等）、773 滑动谜题（困难）}：\code{ArrayDeque}、\code{PriorityQueue}、\code{boolean[]}。
+  \item \textbf{295 数据流的中位数（困难）}：一大一小两个 \code{PriorityQueue}；记住 Java 默认是小顶堆。
+\end{itemize}
+
+\begin{transfer}[推荐执行法]
+每天从每组各选一题，共三题。先在 \code{~/leet-java} 中用 \code{./scripts/new-problem.sh <slug> <array|list|tree>} 建目录，再把 \code{Solution.java} 的最终版本粘贴到 LeetCode。每题完成后记录：你卡的是算法、Java API、还是对象/泛型语义。只要连续复盘两周，Java 会从 ``翻译 C++'' 变成自然语言。
+\end{transfer}

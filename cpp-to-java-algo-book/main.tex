@@ -1,0 +1,43 @@
+\documentclass[11pt,a4paper,openany]{book}
+\input{preamble}
+
+\begin{document}
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[navy] (current page.north west) rectangle ([yshift=-8cm]current page.north east);
+    \fill[blue] ([yshift=-8cm]current page.north west) rectangle ([yshift=-8.35cm]current page.north east);
+  \end{tikzpicture}
+  \centering
+  \vspace*{2.0cm}
+  {\color{white}\fontsize{36}{44}\selectfont\bfseries C++ 算法手的 Java 速通\par}
+  \vspace{.6cm}
+  {\color{white!90}\Large 从 STL、裸指针到 Collections、引用与 JVM\par}
+  \vspace{3.5cm}
+  {\Large 基于 47 份真实 Leet C++ 解法的迁移手册\par}
+  \vfill
+  {\Large\bfseries SZY\par}
+  \vspace{.3cm}
+  {\normalsize \today\par}
+  \vspace{2cm}
+\end{titlepage}
+
+\frontmatter
+\input{chapters/preface}
+\tableofcontents
+\newpage
+
+\mainmatter
+\part{先建立正确心智模型}
+\include{chapters/ch01-roadmap}
+\include{chapters/ch02-language-transfer}
+\part{把你的算法习惯搬过去}
+\include{chapters/ch03-collections}
+\include{chapters/ch04-pointers-and-objects}
+\include{chapters/ch05-algorithm-porting}
+\part{刷题落地}
+\include{chapters/ch06-leetcode-workflow}
+\include{chapters/ch07-cheatsheet}
+\appendix
+\include{chapters/ch08-source-inventory}
+\include{chapters/ch09-practice-route}
+\end{document}

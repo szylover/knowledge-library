@@ -1,0 +1,98 @@
+\chapter{裸指针、节点和内存：Java 中该怎么想}
+
+\section{指针不等于引用，但节点算法仍然一样}
+
+你的 \code{clone-graph.cxx} 用 \code{Node*} 和 \code{unordered\_map<int, Node*>}。Java 中节点变量本质上是对象引用，图克隆的算法没有变化：
+
+\begin{javacode}
+class Node {
+    int val;
+    List<Node> neighbors = new ArrayList<>();
+    Node(int val) { this.val = val; }
+}
+
+Node cloneGraph(Node start) {
+    if (start == null) return null;
+
+    Map<Node, Node> copies = new HashMap<>();
+    Deque<Node> queue = new ArrayDeque<>();
+    copies.put(start, new Node(start.val));
+    queue.offer(start);
+
+    while (!queue.isEmpty()) {
+        Node current = queue.poll();
+        for (Node next : current.neighbors) {
+            if (!copies.containsKey(next)) {
+                copies.put(next, new Node(next.val));
+                queue.offer(next);
+            }
+            copies.get(current).neighbors.add(copies.get(next));
+        }
+    }
+    return copies.get(start);
+}
+\end{javacode}
+
+\begin{transfer}[用节点对象当 key]
+你的原实现用 \code{node->val} 当哈希 key，隐含 ``节点值唯一'' 的前提。Java 直接用 \code{Map<Node, Node>}，把 ``节点身份'' 表达得更准确；这也是面试中更稳健的写法。
+\end{transfer}
+
+\section{LRU：先会手写，再知道标准库}
+
+你在 \code{lru-cache.cxx} 维护 dummy head/tail、\code{prev/next} 和 \code{unordered\_map<int, Node*>}。这对于理解不变量非常好：哈希表定位节点，双向链表维护最近使用顺序。
+
+生产 Java 的默认选择是 \code{LinkedHashMap}：
+
+\begin{javacode}
+class LRUCache extends LinkedHashMap<Integer, Integer> {
+    private final int capacity;
+
+    LRUCache(int capacity) {
+        super(capacity, 0.75f, true); // true: access-order
+        this.capacity = capacity;
+    }
+
+    public int get(int key) {
+        return getOrDefault(key, -1);
+    }
+
+    public void put(int key, int value) {
+        super.put(key, value);
+    }
+
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+        return size() > capacity;
+    }
+}
+\end{javacode}
+
+但 LeetCode 的 \code{LRUCache} 常要求你展示 \bigO{1} 设计。此时手写节点也完全合理，只需把 C++ 的 \code{Node*} 改成 \code{Node}，删除 \code{delete}，并让 \code{HashMap<Integer, Node>} 持有节点。
+
+\section{GC 不是 ``不需要管理内存''}
+
+Java 会回收不可达对象，但不会自动修复逻辑引用。以下情况仍会造成长期内存占用：
+\begin{itemize}
+  \item 全局 \code{static List} 持有每次测试数据；
+  \item LRU 淘汰时只删链表、不删 \code{HashMap}；
+  \item 图遍历的 \code{visited} 被复用而没有清空；
+  \item Lambda/内部类无意捕获了大对象。
+\end{itemize}
+
+\begin{pitfall}[不要在 Java 里模拟 \code{delete}]
+把节点从链表、Map、队列等所有可达路径断开就够了。调用 \code{System.gc()} 既不能保证回收，也不是算法题答案。
+\end{pitfall}
+
+\section{你该保留的 C++ 不变量意识}
+
+FHQ Treap 的 \code{split/merge/pushup} 展示了优秀的 C++ 习惯：每个变换后恢复子树大小不变量。Java 写复杂树时仍应保留这种纪律：
+
+\begin{javacode}
+private void pull(Node node) {
+    if (node != null) {
+        node.size = size(node.left) + size(node.right) + node.count;
+    }
+}
+\end{javacode}
+
+语言换了，不变量、边界条件和析构前断链的意识不该换。

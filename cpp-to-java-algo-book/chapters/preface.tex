@@ -1,0 +1,14 @@
+\chapter*{写给已经会 C++ 的你}
+\addcontentsline{toc}{chapter}{写给已经会 C++ 的你}
+
+你不需要再学一遍算法。你的题库已经包含 3Sum、课程表、二叉树最大路径和、硬币兑换、LRU、数据流中位数、图克隆、时间键值存储和 FHQ Treap：这说明你会的是建模、复杂度和数据结构。
+
+真正需要迁移的是\textbf{默认动作}：C++ 里你自然会写 \code{vector}、\code{unordered\_map}、\code{priority\_queue}、裸指针和 \code{new}；Java 里应该自然写 \code{ArrayList}、\code{HashMap}、\code{PriorityQueue}、对象引用和 GC。算法几乎不变，容器 API、类型系统、对象语义和性能边界变了。
+
+本书的目标不是介绍 Java 全家桶，而是让你在一周内能够：
+\begin{enumerate}
+  \item 在 LeetCode 用 Java 不查语法地写出你已经会的题；
+  \item 理解 Java 的引用、泛型、Comparator、集合复杂度和整数坑；
+  \item 将 C++ 的手写链表、堆、图搜索和 DP 迁移成可读、可维护的 Java；
+  \item 知道哪些 C++ 习惯应保留，哪些在 Java 中反而会制造 bug。
+\end{enumerate}

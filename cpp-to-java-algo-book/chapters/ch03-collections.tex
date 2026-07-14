@@ -1,0 +1,116 @@
+\chapter{STL 到 Collections：把容器选择变成条件反射}
+
+\section{核心映射表}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l l X@{}}
+\toprule
+C++ & Java & 使用建议 \\
+\midrule
+\code{vector<int>} & \code{int[]} / \code{ArrayList<Integer>} & 固定数值状态优先数组 \\
+\code{unordered\_map<K,V>} & \code{HashMap<K,V>} & 平均 \bigO{1} 查找 \\
+\code{unordered\_set<T>} & \code{HashSet<T>} & 去重、访问标记 \\
+\code{map<K,V>} & \code{TreeMap<K,V>} & 有序键、floor/ceiling 查询 \\
+\code{set<T>} & \code{TreeSet<T>} & 有序去重 \\
+\code{queue<T>} & \code{ArrayDeque<T>} & BFS；不要用 \code{LinkedList} 当默认队列 \\
+\code{stack<T>} & \code{ArrayDeque<T>} & \code{Stack} 是遗留类 \\
+\code{priority\_queue<T>} & \code{PriorityQueue<T>} & 默认最小堆，方向和 C++ 相反 \\
+\code{sort(begin,end)} & \code{Arrays.sort} / \code{List.sort} & Comparator 用 \code{compare} \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{哈希表：从 \code{operator[]} 到显式默认值}
+
+你的 \code{TimeMap} 自然写出 \code{store[key].emplace\_back(...)}。Java 没有会自动插入的方括号访问，最接近、也最清晰的写法是：
+
+\begin{javacode}
+class TimeMap {
+    private final Map<String, List<Entry>> store = new HashMap<>();
+
+    public void set(String key, String value, int timestamp) {
+        store.computeIfAbsent(key, ignored -> new ArrayList<>())
+             .add(new Entry(timestamp, value));
+    }
+
+    public String get(String key, int timestamp) {
+        List<Entry> values = store.get(key);
+        if (values == null) return "";
+
+        int left = 0, right = values.size() - 1, answer = -1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (values.get(mid).time <= timestamp) {
+                answer = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return answer == -1 ? "" : values.get(answer).value;
+    }
+
+    private record Entry(int time, String value) {}
+}
+\end{javacode}
+
+\begin{transfer}[不要执着翻译 \code{upper\_bound}]
+Java 的 \code{Collections.binarySearch} 返回值规则对 ``最后一个不大于 target'' 不直观。面试中手写这 10 行二分更不容易错，也能直接表达你在 C++ 代码中的意图。
+\end{transfer}
+
+\section{队列与双端队列}
+
+\begin{javacode}
+Deque<Integer> queue = new ArrayDeque<>();
+queue.offer(0);                 // 入队
+int course = queue.poll();      // 出队；空时返回 null
+
+Deque<Character> stack = new ArrayDeque<>();
+stack.push('(');
+char top = stack.pop();
+\end{javacode}
+
+Java 的 \code{ArrayDeque} 不允许 \code{null}。这反而是好事：如果你想把 \code{null} 当哨兵，应改用显式状态，而不是混进容器。
+
+\section{双堆：默认方向和 C++ 反过来}
+
+你在 \code{find-median-from-data-stream.cxx} 中把 \code{lo} 写成大顶堆、\code{hi} 写成小顶堆。Java 的 \code{PriorityQueue} 默认是\textbf{小顶堆}：
+
+\begin{javacode}
+class MedianFinder {
+    private final PriorityQueue<Integer> lo =
+        new PriorityQueue<>(Comparator.reverseOrder()); // 大顶堆
+    private final PriorityQueue<Integer> hi =
+        new PriorityQueue<>();                          // 小顶堆
+
+    public void addNum(int num) {
+        lo.offer(num);
+        hi.offer(lo.poll());
+        if (hi.size() > lo.size()) lo.offer(hi.poll());
+    }
+
+    public double findMedian() {
+        return lo.size() > hi.size()
+            ? lo.peek()
+            : ((long) lo.peek() + hi.peek()) / 2.0;
+    }
+}
+\end{javacode}
+
+\begin{pitfall}[中位数的 int 溢出]
+\code{(lo.peek() + hi.peek()) / 2.0} 在两个接近 \code{Integer.MAX\_VALUE} 的数相加时会先溢出。先转 \code{long}，再除。
+\end{pitfall}
+
+\section{排序与 Comparator}
+
+\begin{javacode}
+int[][] intervals = {{3, 4}, {1, 2}};
+Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+
+List<String> words = new ArrayList<>(List.of("bb", "a", "ccc"));
+words.sort(Comparator.comparingInt(String::length));
+\end{javacode}
+
+\begin{drill}
+把 \code{time-based-key-value-store.cxx} 和 \code{find-median-from-data-stream.cxx} 改写为 Java。要求：不使用任何第三方库；给中位数代码加上整数溢出保护。
+\end{drill}
