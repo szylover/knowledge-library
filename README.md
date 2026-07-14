@@ -1,10 +1,23 @@
 # 中文技术书库
 
-以数学的严谨，讲物理的直觉；以工程师的视角，写 AI 与面试指南。本仓库包含 **10 本**中文教材/技术书，涵盖数学、物理、AI Agent、深度学习与全栈面试。
+以数学的严谨，讲物理的直觉；以工程师的视角，写 AI 与面试指南。本仓库包含 **11 本**中文教材/技术书，涵盖数学、物理、AI Engineering、AI Agent、深度学习与全栈面试。
 
 所有 PDF 集中存放在 `pdf/` 目录，数学物理部分共 **1339 页**。
 
 > 📥 **[点击这里下载数学物理 PDF](https://github.com/szylover/chinese-math-physics/releases/tag/v1.0)**（GitHub Release 资源下载）
+
+---
+
+## 🧭 AI 工程实战手册
+
+### AI Engineering Living Book — `ai-engineering-book/`（7 部分）
+
+面向有 10 年经验资深后端工程师（强 C++/系统设计/分布式）的 **AI Application Engineering 转型手册**。以 Senior/Staff Engineer 视角，讲 WHY、trade-offs、生产实践、失败案例、扩展性、成本、安全与可观测性，不讲基础编程、不吹捧。Markdown + Mermaid，代码栈为 Python/FastAPI/Pydantic/LangGraph/OpenAI+Anthropic SDK/MCP/Docker/Postgres/Redis/Qdrant，均为生产级示例。
+
+- **Part 1 现代系统设计**（11 章）· **Part 2 AI 工程**（22 章，核心）· **Part 3 实战项目**（12 个）
+- **Part 4 工程模式**（10 个）· **Part 5 Prompt 库** · **Part 6 面试** · **Part 7 最佳实践 Checklist**
+
+👉 [阅读全书](./ai-engineering-book/README.md)
 
 ---
 
@@ -121,6 +134,7 @@ cd physics-textbook && lualatex main.tex && lualatex main.tex
 ## 目录结构
 
 ```
+├── ai-engineering-book/       # 《AI Engineering Living Book》(7 部分, Markdown)
 ├── ai-agent-book/             # 《AI Agent 转行与面试指南》(22章)
 ├── fullstack-interview-book/  # 《全栈面试指南》(18章)
 ├── pytorch-interview-book/    # 《PyTorch 面试速通》(8章, LaTeX)
