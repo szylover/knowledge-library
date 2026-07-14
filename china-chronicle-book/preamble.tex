@@ -1,0 +1,42 @@
+\usepackage{ctex}
+\usepackage{fontspec}
+\setmonofont{DejaVu Sans Mono}[Scale=0.90]
+\usepackage[a4paper,top=2.35cm,bottom=2.35cm,left=2.25cm,right=2.25cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx,array,longtable,enumitem,xcolor,hyperref,tikz}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable,skins}
+
+\definecolor{dynasty}{HTML}{6B2E2E}
+\definecolor{ink}{HTML}{273142}
+\definecolor{timeline}{HTML}{2F628B}
+\definecolor{paper}{HTML}{F9F7F2}
+\definecolor{source}{HTML}{586B4D}
+\hypersetup{colorlinks=true,linkcolor=dynasty,citecolor=source,urlcolor=timeline,bookmarksnumbered=true}
+
+\newtcolorbox{event}[4]{
+  enhanced,breakable,arc=2pt,
+  colback=paper,colframe=timeline!70!black,
+  boxrule=.7pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
+  fonttitle=\bfseries,
+  title={#1\quad #2\quad\textcolor{source}{#3}\hfill\textcolor{gray}{#4}}
+}
+\newtcolorbox{turningpoint}[1][转折事件]{
+  enhanced,breakable,arc=3pt,
+  colback=dynasty!4,colframe=dynasty!80!black,
+  boxrule=.9pt,left=8pt,right=8pt,top=7pt,bottom=7pt,
+  fonttitle=\bfseries,title={【#1】}
+}
+\newtcolorbox{causalchain}[1][因果链]{
+  enhanced,breakable,arc=3pt,
+  colback=timeline!4,colframe=timeline!70!black,
+  boxrule=.7pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
+  fonttitle=\bfseries,title={【#1】}
+}
+\newtcolorbox{sourcenote}[1][史料与争议]{
+  enhanced,breakable,arc=3pt,
+  colback=source!5,colframe=source!65!black,
+  boxrule=.7pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
+  fonttitle=\bfseries,title={【#1】}
+}
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\sourcebook}[1]{《#1》}
