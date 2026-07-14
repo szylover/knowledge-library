@@ -6,35 +6,36 @@
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{breakable,skins}
 
-\definecolor{dynasty}{HTML}{6B2E2E}
-\definecolor{ink}{HTML}{273142}
-\definecolor{timeline}{HTML}{2F628B}
-\definecolor{paper}{HTML}{F9F7F2}
-\definecolor{source}{HTML}{586B4D}
+\definecolor{dynasty}{HTML}{7A3326}   % 朱褐：朝代、转折
+\definecolor{ink}{HTML}{332B25}       % 墨色：正文
+\definecolor{timeline}{HTML}{9A6B3E}  % 铜色：时间轴
+\definecolor{paper}{HTML}{FFF9EE}     % 宣纸暖白：事件底色
+\definecolor{source}{HTML}{665A4B}    % 旧纸褐：史料注
 \hypersetup{colorlinks=true,linkcolor=dynasty,citecolor=source,urlcolor=timeline,bookmarksnumbered=true}
 
 \newtcolorbox{event}[4]{
   enhanced,breakable,arc=2pt,
-  colback=paper,colframe=timeline!70!black,
-  boxrule=.7pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
+  colback=paper,colframe=timeline!55,
+  boxrule=.4pt,left=10pt,right=8pt,top=6pt,bottom=6pt,
+  borderline west={2.2pt}{0pt}{dynasty},
   fonttitle=\bfseries,
   title={#1\quad #2\quad\textcolor{source}{#3}\hfill\textcolor{gray}{#4}}
 }
 \newtcolorbox{turningpoint}[1][转折事件]{
   enhanced,breakable,arc=3pt,
-  colback=dynasty!4,colframe=dynasty!80!black,
+  colback=dynasty!4,colframe=dynasty!72!black,
   boxrule=.9pt,left=8pt,right=8pt,top=7pt,bottom=7pt,
   fonttitle=\bfseries,title={【#1】}
 }
 \newtcolorbox{causalchain}[1][因果链]{
   enhanced,breakable,arc=3pt,
-  colback=timeline!4,colframe=timeline!70!black,
+  colback=timeline!6,colframe=timeline!65!black,
   boxrule=.7pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
   fonttitle=\bfseries,title={【#1】}
 }
 \newtcolorbox{sourcenote}[1][史料与争议]{
   enhanced,breakable,arc=3pt,
-  colback=source!5,colframe=source!65!black,
+  colback=source!6,colframe=source!65!black,
   boxrule=.7pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
   fonttitle=\bfseries,title={【#1】}
 }
