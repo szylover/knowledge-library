@@ -56,6 +56,6 @@
 }
 \newcommand{\term}[1]{\textbf{#1}}
 \newcommand{\sourcebook}[1]{《#1》}
-\newcommand{\eventid}[1]{\textcolor{dynasty}{\footnotesize\textsf{[#1]}}}
-\newcommand{\eventanchor}[1]{\phantomsection\label{evt:#1}\eventid{#1}}
-\newcommand{\eventref}[2]{\hyperref[evt:#1]{\textcolor{dynasty}{#2}}}
+\newcommand{\eventid}[1]{\textcolor{dynasty}{\footnotesize\textsf{〔#1〕}}}
+\newcommand{\eventanchor}[2]{\hypertarget{evt:#1}{\eventid{#2}}}
+\newcommand{\eventref}[2]{\hyperlink{evt:#1}{\textcolor{dynasty}{〔#2〕}}}
