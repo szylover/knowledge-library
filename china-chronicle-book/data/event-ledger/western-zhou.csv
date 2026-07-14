@@ -1,0 +1,13 @@
+id,date,polity,event,confidence,core_sources,modern_direction,cause,consequence,target
+WZ-1046-MUYE,"约前1046年",周与商,"牧野之战，商亡",综合估算,"尚书·牧誓；史记·周本纪；利簋","Shaughnessy 金文与传世材料；断代工程争议","商末多线压力与周方联盟","周必须接管东方旧商网络","states/royal-court/foundation-and-regency.tex"
+WZ-1043-WUWANG-DEATH,"约前1043年",周,"武王死，成王年幼",综合估算,"史记·周本纪；尚书·金縢","周初王年与继承研究","征服后继承安排脆弱","周公摄政与三监危机","states/royal-court/foundation-and-regency.tex"
+WZ-1040-DONGZHENG,"约前1042—前1036年",周与东方诸方,"三监之乱、周公东征",相对次序可靠,"尚书·大诰、康诰、酒诰、梓材；史记；大盂鼎","周初东征与殷遗民安置研究","幼主摄政、旧商势力与宗室不信任","重组东方控制与封国网络","states/royal-court/foundation-and-regency.tex"
+WZ-EAST-CHENGZHOU,"约前1040年",周,"营建成周与东方安置",相对次序可靠,"尚书·召诰、洛诰；何尊；逸周书·作雒","何尊、洛阳考古与双都研究","东征后需控制东方并安置殷遗民","宗周—成周双中心与东方网络","states/eastern-network/settlement-and-enfeoffment.tex"
+WZ-CHENGKANG-CONSOLIDATION,"成王、康王时期",周,"周初秩序巩固、册命与赏赐网络",王年细节有争议,"何尊、大盂鼎等金文；史记","西周金文与政治网络研究","东征后需把临时胜利变为日常关系","王室权威与封国网络成熟","states/royal-court/cheng-kang-mu.tex"
+WZ-MU-TRAVELS,"穆王时期",周,"巡行、征伐与王权远方记忆",材料层次不一,"史记·周本纪；穆天子传；金文","穆天子传文本研究","王室需维系远方存在感","后世形成强王巡行想象","states/royal-court/cheng-kang-mu.tex"
+WZ-0977-ZHAONAN,"昭王在位晚期",周与南方政治体,"昭王南征失利，丧师汉水",王年推定,"史记·周本纪；竹书纪年；左传昭公十三年","南方铜器与周楚关系研究","南方资源、威望与政治控制需求","军力与王权威望受损","frontiers/southern-expansion.tex"
+WZ-XUAN-REVIVAL,"宣王时期",周,"料民、对玁狁战争与中兴尝试",王年和细节有争议,"诗经·小雅；史记·周本纪；金文","晚西周边疆与人口控制研究","兵源、税源和西北边防压力","危机被暂时延缓但未消除","frontiers/western-pressure.tex"
+WZ-0841-GONGHE,"前841年",周,"厉王出奔与共和行政",可靠纪年,"国语·周语上；史记·周本纪；竹书纪年","共和与共伯和争论；晚西周贵族政治","资源政策、表达压制和中心信任危机","连续纪年锚点；王权受制信号","states/royal-court/late-crises.tex"
+WZ-0828-XUAN-ACCESSION,"前828年",周,"宣王即位",可靠纪年,"史记·周本纪；竹书纪年","西周王年与共和后继承研究","共和结束后的继承重建","中兴叙事与边防动员","frontiers/western-pressure.tex"
+WZ-0771-HAOJING,"前771年",周、申、犬戎等,"镐京陷落，幽王死",可靠纪年,"国语·周语；左传昭公二十六年；史记·周本纪；诗经小雅","Li Feng 西周危机；烽火传说辨伪","继承危机、军事分权、边疆压力和申侯联盟","西周结束，王室东迁","states/royal-court/late-crises.tex"
+SA-0770-EAST,"前770年",东周,"平王东迁洛邑",可靠纪年,"史记·周本纪；竹书纪年","东周初年政治合法性研究","镐京无法恢复，关中失守","周成礼仪中心，春秋开始","../spring-autumn/common/chronology-770-632.tex"
