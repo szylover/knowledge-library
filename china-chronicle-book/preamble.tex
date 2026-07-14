@@ -1,8 +1,11 @@
 \usepackage{ctex}
 \usepackage{fontspec}
+\setCJKmainfont{Noto Serif SC}
+\setCJKsansfont{Noto Sans SC}
 \setmonofont{DejaVu Sans Mono}[Scale=0.90]
 \usepackage[a4paper,top=2.35cm,bottom=2.35cm,left=2.25cm,right=2.25cm]{geometry}
 \usepackage{amsmath,amssymb,booktabs,tabularx,array,longtable,enumitem,xcolor,hyperref,tikz}
+\usetikzlibrary{arrows.meta}
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{breakable,skins}
 
@@ -39,5 +42,20 @@
   boxrule=.7pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
   fonttitle=\bfseries,title={【#1】}
 }
+\newtcolorbox{debate}[1][史学分歧]{
+  enhanced,breakable,arc=3pt,
+  colback=gray!5,colframe=gray!60,
+  boxrule=.6pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
+  fonttitle=\bfseries,title={【#1】}
+}
+\newtcolorbox{textwindow}[1][古文窗口]{
+  enhanced,breakable,arc=2pt,
+  colback=paper!70!timeline!5,colframe=timeline!50,
+  boxrule=.5pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  fonttitle=\bfseries,title={【#1】}
+}
 \newcommand{\term}[1]{\textbf{#1}}
 \newcommand{\sourcebook}[1]{《#1》}
+\newcommand{\eventid}[1]{\textcolor{dynasty}{\footnotesize\textsf{[#1]}}}
+\newcommand{\eventanchor}[1]{\phantomsection\label{evt:#1}\eventid{#1}}
+\newcommand{\eventref}[2]{\hyperref[evt:#1]{\textcolor{dynasty}{#2}}}
