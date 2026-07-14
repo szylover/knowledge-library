@@ -1,0 +1,19 @@
+\begin{center}
+\begin{tikzpicture}[node distance=1.25cm and 1.7cm,font=\small,
+  state/.style={draw=timeline!70,fill=paper,rounded corners=2pt,align=center,minimum width=2.2cm,minimum height=.8cm},
+  link/.style={-{Stealth[length=2mm]},thick,color=dynasty}]
+  \node[state] (wei) {魏\\李悝传统\\农政、法制};
+  \node[state,right=of wei] (chu) {楚\\吴起\\军政重组};
+  \node[state,below=of chu] (han) {韩\\申不害\\官吏考核};
+  \node[state,left=of han] (qin) {秦\\商鞅\\军功、编户、县邑};
+
+  \draw[link] (wei) -- node[above,align=center,font=\scriptsize]{人才与\\制度竞争} (chu);
+  \draw[link] (wei) -- node[left,align=center,font=\scriptsize]{中原改革\\经验} (qin);
+  \draw[link] (chu) -- node[right,align=center,font=\scriptsize]{贵族反弹\\的代价} (han);
+  \draw[link] (han) -- node[below,align=center,font=\scriptsize]{行政技术\\与竞争} (qin);
+  \draw[-{Stealth[length=2mm]},ultra thick,color=timeline] (qin.south) -- ++(0,-.9) node[below,align=center,text=timeline]{更高的国家动员能力\\但也更集中地把社会卷入战争};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图  战国变法关系示意：表示各国面对的共同竞争问题与人才/制度经验的流动，不表示单向的“谁抄谁”或某一人创造全部制度。}
+\end{center}
