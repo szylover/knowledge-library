@@ -77,6 +77,11 @@ function Get-TaskStatus {
                 if (Test-Path -LiteralPath $untrackedPath -PathType Leaf) {
                     $addedLines = $addedLines + @(Get-Content -LiteralPath $untrackedPath).Count
                 }
+                elseif (Test-Path -LiteralPath $untrackedPath -PathType Container) {
+                    foreach ($file in Get-ChildItem -LiteralPath $untrackedPath -File -Recurse) {
+                        $addedLines = $addedLines + @(Get-Content -LiteralPath $file.FullName).Count
+                    }
+                }
             }
 
             $lastCommit = (& git -C $worktree.FullName log -1 --format='%h %s').Trim()
