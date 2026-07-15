@@ -19,7 +19,7 @@ $queueFiles = @(
 )
 
 $taskPattern = "^\s*-\s+id:\s*$([regex]::Escape($TaskId))\s*$"
-if (-not ($queueFiles | Select-String -Pattern $taskPattern -Quiet)) {
+if (-not (Select-String -LiteralPath $queueFiles -Pattern $taskPattern -Quiet)) {
     throw "Task '$TaskId' is not listed in the series or a volume-local WORK_QUEUE.yaml."
 }
 if (Test-Path $target) {
