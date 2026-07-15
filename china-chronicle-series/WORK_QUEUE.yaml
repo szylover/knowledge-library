@@ -2,7 +2,7 @@ series: china-chronicle
 tasks:
   - id: series-evidence-passport
     role: evidence-auditor
-    status: ready
+    status: done
     scope:
       - shared/evidence/
       - scripts/validate-event-ledger.ps1

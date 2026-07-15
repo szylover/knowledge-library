@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-library.local/china-chronicle/evidence-passport.schema.json",
+  "title": "China Chronicle Evidence Passport",
+  "description": "One auditable statement about the evidentiary limits of a source used for an event-ledger record.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ledger_id",
+    "evidence_type",
+    "source_locator",
+    "source_caveat"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "ledger_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The unchanged id of the related event-ledger row."
+    },
+    "evidence_type": {
+      "type": "string",
+      "enum": [
+        "annalistic_record",
+        "narrative_text",
+        "retrospective_history",
+        "official_or_administrative_document",
+        "excavated_text_or_inscription",
+        "archaeological_context",
+        "modern_research"
+      ]
+    },
+    "source_locator": {
+      "type": "string",
+      "minLength": 1,
+      "description": "A retrievable citation, such as work and chapter, document or slip number, object number, plate, page, or archive identifier."
+    },
+    "source_caveat": {
+      "type": "string",
+      "minLength": 1,
+      "description": "A specific statement of the evidence's limits, textual history, provenance, representativeness, or unresolved disagreement."
+    }
+  }
+}
