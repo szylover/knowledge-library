@@ -39,3 +39,11 @@ tasks:
     scope:
       - data/source-corpus/
     goal: Build a Han-to-Division source matrix before any event ledger is written.
+
+  - id: vol02-ledger-western-han
+    volume: vol02-han-division
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/han-division.csv
+    goal: Establish a source-aware Western Han event ledger from Qin-Han transition through the end of the Western Han.

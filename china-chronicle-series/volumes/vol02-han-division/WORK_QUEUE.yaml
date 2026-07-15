@@ -2,7 +2,26 @@ volume: vol02-han-division
 tasks:
   - id: vol02-source-han-division
     role: source
+    status: done
+    scope:
+      - data/source-corpus/han-division.md
+    goal: Build the Han-to-Division source matrix before any event ledger or prose.
+
+  - id: vol02-ledger-western-han
+    role: chronology
     status: ready
     scope:
-      - data/source-corpus/
-    goal: Build the Han-to-Division source matrix before any event ledger or prose.
+      - data/event-ledger/han-division.csv
+    goal: Establish a source-aware Western Han event ledger from the Qin-Han transition through the end of the Western Han.
+
+  - id: vol02-integrate-foundation
+    role: integrator
+    status: blocked
+    depends_on:
+      - vol02-ledger-western-han
+    scope:
+      - main.tex
+      - preamble.tex
+      - figures/
+      - PROGRESS.md
+    goal: Create the volume compilation foundation only after the initial ledger is reviewed.
