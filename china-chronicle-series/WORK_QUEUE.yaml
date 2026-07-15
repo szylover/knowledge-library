@@ -47,3 +47,20 @@ tasks:
     scope:
       - data/event-ledger/han-division.csv
     goal: Establish a source-aware Western Han event ledger from Qin-Han transition through the end of the Western Han.
+
+  - id: vol02-ledger-eastern-han
+    volume: vol02-han-division
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/han-division.csv
+    goal: Extend the shared Han ledger through the Eastern Han, preserving the Western Han entries.
+
+  - id: vol02-prose-qin-han-transition
+    volume: vol02-han-division
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch01-western-han.tex
+      - chapters/western-han/qin-han-transition.tex
+    goal: Convert the existing Qin-Han transition ledger cluster into source-aware narrative prose.

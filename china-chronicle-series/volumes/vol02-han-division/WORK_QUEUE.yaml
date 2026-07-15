@@ -28,3 +28,18 @@ tasks:
       - PROGRESS.md
       - scripts/build-volume.ps1
     goal: Create the volume compilation foundation only after the initial ledger is reviewed.
+
+  - id: vol02-ledger-eastern-han
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/han-division.csv
+    goal: Extend the shared Han ledger through the Eastern Han, preserving the Western Han entries.
+
+  - id: vol02-prose-qin-han-transition
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch01-western-han.tex
+      - chapters/western-han/qin-han-transition.tex
+    goal: Convert the existing Qin-Han transition ledger cluster into source-aware narrative prose.
