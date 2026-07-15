@@ -35,3 +35,10 @@ tasks:
       - chapters/ch01-early-qing.tex
       - chapters/early-qing/entry-and-regency.tex
     goal: Write the Qing entry, Beijing reception and regency event cluster from the verified ledger.
+
+  - id: vol06-map-entry-conquest
+    role: cartographer
+    status: ready
+    scope:
+      - figures/early-qing/
+    goal: Add source-aware schematics for Qing entry, southern conquest, and early frontier governance.
