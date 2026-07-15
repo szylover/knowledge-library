@@ -631,3 +631,40 @@ tasks:
     scope:
       - chapters/warring-qin/common/culture-thought.tex
     goal: Expand the Warring States culture and thought synthesis from existing ledger events.
+
+  - id: vol01-prose-western-foundation-next
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope: [chapters/western-zhou/states/royal-court/foundation-and-regency.tex]
+    goal: Expand the Western Zhou foundation and regency narrative.
+  - id: vol01-prose-western-crises-next
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope: [chapters/western-zhou/states/royal-court/late-crises.tex]
+    goal: Expand the Western Zhou late-crises narrative.
+  - id: vol01-prose-western-economy-next
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope: [chapters/western-zhou/common/economy-society.tex]
+    goal: Expand the Western Zhou economy and society synthesis.
+  - id: vol01-prose-western-culture-next
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope: [chapters/western-zhou/common/culture-thought.tex]
+    goal: Expand the Western Zhou culture and thought synthesis.
+  - id: vol01-prose-spring-economy-next
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope: [chapters/spring-autumn/common/economy-society.tex]
+    goal: Expand the Spring and Autumn economy and society synthesis.
+  - id: vol01-prose-spring-culture-next
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope: [chapters/spring-autumn/common/culture-thought.tex]
+    goal: Expand the Spring and Autumn culture and thought synthesis.
