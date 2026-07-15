@@ -1,0 +1,56 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    place/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\small},
+    qing/.style={place, draw=dynasty, fill=dynasty!13},
+    frontier/.style={place, draw=timeline, fill=timeline!13},
+    sea/.style={place, draw=source, fill=source!10},
+    note/.style={align=center, font=\scriptsize\color{source}}
+  ]
+    \fill[paper] (-.7,-4.0) rectangle (7.5,3.8);
+    \draw[dynasty, line width=.8pt] (-.7,3.8) -- (7.5,3.8);
+    \node[font=\bfseries\large, text=dynasty] at (3.4,3.35)
+      {早期清朝的边疆治理：蒙古、西藏与台湾};
+
+    \node[qing] (beijing) at (3.35,2.55) {北京\\军政、礼仪与文书枢纽};
+
+    \node[frontier] (dzungar) at (.25,1.25) {准噶尔\\1688后};
+    \node[frontier] (khalkha) at (2.15,.75) {喀尔喀诸部\\南徙、求援};
+    \node[frontier] (dolonnor) at (3.85,.9) {多伦诺尔\\1691会盟};
+    \node[frontier] (banner) at (5.65,1.15) {盟旗、台站、赈济\\战后日常治理};
+
+    \node[frontier] (qinghai) at (.65,-1.55) {青海蒙古\\寺院网络};
+    \node[frontier] (lhasa) at (2.75,-2.2) {拉萨\\1717--1720};
+    \node[frontier] (tibetnote) at (5.25,-2.2) {政教、军行与\\地方协商的多重网络};
+
+    \node[sea] (penghu) at (4.85,-.55) {澎湖\\1683};
+    \node[sea] (taiwan) at (6.35,-.85) {台湾\\府县、驻防\\1684后};
+
+    \draw[->, timeline, line width=1pt] (dzungar) -- node[above,sloped,note]
+      {战争与迁徙} (khalkha);
+    \draw[->, dynasty, line width=1.15pt] (khalkha) -- node[above,sloped,note]
+      {会盟、编旗的过程} (dolonnor);
+    \draw[->, dynasty, line width=1.15pt] (dolonnor) -- node[above,sloped,note]
+      {理藩院事务（示意）} (banner);
+    \draw[dynasty, dashed] (beijing) -- (dolonnor);
+
+    \draw[->, timeline, dashed, line width=1pt] (qinghai) -- node[below,sloped,note]
+      {盟军、寺院与交通网络} (lhasa);
+    \draw[->, dynasty, line width=1.15pt] (beijing) to[out=-150,in=70] node[left,note]
+      {1720年军行与迎立（示意）} (lhasa);
+    \draw[timeline, dashed] (lhasa) -- (tibetnote);
+
+    \draw[->, source, line width=1pt] (penghu) -- node[above,sloped,note]
+      {海战、投降与接收} (taiwan);
+    \draw[dynasty, dashed] (beijing) to[out=-30,in=110] node[right,note]
+      {设治、驻防的文书路径（示意）} (taiwan);
+
+    \node[draw=source, fill=paper, rounded corners=3pt, align=center,
+      text=source, font=\small] at (5.7,-3.25)
+      {没有连续国界：节点、虚线与箭头\\只表示档案可见的事务、路线或关系};
+  \end{tikzpicture}
+  \caption{早期清朝的蒙古、西藏与台湾治理（约1688--1721，示意）。图以会盟、盟旗／台站、军行、寺院网络、海战及设治等可辨事务为单位，而非以色块制造连续疆界。蒙古部分据《清圣祖实录》康熙二十七至三十七年蒙古军报和理藩院满、汉、蒙文盟旗及赈济档，并参照《蒙古源流》与俄国使团／边境材料；西藏部分据《清圣祖实录》康熙五十九年军报、满文军机前身档、藏文《西藏王臣记》、塔尔寺藏文档与青海蒙古文书；台湾部分据《清圣祖实录》康熙二十二、二十三年条、施琅《飞报澎湖大捷疏》、《台湾府志》、福建督抚奏折及台湾契约、港口与荷兰／日文海洋材料。范围只标出少数关系节点和约略路线，未标按比例的道路、牧地、海域或行政分界；箭头不等同主权、常态化管辖或各地社会的接受，尤其不能由盟旗、寺院或府县名目推导现代边界。}
+  \label{fig:early-qing-frontier-governance}
+\end{figure}
