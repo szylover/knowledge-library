@@ -1,0 +1,36 @@
+\documentclass[11pt,a4paper,openany]{book}
+\input{preamble}
+
+\begin{document}
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[dynasty] (current page.north west) rectangle ([yshift=-8.2cm]current page.north east);
+    \fill[timeline] ([yshift=-8.2cm]current page.north west) rectangle ([yshift=-8.55cm]current page.north east);
+  \end{tikzpicture}
+  \centering
+  \vspace*{2.0cm}
+  {\color{white}\fontsize{35}{44}\selectfont\bfseries 中国大事编年·第四卷\par}
+  \vspace{.6cm}
+  {\color{white!90}\Large 宋、辽、西夏、金与元\par}
+  \vfill
+  {\normalsize \today\par}
+  \vspace{2cm}
+\end{titlepage}
+
+\frontmatter
+\tableofcontents
+
+\mainmatter
+\part{多政权、商业财政与征服帝国}
+\include{chapters/ch01-northern-song}
+\include{chapters/ch02-liao-western-xia}
+\include{chapters/ch03-jin}
+\include{chapters/ch04-southern-song}
+\include{chapters/ch05-mongol-conquest}
+\include{chapters/ch06-yuan}
+
+\appendix
+\include{chapters/appendix-sources}
+\include{chapters/appendix-index}
+\include{chapters/appendix-series-roadmap}
+\end{document}
