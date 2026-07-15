@@ -819,6 +819,31 @@ tasks:
     status: ready
     scope: [data/event-ledger/han-division.csv]
     goal: Add source-aware late Northern and Southern Dynasties events from 440 through Sui reunification in 589.
+
+  - id: vol03-anchor-system
+    volume: vol03-sui-tang-five
+    role: indexer
+    status: ready
+    scope: [preamble.tex, chapters/appendix-*.tex]
+    goal: Add event-link macros and index entry points for Volume III.
+  - id: vol04-anchor-system
+    volume: vol04-song-yuan
+    role: indexer
+    status: ready
+    scope: [preamble.tex, chapters/appendix-*.tex]
+    goal: Add event-link macros and index entry points for Volume IV.
+  - id: vol05-anchor-system
+    volume: vol05-ming
+    role: indexer
+    status: ready
+    scope: [preamble.tex, chapters/appendix-*.tex]
+    goal: Add event-link macros and index entry points for Volume V.
+  - id: vol06-anchor-system
+    volume: vol06-qing-1912
+    role: indexer
+    status: ready
+    scope: [preamble.tex, chapters/appendix-*.tex]
+    goal: Add event-link macros and index entry points for Volume VI.
   - id: vol01-final-publish
     volume: vol01-zhou-qin
     role: integrator
