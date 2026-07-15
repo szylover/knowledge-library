@@ -38,7 +38,7 @@ tasks:
 
   - id: vol04-map-northern-song
     role: cartographer
-    status: ready
+    status: done
     scope:
       - figures/northern-song/
     goal: Add source-aware schematics for Northern Song founding, Liao frontier, and early state capacity.

@@ -331,7 +331,7 @@ tasks:
   - id: vol02-prose-eastern-jin
     volume: vol02-han-division
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch05-eastern-jin-sixteen-kingdoms.tex
       - chapters/eastern-jin-sixteen-kingdoms/eastern-jin-establishment-and-southern-society.tex
@@ -397,7 +397,7 @@ tasks:
   - id: vol04-map-northern-song
     volume: vol04-song-yuan
     role: cartographer
-    status: ready
+    status: done
     scope:
       - figures/northern-song/
     goal: Add source-aware schematics for Northern Song founding, Liao frontier, and early state capacity.
