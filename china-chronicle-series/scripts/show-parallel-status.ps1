@@ -7,7 +7,6 @@ param(
 $ErrorActionPreference = 'Stop'
 $seriesRoot = Split-Path -Parent $PSScriptRoot
 $repositoryRoot = (& git -C $seriesRoot rev-parse --show-toplevel).Trim()
-$worktreeRoot = Join-Path $repositoryRoot '.chronicle-worktrees'
 
 function Get-QueueStates {
     param([string[]]$QueueFiles)
@@ -43,20 +42,40 @@ function Get-TaskStatus {
     $queueStates = Get-QueueStates -QueueFiles $queueFiles
     $rows = @()
 
-    if (Test-Path $worktreeRoot) {
-        foreach ($worktree in Get-ChildItem -LiteralPath $worktreeRoot -Directory | Sort-Object Name) {
+    $mainWorktree = [System.IO.Path]::GetFullPath($repositoryRoot).TrimEnd('\', '/')
+    $worktreePaths = @(
+        & git -C $repositoryRoot worktree list --porcelain |
+            Where-Object { $_ -like 'worktree *' } |
+            ForEach-Object { $_.Substring(9) }
+    )
+
+    foreach ($worktreePath in $worktreePaths | Sort-Object) {
+        $normalizedPath = [System.IO.Path]::GetFullPath($worktreePath).TrimEnd('\', '/')
+        if ($normalizedPath -eq $mainWorktree -or -not (Test-Path $worktreePath)) {
+            continue
+        }
+
+        $worktree = Get-Item -LiteralPath $worktreePath
+        if ($worktree.PSIsContainer) {
             $taskId = $worktree.Name
             $status = if ($queueStates.ContainsKey($taskId)) { $queueStates[$taskId] } else { 'worktree-active' }
             $changes = @(git -C $worktree.FullName status --porcelain)
             $numstat = @(git -C $worktree.FullName diff --numstat)
-            $added = 0
-            $removed = 0
+            [int]$addedLines = 0
+            [int]$removedLines = 0
 
             foreach ($line in $numstat) {
                 $parts = $line -split "`t"
                 if ($parts.Count -ge 2) {
-                    if ($parts[0] -match '^\d+$') { $added += [int]$parts[0] }
-                    if ($parts[1] -match '^\d+$') { $removed += [int]$parts[1] }
+                    if ($parts[0] -match '^\d+$') { $addedLines = $addedLines + [int]$parts[0] }
+                    if ($parts[1] -match '^\d+$') { $removedLines = $removedLines + [int]$parts[1] }
+                }
+            }
+
+            foreach ($change in $changes | Where-Object { $_.StartsWith('?? ') }) {
+                $untrackedPath = Join-Path $worktree.FullName $change.Substring(3)
+                if (Test-Path -LiteralPath $untrackedPath -PathType Leaf) {
+                    $addedLines = $addedLines + @(Get-Content -LiteralPath $untrackedPath).Count
                 }
             }
 
@@ -66,7 +85,7 @@ function Get-TaskStatus {
                 Queue = $status
                 Branch = (& git -C $worktree.FullName branch --show-current).Trim()
                 ChangedFiles = $changes.Count
-                Delta = "+$added / -$removed"
+                Delta = "+$addedLines / -$removedLines"
                 LastCommit = $lastCommit
             }
         }
