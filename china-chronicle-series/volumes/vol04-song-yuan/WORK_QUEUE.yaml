@@ -35,3 +35,10 @@ tasks:
       - chapters/ch01-northern-song.tex
       - chapters/northern-song/founding-and-frontiers.tex
     goal: Write the Northern Song founding, frontier, and state-capacity event cluster from the verified ledger.
+
+  - id: vol04-map-northern-song
+    role: cartographer
+    status: ready
+    scope:
+      - figures/northern-song/
+    goal: Add source-aware schematics for Northern Song founding, Liao frontier, and early state capacity.

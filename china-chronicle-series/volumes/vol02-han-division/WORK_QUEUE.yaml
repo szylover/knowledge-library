@@ -96,3 +96,11 @@ tasks:
       - chapters/ch04-western-jin.tex
       - chapters/western-jin/court-politics-and-eight-princes.tex
     goal: Write the Western Jin succession and Eight Princes cluster from the verified ledger.
+
+  - id: vol02-prose-eastern-jin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch05-eastern-jin-sixteen-kingdoms.tex
+      - chapters/eastern-jin-sixteen-kingdoms/eastern-jin-establishment-and-southern-society.tex
+    goal: Write the Eastern Jin establishment and southern court cluster from the verified ledger.

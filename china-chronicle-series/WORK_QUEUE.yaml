@@ -328,6 +328,15 @@ tasks:
       - chapters/western-jin/court-politics-and-eight-princes.tex
     goal: Write the Western Jin succession and Eight Princes cluster from the verified ledger.
 
+  - id: vol02-prose-eastern-jin
+    volume: vol02-han-division
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch05-eastern-jin-sixteen-kingdoms.tex
+      - chapters/eastern-jin-sixteen-kingdoms/eastern-jin-establishment-and-southern-society.tex
+    goal: Write the Eastern Jin establishment and southern court cluster from the verified ledger.
+
   - id: vol03-prose-sui-reunification
     volume: vol03-sui-tang-five
     role: narrative
@@ -354,6 +363,15 @@ tasks:
       - chapters/an-lushan-late-tang/an-lushan-crisis.tex
     goal: Write the ledgered An Lushan crisis cluster with fiscal, military, and multi-polity context.
 
+  - id: vol03-prose-late-tang
+    volume: vol03-sui-tang-five
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch05-five-dynasties-ten-kingdoms.tex
+      - chapters/five-dynasties-ten-kingdoms/regional-polities-and-military-fiscal-order.tex
+    goal: Write a late Tang to Five Dynasties multi-polity and military-fiscal cluster from the verified ledger.
+
   - id: vol04-integrate-foundation
     volume: vol04-song-yuan
     role: integrator
@@ -375,6 +393,14 @@ tasks:
       - chapters/ch01-northern-song.tex
       - chapters/northern-song/founding-and-frontiers.tex
     goal: Write the Northern Song founding, frontier, and state-capacity event cluster from the verified ledger.
+
+  - id: vol04-map-northern-song
+    volume: vol04-song-yuan
+    role: cartographer
+    status: ready
+    scope:
+      - figures/northern-song/
+    goal: Add source-aware schematics for Northern Song founding, Liao frontier, and early state capacity.
 
   - id: vol05-prose-founding
     volume: vol05-ming

@@ -50,3 +50,11 @@ tasks:
       - chapters/ch04-an-lushan-late-tang.tex
       - chapters/an-lushan-late-tang/an-lushan-crisis.tex
     goal: Write the ledgered An Lushan crisis cluster with fiscal, military, and multi-polity context.
+
+  - id: vol03-prose-late-tang
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch05-five-dynasties-ten-kingdoms.tex
+      - chapters/five-dynasties-ten-kingdoms/regional-polities-and-military-fiscal-order.tex
+    goal: Write a late Tang to Five Dynasties multi-polity and military-fiscal cluster from the verified ledger.
