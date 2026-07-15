@@ -30,7 +30,7 @@ tasks:
 
   - id: vol04-prose-northern-song
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch01-northern-song.tex
       - chapters/northern-song/founding-and-frontiers.tex

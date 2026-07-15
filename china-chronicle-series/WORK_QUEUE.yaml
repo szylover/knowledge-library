@@ -317,7 +317,7 @@ tasks:
   - id: vol04-prose-northern-song
     volume: vol04-song-yuan
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch01-northern-song.tex
       - chapters/northern-song/founding-and-frontiers.tex
