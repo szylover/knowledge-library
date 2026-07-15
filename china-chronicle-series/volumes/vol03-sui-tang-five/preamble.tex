@@ -25,3 +25,13 @@
   pdftitle={中国大事编年·第三卷：隋、唐与五代十国}
 }
 \color{ink}
+
+% Keep event links compatible with the established Volume I anchor format.
+\providecommand{\eventid}[1]{\textcolor{dynasty}{\footnotesize\textsf{〔#1〕}}}
+\providecommand{\eventanchor}[2]{\hypertarget{evt:#1}{\eventid{#2}}}
+\providecommand{\eventref}[2]{\hyperlink{evt:#1}{\textcolor{dynasty}{〔#2〕}}}
+
+% Appendix index helpers: entries link to an existing chapter, source, or figure label.
+\providecommand{\eventindexentry}[3]{\hyperref[#1]{\textcolor{dynasty}{〔#2〕}}\quad #3}
+\providecommand{\sourceindexentry}[2]{\hyperref[#1]{\textcolor{source}{#2}}}
+\providecommand{\figureindexentry}[2]{\hyperref[#1]{\textcolor{timeline}{#2}}}
