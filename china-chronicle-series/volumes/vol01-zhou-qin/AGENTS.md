@@ -14,6 +14,32 @@
 - 事件簇按问题、在位期或连续年份拆分为独立 `.tex` 文件。单个文件过长时必须继续拆分。
 - 跨国人物、制度、战争、外交、迁徙、思想流动另写 `synthesis/` 合卷，不在各国章节中机械重复。
 
+## 多 Agent 协作
+
+本书允许多个 Agent 并行工作，但必须遵守 `WORK_QUEUE.yaml` 和 `tasks/` 中的任务卡。
+
+### 角色与写入范围
+
+| 角色 | 可以写入 | 不可以写入 |
+|---|---|---|
+| Chronology Agent | `data/event-ledger/<period>.csv` | 正文、地图、PDF |
+| Source Agent | `data/source-corpus/`、任务卡中的来源注记 | 正文、账本 ID、地图 |
+| Narrative Agent | 被任务卡明确列出的一个或多个 `.tex` 正文文件 | 其他正文、账本、主文件 |
+| Map Agent | `figures/<period>/` 的独立图文件 | 正文内容、账本 |
+| Integrator Agent | `main.tex`、chapter wrapper、`appendix-*`、`PROGRESS.md`、根 `pdf/` | 不重写已认领正文，除非任务明确要求 |
+
+### 并行规则
+
+1. 每个 Agent 先从 `WORK_QUEUE.yaml` 选取状态为 `ready` 的任务，并将状态改为 `in_progress`，写入自己的分支名和开始时间。
+2. 一个任务只能有一个 writer。若两个任务触及同一 `.tex` 文件，后者必须等待前者完成。
+3. Agent 在独立 Git branch/worktree 中工作，分支命名为 `chronicle/<task-id>`；不得直接推送 `main`。
+4. Chronology Agent 先补事件账本；Narrative Agent 只能扩写账本中已有的事件 ID。
+5. Source Agent 不直接把未核实的研究结论写入正文；它交付可引用的来源链与争议说明。
+6. Map Agent 只交付独立 `figures/` 文件和必要的 `\input` 建议；Integrator 决定正文插入点。
+7. 每个任务完成时必须报告：修改文件、账本事件 ID、来源、编译结果、未解决争议。
+8. Integrator 在合并前运行 Tectonic，检查重复锚点、未解析引用、PDF 输出路径和 `PROGRESS.md`。
+9. 只有 Integrator 将已验证任务合并/推送到 `main`；发布 PDF 只能写入仓库根 `pdf/china-chronicle-vol01-zhou-qin.pdf`。
+
 ## 总体史六层
 
 任何时代都要同时看：
@@ -32,6 +58,8 @@
 每个可靠纪年的重要事件必须单列，并使用稳定的内部事件锚点，例如 `WZ-0841-GONGHE`。内部锚点不得直接展示给读者；正文只显示中文可点击事件名，例如 `〔西周·共和〕`、`〔春秋·城濮之战〕`。
 
 在写 prose 之前，先更新 `data/event-ledger/<period>.csv`。事件账本是覆盖率的唯一检查表：每条记录至少包含内部 ID、日期/王年、政权、事件、可信度、核心史料、现代研究方向、前因、后果和目标 `.tex` 文件。没有账本记录的事件不得悄悄写入正文；账本记录未扩写时必须保留，不能因篇幅而删除。
+
+事件分三级：A 级是改变政治、制度、战争、经济或文化走向的转折，写成多页叙事；B 级是理解国家线不可缺少的节点，写成完整事件条目；C 级是支撑因果和时间连续性的事件，至少保留在账本、年表或段落中。周秦卷目标账本规模为 1,300–1,900 条，不能因正文篇幅而只保留名场面。
 
 事件条目依次回答：
 
@@ -115,4 +143,4 @@
 - 每完成一个事件簇、国家 dossier、地图、账本批次或 PDF 构建，更新 `PROGRESS.md`。
 - 在工作消息中明确报告：当前卷、已登记事件数、刚完成的文件、下一步文件。
 - 进度以已核对且进入事件账本/正文的事件数衡量，不以 AI 生成字数或 PDF 厚度衡量。
-- 只允许发布一份 PDF：`../pdf/china-chronicle-book.pdf`（仓库根 `pdf/`）。不得在 `china-chronicle-book/` 内创建或提交 `pdf/` 子目录、重复 PDF 或任何二进制构建副本。
+- 只允许发布一份 PDF：`../../../pdf/china-chronicle-vol01-zhou-qin.pdf`（仓库根 `pdf/`）。不得在本卷目录内创建或提交 `pdf/` 子目录、重复 PDF 或任何二进制构建副本。

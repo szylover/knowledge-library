@@ -1,0 +1,87 @@
+# Volume-local queue. The series root queue is the cross-volume overview.
+volume: vol01-zhou-qin
+publish_pdf: ../../../pdf/china-chronicle-vol01-zhou-qin.pdf
+event_ledger_target: 1300-1900
+
+tasks:
+  - id: vol01-ledger-western
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/western-zhou.csv
+    goal: Expand Western Zhou from 39 to 150-250 source-aware events.
+
+  - id: vol01-ledger-spring
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/spring-autumn.csv
+    goal: Expand Spring from 55 to 400-600 source-aware events.
+
+  - id: vol01-ledger-warring
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/warring-qin.csv
+    goal: Expand Warring-Qin from 92 to 700-1000 source-aware events.
+
+  - id: vol01-prose-western
+    role: narrative
+    status: ready
+    scope:
+      - chapters/western-zhou/
+    depends_on:
+      - vol01-ledger-western
+    goal: Convert ledger clusters into literary, source-aware prose.
+
+  - id: vol01-prose-spring
+    role: narrative
+    status: ready
+    scope:
+      - chapters/spring-autumn/
+    depends_on:
+      - vol01-ledger-spring
+    goal: Convert state and cross-state ledger clusters into prose.
+
+  - id: vol01-prose-warring
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/
+    depends_on:
+      - vol01-ledger-warring
+    goal: Convert state and cross-state ledger clusters into prose.
+
+  - id: vol01-maps-western-spring
+    role: cartographer
+    status: ready
+    scope:
+      - figures/western-zhou/
+      - figures/spring-autumn/
+    goal: Add source-aware maps, routes, timelines, and institutional figures.
+
+  - id: vol01-maps-warring
+    role: cartographer
+    status: ready
+    scope:
+      - figures/warring-qin/
+    goal: Add source-aware campaigns, alliance, migration, and administration figures.
+
+  - id: vol01-indexes
+    role: indexer
+    status: ready
+    scope:
+      - chapters/appendix-*.tex
+    goal: Maintain event, polity, theme, source, and figure indexes for written content.
+
+  - id: vol01-integrate
+    role: integrator
+    status: review
+    scope:
+      - main.tex
+      - chapters/ch02-western-zhou.tex
+      - chapters/ch03-spring-autumn.tex
+      - chapters/ch04-warring-qin.tex
+      - PROGRESS.md
+      - ../../../pdf/china-chronicle-vol01-zhou-qin.pdf
+    goal: Merge verified task branches, compile, validate links, update progress, and publish the only PDF.

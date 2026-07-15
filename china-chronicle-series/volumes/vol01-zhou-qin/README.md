@@ -1,7 +1,10 @@
-# 中国大事编年（多卷本）
+# 《中国大事编年·第一卷：周秦卷》
 
-一部以可靠纪年事件为骨架、以因果关系为线索的中国史书稿。当前目录是
-**第一卷《周秦卷》**；后续卷独立扩展，避免把数千页内容塞进一个 PDF。
+本卷是多 Agent 历史书系的第一卷，覆盖西周、春秋、战国与秦。阅读系列总规范：
+
+- `../../SERIES_SPEC.md`
+- `../../AGENTS.md`
+- 本卷 `AGENTS.md`、`WORK_QUEUE.yaml` 与 `PROGRESS.md`
 
 | 卷 | 范围 | 目标 |
 |---|---|---|
@@ -13,10 +16,24 @@
 | 第六卷 | 清至1912 | 征服王朝、近代冲击与帝国终结 |
 
 ```powershell
-Set-Location D:\projects\knowledge-library\china-chronicle-book
-D:\projects\tools\tectonic\tectonic.exe -X compile main.tex
-Copy-Item main.pdf ..\pdf\china-chronicle-book.pdf -Force
+Set-Location D:\projects\knowledge-library\china-chronicle-series\volumes\vol01-zhou-qin
+.\scripts\build-volume.ps1
 ```
+
+发布版只在仓库根目录：
+
+```text
+pdf/china-chronicle-vol01-zhou-qin.pdf
+```
+
+## 多 Agent
+
+```powershell
+Set-Location D:\projects\knowledge-library\china-chronicle-series
+.\scripts\new-agent-worktree.ps1 -TaskId vol01-ledger-western
+```
+
+每个 Agent 在独立 worktree/分支工作，先认领 `WORK_QUEUE.yaml` 中的任务，再修改其锁定文件范围。详情见系列和本卷 `AGENTS.md`。
 
 ## 条目标准
 

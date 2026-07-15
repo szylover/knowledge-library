@@ -8,3 +8,4 @@
 *.listing
 *.synctex.gz
 chapters/*.aux
+.chronicle-worktrees/

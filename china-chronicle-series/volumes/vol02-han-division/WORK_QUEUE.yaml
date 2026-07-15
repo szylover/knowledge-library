@@ -1,0 +1,8 @@
+volume: vol02-han-division
+tasks:
+  - id: vol02-source-han-division
+    role: source
+    status: ready
+    scope:
+      - data/source-corpus/
+    goal: Build the Han-to-Division source matrix before any event ledger or prose.
