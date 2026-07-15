@@ -46,7 +46,7 @@ tasks:
 
   - id: vol02-prose-eastern-restoration
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch02-eastern-han.tex
       - chapters/eastern-han/restoration-and-luoyang.tex
