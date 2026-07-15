@@ -42,3 +42,11 @@ tasks:
     scope:
       - data/event-ledger/ming.csv
     goal: Extend the Ming ledger through mid-Ming fiscal, frontier, maritime, and court transformations without replacing existing rows.
+
+  - id: vol05-prose-tianshun
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch02-hongxi-tianshun.tex
+      - chapters/mid-ming/tumu-restoration-and-court.tex
+    goal: Write the Tumu crisis, Jingtai succession, and Tianshun restoration cluster from the verified ledger.

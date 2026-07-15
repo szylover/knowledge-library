@@ -42,3 +42,11 @@ tasks:
     scope:
       - data/event-ledger/sui-tang-five.csv
     goal: Extend the shared ledger through An Lushan, late Tang, and Five Dynasties without replacing existing rows.
+
+  - id: vol03-prose-an-lushan
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch04-an-lushan-late-tang.tex
+      - chapters/an-lushan-late-tang/an-lushan-crisis.tex
+    goal: Write the ledgered An Lushan crisis cluster with fiscal, military, and multi-polity context.

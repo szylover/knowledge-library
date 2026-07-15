@@ -88,3 +88,11 @@ tasks:
       - figures/western-jin/
       - figures/eastern-jin-sixteen-kingdoms/
     goal: Add source-aware schematics for Western Jin collapse, southern court relocation, and northern multi-polity geography.
+
+  - id: vol02-prose-western-jin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch04-western-jin.tex
+      - chapters/western-jin/court-politics-and-eight-princes.tex
+    goal: Write the Western Jin succession and Eight Princes cluster from the verified ledger.
