@@ -11,8 +11,16 @@ $repositoryRoot = (& git -C $seriesRoot rev-parse --show-toplevel).Trim()
 $worktreeRoot = Join-Path $repositoryRoot '.chronicle-worktrees'
 $target = Join-Path $worktreeRoot $TaskId
 
-if (-not (Select-String -LiteralPath (Join-Path $seriesRoot 'WORK_QUEUE.yaml') -Pattern "id: $TaskId" -Quiet)) {
-    throw "Task '$TaskId' is not listed in WORK_QUEUE.yaml."
+$queueFiles = @(
+    (Join-Path $seriesRoot 'WORK_QUEUE.yaml')
+) + @(
+    Get-ChildItem -LiteralPath (Join-Path $seriesRoot 'volumes') -Filter 'WORK_QUEUE.yaml' -File -Recurse |
+        Select-Object -ExpandProperty FullName
+)
+
+$taskPattern = "^\s*-\s+id:\s*$([regex]::Escape($TaskId))\s*$"
+if (-not ($queueFiles | Select-String -Pattern $taskPattern -Quiet)) {
+    throw "Task '$TaskId' is not listed in the series or a volume-local WORK_QUEUE.yaml."
 }
 if (Test-Path $target) {
     throw "Worktree already exists: $target"
