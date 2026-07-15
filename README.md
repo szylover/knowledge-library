@@ -1,6 +1,6 @@
 # 中文技术书库
 
-以数学的严谨，讲物理的直觉；以工程师的视角，写 AI 与面试指南。本仓库包含 **11 本**中文教材/技术书，涵盖数学、物理、AI Engineering、AI Agent、深度学习与全栈面试。
+以数学的严谨，讲物理的直觉；以工程师的视角，写 AI 与面试指南。本仓库收录数学、物理、AI Engineering、AI Agent、深度学习、编程、历史与面试等中文教材/技术书。
 
 所有 PDF 集中存放在 `pdf/` 目录，数学物理部分共 **1339 页**。
 
@@ -28,6 +28,18 @@
 基于 2026-03-31 泄露源码的全面技术分析书籍。涵盖架构设计、QueryEngine 查询引擎、上下文处理与 System Prompt、工具系统 (40+ 工具)、权限安全模型、五层上下文压缩管线、多智能体协调、MCP 协议、React + Ink 终端 UI、Feature Flag 与条件编译等。
 
 👉 [阅读全书](./claude-code-book/README.md)
+
+---
+
+## 🧩 Pi Agent Harness 源码学习
+
+### 系统理解 Pi：从终端 Coding Agent 到 Agent Harness — `pi-learning-book/`（核心版 50 页）
+
+面向希望真正读懂 AI Coding Agent 实现的工程师。以 Pi 的 CLI、Agent loop、tool calling、
+session、context compaction、Provider prompt cache、KV cache 边界、extension 与 TUI 为主线，
+并提供 faux-provider 测试入口、mini Pi 复刻路线和关键 Git 历史阅读方法。
+
+👉 [阅读源稿](./pi-learning-book/README.md)
 
 ---
 
@@ -119,7 +131,7 @@
 cd physics-textbook && lualatex main.tex && lualatex main.tex
 ```
 
-编译好的 PDF 在 `pdf/` 目录：
+部分已编译 PDF：
 
 | 文件 | 页数 |
 |------|------|
@@ -129,7 +141,7 @@ cd physics-textbook && lualatex main.tex && lualatex main.tex
 | `modular-forms-exercises.pdf` | 182 |
 | `physics-textbook.pdf` | 270 |
 | `physics-exercises.pdf` | 157 |
-| **总计** | **1339** |
+| `pi-learning-book.pdf` | 50 |
 
 ## 目录结构
 
@@ -138,7 +150,11 @@ cd physics-textbook && lualatex main.tex && lualatex main.tex
 ├── ai-agent-book/             # 《AI Agent 转行与面试指南》(22章)
 ├── fullstack-interview-book/  # 《全栈面试指南》(18章)
 ├── pytorch-interview-book/    # 《PyTorch 面试速通》(8章, LaTeX)
+├── airbnb-interview-book/     # 《Airbnb 面试指南》
+├── cpp-to-java-algo-book/     # 《C++ 到 Java 算法与数据结构》
 ├── claude-code-book/          # 《深入剖析 Claude Code》技术书 (17章)
+├── pi-learning-book/           # 《系统理解 Pi》源码学习教材
+├── china-chronicle-series/    # 《中国通史》系列
 ├── linear-algebra-book/       # 线性代数
 ├── abstract-algebra-book/     # 抽象代数
 ├── modular-forms-textbook/    # 模形式教科书
