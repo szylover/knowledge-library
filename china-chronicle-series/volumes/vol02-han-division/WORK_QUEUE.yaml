@@ -9,16 +9,14 @@ tasks:
 
   - id: vol02-ledger-western-han
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/han-division.csv
     goal: Establish a source-aware Western Han event ledger from the Qin-Han transition through the end of the Western Han.
 
   - id: vol02-integrate-foundation
     role: integrator
-    status: blocked
-    depends_on:
-      - vol02-ledger-western-han
+    status: ready
     scope:
       - main.tex
       - preamble.tex
