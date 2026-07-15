@@ -65,3 +65,11 @@ tasks:
     scope:
       - figures/western-han/
     goal: Add source-aware schematics for the Qin-Han transition and early Han spatial constraints.
+
+  - id: vol02-prose-three-kingdoms
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch03-three-kingdoms.tex
+      - chapters/three-kingdoms/foundation-and-three-emperors.tex
+    goal: Write the first Three Kingdoms event cluster from the verified ledger.

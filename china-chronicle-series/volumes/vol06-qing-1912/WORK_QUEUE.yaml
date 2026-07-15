@@ -27,3 +27,11 @@ tasks:
       - PROGRESS.md
       - scripts/build-volume.ps1
     goal: Create a buildable Volume VI foundation after source matrix and initial ledger review.
+
+  - id: vol06-prose-entry
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch01-early-qing.tex
+      - chapters/early-qing/entry-and-regency.tex
+    goal: Write the Qing entry, Beijing reception and regency event cluster from the verified ledger.

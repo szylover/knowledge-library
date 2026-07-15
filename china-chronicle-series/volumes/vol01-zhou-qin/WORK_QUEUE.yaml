@@ -115,3 +115,10 @@ tasks:
       - PROGRESS.md
       - ../../../pdf/china-chronicle/vol01-zhou-qin.pdf
     goal: Merge verified task branches, compile, validate links, update progress, and publish the only PDF.
+
+  - id: vol01-prose-spring-qi
+    role: narrative
+    status: ready
+    scope:
+      - chapters/spring-autumn/states/qi/hegemony.tex
+    goal: Expand the ledgered Qi Huan alliance and succession cluster into source-aware prose.

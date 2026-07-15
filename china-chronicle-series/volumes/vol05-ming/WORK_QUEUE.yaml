@@ -27,3 +27,11 @@ tasks:
       - PROGRESS.md
       - scripts/build-volume.ps1
     goal: Create a buildable Volume V foundation after source matrix and initial ledger review.
+
+  - id: vol05-prose-founding
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch01-hongwu-jianwen-yongle.tex
+      - chapters/early-ming/founding-and-state-building.tex
+    goal: Write the early Ming founding and state-building event cluster from the verified ledger.

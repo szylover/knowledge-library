@@ -27,3 +27,11 @@ tasks:
       - PROGRESS.md
       - scripts/build-volume.ps1
     goal: Create a buildable Volume III foundation after source matrix and initial ledger review.
+
+  - id: vol03-prose-sui-reunification
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch01-sui.tex
+      - chapters/sui/sui-reunification.tex
+    goal: Write the Sui accession, reunification and early integration event cluster from the verified ledger.

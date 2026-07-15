@@ -224,3 +224,60 @@ tasks:
       - PROGRESS.md
       - scripts/build-volume.ps1
     goal: Create a buildable Volume VI foundation after source matrix and initial ledger review.
+
+  - id: vol01-prose-spring-qi
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/spring-autumn/states/qi/hegemony.tex
+    goal: Expand the ledgered Qi Huan alliance and succession cluster into source-aware prose.
+
+  - id: vol02-prose-three-kingdoms
+    volume: vol02-han-division
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch03-three-kingdoms.tex
+      - chapters/three-kingdoms/foundation-and-three-emperors.tex
+    goal: Write the first Three Kingdoms event cluster from the verified ledger.
+
+  - id: vol03-prose-sui-reunification
+    volume: vol03-sui-tang-five
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch01-sui.tex
+      - chapters/sui/sui-reunification.tex
+    goal: Write the Sui accession, reunification and early integration event cluster from the verified ledger.
+
+  - id: vol04-integrate-foundation
+    volume: vol04-song-yuan
+    role: integrator
+    status: ready
+    scope:
+      - main.tex
+      - preamble.tex
+      - chapters/
+      - figures/
+      - PROGRESS.md
+      - scripts/build-volume.ps1
+    goal: Create a buildable Volume IV foundation after source matrix and Northern Song ledger review.
+
+  - id: vol05-prose-founding
+    volume: vol05-ming
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch01-hongwu-jianwen-yongle.tex
+      - chapters/early-ming/founding-and-state-building.tex
+    goal: Write the early Ming founding and state-building event cluster from the verified ledger.
+
+  - id: vol06-prose-entry
+    volume: vol06-qing-1912
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch01-early-qing.tex
+      - chapters/early-qing/entry-and-regency.tex
+    goal: Write the Qing entry, Beijing reception and regency event cluster from the verified ledger.
