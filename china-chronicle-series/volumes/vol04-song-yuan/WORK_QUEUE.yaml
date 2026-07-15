@@ -8,3 +8,10 @@ tasks:
     scope:
       - data/source-corpus/song-yuan.md
     goal: Build a source matrix for Song, Liao, Western Xia, Jin and Yuan before any ledger or prose begins.
+
+  - id: vol04-ledger-northern-song
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/song-yuan.csv
+    goal: Establish a source-aware Northern Song event ledger before prose begins.

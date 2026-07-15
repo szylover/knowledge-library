@@ -1,0 +1,10 @@
+volume: vol06-qing-1912
+stage: source-corpus
+
+tasks:
+  - id: vol06-source-qing-1912
+    role: source
+    status: ready
+    scope:
+      - data/source-corpus/qing-1912.md
+    goal: Build a source matrix for Qing through 1912 before any ledger or prose begins.

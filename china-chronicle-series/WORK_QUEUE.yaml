@@ -146,6 +146,14 @@ tasks:
       - data/source-corpus/song-yuan.md
     goal: Build a source matrix for Song, Liao, Western Xia, Jin and Yuan before any ledger or prose begins.
 
+  - id: vol04-ledger-northern-song
+    volume: vol04-song-yuan
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/song-yuan.csv
+    goal: Establish a source-aware Northern Song event ledger before prose begins.
+
   - id: vol05-source-ming
     volume: vol05-ming
     role: source
@@ -153,3 +161,11 @@ tasks:
     scope:
       - data/source-corpus/ming.md
     goal: Build a source matrix for Ming before any ledger or prose begins.
+
+  - id: vol06-source-qing-1912
+    volume: vol06-qing-1912
+    role: source
+    status: ready
+    scope:
+      - data/source-corpus/qing-1912.md
+    goal: Build a source matrix for Qing through 1912 before any ledger or prose begins.
