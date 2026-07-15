@@ -35,3 +35,10 @@ tasks:
       - chapters/ch01-sui.tex
       - chapters/sui/sui-reunification.tex
     goal: Write the Sui accession, reunification and early integration event cluster from the verified ledger.
+
+  - id: vol03-ledger-late-tang
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/sui-tang-five.csv
+    goal: Extend the shared ledger through An Lushan, late Tang, and Five Dynasties without replacing existing rows.

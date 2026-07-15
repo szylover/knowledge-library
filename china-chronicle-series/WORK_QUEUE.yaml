@@ -251,6 +251,22 @@ tasks:
       - chapters/spring-autumn/states/qi/hegemony.tex
     goal: Expand the ledgered Qi Huan alliance and succession cluster into source-aware prose.
 
+  - id: vol01-ledger-spring-phase3
+    volume: vol01-zhou-qin
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/spring-autumn.csv
+    goal: Add source-aware early and middle Spring and Autumn entries without replacing existing rows.
+
+  - id: vol01-prose-spring-jin
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/spring-autumn/states/jin/expansion-and-factions.tex
+    goal: Expand the ledgered Jin Wen, Chengpu, faction, and succession cluster into source-aware prose.
+
   - id: vol02-prose-three-kingdoms
     volume: vol02-han-division
     role: narrative
@@ -260,6 +276,14 @@ tasks:
       - chapters/three-kingdoms/foundation-and-three-emperors.tex
     goal: Write the first Three Kingdoms event cluster from the verified ledger.
 
+  - id: vol02-ledger-jin-division
+    volume: vol02-han-division
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/han-division.csv
+    goal: Extend the shared ledger through Western Jin, Eastern Jin, and Sixteen Kingdoms without replacing existing rows.
+
   - id: vol03-prose-sui-reunification
     volume: vol03-sui-tang-five
     role: narrative
@@ -268,6 +292,14 @@ tasks:
       - chapters/ch01-sui.tex
       - chapters/sui/sui-reunification.tex
     goal: Write the Sui accession, reunification and early integration event cluster from the verified ledger.
+
+  - id: vol03-ledger-late-tang
+    volume: vol03-sui-tang-five
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/sui-tang-five.csv
+    goal: Extend the shared ledger through An Lushan, late Tang, and Five Dynasties without replacing existing rows.
 
   - id: vol04-integrate-foundation
     volume: vol04-song-yuan
@@ -282,6 +314,15 @@ tasks:
       - scripts/build-volume.ps1
     goal: Create a buildable Volume IV foundation after source matrix and Northern Song ledger review.
 
+  - id: vol04-prose-northern-song
+    volume: vol04-song-yuan
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch01-northern-song.tex
+      - chapters/northern-song/founding-and-frontiers.tex
+    goal: Write the Northern Song founding, frontier, and state-capacity event cluster from the verified ledger.
+
   - id: vol05-prose-founding
     volume: vol05-ming
     role: narrative
@@ -290,6 +331,14 @@ tasks:
       - chapters/ch01-hongwu-jianwen-yongle.tex
       - chapters/early-ming/founding-and-state-building.tex
     goal: Write the early Ming founding and state-building event cluster from the verified ledger.
+
+  - id: vol05-ledger-mid-ming
+    volume: vol05-ming
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/ming.csv
+    goal: Extend the Ming ledger through mid-Ming fiscal, frontier, maritime, and court transformations without replacing existing rows.
 
   - id: vol06-prose-entry
     volume: vol06-qing-1912

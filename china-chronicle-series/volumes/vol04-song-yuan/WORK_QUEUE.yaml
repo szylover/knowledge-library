@@ -27,3 +27,11 @@ tasks:
       - PROGRESS.md
       - scripts/build-volume.ps1
     goal: Create a buildable Volume IV foundation after source matrix and Northern Song ledger review.
+
+  - id: vol04-prose-northern-song
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch01-northern-song.tex
+      - chapters/northern-song/founding-and-frontiers.tex
+    goal: Write the Northern Song founding, frontier, and state-capacity event cluster from the verified ledger.

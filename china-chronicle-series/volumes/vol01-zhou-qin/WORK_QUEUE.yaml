@@ -122,3 +122,17 @@ tasks:
     scope:
       - chapters/spring-autumn/states/qi/hegemony.tex
     goal: Expand the ledgered Qi Huan alliance and succession cluster into source-aware prose.
+
+  - id: vol01-ledger-spring-phase3
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/spring-autumn.csv
+    goal: Add source-aware early and middle Spring and Autumn entries without replacing existing rows.
+
+  - id: vol01-prose-spring-jin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/spring-autumn/states/jin/expansion-and-factions.tex
+    goal: Expand the ledgered Jin Wen, Chengpu, faction, and succession cluster into source-aware prose.

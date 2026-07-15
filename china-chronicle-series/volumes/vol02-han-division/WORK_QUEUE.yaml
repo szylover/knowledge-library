@@ -73,3 +73,10 @@ tasks:
       - chapters/ch03-three-kingdoms.tex
       - chapters/three-kingdoms/foundation-and-three-emperors.tex
     goal: Write the first Three Kingdoms event cluster from the verified ledger.
+
+  - id: vol02-ledger-jin-division
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/han-division.csv
+    goal: Extend the shared ledger through Western Jin, Eastern Jin, and Sixteen Kingdoms without replacing existing rows.

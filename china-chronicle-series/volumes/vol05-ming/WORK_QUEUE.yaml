@@ -35,3 +35,10 @@ tasks:
       - chapters/ch01-hongwu-jianwen-yongle.tex
       - chapters/early-ming/founding-and-state-building.tex
     goal: Write the early Ming founding and state-building event cluster from the verified ledger.
+
+  - id: vol05-ledger-mid-ming
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/ming.csv
+    goal: Extend the Ming ledger through mid-Ming fiscal, frontier, maritime, and court transformations without replacing existing rows.
