@@ -377,7 +377,9 @@ tasks:
     goal: Complete remaining Western Zhou narrative modules.
   - id: vol01-spring-final
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/vol01-spring-final
+    started_at: 2026-07-15T15:43:59+08:00
     scope: [chapters/spring-autumn/]
     goal: Complete remaining Spring and Autumn narrative modules.
   - id: vol01-warring-final
