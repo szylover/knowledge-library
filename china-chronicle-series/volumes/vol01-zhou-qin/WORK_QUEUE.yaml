@@ -47,7 +47,7 @@ tasks:
 
   - id: vol01-prose-warring
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/warring-qin/
     depends_on:
