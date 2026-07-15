@@ -38,7 +38,7 @@ tasks:
 
   - id: vol05-ledger-mid-ming
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/ming.csv
     goal: Extend the Ming ledger through mid-Ming fiscal, frontier, maritime, and court transformations without replacing existing rows.

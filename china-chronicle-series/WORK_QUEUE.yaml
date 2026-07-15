@@ -352,7 +352,7 @@ tasks:
   - id: vol01-ledger-spring-to-400
     volume: vol01-zhou-qin
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/spring-autumn.csv
     goal: Extend the Spring and Autumn ledger from 207 to 400 source-aware events without replacing existing rows.
