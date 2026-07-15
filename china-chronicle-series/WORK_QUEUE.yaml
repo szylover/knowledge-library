@@ -109,7 +109,7 @@ tasks:
   - id: vol02-prose-qin-han-transition
     volume: vol02-han-division
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch01-western-han.tex
       - chapters/western-han/qin-han-transition.tex
@@ -118,7 +118,7 @@ tasks:
   - id: vol02-prose-eastern-restoration
     volume: vol02-han-division
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch02-eastern-han.tex
       - chapters/eastern-han/restoration-and-luoyang.tex
