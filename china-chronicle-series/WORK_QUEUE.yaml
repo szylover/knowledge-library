@@ -791,7 +791,7 @@ tasks:
   - id: vol05-ledger-standard
     volume: vol05-ming
     role: chronology
-    status: ready
+    status: done
     scope: [data/event-ledger/ming.csv]
     goal: Expand Ming ledger toward volume-standard coverage.
   - id: vol05-prose-standard
