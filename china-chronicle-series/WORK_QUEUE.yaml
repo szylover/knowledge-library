@@ -18,6 +18,14 @@ tasks:
       - tasks/
     goal: Establish cross-volume historical question threads and a reusable continuity-editor handoff template.
 
+  - id: vol02-evidence-passport-pilot
+    volume: vol02-han-division
+    role: evidence-auditor
+    status: ready
+    scope:
+      - data/evidence-passports/
+    goal: Create evidence passports for selected written Qin-Han, Eastern Han, Three Kingdoms, and Western Jin events without changing ledger rows.
+
   - id: vol01-ledger-western
     volume: vol01-zhou-qin
     role: chronology
