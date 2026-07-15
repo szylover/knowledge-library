@@ -28,6 +28,19 @@ tasks:
       - scripts/build-volume.ps1
     goal: Create a buildable Volume III foundation after source matrix and initial ledger review.
 
+  - id: vol03-maps-standard
+    role: cartographer
+    status: done
+    scope:
+      - figures/sui/sui-reunification.tex
+      - figures/an-lushan-late-tang/tang-frontiers-an-shi.tex
+      - figures/five-dynasties-ten-kingdoms/late-tang-five-dynasties-regional-order.tex
+      - chapters/ch01-sui.tex
+      - chapters/ch04-an-lushan-late-tang.tex
+      - chapters/ch05-five-dynasties-ten-kingdoms.tex
+      - chapters/appendix-index.tex
+    goal: Add and wire warm-paper schematic maps for Sui reunification, Tang frontier forces and the An Shi war, and the late Tang to Five Dynasties regional order.
+
   - id: vol03-prose-sui-reunification
     role: narrative
     status: done

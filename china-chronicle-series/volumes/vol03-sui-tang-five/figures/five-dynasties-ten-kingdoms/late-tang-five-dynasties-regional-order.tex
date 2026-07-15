@@ -1,0 +1,61 @@
+\phantomsection\label{fig:vol03:five-dynasties-ten-kingdoms:late-tang-five-dynasties-regional-order}
+\begin{center}
+\begin{tikzpicture}[
+  x=.78cm,y=.78cm,font=\small,
+  place/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,
+    inner sep=3pt},
+  north/.style={place,draw=dynasty,fill=dynasty!20},
+  south/.style={place,fill=timeline!18},
+  border/.style={place,draw=source,fill=source!13},
+  note/.style={font=\scriptsize,text=source,align=center}
+]
+  \fill[paper] (0,0) rectangle (12.5,6.95);
+  \node[font=\bfseries\large,text=dynasty] at (6.25,6.45)
+    {晚唐至五代十国：区域政权与交通枢纽};
+  \node[note] at (6.25,5.96) {约875--960年：都城、军镇遗产与水陆联系（示意）};
+
+  \fill[source!11] (.55,4.64) -- (11.95,4.42) -- (11.82,5.45) -- (.7,5.72) -- cycle;
+  \node[note] at (9.95,5.1) {北方边地、幽燕与契丹／辽方向};
+  \draw[source!70,line width=.75pt] (.62,3.88) .. controls (3.2,3.55) and
+    (7.8,4.18) .. (11.92,3.72);
+  \node[note] at (10.85,3.98) {黄河方向（约略）};
+
+  \node[north] (taiyuan) at (3.82,4.65) {太原\\河东、北汉};
+  \node[north] (youzhou) at (7.75,4.78) {幽州、燕云\\北方军镇与边防};
+  \node[border] (liao) at (10.72,5.08) {契丹／辽方向\\盟约、战争与互市};
+  \node[north] (kaifeng) at (6.3,3.42) {汴州／开封\\唐末军镇、五代中枢};
+  \node[south] (chengdu) at (1.65,2.72) {成都\\前、后蜀};
+  \node[south] (jingnan) at (4.2,2.35) {荆州\\荆南};
+  \node[south] (changsha) at (5.15,.96) {长沙\\楚};
+  \node[south] (jinling) at (7.28,2.08) {金陵\\吴、南唐};
+  \node[south] (hangzhou) at (9.38,1.35) {杭州\\吴越};
+  \node[south] (fuzhou) at (10.78,2.55) {福州\\闽};
+  \node[south] (guangzhou) at (9.83,.52) {广州\\南汉};
+
+  \draw[<->,thick,dashed,source] (taiyuan) -- node[above,sloped,note]
+    {北方军事与继承关系} (youzhou);
+  \draw[<->,thick,dashed,source] (youzhou) -- node[above,sloped,note]
+    {边防、交涉与道路} (liao);
+  \draw[<->,very thick,dynasty] (taiyuan) -- node[left,note]
+    {北方战事与中原政权更替} (kaifeng);
+  \draw[<->,very thick,dynasty] (kaifeng) -- node[below,sloped,note]
+    {淮河、漕运与军事竞争} (jinling);
+  \draw[<->,thick,timeline] (chengdu) -- node[above,sloped,note]
+    {峡江通道与区域接触} (jingnan);
+  \draw[<->,thick,timeline] (jingnan) -- node[left,note]
+    {江汉、湖湘联系} (changsha);
+  \draw[<->,thick,timeline] (jinling) -- node[below,sloped,note]
+    {江南水网与使节往来} (hangzhou);
+  \draw[<->,thick,timeline] (hangzhou) -- node[right,note]
+    {海路、港口与区域交换} (fuzhou);
+  \draw[<->,thick,timeline] (hangzhou) .. controls (10.2,1.0) and (10.28,.73) ..
+    node[right,note] {岭南海路的可能联系} (guangzhou);
+
+  \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+    inner sep=4pt,font=\scriptsize,text=source] at (1.85,.92)
+    {同一节点经历不同时段、不同政权；\\不以色块或箭头替代实际统治范围};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 晚唐至五代十国的区域政权与交通枢纽（约875--960，示意）：据《旧五代史》《新五代史》《资治通鉴》及《辽史》相关纪传，并参照《吴越备史》、南唐材料、墓志、钱币、港口与城市考古，呈现唐末军镇遗产、中原五代、北方边地与蜀、荆南、湖湘、江南、两浙、闽、岭南诸区域之间的若干关系。图中名称只标示在不同时段可见的都城、中心或区域，绝不表示同时存在的固定国界；双向线提示交通、使节、战争或财政联系的可能场域，不量化贸易、赋税、军力或地方控制。}
+\end{center}
