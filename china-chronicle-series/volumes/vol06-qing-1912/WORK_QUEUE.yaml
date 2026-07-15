@@ -15,3 +15,15 @@ tasks:
     scope:
       - data/event-ledger/qing-1912.csv
     goal: Establish a source-aware early Qing event ledger before prose begins.
+
+  - id: vol06-integrate-foundation
+    role: integrator
+    status: ready
+    scope:
+      - main.tex
+      - preamble.tex
+      - chapters/
+      - figures/
+      - PROGRESS.md
+      - scripts/build-volume.ps1
+    goal: Create a buildable Volume VI foundation after source matrix and initial ledger review.

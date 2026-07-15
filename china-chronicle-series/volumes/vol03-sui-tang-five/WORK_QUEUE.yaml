@@ -11,7 +11,19 @@ tasks:
 
   - id: vol03-ledger-sui-early
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/sui-tang-five.csv
     goal: Establish a source-aware Sui and early Tang event ledger before prose begins.
+
+  - id: vol03-integrate-foundation
+    role: integrator
+    status: ready
+    scope:
+      - main.tex
+      - preamble.tex
+      - chapters/
+      - figures/
+      - PROGRESS.md
+      - scripts/build-volume.ps1
+    goal: Create a buildable Volume III foundation after source matrix and initial ledger review.

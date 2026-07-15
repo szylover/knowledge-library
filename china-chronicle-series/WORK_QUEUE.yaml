@@ -138,6 +138,19 @@ tasks:
       - data/event-ledger/sui-tang-five.csv
     goal: Establish a source-aware Sui and early Tang event ledger before prose begins.
 
+  - id: vol03-integrate-foundation
+    volume: vol03-sui-tang-five
+    role: integrator
+    status: ready
+    scope:
+      - main.tex
+      - preamble.tex
+      - chapters/
+      - figures/
+      - PROGRESS.md
+      - scripts/build-volume.ps1
+    goal: Create a buildable Volume III foundation after source matrix and initial ledger review.
+
   - id: vol04-source-song-yuan
     volume: vol04-song-yuan
     role: source
@@ -170,6 +183,19 @@ tasks:
       - data/event-ledger/ming.csv
     goal: Establish a source-aware early Ming event ledger before prose begins.
 
+  - id: vol05-integrate-foundation
+    volume: vol05-ming
+    role: integrator
+    status: ready
+    scope:
+      - main.tex
+      - preamble.tex
+      - chapters/
+      - figures/
+      - PROGRESS.md
+      - scripts/build-volume.ps1
+    goal: Create a buildable Volume V foundation after source matrix and initial ledger review.
+
   - id: vol06-source-qing-1912
     volume: vol06-qing-1912
     role: source
@@ -185,3 +211,16 @@ tasks:
     scope:
       - data/event-ledger/qing-1912.csv
     goal: Establish a source-aware early Qing event ledger before prose begins.
+
+  - id: vol06-integrate-foundation
+    volume: vol06-qing-1912
+    role: integrator
+    status: ready
+    scope:
+      - main.tex
+      - preamble.tex
+      - chapters/
+      - figures/
+      - PROGRESS.md
+      - scripts/build-volume.ps1
+    goal: Create a buildable Volume VI foundation after source matrix and initial ledger review.
