@@ -812,6 +812,13 @@ tasks:
     status: ready
     scope: [chapters/]
     goal: Expand initial Qing narrative clusters from verified ledger events.
+
+  - id: vol02-ledger-440-589
+    volume: vol02-han-division
+    role: chronology
+    status: ready
+    scope: [data/event-ledger/han-division.csv]
+    goal: Add source-aware late Northern and Southern Dynasties events from 440 through Sui reunification in 589.
   - id: vol01-final-publish
     volume: vol01-zhou-qin
     role: integrator
