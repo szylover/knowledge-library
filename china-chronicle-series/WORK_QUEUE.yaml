@@ -587,7 +587,7 @@ tasks:
   - id: vol01-prose-spring-qi-next
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/spring-autumn/states/qi/hegemony.tex
     goal: Expand the Spring and Autumn Qi dossier from existing ledger events.
@@ -595,7 +595,7 @@ tasks:
   - id: vol01-prose-spring-jin-next
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/spring-autumn/states/jin/expansion-and-factions.tex
     goal: Expand the Spring and Autumn Jin dossier from existing ledger events.
@@ -603,7 +603,7 @@ tasks:
   - id: vol01-prose-spring-qin-next
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/spring-autumn/states/qin/western-rise.tex
     goal: Expand the Spring and Autumn Qin dossier from existing ledger events.
@@ -611,7 +611,7 @@ tasks:
   - id: vol01-prose-spring-wuyue-next
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/spring-autumn/states/wu-yue/lower-yangtze.tex
     goal: Expand the Spring and Autumn Wu-Yue dossier from existing ledger events.
@@ -619,7 +619,7 @@ tasks:
   - id: vol01-prose-warring-yan-next
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/warring-qin/states/yan/northern-strategy.tex
     goal: Expand the Warring States Yan dossier from existing ledger events.
@@ -627,7 +627,7 @@ tasks:
   - id: vol01-prose-warring-culture-next
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/warring-qin/common/culture-thought.tex
     goal: Expand the Warring States culture and thought synthesis from existing ledger events.
