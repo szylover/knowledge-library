@@ -85,7 +85,7 @@ tasks:
 
   - id: vol01-map-spring-states
     role: cartographer
-    status: ready
+    status: done
     scope:
       - figures/spring-autumn/
     goal: Add source-aware state and alliance schematics for Spring and Autumn chapters.
