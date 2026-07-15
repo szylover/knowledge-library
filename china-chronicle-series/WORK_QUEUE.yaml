@@ -129,3 +129,19 @@ tasks:
     scope:
       - data/source-corpus/sui-tang-five.md
     goal: Build a source matrix for Sui, Tang and Five Dynasties before any ledger or prose begins.
+
+  - id: vol03-ledger-sui-early
+    volume: vol03-sui-tang-five
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/sui-tang-five.csv
+    goal: Establish a source-aware Sui and early Tang event ledger before prose begins.
+
+  - id: vol04-source-song-yuan
+    volume: vol04-song-yuan
+    role: source
+    status: ready
+    scope:
+      - data/source-corpus/song-yuan.md
+    goal: Build a source matrix for Song, Liao, Western Xia, Jin and Yuan before any ledger or prose begins.

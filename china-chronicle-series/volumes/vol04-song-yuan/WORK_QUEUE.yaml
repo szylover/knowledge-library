@@ -1,0 +1,10 @@
+volume: vol04-song-yuan
+stage: source-corpus
+
+tasks:
+  - id: vol04-source-song-yuan
+    role: source
+    status: ready
+    scope:
+      - data/source-corpus/song-yuan.md
+    goal: Build a source matrix for Song, Liao, Western Xia, Jin and Yuan before any ledger or prose begins.
