@@ -18,11 +18,12 @@
 
 \newtcolorbox{event}[4]{
   enhanced,breakable,arc=2pt,
-  colback=paper,colframe=timeline!55,
+  colback=paper!55!white,colframe=timeline!45!white,
+  colbacktitle=timeline!18!paper,coltitle=ink,
   boxrule=.4pt,left=10pt,right=8pt,top=6pt,bottom=6pt,
   borderline west={2.2pt}{0pt}{dynasty},
   fonttitle=\bfseries,
-  title={#1\quad #2\quad\textcolor{source}{#3}\hfill\textcolor{gray}{#4}}
+  title={#1\quad #2\quad\textcolor{source}{#3}\hfill\textcolor{source}{#4}}
 }
 \newtcolorbox{turningpoint}[1][转折事件]{
   enhanced,breakable,arc=3pt,
