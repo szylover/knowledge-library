@@ -53,7 +53,7 @@ tasks:
 
   - id: vol03-prose-late-tang
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch05-five-dynasties-ten-kingdoms.tex
       - chapters/five-dynasties-ten-kingdoms/regional-polities-and-military-fiscal-order.tex
