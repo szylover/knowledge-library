@@ -38,7 +38,7 @@ tasks:
 
   - id: vol01-prose-spring
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/spring-autumn/
     depends_on:
@@ -71,7 +71,7 @@ tasks:
 
   - id: vol01-indexes
     role: indexer
-    status: ready
+    status: done
     scope:
       - chapters/appendix-*.tex
     goal: Maintain event, polity, theme, source, and figure indexes for written content.
