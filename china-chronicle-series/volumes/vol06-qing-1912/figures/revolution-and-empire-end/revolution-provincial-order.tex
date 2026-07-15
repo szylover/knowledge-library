@@ -1,0 +1,47 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    place/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\small},
+    court/.style={place, draw=dynasty, fill=dynasty!13},
+    province/.style={place, draw=timeline, fill=timeline!13},
+    revolutionary/.style={place, draw=source, fill=source!10},
+    note/.style={align=center, font=\scriptsize\color{source}}
+  ]
+    \fill[paper] (-.7,-3.9) rectangle (7.85,3.85);
+    \draw[dynasty, line width=.8pt] (-.7,3.85) -- (7.85,3.85);
+    \node[font=\bfseries\large, text=dynasty] at (3.55,3.42)
+      {1909--1912：立宪机构、铁路危机与省级转换};
+
+    \node[court] (beijing) at (3.65,2.55) {北京\\资政院、部院\\谈判与退位};
+    \node[province] (sichuan) at (.15,1.25) {四川\\保路抗议与\\地方军政危机};
+    \node[revolutionary] (wuchang) at (2.55,.55) {武昌\\1911年起义\\新军与社团};
+    \node[province] (hunan) at (1.1,-.8) {湖南及中部各省\\军政、财政与\\独立过程各异};
+    \node[province] (shanghai) at (5.35,.35) {上海、江浙\\报刊、商会、\\交通与政权转换};
+    \node[revolutionary] (nanjing) at (4.65,-1.3) {南京\\临时政府\\1912年初};
+    \node[province] (guangdong) at (1.15,-2.65) {两广、福建及沿海\\宣言、军队与\\通信网络};
+    \node[province] (northeast) at (6.7,1.95) {东北与北方\\袁世凯军政、\\财政交通与谈判};
+
+    \draw[dynasty, dashed] (beijing) -- node[above,sloped,note]
+      {诏令、谈判与军政调度} (northeast);
+    \draw[->, source, line width=1.15pt] (sichuan) -- node[above,sloped,note]
+      {危机在交通、财政与地方组织中传导} (wuchang);
+    \draw[->, timeline, line width=1.15pt] (wuchang) -- node[above,sloped,note]
+      {消息、军队与省级行动并非同步} (shanghai);
+    \draw[->, timeline, dashed] (wuchang) -- node[left,sloped,note]
+      {中部省份的不同转换} (hunan);
+    \draw[->, source, line width=1.15pt] (shanghai) -- node[right,sloped,note]
+      {城市、港口与代表联络} (nanjing);
+    \draw[timeline, dashed] (hunan) -- node[below,sloped,note]
+      {通信、人员与军队流动（示意）} (guangdong);
+    \draw[dynasty, dashed] (beijing) to[out=-105,in=75] node[right,note]
+      {退位与政权交接并行} (nanjing);
+
+    \node[draw=source, fill=paper, rounded corners=3pt, align=center,
+      text=source, font=\small] at (6.1,-2.8)
+      {各省“独立”、军政控制、财政与交通\\不是同一时点或同一范围的事实};
+  \end{tikzpicture}
+  \caption{从立宪机构到帝国终结的省级政治空间（1909--1912，示意）。图以北京的立宪与退位程序、四川保路危机、武昌起义、上海--南京的政治联络及若干省级军政和通信节点为线索，强调宣言、军事控制、财政交通和谈判的时间并不重合。依据《清宣统政纪》、内阁与部院档、资政院及各省咨议局材料、铁路借款和路权文件、地方军政档、电报、中文外文报刊、革命与立宪团体刊物，并参照外使报告与各省地方材料。路线和位置不按比例；图中的省级节点只表示材料可见的政治联系或事件，不表示全省已一致“独立”、任何政权完成控制，亦不能由退位诏书推定社会秩序和财政交接已经结束。}
+  \label{fig:revolution-provincial-order}
+\end{figure}

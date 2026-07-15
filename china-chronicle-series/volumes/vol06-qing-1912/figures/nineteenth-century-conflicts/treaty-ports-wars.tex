@@ -1,0 +1,48 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    place/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\small},
+    court/.style={place, draw=dynasty, fill=dynasty!13},
+    port/.style={place, draw=timeline, fill=timeline!13},
+    war/.style={place, draw=source, fill=source!10},
+    note/.style={align=center, font=\scriptsize\color{source}}
+  ]
+    \fill[paper] (-.65,-3.9) rectangle (7.85,3.85);
+    \draw[dynasty, line width=.8pt] (-.65,3.85) -- (7.85,3.85);
+    \node[font=\bfseries\large, text=dynasty] at (3.6,3.42)
+      {1856--1864：条约口岸、京津战事与省际战争};
+
+    \node[court] (beijing) at (3.75,2.55) {北京\\朝廷、交涉与\\1860年危机};
+    \node[war] (tianjin) at (5.7,2.1) {大沽、天津\\1858--1860\\战事与换约};
+    \node[port] (guangzhou) at (.1,1.45) {广州\\1856--1857\\战事、通商节点};
+    \node[port] (shanghai) at (2.15,.45) {上海\\租界、军械、\\海关与商路};
+    \node[war] (nanjing) at (3.9,.15) {南京／天京\\1853--1864\\战争中心};
+    \node[war] (hunan) at (1.15,-1.45) {湘、赣、皖\\兵源、粮道与\\太平、捻军战区};
+    \node[war] (northchina) at (5.7,-1.2) {华北、山东、河南\\捻军、河防与\\1855年河道变化};
+    \node[port] (fuzhou) at (6.55,-2.65) {福州及东南港口\\船政、航运与\\条约网络};
+    \node[war] (northwest) at (-.05,-2.8) {陕甘、西北\\1860年代战争\\与军需路线};
+
+    \draw[->, source, line width=1.1pt] (tianjin) -- node[above,sloped,note]
+      {进逼北京的军行} (beijing);
+    \draw[->, timeline, dashed] (guangzhou) to[out=-15,in=155] node[above,note]
+      {沿海交涉、航运与消息链} (shanghai);
+    \draw[->, timeline, dashed] (shanghai) to[out=0,in=-100] node[right,note]
+      {江海交通与战时物资} (nanjing);
+    \draw[->, source, line width=1.1pt] (nanjing) -- node[left,sloped,note]
+      {长江中上游战事、筹饷与征发} (hunan);
+    \draw[->, source, dashed] (nanjing) -- node[right,sloped,note]
+      {华北战场与河防的不同节奏} (northchina);
+    \draw[timeline, dashed] (shanghai) -- node[right,note]
+      {港口间航运联系（示意）} (fuzhou);
+    \draw[source, dashed] (hunan) -- node[below,sloped,note]
+      {西北军务与地方转运} (northwest);
+
+    \node[draw=source, fill=paper, rounded corners=3pt, align=center,
+      text=source, font=\small] at (6.15,.65)
+      {铜色节点：口岸／交涉空间\\灰褐节点：战争、河防或军需空间\\两者都不是连续控制区域};
+  \end{tikzpicture}
+  \caption{第二次鸦片战争、条约口岸与内战的相邻空间（1856--1864为主，示意）。图将广州、上海、福州等口岸及京津交涉节点，同南京、湘赣皖、华北和西北的战争、河防与军需节点并列，说明条约签署、港口制度、沿海航运和各省战事具有交错但不同步的地理节奏。依据《清文宗实录》《清穆宗实录》、军机处档与战事方略，《筹办夷务始末》、中外条约及照会文本、总理衙门和海关档；并参照地方志、督抚军需档、上海租界记录、英法外交军政档与港口报刊。图不列举完整口岸清单，路线不按比例；条约文本的签署、批准、换约和地方执行须分别核验，港口、租界、战区或箭头均不表示周边地区的统一控制、人口态度或贸易覆盖。}
+  \label{fig:treaty-ports-wars}
+\end{figure}

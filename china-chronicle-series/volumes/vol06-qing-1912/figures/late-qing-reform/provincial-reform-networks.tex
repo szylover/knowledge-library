@@ -1,0 +1,50 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    place/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\small},
+    court/.style={place, draw=dynasty, fill=dynasty!13},
+    reform/.style={place, draw=timeline, fill=timeline!13},
+    frontier/.style={place, draw=source, fill=source!10},
+    note/.style={align=center, font=\scriptsize\color{source}}
+  ]
+    \fill[paper] (-.65,-3.9) rectangle (7.85,3.85);
+    \draw[dynasty, line width=.8pt] (-.65,3.85) -- (7.85,3.85);
+    \node[font=\bfseries\large, text=dynasty] at (3.6,3.42)
+      {1878--1908：新省、军政与新政的省际节点};
+
+    \node[court] (beijing) at (3.55,2.55) {北京\\部院、总理衙门\\新政与立宪诏令};
+    \node[frontier] (xinjiang) at (.2,1.1) {新疆\\收复后设省\\1878--1884};
+    \node[frontier] (northeast) at (6.5,1.35) {东三省\\日俄战争后\\行省体制调整};
+    \node[reform] (tianjin) at (5.35,.5) {天津、直隶\\北洋军政、学堂\\与铁路节点};
+    \node[reform] (shanghai) at (2.1,.25) {上海、江南\\工商、报刊、\\教育与法律讨论};
+    \node[reform] (fuzhou) at (5.95,-1.65) {福州、台湾海峡\\船政、台湾建省\\电报与铁路试验};
+    \node[reform] (wuhan) at (3.35,-1.3) {武昌、湖北\\新军、学堂与\\省级行政实验};
+    \node[reform] (guangzhou) at (.35,-2.5) {两广、香港邻近\\商政、教育与\\海上信息网络};
+    \node[frontier] (yunnan) at (-.15,-.75) {云南、越南边境\\中法战争与\\边政重组};
+
+    \draw[dynasty, dashed] (beijing) -- node[above,sloped,note]
+      {诏令、经费与任命的路径} (tianjin);
+    \draw[dynasty, dashed] (beijing) -- node[above,sloped,note]
+      {边政、军费与省制} (xinjiang);
+    \draw[dynasty, dashed] (beijing) -- node[above,sloped,note]
+      {新政与东北改制} (northeast);
+    \draw[->, timeline, line width=1.1pt] (tianjin) -- node[right,sloped,note]
+      {人员、报刊与铁路的多向流动} (shanghai);
+    \draw[->, timeline, line width=1.1pt] (shanghai) -- node[right,sloped,note]
+      {工商、教育与制度知识} (wuhan);
+    \draw[timeline, dashed] (shanghai) -- node[right,note]
+      {沿海航运与通信（示意）} (fuzhou);
+    \draw[timeline, dashed] (wuhan) -- node[below,sloped,note]
+      {省际学校、军队与商路网络} (guangzhou);
+    \draw[source, dashed] (yunnan) -- node[below,sloped,note]
+      {边境战争、交涉与地方行政} (guangzhou);
+
+    \node[draw=source, fill=paper, rounded corners=3pt, align=center,
+      text=source, font=\small] at (6.0,-3.08)
+      {设省、设局、建校或铺线是制度节点，\\不等于各省同时采用或社会影响相同};
+  \end{tikzpicture}
+  \caption{晚清的边政、新政与省际改革网络（1878--1908，示意）。图把新疆设省、东北体制调整、北洋军政、江南工商与报刊、闽台工程、湖北新军学堂、两广商政和云南边政等可追踪节点置于同一关系图中，而不将其归结为从北京单向扩散的“现代化”。依据《清德宗实录》《清宣统政纪》、军机处和总理衙门档、《筹办夷务始末》、各省奏折与经费档、学堂／新军／铁路／电报机构记录、海关档和中文外文报刊；边疆部分并读俄、法、日及地方材料。位置与连线为约略示意，未绘行省、租借地或势力范围边界；设省、设局、建校、编练和铺线只能证明制度动作或特定节点，不能推出全省覆盖、实际控制或社会接受。}
+  \label{fig:provincial-reform-networks}
+\end{figure}

@@ -1,0 +1,50 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    place/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\small},
+    court/.style={place, draw=dynasty, fill=dynasty!13},
+    frontier/.style={place, draw=timeline, fill=timeline!13},
+    local/.style={place, draw=source, fill=source!10},
+    note/.style={align=center, font=\scriptsize\color{source}}
+  ]
+    \fill[paper] (-.7,-3.85) rectangle (7.8,3.85);
+    \draw[dynasty, line width=.8pt] (-.7,3.85) -- (7.8,3.85);
+    \node[font=\bfseries\large, text=dynasty] at (3.55,3.42)
+      {1755--1765：伊犁、绿洲与高原的军政节点};
+
+    \node[court] (beijing) at (3.65,2.55) {北京\\军机、理藩院与\\军需文书};
+    \node[frontier] (mongolia) at (1.15,1.55) {蒙古诸部\\盟旗与军行};
+    \node[frontier] (ili) at (-.05,.1) {伊犁\\1755后战事与\\1760将军设置};
+    \node[frontier] (urumqi) at (2.05,-.15) {迪化、北疆\\驻防与屯田};
+    \node[local] (oases) at (4.45,-.2) {喀什噶尔、叶尔羌\\1758--1759战事\\与绿洲社会};
+    \node[frontier] (qinghai) at (.85,-2.1) {青海、川西\\道路、牲畜与\\转运压力};
+    \node[local] (lhasa) at (3.1,-2.8) {拉萨、寺院网络\\驻藏制度调整};
+    \node[local] (nepal) at (5.75,-2.55) {喜马拉雅方向\\1780年代后战事};
+    \node[local] (jinchuan) at (6.6,1.45) {金川山地\\征调、道路与\\地方中介};
+
+    \draw[dynasty, dashed] (beijing) -- node[above,sloped,note]
+      {文书与调度（示意）} (mongolia);
+    \draw[->, dynasty, line width=1.1pt] (mongolia) -- node[above,sloped,note]
+      {分路军行} (ili);
+    \draw[->, timeline, line width=1.1pt] (ili) -- node[above,note]
+      {驻防、迁调与贸易节点} (urumqi);
+    \draw[->, timeline, line width=1.1pt] (urumqi) -- node[above,note]
+      {天山南北路的不同条件} (oases);
+    \draw[->, dynasty, dashed] (beijing) to[out=-145,in=80] node[left,note]
+      {高原军政联系（示意）} (lhasa);
+    \draw[->, timeline, dashed] (qinghai) -- node[below,sloped,note]
+      {道路、寺院与地方协商} (lhasa);
+    \draw[timeline, dashed] (lhasa) -- node[below,sloped,note]
+      {边防、使节与后续冲突} (nepal);
+    \draw[source, dashed] (beijing) to[out=-25,in=75] node[right,note]
+      {山地军需并非直线可达} (jinchuan);
+
+    \node[draw=source, fill=paper, rounded corners=3pt, align=center,
+      text=source, font=\small] at (5.8,2.45)
+      {节点与箭头只提示可见的\\军行、文书和交通关系；\\不画连续疆界或稳定控制面};
+  \end{tikzpicture}
+  \caption{高宗前中期的西北与高原军政关系（1755--1765为主，示意）。图以伊犁战事、北疆驻防、南疆绿洲、青海--拉萨交通和金川军需等不同性质的节点组织，提示征服、驻防与日常治理并非同一过程。依据《清高宗实录》乾隆二十年至三十年条、《平定准噶尔方略》《平定回部方略》、军机处军需与将领奏折、理藩院满汉蒙藏档；绿洲部分须与维吾尔／察合台文文书、地方材料及俄国边境档并读，西藏部分须与藏文寺院和地方材料互证。路线与位置均为约略示意，不按比例；箭头不表示对牧地、绿洲、寺院、山地或边界的持续主权和社会接受，方略所载军数、伤亡与“平定”亦不能视作无须核验的总数。}
+  \label{fig:high-qing-frontier-ili-tibet}
+\end{figure}
