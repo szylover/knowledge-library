@@ -26,6 +26,14 @@ tasks:
       - data/evidence-passports/
     goal: Create evidence passports for selected written Qin-Han, Eastern Han, Three Kingdoms, and Western Jin events without changing ledger rows.
 
+  - id: vol01-controversy-ledger
+    volume: vol01-zhou-qin
+    role: evidence-auditor
+    status: ready
+    scope:
+      - data/controversy-ledger/
+    goal: Create a source-aware, non-polemical controversy ledger for selected Zhou-Qin events without changing prose or event ledgers.
+
   - id: vol01-ledger-western
     volume: vol01-zhou-qin
     role: chronology
