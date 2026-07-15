@@ -173,7 +173,15 @@ tasks:
   - id: vol06-source-qing-1912
     volume: vol06-qing-1912
     role: source
-    status: ready
+    status: done
     scope:
       - data/source-corpus/qing-1912.md
     goal: Build a source matrix for Qing through 1912 before any ledger or prose begins.
+
+  - id: vol06-ledger-early-qing
+    volume: vol06-qing-1912
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/qing-1912.csv
+    goal: Establish a source-aware early Qing event ledger before prose begins.
