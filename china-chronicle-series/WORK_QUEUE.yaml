@@ -3,7 +3,7 @@ tasks:
   - id: vol01-ledger-western
     volume: vol01-zhou-qin
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/western-zhou.csv
     goal: Expand Western Zhou ledger toward its 150-250 event target.
@@ -19,7 +19,7 @@ tasks:
   - id: vol01-ledger-warring
     volume: vol01-zhou-qin
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/warring-qin.csv
     goal: Expand Warring-Qin ledger toward its 700-1000 event target.
@@ -27,7 +27,7 @@ tasks:
   - id: vol01-map-campaigns
     volume: vol01-zhou-qin
     role: cartographer
-    status: ready
+    status: done
     scope:
       - figures/
     goal: Add source-aware local campaign, migration, and administration maps.
@@ -35,7 +35,7 @@ tasks:
   - id: vol02-source-corpus
     volume: vol02-han-division
     role: source
-    status: ready
+    status: done
     scope:
       - data/source-corpus/
     goal: Build a Han-to-Division source matrix before any event ledger is written.

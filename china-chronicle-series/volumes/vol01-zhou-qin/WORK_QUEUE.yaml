@@ -6,7 +6,7 @@ event_ledger_target: 1300-1900
 tasks:
   - id: vol01-ledger-western
     role: chronology
-    status: review
+    status: done
     branch: chronicle/vol01-ledger-western
     started_at: 2026-07-15T11:03:19+08:00
     scope:
@@ -22,7 +22,7 @@ tasks:
 
   - id: vol01-ledger-warring
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/warring-qin.csv
     goal: Expand Warring-Qin from 92 to 700-1000 source-aware events.
@@ -64,7 +64,7 @@ tasks:
 
   - id: vol01-maps-warring
     role: cartographer
-    status: ready
+    status: done
     scope:
       - figures/warring-qin/
     goal: Add source-aware campaigns, alliance, migration, and administration figures.
