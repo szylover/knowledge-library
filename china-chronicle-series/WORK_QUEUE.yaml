@@ -832,7 +832,7 @@ tasks:
   - id: vol02-maps-standard
     volume: vol02-han-division
     role: cartographer
-    status: ready
+    status: done
     scope: [figures/, chapters/]
     goal: Add late Han-to-Sui maps and wire them into the narrative.
   - id: vol03-maps-standard
