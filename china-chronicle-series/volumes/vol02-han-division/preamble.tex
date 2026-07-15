@@ -25,3 +25,14 @@
   pdftitle={中国大事编年·第二卷：汉、三国、两晋与南北朝}
 }
 \color{ink}
+
+% Keep event links compatible with the other chronicle volumes.
+\newcommand{\sourcebook}[1]{《#1》}
+\newcommand{\eventid}[1]{\textcolor{dynasty}{\footnotesize\textsf{〔#1〕}}}
+\newcommand{\eventanchor}[2]{\hypertarget{evt:#1}{\eventid{#2}}}
+\newcommand{\eventref}[2]{\hyperlink{evt:#1}{\textcolor{dynasty}{〔#2〕}}}
+
+% Use these only after the target event anchor or figure label exists.
+\newcommand{\sourceindexentry}[2]{\item[\sourcebook{#1}] #2}
+\newcommand{\eventindexentry}[2]{\item \eventref{#1}{#2}}
+\newcommand{\figureindexentry}[2]{\item \hyperref[#1]{“#2”}}
