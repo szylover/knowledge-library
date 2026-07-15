@@ -279,7 +279,7 @@ tasks:
   - id: vol02-ledger-jin-division
     volume: vol02-han-division
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/han-division.csv
     goal: Extend the shared ledger through Western Jin, Eastern Jin, and Sixteen Kingdoms without replacing existing rows.
