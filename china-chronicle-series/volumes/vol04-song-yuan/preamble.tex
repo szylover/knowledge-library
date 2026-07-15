@@ -25,3 +25,7 @@
   pdftitle={中国大事编年·第四卷：宋、辽、西夏、金与元}
 }
 \color{ink}
+
+\newcommand{\eventid}[1]{\textcolor{dynasty}{\footnotesize\textsf{〔#1〕}}}
+\newcommand{\eventanchor}[2]{\hypertarget{evt:#1}{\eventid{#2}}}
+\newcommand{\eventref}[2]{\hyperlink{evt:#1}{\textcolor{dynasty}{〔#2〕}}}
