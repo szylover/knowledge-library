@@ -38,7 +38,7 @@
 6. Map Agent 只交付独立 `figures/` 文件和必要的 `\input` 建议；Integrator 决定正文插入点。
 7. 每个任务完成时必须报告：修改文件、账本事件 ID、来源、编译结果、未解决争议。
 8. Integrator 在合并前运行 Tectonic，检查重复锚点、未解析引用、PDF 输出路径和 `PROGRESS.md`。
-9. 只有 Integrator 将已验证任务合并/推送到 `main`；发布 PDF 只能写入仓库根 `pdf/china-chronicle-vol01-zhou-qin.pdf`。
+9. 只有 Integrator 将已验证任务合并/推送到 `main`；发布 PDF 只能写入仓库根 `pdf/china-chronicle/vol01-zhou-qin.pdf`。
 
 ## 总体史六层
 
@@ -143,4 +143,4 @@
 - 每完成一个事件簇、国家 dossier、地图、账本批次或 PDF 构建，更新 `PROGRESS.md`。
 - 在工作消息中明确报告：当前卷、已登记事件数、刚完成的文件、下一步文件。
 - 进度以已核对且进入事件账本/正文的事件数衡量，不以 AI 生成字数或 PDF 厚度衡量。
-- 只允许发布一份 PDF：`../../../pdf/china-chronicle-vol01-zhou-qin.pdf`（仓库根 `pdf/`）。不得在本卷目录内创建或提交 `pdf/` 子目录、重复 PDF 或任何二进制构建副本。
+- 只允许发布一份 PDF：`../../../pdf/china-chronicle/vol01-zhou-qin.pdf`（仓库根 `pdf/china-chronicle/`）。不得在本卷目录内创建或提交 `pdf/` 子目录、重复 PDF 或任何二进制构建副本。

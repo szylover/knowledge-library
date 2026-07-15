@@ -23,7 +23,7 @@ List exact files/directories this task owns. Do not modify anything else.
 - [ ] Visible links are Chinese and resolve to unique anchors.
 - [ ] Figures are independent files under `figures/`.
 - [ ] Tectonic result recorded.
-- [ ] Published PDF, if any, is only in root `pdf/`.
+- [ ] Published PDF, if any, is only in root `pdf/china-chronicle/`.
 
 ## Handoff
 

@@ -1,6 +1,6 @@
 # Volume-local queue. The series root queue is the cross-volume overview.
 volume: vol01-zhou-qin
-publish_pdf: ../../../pdf/china-chronicle-vol01-zhou-qin.pdf
+publish_pdf: ../../../pdf/china-chronicle/vol01-zhou-qin.pdf
 event_ledger_target: 1300-1900
 
 tasks:
@@ -85,5 +85,5 @@ tasks:
       - chapters/ch03-spring-autumn.tex
       - chapters/ch04-warring-qin.tex
       - PROGRESS.md
-      - ../../../pdf/china-chronicle-vol01-zhou-qin.pdf
+      - ../../../pdf/china-chronicle/vol01-zhou-qin.pdf
     goal: Merge verified task branches, compile, validate links, update progress, and publish the only PDF.

@@ -23,7 +23,7 @@ Set-Location D:\projects\knowledge-library\china-chronicle-series\volumes\vol01-
 发布版只在仓库根目录：
 
 ```text
-pdf/china-chronicle-vol01-zhou-qin.pdf
+pdf/china-chronicle/vol01-zhou-qin.pdf
 ```
 
 ## 多 Agent

@@ -31,10 +31,10 @@ Set-Location D:\projects\knowledge-library\china-chronicle-series
 
 ## 发布约定
 
-发布 PDF 永远放在仓库根 `pdf/`：
+本书系的发布 PDF 永远放在仓库根 `pdf/china-chronicle/`：
 
 ```text
-pdf/china-chronicle-vol01-zhou-qin.pdf
-pdf/china-chronicle-vol02-han-division.pdf
+pdf/china-chronicle/vol01-zhou-qin.pdf
+pdf/china-chronicle/vol02-han-division.pdf
 ...
 ```

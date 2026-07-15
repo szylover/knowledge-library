@@ -9,7 +9,7 @@
 3. Chronology 先写账本，Narrative 只写账本已有事件，Map 只写独立图文件。
 4. 不跨任务范围修改文件。需要改 wrapper、索引、PDF 时交给 Integrator。
 5. 交接时报告文件、事件 ID、来源、争议、构建结果。
-6. 发布 PDF 只能写在仓库根 `pdf/`，文件名为 `china-chronicle-volXX-<slug>.pdf`。
+6. 发布 PDF 只能写在仓库根 `pdf/china-chronicle/`，文件名为 `volXX-<slug>.pdf`；不得与其他书系的 PDF 平铺混放。
 
 ## 共享资源
 
