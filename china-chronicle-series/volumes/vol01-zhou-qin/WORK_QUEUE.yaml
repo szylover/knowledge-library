@@ -6,7 +6,9 @@ event_ledger_target: 1300-1900
 tasks:
   - id: vol01-ledger-western
     role: chronology
-    status: ready
+    status: review
+    branch: chronicle/vol01-ledger-western
+    started_at: 2026-07-15T11:03:19+08:00
     scope:
       - data/event-ledger/western-zhou.csv
     goal: Expand Western Zhou from 39 to 150-250 source-aware events.
