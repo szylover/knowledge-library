@@ -11,7 +11,7 @@ tasks:
 
   - id: vol04-ledger-northern-song
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/song-yuan.csv
     goal: Establish a source-aware Northern Song event ledger before prose begins.
