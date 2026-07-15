@@ -823,7 +823,9 @@ tasks:
   - id: vol02-anchor-system
     volume: vol02-han-division
     role: indexer
-    status: ready
+    status: done
+    branch: chronicle/vol02-anchor-system
+    completed: 2026-07-15T17:50:39+08:00
     scope: [preamble.tex, chapters/appendix-*.tex]
     goal: Add event-link macros and index entry points for Volume II.
 
