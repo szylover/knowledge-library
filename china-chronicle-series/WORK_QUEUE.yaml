@@ -732,6 +732,25 @@ tasks:
     status: ready
     scope: [chapters/appendix-*.tex, chapters/appendix-series-roadmap.tex]
     goal: Complete cross-period continuity, source, event and figure indexing.
+
+  - id: vol01-anchor-qin-final
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope: [chapters/warring-qin/states/qin/conquest-and-empire.tex]
+    goal: Integrate all remaining Qin conquest and empire ledger events into prose anchors.
+  - id: vol01-anchor-han-yan-final
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope: [chapters/warring-qin/states/han/shen-buhai.tex, chapters/warring-qin/states/yan/northern-strategy.tex]
+    goal: Integrate all remaining Han and Yan ledger events into prose anchors.
+  - id: vol01-anchor-chu-wei-final
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope: [chapters/warring-qin/states/chu/wu-qi-and-southern-state.tex, chapters/warring-qin/states/wei/early-reforms.tex]
+    goal: Integrate all remaining Chu and Wei ledger events into prose anchors.
   - id: vol01-final-publish
     volume: vol01-zhou-qin
     role: integrator
