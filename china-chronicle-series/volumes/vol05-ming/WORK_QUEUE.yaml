@@ -11,7 +11,7 @@ tasks:
 
   - id: vol05-ledger-early-ming
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/ming.csv
     goal: Establish a source-aware early Ming event ledger before prose begins.
