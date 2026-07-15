@@ -1,0 +1,36 @@
+\documentclass[11pt,a4paper,openany]{book}
+\input{preamble}
+
+\begin{document}
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[dynasty] (current page.north west) rectangle ([yshift=-8.2cm]current page.north east);
+    \fill[timeline] ([yshift=-8.2cm]current page.north west) rectangle ([yshift=-8.55cm]current page.north east);
+  \end{tikzpicture}
+  \centering
+  \vspace*{2.0cm}
+  {\color{white}\fontsize{35}{44}\selectfont\bfseries 中国大事编年·第二卷\par}
+  \vspace{.6cm}
+  {\color{white!90}\Large 汉、三国、两晋与南北朝\par}
+  \vfill
+  {\normalsize \today\par}
+  \vspace{2cm}
+\end{titlepage}
+
+\frontmatter
+\tableofcontents
+
+\mainmatter
+\part{帝国调适与分裂重组}
+\include{chapters/ch01-western-han}
+\include{chapters/ch02-eastern-han}
+\include{chapters/ch03-three-kingdoms}
+\include{chapters/ch04-western-jin}
+\include{chapters/ch05-eastern-jin-sixteen-kingdoms}
+\include{chapters/ch06-northern-southern-dynasties}
+
+\appendix
+\include{chapters/appendix-sources}
+\include{chapters/appendix-index}
+\include{chapters/appendix-series-roadmap}
+\end{document}

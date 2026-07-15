@@ -16,10 +16,15 @@ tasks:
 
   - id: vol02-integrate-foundation
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/vol02-integrate-foundation
+    started: 2026-07-15T11:59:01+08:00
+    completed: 2026-07-15T11:59:01+08:00
     scope:
       - main.tex
       - preamble.tex
+      - chapters/
       - figures/
       - PROGRESS.md
+      - scripts/build-volume.ps1
     goal: Create the volume compilation foundation only after the initial ledger is reviewed.
