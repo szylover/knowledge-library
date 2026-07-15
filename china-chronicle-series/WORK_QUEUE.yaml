@@ -51,7 +51,7 @@ tasks:
   - id: vol02-ledger-eastern-han
     volume: vol02-han-division
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/han-division.csv
     goal: Extend the shared Han ledger through the Eastern Han, preserving the Western Han entries.
