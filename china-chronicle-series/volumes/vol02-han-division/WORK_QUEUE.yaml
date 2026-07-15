@@ -38,7 +38,7 @@ tasks:
 
   - id: vol02-prose-qin-han-transition
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch01-western-han.tex
       - chapters/western-han/qin-han-transition.tex
