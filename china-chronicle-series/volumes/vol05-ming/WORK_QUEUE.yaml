@@ -18,7 +18,7 @@ tasks:
 
   - id: vol05-integrate-foundation
     role: integrator
-    status: ready
+    status: done
     scope:
       - main.tex
       - preamble.tex
