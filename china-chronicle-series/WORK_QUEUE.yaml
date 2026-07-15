@@ -484,7 +484,7 @@ tasks:
   - id: vol01-prose-spring-central
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/spring-autumn/states/lu-zheng-song/central-plains.tex
     goal: Expand the ledgered Spring and Autumn central plains dossiers into source-aware prose.
@@ -532,7 +532,7 @@ tasks:
   - id: vol01-figure-index-links
     volume: vol01-zhou-qin
     role: indexer
-    status: ready
+    status: done
     scope:
       - chapters/appendix-index.tex
       - figures/

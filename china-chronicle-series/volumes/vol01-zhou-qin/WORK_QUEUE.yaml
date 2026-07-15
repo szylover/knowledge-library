@@ -209,7 +209,7 @@ tasks:
 
   - id: vol01-prose-spring-central
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/spring-autumn/states/lu-zheng-song/central-plains.tex
     goal: Expand the Spring and Autumn central plains dossiers from existing ledger events.
@@ -251,7 +251,7 @@ tasks:
 
   - id: vol01-figure-index-links
     role: indexer
-    status: ready
+    status: done
     scope:
       - chapters/appendix-index.tex
       - figures/
