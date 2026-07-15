@@ -1,0 +1,39 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=.88cm,y=.88cm,font=\small,
+    hub/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,inner sep=3pt},
+    court/.style={hub,draw=dynasty!90,fill=dynasty!14},
+    region/.style={hub,draw=source!80,fill=source!12},
+    note/.style={font=\scriptsize,align=center,text=source}
+  ]
+    \fill[paper] (-.35,-.4) rectangle (12.15,6.35);
+    \fill[dynasty!10] (.15,.05) rectangle (11.9,5.95);
+    \node[court] (beijing) at (6.15,5.1) {北京\\户部、仓储与军政拨给};
+    \node[region] (tongzhou) at (7.8,4.1) {通州\\仓储、转运节点};
+    \node[region] (xuzhou) at (5.25,2.8) {徐州、淮北\\河工与漕运风险};
+    \node[region] (jiangnan) at (3.0,.95) {江南\\田赋、漕粮与市镇网络};
+    \node[region] (huizhou) at (6.85,.85) {徽州及内陆\\田亩登记、契约与折银};
+    \node[region] (liaodong) at (10.2,3.1) {辽东边镇\\军饷与补给需求};
+    \node[region] (northwest) at (1.35,3.65) {西北、宣大等边镇\\军需与转输压力};
+
+    \draw[->,ultra thick,color=timeline!90] (jiangnan) -- node[left,note]
+      {漕粮、船户与河道维护} (xuzhou);
+    \draw[->,ultra thick,color=timeline!90] (xuzhou) -- node[left,note]
+      {运河、闸坝与转运（示意）} (beijing);
+    \draw[->,very thick,color=dynasty] (beijing) -- node[above,sloped,note]
+      {军费、命令与文书调度} (liaodong);
+    \draw[->,thick,color=dynasty] (beijing) -- node[above,sloped,note]
+      {支给与核销的行政链} (northwest);
+    \draw[->,thick,dashed,color=source!90] (huizhou) -- node[below,sloped,note]
+      {清丈、赋役折银与地方中介} (jiangnan);
+    \draw[<->,thick,dashed,color=source!90] (huizhou) -- node[below,sloped,note]
+      {税额、报解与实收不能互推} (beijing);
+
+    \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+      font=\scriptsize,text=source] at (9.55,.72)
+      {箭头显示资源与文书的关联方向，\\不表示实际运量、税额或通航状态。};
+  \end{tikzpicture}
+  \caption{万历时期漕运、河工与财政征解的关联路线（示意）。潘季驯治河、清丈与一条鞭式赋役整顿，可据《神宗实录》、河渠志、《明史》〈食货志〉及《河防一览》追踪其政策与工程脉络；黄册、鱼鳞图册、徽州契约、地方志和河工档案用于校验不同地点的登记、征收与运输。江南至北京的线路和边镇节点仅展示相互依赖，不能据此推定某年漕粮实到、折银比例、军饷数额或所有地区的实际负担。}
+  \label{fig:vol05:transport-fiscal-routes}
+\end{figure}

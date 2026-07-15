@@ -1,0 +1,45 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=.88cm,y=.88cm,font=\small,
+    place/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,inner sep=3pt},
+    ming/.style={place,draw=dynasty!90,fill=dynasty!14},
+    frontier/.style={place,draw=source!85,fill=source!13},
+    crisis/.style={place,draw=timeline!90,fill=timeline!15},
+    note/.style={font=\scriptsize,align=center,text=source}
+  ]
+    \fill[paper] (-.35,-.45) rectangle (12.15,6.45);
+    \fill[source!14] (.2,4.45) -- (11.9,4.2) -- (11.95,6.15) -- (.35,6.2) -- cycle;
+    \fill[dynasty!11] (.2,.1) -- (11.9,.15) -- (11.9,4.0) -- (.35,4.2) -- cycle;
+    \node[font=\bfseries,text=source] at (9.9,5.55) {后金与辽东战场（约略）};
+    \node[font=\bfseries,text=dynasty] at (1.55,3.65) {明朝腹地、财政与交通节点};
+
+    \node[ming] (beijing) at (6.25,3.25) {北京\\朝廷、仓储与守备};
+    \node[frontier] (liaodong) at (9.75,4.8) {辽东\\抚顺、沈阳、广宁、宁远};
+    \node[frontier] (manchu) at (7.2,5.3) {后金政权与\\东北动员网络};
+    \node[crisis] (shanxi) at (3.35,3.75) {山西、陕西\\旱灾、邮递裁减与起事};
+    \node[crisis] (luoyang) at (4.55,2.05) {洛阳\\1641年失守节点};
+    \node[crisis] (xian) at (2.4,.8) {西安\\大顺建号节点};
+    \node[ming] (canal) at (7.65,1.25) {运河、山东与江南方向\\粮运、河工与征解};
+    \node[crisis] (beijingfall) at (9.9,2.3) {北京\\1644年政权转换};
+
+    \draw[->,ultra thick,color=source!90] (manchu) -- node[above,note]
+      {辽东攻守与情报压力} (liaodong);
+    \draw[->,very thick,color=dynasty] (beijing) -- node[above,sloped,note]
+      {军饷、命令与援兵调度} (liaodong);
+    \draw[->,thick,dashed,color=timeline!90] (shanxi) -- node[above,sloped,note]
+      {流动、战事与地方失序} (luoyang);
+    \draw[->,very thick,color=timeline!90] (luoyang) -- node[below,sloped,note]
+      {西进与建号过程} (xian);
+    \draw[->,ultra thick,color=timeline!90] (xian) -- node[below,sloped,note]
+      {1644年向北京推进} (beijingfall);
+    \draw[->,thick,dashed,color=dynasty] (canal) -- node[right,note]
+      {粮运、征解与守备的条件} (beijing);
+
+    \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+      font=\scriptsize,text=source] at (1.75,1.55)
+      {不同线条对应战场、行政与社会危机的关联；\\不构成统一战线、兵力图或因果单线。};
+  \end{tikzpicture}
+  \caption{天启、崇祯年间的多重危机与北京的脆弱连接（示意）。辽东城镇失守、宁远战事、崇祯初年灾害与邮递裁减、李自成进入洛阳和西安、以及1644年北京政权转换，可由《熹宗实录》《崇祯长编》《明史》本纪与兵志、边镇奏疏及地方志互校；崇祯朝无存世实录，兵数、路线、灾情和地方支持范围尤其不能由单一叙述断定。图中各节点仅说明战争、军费、交通与社会危机相互牵连，并不表示控制疆界、灾害范围、补给实到或起事力量的全貌。}
+  \label{fig:vol05:late-ming-crisis-multiple-fronts}
+\end{figure}

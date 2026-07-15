@@ -1,0 +1,45 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=.88cm,y=.88cm,font=\small,
+    port/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,inner sep=3pt},
+    state/.style={port,draw=dynasty!90,fill=dynasty!14},
+    sea/.style={port,draw=source!85,fill=source!12},
+    note/.style={font=\scriptsize,align=center,text=source}
+  ]
+    \fill[paper] (-.35,-.45) rectangle (12.15,6.45);
+    \fill[source!12] (5.5,-.15) -- (12,-.15) -- (12,6.15) -- (7.2,6.2)
+      .. controls (6.0,4.9) and (7.1,2.2) .. (5.5,-.15);
+    \fill[dynasty!13] (.1,.05) -- (5.5,-.15) .. controls (7.1,2.2) and
+      (6.0,4.9) .. (7.2,6.2) -- (.1,6.1) -- cycle;
+    \node[font=\bfseries,text=dynasty] at (2.0,5.55) {东南沿海地方、卫所与府县};
+    \node[font=\bfseries,text=source] at (10.25,5.55) {近海与跨海网络（约略）};
+
+    \node[state] (hangzhou) at (3.45,4.25) {浙东、杭州湾\\巡抚与海防调度};
+    \node[state] (taizhou) at (5.0,3.1) {台州、宁波\\募练与战事节点};
+    \node[state] (fuzhou) at (4.35,1.3) {福州、闽南\\港口、卫所与商人};
+    \node[state] (yuegang) at (6.2,.45) {月港（海澄）\\1567年后有限开港};
+    \node[sea] (japan) at (9.4,4.2) {日本列岛方向\\武装者、商人和中介};
+    \node[sea] (luzon) at (10.0,1.7) {吕宋及南洋方向\\货物、信息与航行};
+    \node[sea] (macao) at (8.1,.65) {珠江口、澳门\\准入与贸易交涉};
+
+    \draw[->,very thick,color=dynasty] (hangzhou) -- node[left,note]
+      {巡防、文书与军需} (taizhou);
+    \draw[->,very thick,color=dynasty] (taizhou) -- node[left,note]
+      {浙闽海防联络（示意）} (fuzhou);
+    \draw[->,thick,color=timeline!90] (fuzhou) -- node[below,sloped,note]
+      {港口登记与地方供给} (yuegang);
+    \draw[<->,very thick,dashed,color=source!90] (taizhou) -- node[above,note]
+      {袭扰、贸易与信息往来并存} (japan);
+    \draw[<->,thick,dashed,color=source!90] (yuegang) -- node[below,note]
+      {许可航路不等于全部海上流动} (luzon);
+    \draw[<->,thick,dashed,color=source!90] (yuegang) -- node[below,note]
+      {商路与中介网络} (macao);
+
+    \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+      font=\scriptsize,text=source] at (2.25,.18)
+      {实线：沿海行政与防务关联；\\虚线：海上接触，非海域控制线。};
+  \end{tikzpicture}
+  \caption{嘉靖至隆庆东南海岸的防务、港口与跨海网络（示意）。朱纨巡抚浙闽、王直受审与处决、戚继光在浙闽的募练和战事、以及1567年月港有限开市，可据《世宗实录》《明史》相关列传、《筹海图编》、戚继光文集和海澄地方志定位；葡日与东南亚材料则提示港口、翻译和商人网络不能由官府的“海寇”分类覆盖。图中航线不代表贸易量、航行频率、海禁执行程度或任何国家的海域控制。}
+  \label{fig:vol05:southeast-sea-coastal-networks}
+\end{figure}
