@@ -144,6 +144,15 @@ tasks:
       - data/controversy-ledger/
     goal: Create a source-aware, non-polemical controversy ledger for selected Zhou-Qin events without changing prose or event ledgers.
 
+  - id: vol01-appendix-controversies
+    role: integrator
+    status: ready
+    scope:
+      - main.tex
+      - chapters/appendix-controversies.tex
+      - PROGRESS.md
+    goal: Compile selected Zhou-Qin controversy ledger entries into a reader-facing appendix and publish the updated PDF.
+
   - id: vol01-ledger-spring-to-400
     role: chronology
     status: done
