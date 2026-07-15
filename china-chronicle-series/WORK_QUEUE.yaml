@@ -29,7 +29,7 @@ tasks:
   - id: vol01-controversy-ledger
     volume: vol01-zhou-qin
     role: evidence-auditor
-    status: ready
+    status: done
     scope:
       - data/controversy-ledger/
     goal: Create a source-aware, non-polemical controversy ledger for selected Zhou-Qin events without changing prose or event ledgers.
