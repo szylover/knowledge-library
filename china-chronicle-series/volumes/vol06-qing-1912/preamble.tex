@@ -24,4 +24,16 @@
   hypertexnames=false,
   pdftitle={中国大事编年·第六卷：清至1912}
 }
+\newcommand{\eventid}[1]{\textcolor{dynasty}{\footnotesize\textsf{〔#1〕}}}
+\newcommand{\eventanchor}[2]{\hypertarget{evt:#1}{\eventid{#2}}}
+\newcommand{\eventref}[2]{\hyperlink{evt:#1}{\textcolor{dynasty}{〔#2〕}}}
+\newcommand{\sourceanchor}[2]{\hypertarget{src:#1}{\textcolor{source}{#2}}}
+\newcommand{\sourceref}[2]{\hyperlink{src:#1}{\textcolor{source}{#2}}}
+\newcommand{\figureref}[2]{\hyperref[fig:#1]{\textcolor{timeline}{#2}}}
+\newenvironment{eventindex}{\begin{description}}{\end{description}}
+\newenvironment{sourceindex}{\begin{description}}{\end{description}}
+\newenvironment{figureindex}{\begin{description}}{\end{description}}
+\newcommand{\eventindexentry}[2]{\item[\eventref{#1}{#2}]}
+\newcommand{\sourceindexentry}[2]{\item[\sourceref{#1}{#2}]}
+\newcommand{\figureindexentry}[2]{\item[\figureref{#1}{#2}]}
 \color{ink}
