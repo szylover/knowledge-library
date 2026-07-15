@@ -1,0 +1,47 @@
+\phantomsection\label{fig:vol04:southern-song:maritime-transport-network}
+\begin{center}
+\begin{tikzpicture}[x=.88cm,y=.88cm,font=\small]
+  \fill[paper] (0,0) rectangle (11.7,6.35);
+  \fill[source!15] (7.35,.55) -- (11.15,.75) -- (11.2,5.85) -- (8.65,5.9) --
+    (7.9,4.65) -- (8.15,3.05) -- cycle;
+  \node[text=source,align=center] at (9.9,3.4) {东海、杭州湾\\与南海航路\\（海域示意）};
+  \fill[dynasty!18] (.55,.65) -- (7.9,.75) -- (8.1,2.9) -- (7.55,4.65) --
+    (5.7,5.8) -- (.75,5.85) -- cycle;
+  \node[align=center] at (3.0,4.92) {江淮、两浙与江南\\税粮、市场、军需};
+  \fill[timeline!18] (.65,.7) -- (4.55,.75) -- (5.55,2.75) -- (4.8,3.7) --
+    (1.0,3.55) -- cycle;
+  \node[align=center] at (2.55,1.62) {长江中上游\\襄汉、川鄂与\\水陆转运};
+
+  \node[draw=dynasty,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (linan)
+    at (6.65,3.72) {临安\\行在、市场与官署};
+  \node[draw=timeline,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (yangzhou)
+    at (5.6,4.95) {扬州、运河\\江淮转运};
+  \node[draw=source,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (ningbo)
+    at (8.45,3.65) {明州（宁波）\\杭州湾港口};
+  \node[draw=source,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (quanzhou)
+    at (8.35,1.72) {泉州\\商船与市舶};
+  \node[draw=source,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (guangzhou)
+    at (6.9,.98) {广州\\岭南海港};
+  \node[draw=timeline,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (xianghan)
+    at (3.45,2.8) {襄汉\\前线与江水节点};
+
+  \draw[<->,ultra thick,color=timeline!85] (yangzhou) -- node[left,font=\scriptsize]{运河、江路} (linan);
+  \draw[<->,ultra thick,color=dynasty!85] (xianghan) -- node[above,sloped,font=\scriptsize]
+    {军需、人员与文书} (linan);
+  \draw[->,ultra thick,color=source!85] (linan) -- node[above,sloped,font=\scriptsize]
+    {江海转换} (ningbo);
+  \draw[->,ultra thick,color=source!85] (ningbo) to[out=-72,in=88] node[right,font=\scriptsize]
+    {沿海航路（示意）} (quanzhou);
+  \draw[->,thick,dashed,color=source!85] (quanzhou) -- node[below,sloped,font=\scriptsize]
+    {海贸、军需与信息} (guangzhou);
+  \draw[->,thick,dashed,color=source!85] (guangzhou) to[out=20,in=-125] (linan);
+
+  \node[draw=source!70,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] at (2.1,4.3)
+    {水路网络连接财政与战场，\\不等于中枢能够无阻调度\\所有货物、船只与地方社会。};
+  \node[text=source,align=center,font=\scriptsize] at (5.85,.72)
+    {港口、河段和海线位置均为约略示意；箭头不表示固定航线、流量或海域控制。};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 南宋江海运输、港口与前线的关系示意：据《宋史》〈高宗本纪〉、〈理宗本纪〉及《食货志》《地理志》，《建炎以来系年要录》《宋会要辑稿·食货》有关漕运、会子、盐与市舶的条目，配合《庆元条法事类》及杭州、宁波、泉州、广州地方志和港址、沉船等考古材料。图示临安、江淮、襄汉和沿海港口之间的制度与运输关联，不将文献中的征收、海贸或战时调度数量转化为精确流量；河道、海线与港口腹地均为约略示意。}
+\end{center}

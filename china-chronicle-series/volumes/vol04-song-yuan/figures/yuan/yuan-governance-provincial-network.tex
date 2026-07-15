@@ -1,0 +1,47 @@
+\phantomsection\label{fig:vol04:yuan:governance-provincial-network}
+\begin{center}
+\begin{tikzpicture}[x=.88cm,y=.88cm,font=\small]
+  \fill[paper] (0,0) rectangle (11.8,6.4);
+
+  \fill[source!18] (.55,3.7) -- (5.0,3.55) -- (5.35,5.85) -- (.8,5.9) -- cycle;
+  \node[align=center] at (2.8,4.95) {岭北、上都与\\草原站赤网络};
+  \fill[dynasty!20] (5.65,3.65) -- (11.2,3.75) -- (11.15,5.85) -- (5.85,5.8) -- cycle;
+  \node[align=center] at (8.85,4.95) {中书直辖腹地\\大都与北方路府};
+  \fill[timeline!19] (.55,.65) -- (11.15,.75) -- (11.15,3.25) -- (.6,3.4) -- cycle;
+  \node[align=center] at (8.65,1.25) {河南江北、江浙、江西、湖广、云南等\\行省与地方军政、财赋关系};
+
+  \node[draw=dynasty,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (dadu)
+    at (6.0,4.25) {大都\\中书省、都城官署};
+  \node[draw=source,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (shangdu)
+    at (3.0,4.55) {上都\\季节性政治中心};
+  \node[draw=timeline,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (henan)
+    at (5.25,2.75) {河南江北行省\\南北交通节点};
+  \node[draw=timeline,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (jiangzhe)
+    at (8.2,2.75) {江浙行省\\江南财赋与港口};
+  \node[draw=timeline,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (jiangxi)
+    at (7.45,1.22) {江西行省};
+  \node[draw=timeline,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (huguang)
+    at (3.8,1.2) {湖广行省};
+  \node[draw=timeline,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (yunnan)
+    at (1.55,1.15) {云南行省};
+
+  \draw[<->,ultra thick,color=source!85] (shangdu) -- node[above,font=\scriptsize]
+    {站赤、诏令与人员} (dadu);
+  \draw[->,ultra thick,color=timeline!85] (dadu) -- node[left,sloped,font=\scriptsize]
+    {漕运、文书与任官} (henan);
+  \draw[->,ultra thick,color=timeline!85] (henan) -- node[above,sloped,font=\scriptsize]
+    {江河转运} (jiangzhe);
+  \draw[->,thick,dashed,color=timeline!85] (henan) -- (huguang);
+  \draw[->,thick,dashed,color=timeline!85] (jiangzhe) -- (jiangxi);
+  \draw[->,thick,dashed,color=timeline!85] (huguang) -- node[below,sloped,font=\scriptsize]
+    {西南军政与道路} (yunnan);
+
+  \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] at (9.85,4.32)
+    {行省不是静止的省界：\\名称、驻地、辖区和权限\\随时段、事务而变化};
+  \node[text=source,align=center,font=\scriptsize] at (6.0,.72)
+    {连线表示行政与运输的可能关联，不表示单一官僚链条、准确辖境或地方执行的均一性。};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 元朝中枢、行省、站赤与漕运关系示意：据《元史》〈世祖本纪〉、〈百官志〉、〈地理志〉、〈食货志〉及《元典章》《通制条格》所存行省、驿传、漕运和任官材料，并参照多语碑刻、地方文书和区域研究对实际执行的修正。图中以大都、上都和若干行省名称提示不同层级的治理与资源调度，不能读作元代任一时点的精确行政区划、驿路里程、漕粮数量或中枢控制强度。}
+\end{center}
