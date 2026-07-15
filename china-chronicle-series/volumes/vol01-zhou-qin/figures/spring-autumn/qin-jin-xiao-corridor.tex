@@ -1,0 +1,42 @@
+\begin{center}
+\begin{tikzpicture}[x=.88cm,y=.88cm,font=\small]
+  \fill[paper] (0,0) rectangle (11.3,5.8);
+
+  \draw[source!65!timeline,line width=1pt]
+    (.35,4.85) .. controls (2.7,4.45) and (4.3,5.25) .. (6.7,4.7)
+    .. controls (8.4,4.3) and (9.6,4.75) .. (10.9,4.35);
+  \node[text=source!80!ink,above] at (5.8,4.8) {黄河方向};
+
+  \fill[dynasty!19] (.75,1.35) -- (3.15,1.2) -- (3.45,3.15) -- (1.05,3.45) -- cycle;
+  \node[align=center] at (2.15,2.35) {秦\\关中方向};
+  \fill[timeline!19] (4.45,3.55) -- (6.65,3.5) -- (6.95,4.65) -- (4.9,4.9) -- cycle;
+  \node[align=center] at (5.7,4.2) {晋\\河东方向};
+  \fill[source!16] (4.25,1.45) -- (6.65,1.25) -- (7.2,2.8) -- (4.75,3.05) -- cycle;
+  \node[align=center] at (5.7,2.1) {崤函山地\\通道方向};
+  \fill[timeline!15] (8.2,1.0) -- (10.55,1.15) -- (10.8,3.15) -- (8.5,3.35) -- cycle;
+  \node[align=center] at (9.55,2.15) {郑\\中原枢纽};
+
+  \draw[-{Stealth[length=2mm]},ultra thick,color=dynasty]
+    (3.35,2.55) .. controls (5.35,1.55) and (7.2,1.75) .. (8.05,2.05);
+  \draw[-{Stealth[length=2mm]},thick,color=dynasty]
+    (6.75,4.0) .. controls (7.75,3.7) and (8.05,3.05) .. (8.25,2.65);
+  \node[text=dynasty,below,align=center] at (5.65,1.25) {前630年：秦、晋围郑\\暂时合军};
+  \node[text=dynasty,right,align=left] at (7.25,3.55) {晋军\\南下};
+
+  \draw[-{Stealth[length=2mm]},thick,dashed,color=timeline]
+    (3.35,2.1) .. controls (4.6,2.65) and (6.55,2.7) .. (8.05,2.35);
+  \node[text=timeline,above,align=center] at (5.7,2.95) {秦军东向、撤经崤一带\\（路径不可精确复原）};
+
+  \draw[-{Stealth[length=2mm]},ultra thick,color=source]
+    (5.9,3.5) -- (6.05,2.95);
+  \fill[dynasty] (6.05,2.9) circle (.11);
+  \node[text=source,above right,align=left] at (6.05,2.95)
+    {前627年殽之战\\晋军阻击方向};
+
+  \node[text=source,align=center,font=\footnotesize] at (2.45,.65)
+    {山地通道使远征的补给、撤退\\与侧击风险彼此相连};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 秦、晋、郑与崤函通道示意：将围郑、秦军东征郑与殽之战置于同一交通瓶颈中，帮助理解同盟裂缝怎样转为秦晋对抗。参考《春秋·僖公三十、三十三年》、《左传·僖公三十、三十二、三十三年》及《史记·秦本纪》《郑世家》；会战部署、具体行程和部分故事细节主要由后出叙事展开，尚有争议。所有边界与路线均为约略示意。}
+\end{center}
