@@ -11,7 +11,7 @@ tasks:
 
   - id: vol06-ledger-early-qing
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/qing-1912.csv
     goal: Establish a source-aware early Qing event ledger before prose begins.
