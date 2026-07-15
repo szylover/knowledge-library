@@ -1,0 +1,49 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    place/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\small},
+    qing/.style={place, draw=dynasty, fill=dynasty!13},
+    ming/.style={place, draw=timeline, fill=timeline!13},
+    sea/.style={place, draw=source, fill=source!10},
+    note/.style={align=center, font=\scriptsize\color{source}}
+  ]
+    \fill[paper] (-.6,-3.8) rectangle (7.4,3.7);
+    \draw[dynasty, line width=.8pt] (-.6,3.7) -- (7.4,3.7);
+    \node[font=\bfseries\large, text=dynasty] at (3.4,3.25)
+      {1645--1660：南方征服与南明、海上网络的压力};
+
+    \node[qing] (nanjing) at (-.05,2.15) {南京\\1645};
+    \node[qing] (nanchang) at (1.55,1.2) {南昌\\1648--49};
+    \node[ming] (guangzhou) at (-.05,-.15) {广州\\1648--50};
+    \node[ming] (xianggui) at (1.75,-.5) {湘桂\\李定国反攻\\1652};
+    \node[ming] (yunnan) at (2.7,-2.2) {滇、黔\\永历朝退守\\1657--60};
+    \node[ming] (myanmar) at (4.6,-2.85) {缅甸边地\\永历避难\\1659};
+    \node[sea] (xiamen) at (5.1,1.65) {厦门、金门\\郑氏军商基地};
+    \node[sea] (nanjingsea) at (3.9,2.45) {长江口、南京\\郑成功北伐\\1659};
+
+    \draw[->, dynasty, line width=1.15pt] (nanjing) -- node[above,sloped,note]
+      {江西战区（示意）} (nanchang);
+    \draw[->, dynasty, line width=1.15pt] (nanchang) -- node[left,sloped,note]
+      {清军重建攻势的节点} (guangzhou);
+    \draw[->, dynasty, line width=1.15pt] (guangzhou) -- node[above,sloped,note]
+      {湘桂、滇黔方向的战事} (xianggui);
+    \draw[->, dynasty, line width=1.15pt] (xianggui) -- node[right,sloped,note]
+      {入滇军行与补给（示意）} (yunnan);
+    \draw[->, timeline, dashed, line width=1pt] (yunnan) -- node[below,sloped,note]
+      {朝廷及随从继续西迁} (myanmar);
+    \draw[->, timeline, dashed, line width=1pt] (xianggui) -- node[above,sloped,note]
+      {南明反攻与联络\\并非固定战线} (guangzhou);
+    \draw[->, source, line width=1pt] (xiamen) -- node[above,sloped,note]
+      {海上补给与北上行动} (nanjingsea);
+    \draw[source, dashed] (xiamen) to[out=-145,in=15] node[below,note]
+      {闽南水陆通道（示意）} (guangzhou);
+
+    \node[draw=source, fill=paper, rounded corners=3pt, align=center,
+      text=source, font=\small] at (5.9,-.45)
+      {实线：清军战区推进\\虚线：南明流动与反攻\\灰褐线：郑氏海上压力};
+  \end{tikzpicture}
+  \caption{南方征服、南明流动中心与郑氏海上压力（1645--1660，示意）。实线连接的只是账本所载南京、南昌、广州、湘桂与滇黔等战区节点；虚线和海线分别表示南明的退守／反攻及郑氏由闽南通向长江口的行动网络，不能读作疆界、补给线的全貌或海域控制范围。依据《清世祖实录》顺治二年至十七年军报、内阁大库江西军需和云南粮饷题本档，以及《永历实录》、弘光与永历朝奏疏、《南昌府志》《广东通志》《云南通志》；海上部分并读《延平王户官杨英从征实录》、郑氏文书辑录与荷兰东印度公司台湾商馆日记／海上报告，缅甸段参照缅文《琉璃宫史》传统。范围仅示华南--西南和闽南--长江口的少数城镇、山地与航路节点，未延伸为全国地图；路线约略且不按比例，尤其不以清廷军报或单一海图推定地方、岛屿或跨境地带的实际控制。}
+  \label{fig:southern-conquest-southern-ming-sea}
+\end{figure}

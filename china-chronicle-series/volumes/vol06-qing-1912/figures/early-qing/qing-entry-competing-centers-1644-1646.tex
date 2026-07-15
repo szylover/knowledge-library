@@ -1,0 +1,45 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    place/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\small},
+    qing/.style={place, draw=dynasty, fill=dynasty!13},
+    ming/.style={place, draw=timeline, fill=timeline!13},
+    note/.style={align=center, font=\scriptsize\color{source}}
+  ]
+    \fill[paper] (-.6,-3.9) rectangle (7.0,3.8);
+    \draw[dynasty, line width=.8pt] (-.6,3.8) -- (7.0,3.8);
+    \node[font=\bfseries\large, text=dynasty] at (3.2,3.35)
+      {1644--1646：入关、北京与南方多中心};
+
+    \node[qing] (shanhai) at (.5,2.35) {山海关\\1644};
+    \node[qing] (beijing) at (2.25,1.7) {北京\\摄政与定都};
+    \node[qing] (nanjing) at (3.65,.65) {南京\\弘光朝失守\\1645};
+    \node[ming] (zhejiang) at (5.55,.45) {浙东、海上\\鲁王集团};
+    \node[ming] (fuzhou) at (5.35,-1.25) {福州\\隆武朝\\1646};
+    \node[ming] (guangzhou) at (2.55,-2.15) {广州\\绍武朝\\1646};
+    \node[ming] (zhaoqing) at (.55,-3.0) {肇庆\\永历朝\\1646冬};
+
+    \draw[->, dynasty, line width=1.15pt] (shanhai) -- node[above,sloped,note]
+      {清军与吴三桂部的入关通道} (beijing);
+    \draw[->, dynasty, line width=1.15pt] (beijing) -- node[above,sloped,note]
+      {军行、接收与文书网络（示意）} (nanjing);
+    \draw[->, dynasty, line width=1.15pt] (nanjing) -- node[above,note]
+      {浙东、沿海战区} (zhejiang);
+    \draw[->, dynasty, line width=1.15pt] (nanjing) -- node[right,note]
+      {闽北战区} (fuzhou);
+    \draw[->, dynasty, line width=1.15pt] (nanjing) -- node[left,note]
+      {两广战区} (guangzhou);
+    \draw[->, timeline, dashed, line width=.95pt] (guangzhou) -- node[below,sloped,note]
+      {南明名义与人员流动（非疆界）} (zhaoqing);
+    \draw[timeline, dashed] (fuzhou) -- (zhejiang);
+
+    \node[draw=source, fill=paper, rounded corners=3pt, align=center,
+      text=source, font=\small] at (4.55,-3.0)
+      {城池、朝廷中心与路线\\不等于整片区域的持续控制};
+    \draw[source, dashed] (4.1,-2.55) -- (3.05,-2.25);
+  \end{tikzpicture}
+  \caption{清军入关、北京接收与南方竞争性中心（1644--1646，示意）。朱褐实线为账本中可锚定的主要军行和接收通道；铜色虚线为南明中心及其联络的示意，均非连续控制线。依据《清世祖实录》顺治元年四、五、九月及顺治二、三年军报、《清初内国史院满文档案》关宁军务与北京迁都礼仪档（满、汉文行政链），并参照《甲申传信录》、江宁地方记事、《福建通志》《广东通志》、弘光朝奏疏与《永历实录》。范围仅及山海关--北京及江南、浙闽、两广的若干节点；路线不按比例，未绘政权边界，也不表示乡村、岛屿、山地或府县已被一方稳定控制。}
+  \label{fig:qing-entry-competing-centers}
+\end{figure}
