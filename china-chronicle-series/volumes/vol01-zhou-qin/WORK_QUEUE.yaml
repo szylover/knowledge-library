@@ -15,7 +15,7 @@ tasks:
 
   - id: vol01-ledger-spring
     role: chronology
-    status: in_progress
+    status: done
     scope:
       - data/event-ledger/spring-autumn.csv
     goal: Expand Spring from 55 to 400-600 source-aware events.
@@ -106,7 +106,7 @@ tasks:
 
   - id: vol01-integrate
     role: integrator
-    status: review
+    status: done
     scope:
       - main.tex
       - chapters/ch02-western-zhou.tex
@@ -167,7 +167,7 @@ tasks:
 
   - id: vol01-ledger-warring-to-850
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/warring-qin.csv
     goal: Extend Warring States and Qin coverage from 650 to 850 source-aware events.
