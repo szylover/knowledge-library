@@ -132,7 +132,7 @@ tasks:
 
   - id: vol01-prose-spring-jin
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/spring-autumn/states/jin/expansion-and-factions.tex
     goal: Expand the ledgered Jin Wen, Chengpu, faction, and succession cluster into source-aware prose.
