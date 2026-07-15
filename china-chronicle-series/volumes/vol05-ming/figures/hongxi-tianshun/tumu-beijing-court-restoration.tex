@@ -1,0 +1,44 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=.88cm,y=.88cm,font=\small,
+    place/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,inner sep=3pt},
+    court/.style={place,draw=dynasty!90,fill=dynasty!14},
+    frontier/.style={place,draw=source!85,fill=source!13},
+    crisis/.style={place,draw=timeline!90,fill=timeline!15},
+    note/.style={font=\scriptsize,align=center,text=source}
+  ]
+    \fill[paper] (-.35,-.4) rectangle (12.15,6.35);
+    \fill[source!14] (.2,4.2) -- (11.9,4.0) -- (11.95,6.05) -- (.35,6.15) -- cycle;
+    \fill[dynasty!11] (.2,.05) -- (11.9,.15) -- (11.9,3.8) -- (.35,4.0) -- cycle;
+    \node[font=\bfseries,text=source] at (9.8,5.45) {瓦剌诸部与北方接触地带（约略）};
+    \node[font=\bfseries,text=dynasty] at (1.75,3.42) {明朝边镇、京师与朝廷程序};
+
+    \node[frontier] (datong) at (2.3,4.7) {大同、宣府\\边镇与军需节点};
+    \node[frontier] (tumu) at (5.4,4.65) {土木、怀来一带\\1449年行军与危机节点};
+    \node[frontier] (oirat) at (8.85,5.15) {瓦剌诸部\\军队、使节与交换网络};
+    \node[court] (beijing) at (6.6,2.75) {北京\\城防、朝廷与仓储};
+    \node[crisis] (captivity) at (9.8,3.45) {英宗北行与被俘\\消息、谈判与遣还};
+    \node[court] (jingtai) at (3.3,1.2) {景泰继位\\守城与政务重组};
+    \node[court] (restoration) at (8.7,1.05) {1457年复辟\\宫廷与官僚重组};
+
+    \draw[->,very thick,color=dynasty] (datong) -- node[above,sloped,note]
+      {行军、补给与边情} (tumu);
+    \draw[->,very thick,color=source!90] (oirat) -- node[above,sloped,note]
+      {战场行动与接触关系} (tumu);
+    \draw[->,ultra thick,color=timeline!90] (tumu) -- node[right,note]
+      {危机传入京师} (beijing);
+    \draw[->,thick,dashed,color=source!85] (tumu) -- node[right,note]
+      {俘虏、使节与交涉并行} (captivity);
+    \draw[->,very thick,color=dynasty] (beijing) -- node[below,sloped,note]
+      {守备、任命与继位程序} (jingtai);
+    \draw[->,thick,dashed,color=timeline!90] (jingtai) -- node[below,sloped,note]
+      {权力重组的时间链} (restoration);
+
+    \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+      font=\scriptsize,text=source] at (1.8,.32)
+      {箭头显示危机、交涉与政务间的关联，\\不表示军队行军线、兵力规模或固定疆界。};
+  \end{tikzpicture}
+  \caption{土木危机、北京防务与朝廷重组（1449—1457，示意）。出征、土木危机、北京守备、景泰继位、英宗遣还及1457年复辟的基本年序，可据《明英宗实录》《明代宗实录》、相关奏疏与《明史》本纪、列传交叉定位；战场路线、各方兵数、俘虏交涉和城内政治细节在明方、蒙古方面及后出叙事中并不一致。图中把边镇、土木和北京置于同一示意框架，只为说明军事危机如何进入朝廷程序，不表示实际行军距离、控制范围或单一路径的因果解释。}
+  \label{fig:vol05:tumu-beijing-court-restoration}
+\end{figure}
