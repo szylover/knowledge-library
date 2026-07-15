@@ -125,7 +125,7 @@ tasks:
 
   - id: vol01-ledger-spring-phase3
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/spring-autumn.csv
     goal: Add source-aware early and middle Spring and Autumn entries without replacing existing rows.
