@@ -829,7 +829,7 @@ tasks:
   - id: vol04-anchor-system
     volume: vol04-song-yuan
     role: indexer
-    status: ready
+    status: done
     scope: [preamble.tex, chapters/appendix-*.tex]
     goal: Add event-link macros and index entry points for Volume IV.
   - id: vol05-anchor-system
