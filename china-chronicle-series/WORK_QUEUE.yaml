@@ -11,7 +11,7 @@ tasks:
   - id: vol01-ledger-spring
     volume: vol01-zhou-qin
     role: chronology
-    status: ready
+    status: in_progress
     scope:
       - data/event-ledger/spring-autumn.csv
     goal: Expand Spring ledger toward its 400-600 event target.
