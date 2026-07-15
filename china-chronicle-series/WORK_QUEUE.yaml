@@ -9,6 +9,15 @@ tasks:
       - tasks/
     goal: Establish a backward-compatible evidence-passport schema and validator before migrating volume ledgers.
 
+  - id: series-history-threads
+    role: continuity-editor
+    status: ready
+    scope:
+      - shared/series-threads.yaml
+      - shared/threads/
+      - tasks/
+    goal: Establish cross-volume historical question threads and a reusable continuity-editor handoff template.
+
   - id: vol01-ledger-western
     volume: vol01-zhou-qin
     role: chronology
