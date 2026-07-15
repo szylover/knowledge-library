@@ -109,7 +109,7 @@ tasks:
   - id: vol02-ledger-three-kingdoms
     volume: vol02-han-division
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/han-division.csv
     goal: Extend the shared Han ledger through the Three Kingdoms period without replacing existing rows.
@@ -141,7 +141,7 @@ tasks:
   - id: vol04-source-song-yuan
     volume: vol04-song-yuan
     role: source
-    status: ready
+    status: done
     scope:
       - data/source-corpus/song-yuan.md
     goal: Build a source matrix for Song, Liao, Western Xia, Jin and Yuan before any ledger or prose begins.

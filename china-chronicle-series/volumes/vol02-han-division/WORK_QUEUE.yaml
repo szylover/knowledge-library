@@ -54,7 +54,7 @@ tasks:
 
   - id: vol02-ledger-three-kingdoms
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/han-division.csv
     goal: Extend the shared Han ledger through the Three Kingdoms period without replacing existing rows.
