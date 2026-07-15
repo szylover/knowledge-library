@@ -715,7 +715,9 @@ tasks:
   - id: vol01-spring-final
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/vol01-spring-final
+    started_at: 2026-07-15T15:43:59+08:00
     scope: [chapters/spring-autumn/]
     goal: Complete remaining Spring and Autumn narrative modules.
   - id: vol01-warring-final
@@ -730,3 +732,10 @@ tasks:
     status: ready
     scope: [chapters/appendix-*.tex, chapters/appendix-series-roadmap.tex]
     goal: Complete cross-period continuity, source, event and figure indexing.
+  - id: vol01-final-publish
+    volume: vol01-zhou-qin
+    role: integrator
+    status: blocked
+    depends_on: [vol01-western-final, vol01-spring-final, vol01-warring-final, vol01-continuity-final]
+    scope: [main.tex, chapters/ch02-western-zhou.tex, chapters/ch03-spring-autumn.tex, chapters/ch04-warring-qin.tex, PROGRESS.md, ../../../pdf/china-chronicle/vol01-zhou-qin.pdf]
+    goal: Validate final Volume I totals and links, compile the publication PDF, update progress, and publish it after all final narrative and continuity tasks complete.
