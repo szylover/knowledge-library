@@ -61,7 +61,7 @@ tasks:
 
   - id: vol02-map-western-han
     role: cartographer
-    status: ready
+    status: done
     scope:
       - figures/western-han/
     goal: Add source-aware schematics for the Qin-Han transition and early Han spatial constraints.
