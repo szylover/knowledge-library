@@ -1,0 +1,51 @@
+\phantomsection\label{fig:vol03:sui:sui-reunification}
+\begin{center}
+\begin{tikzpicture}[
+  x=.78cm,y=.78cm,font=\small,
+  place/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,
+    inner sep=3pt},
+  court/.style={place,draw=dynasty,fill=dynasty!22},
+  region/.style={place,fill=timeline!16},
+  note/.style={font=\scriptsize,text=source,align=center}
+]
+  \fill[paper] (0,0) rectangle (12.4,6.8);
+  \node[font=\bfseries\large,text=dynasty] at (6.2,6.3)
+    {隋的再统一：北方压力、建康与江南接收};
+  \node[note] at (6.2,5.82) {581--590年若干可辨的行动节点与关系（示意）};
+
+  \fill[source!13] (.55,4.65) -- (11.9,4.38) -- (11.8,5.52) -- (.7,5.75) -- cycle;
+  \node[note] at (9.7,5.18) {北方草原与边防压力的方向};
+
+  \fill[timeline!13] (.7,.72) .. controls (3.0,.4) and (7.8,.62) .. (11.55,1.05)
+    -- (11.45,3.78) .. controls (7.4,3.48) and (3.4,3.72) .. (.72,3.36) -- cycle;
+  \node[note] at (8.75,3.55) {江南州县、仓储与地方社会的多样接收过程};
+
+  \node[court] (daxing) at (3.05,4.08) {大兴城／长安\\隋廷中枢};
+  \node[region] (turks) at (4.0,5.18) {突厥汗国\\北方压力与交涉};
+  \node[region] (north) at (6.25,4.3) {北方诸州\\军政调度};
+  \node[court] (jiankang) at (7.6,2.48) {建康\\589年易手};
+  \node[region] (jiangnan) at (9.85,1.62) {原陈诸州\\编户、改置与反应};
+  \node[region] (lingnan) at (10.72,.72) {岭南方向\\接收并非同步};
+  \node[region] (jianghuai) at (5.35,1.18) {淮南、江防\\水陆转运};
+
+  \draw[->,thick,dynasty] (daxing) -- node[above,sloped,note]
+    {581年受禅后的军政重组} (north);
+  \draw[<->,thick,dashed,timeline] (daxing) -- node[above,sloped,note]
+    {守御、分化与交涉} (turks);
+  \draw[->,very thick,dynasty] (north) .. controls (7.0,3.75) and (7.15,3.08) ..
+    node[right,note] {588--589年南下的水陆行动（约略）} (jiankang);
+  \draw[->,thick,timeline] (jianghuai) -- node[below,sloped,note]
+    {江防、运输与征发} (jiankang);
+  \draw[->,thick,dynasty] (jiankang) -- node[above,sloped,note]
+    {州县接收、户籍与赋役} (jiangnan);
+  \draw[->,thick,dashed,source] (jiangnan) -- node[below,sloped,note]
+    {590年前后的地方反应} (lingnan);
+
+  \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+    inner sep=4pt,font=\scriptsize,text=source] at (2.35,.98)
+    {没有连续国界：色块只提示\\问题所在的约略区域，不表示主权范围};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 隋的再统一（581--590，示意）：据《隋书·高祖纪》《隋书·突厥传》与《陈书·后主纪》，并参照《北史》及《资治通鉴》开皇元年至十年条，标出受禅后北方压力、南下、建康易手和江南接收之间的关系。箭头只提示史料可确认的行动方向或制度联系，不复原军队行军、江防部署、道路和赋役输送的精确路线；色块并非疆界，也不意味着各地以同一速度或同一方式接受隋的控制。}
+\end{center}

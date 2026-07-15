@@ -1,0 +1,60 @@
+\phantomsection\label{fig:vol03:an-lushan-late-tang:tang-frontiers-an-shi}
+\begin{center}
+\begin{tikzpicture}[
+  x=.79cm,y=.79cm,font=\small,
+  place/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,
+    inner sep=3pt},
+  court/.style={place,draw=dynasty,fill=dynasty!22},
+  frontier/.style={place,fill=timeline!18},
+  external/.style={place,draw=source,fill=source!13},
+  note/.style={font=\scriptsize,text=source,align=center}
+]
+  \fill[paper] (0,0) rectangle (12.5,6.9);
+  \node[font=\bfseries\large,text=dynasty] at (6.25,6.42)
+    {唐的北方边军与安史战争的路线节点};
+  \node[note] at (6.25,5.94) {约755--763年：军镇、都城、关隘与外援的关系（示意）};
+
+  \fill[source!11] (.65,4.72) -- (11.9,4.55) -- (11.75,5.64) -- (.76,5.78) -- cycle;
+  \node[note] at (7.1,5.26) {北方与东北边地：军镇、牧地、道路和交涉的多重空间};
+
+  \node[court] (changan) at (2.65,2.62) {长安\\唐廷中枢};
+  \node[court] (luoyang) at (5.65,3.2) {洛阳\\关东枢纽};
+  \node[frontier] (tongguan) at (4.02,2.2) {潼关\\关中门户};
+  \node[frontier] (lingwu) at (2.55,4.28) {灵武\\756年重立朝廷};
+  \node[frontier] (hedong) at (4.75,4.72) {河东\\北方防务};
+  \node[frontier] (fanyang) at (8.45,5.05) {范阳\\安禄山军镇重心};
+  \node[frontier] (pinglu) at (10.82,4.35) {平卢\\东北方向};
+  \node[external] (uyghur) at (1.05,5.05) {回纥\\援军、盟约与交换};
+  \node[external] (tubo) at (.92,2.58) {吐蕃方向\\西部边防压力};
+  \node[frontier] (hebei) at (8.18,2.48) {河北、相州\\战场与军镇重组};
+  \node[frontier] (suiyang) at (6.9,1.05) {睢阳、江淮方向\\粮道与城防};
+
+  \draw[->,very thick,dynasty] (fanyang) .. controls (7.55,4.35) and (6.55,3.7) ..
+    node[above,sloped,note] {755年起兵南下（约略）} (luoyang);
+  \draw[->,very thick,dynasty] (luoyang) -- node[above,sloped,note]
+    {关东道路的争夺} (tongguan);
+  \draw[->,very thick,dynasty] (tongguan) -- node[below,sloped,note]
+    {756年西进} (changan);
+  \draw[->,thick,timeline] (pinglu) -- node[above,sloped,note]
+    {东北军政资源的连接} (fanyang);
+  \draw[->,thick,timeline] (hedong) -- node[above,sloped,note]
+    {三镇兼领的另一端} (fanyang);
+  \draw[->,thick,dynasty] (lingwu) -- node[left,note]
+    {军队、诏令与复都行动} (changan);
+  \draw[->,thick,source] (uyghur) -- node[above,sloped,note]
+    {援军与利益交换} (changan);
+  \draw[<->,thick,dashed,source] (tubo) -- node[below,sloped,note]
+    {西部防务牵制} (changan);
+  \draw[<->,thick,dashed,timeline] (luoyang) -- node[right,note]
+    {城防、粮道与地方动员} (suiyang);
+  \draw[<->,thick,dashed,timeline] (luoyang) -- node[above,sloped,note]
+    {战后军镇与资源重组} (hebei);
+
+  \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+    inner sep=4pt,font=\scriptsize,text=source] at (10.05,.98)
+    {节点不等于控制范围；箭头不等于\\完整行军线、军力规模或政治服从};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 唐的北方边军与安史战争节点（约755--763，示意）：据《旧唐书》《新唐书》帝纪、安禄山及相关将领列传、方镇表与《资治通鉴》天宝十载至宝应二年条，并参照敦煌吐鲁番军政文书、吐蕃与回纥材料。图以范阳、平卢、河东三镇，洛阳、潼关、长安、灵武及河北、江淮等节点说明军镇资源、道路、都城危机和外援的关联；它不绘制唐、燕、吐蕃或回纥的疆界，也不把箭头当作精确行军线、单向支配关系或各地社会反应的证据。}
+\end{center}
