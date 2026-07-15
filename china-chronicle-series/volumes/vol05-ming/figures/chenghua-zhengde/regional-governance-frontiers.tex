@@ -1,0 +1,42 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=.88cm,y=.88cm,font=\small,
+    place/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,inner sep=3pt},
+    court/.style={place,draw=dynasty!90,fill=dynasty!14},
+    region/.style={place,draw=source!85,fill=source!13},
+    process/.style={place,draw=timeline!90,fill=timeline!15},
+    note/.style={font=\scriptsize,align=center,text=source}
+  ]
+    \fill[paper] (-.35,-.45) rectangle (12.15,6.4);
+    \fill[dynasty!11] (.15,.05) rectangle (11.9,6.05);
+    \node[font=\bfseries,text=dynasty] at (6.0,5.63)
+      {成化至正德：地方治理与边地的多重接口（示意）};
+
+    \node[court] (beijing) at (6.05,4.3) {北京\\任命、奏报、军费与册封};
+    \node[region] (jingxiang) at (2.0,3.0) {荆襄山地\\流民、垦殖与征役};
+    \node[process] (yunyang) at (3.9,1.45) {郧阳府\\1476年设府与编置};
+    \node[region] (guangxi) at (1.8,.55) {广西山地\\征讨、招抚与设治};
+    \node[region] (liaodong) at (9.9,3.0) {辽东、建州\\征讨、边市与中介};
+    \node[region] (hami) at (10.1,.75) {哈密绿洲\\册封、贡使与商路};
+
+    \draw[->,very thick,color=dynasty] (beijing) -- node[above,sloped,note]
+      {任命、核报与常设行政} (jingxiang);
+    \draw[->,thick,color=timeline!90] (jingxiang) -- node[below,sloped,note]
+      {招抚、登记与地方安置} (yunyang);
+    \draw[<->,thick,dashed,color=source!85] (yunyang) -- node[left,note]
+      {道路、土地与山地中介} (guangxi);
+    \draw[->,very thick,color=dynasty] (beijing) -- node[above,sloped,note]
+      {军令、赏赐与边政文书} (liaodong);
+    \draw[<->,thick,dashed,color=source!85] (beijing) -- node[right,note]
+      {册封、使节与有限远距支援} (hami);
+    \draw[<->,thick,dashed,color=timeline!90] (liaodong) -- node[right,note]
+      {军事威慑不等于固定边界} (hami);
+
+    \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+      font=\scriptsize,text=source] at (6.05,.2)
+      {各节点按治理问题而非比例地理排列；虚线表示需要地方中介的持续关系。};
+  \end{tikzpicture}
+  \caption{成化至正德的地方治理、边地与中介网络（示意）。荆襄流民处置、郧阳设府、广西山地征讨与设治、明朝—朝鲜对建州的联合行动，以及哈密的册封与反复失守，可分别由《宪宗实录》《孝宗实录》《武宗实录》、地方志、使臣文书和《明史》相关传志互校。奏报中的户口、战果、册封与“恢复”措辞不能直接推出山地社会、边地居民或绿洲控制的实际状态；图中并列区域不是交通路线或统一边界图，而是展示不同治理接口的比较框架。}
+  \label{fig:vol05:regional-governance-frontiers}
+\end{figure}
