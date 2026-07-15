@@ -348,3 +348,35 @@ tasks:
       - chapters/ch01-early-qing.tex
       - chapters/early-qing/entry-and-regency.tex
     goal: Write the Qing entry, Beijing reception and regency event cluster from the verified ledger.
+
+  - id: vol01-ledger-spring-to-400
+    volume: vol01-zhou-qin
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/spring-autumn.csv
+    goal: Extend the Spring and Autumn ledger from 207 to 400 source-aware events without replacing existing rows.
+
+  - id: vol01-ledger-warring-to-650
+    volume: vol01-zhou-qin
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/warring-qin.csv
+    goal: Extend the Warring States and Qin ledger from 312 to 650 source-aware events without replacing existing rows.
+
+  - id: vol01-prose-transition
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/spring-autumn/synthesis/partition-of-jin.tex
+    goal: Expand the ledgered Spring-to-Warring transition into source-aware prose.
+
+  - id: vol01-prose-reforms
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/synthesis/reforms-and-state-capacity.tex
+    goal: Expand the ledgered Warring States reforms comparison into source-aware prose.
