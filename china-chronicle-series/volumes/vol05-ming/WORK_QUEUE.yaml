@@ -1,0 +1,10 @@
+volume: vol05-ming
+stage: source-corpus
+
+tasks:
+  - id: vol05-source-ming
+    role: source
+    status: ready
+    scope:
+      - data/source-corpus/ming.md
+    goal: Build a source matrix for Ming before any ledger or prose begins.

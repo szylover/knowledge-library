@@ -145,3 +145,11 @@ tasks:
     scope:
       - data/source-corpus/song-yuan.md
     goal: Build a source matrix for Song, Liao, Western Xia, Jin and Yuan before any ledger or prose begins.
+
+  - id: vol05-source-ming
+    volume: vol05-ming
+    role: source
+    status: ready
+    scope:
+      - data/source-corpus/ming.md
+    goal: Build a source matrix for Ming before any ledger or prose begins.
