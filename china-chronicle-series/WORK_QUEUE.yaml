@@ -287,7 +287,7 @@ tasks:
   - id: vol02-map-jin-division
     volume: vol02-han-division
     role: cartographer
-    status: ready
+    status: done
     scope:
       - figures/western-jin/
       - figures/eastern-jin-sixteen-kingdoms/
