@@ -338,3 +338,34 @@ tasks:
     status: ready
     scope: [chapters/spring-autumn/common/culture-thought.tex]
     goal: Expand the Spring and Autumn culture and thought synthesis.
+
+  - id: vol01-prose-western-eastern-network-next
+    role: narrative
+    status: ready
+    scope: [chapters/western-zhou/states/eastern-network/]
+    goal: Expand Western Zhou eastern network narratives.
+  - id: vol01-prose-western-frontiers-next
+    role: narrative
+    status: ready
+    scope: [chapters/western-zhou/frontiers/]
+    goal: Expand Western Zhou frontier narratives.
+  - id: vol01-prose-western-chronology-next
+    role: narrative
+    status: ready
+    scope: [chapters/western-zhou/common/chronology.tex]
+    goal: Expand Western Zhou shared chronology.
+  - id: vol01-prose-spring-chronology-early-next
+    role: narrative
+    status: ready
+    scope: [chapters/spring-autumn/common/chronology-770-632.tex]
+    goal: Expand early Spring and Autumn chronology.
+  - id: vol01-prose-spring-chronology-late-next
+    role: narrative
+    status: ready
+    scope: [chapters/spring-autumn/common/chronology-631-481.tex]
+    goal: Expand late Spring and Autumn chronology.
+  - id: vol01-prose-warring-chronology-early-next
+    role: narrative
+    status: ready
+    scope: [chapters/warring-qin/common/chronology-453-350.tex]
+    goal: Expand early Warring States chronology.
