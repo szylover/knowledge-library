@@ -528,3 +528,12 @@ tasks:
     scope:
       - chapters/warring-qin/common/economy-society.tex
     goal: Expand the ledgered Warring States economy and society synthesis into source-aware prose.
+
+  - id: vol01-figure-index-links
+    volume: vol01-zhou-qin
+    role: indexer
+    status: ready
+    scope:
+      - chapters/appendix-index.tex
+      - figures/
+    goal: Add stable figure anchors and clickable entries for the volume's figure and map index.

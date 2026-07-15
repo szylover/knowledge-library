@@ -248,3 +248,11 @@ tasks:
     scope:
       - chapters/warring-qin/common/economy-society.tex
     goal: Expand the Warring States economy and society synthesis from existing ledger events.
+
+  - id: vol01-figure-index-links
+    role: indexer
+    status: ready
+    scope:
+      - chapters/appendix-index.tex
+      - figures/
+    goal: Add stable figure anchors and clickable entries for the figure and map index.
