@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "ledger_id": "DEMO-0001-EVENT",
+  "evidence_type": "retrospective_history",
+  "source_locator": "《示例编年》卷一，〈示例事件〉",
+  "source_caveat": "该后出编纂叙事可支持事件的基本顺序，不能独立证实对话、精确数字或行动者动机。"
+}
