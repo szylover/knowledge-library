@@ -1,0 +1,55 @@
+\phantomsection\label{fig:vol03:early-tang:tang-frontiers-silk-road}
+\begin{center}
+\begin{tikzpicture}[
+  x=.78cm,y=.78cm,font=\small,
+  place/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,
+    inner sep=3pt},
+  court/.style={place,draw=dynasty,fill=dynasty!22},
+  frontier/.style={place,fill=timeline!18},
+  external/.style={place,draw=source,fill=source!13},
+  note/.style={font=\scriptsize,text=source,align=center}
+]
+  \fill[paper] (0,0) rectangle (12.5,6.9);
+  \node[font=\bfseries\large,text=dynasty] at (6.25,6.42)
+    {唐初的边疆走廊与跨区域战争};
+  \node[note] at (6.25,5.94) {630--668年若干军事、行政与外交节点（示意）};
+
+  \fill[source!11] (.55,4.73) -- (11.95,4.55) -- (11.8,5.6) -- (.72,5.76) -- cycle;
+  \node[note] at (7.65,5.15) {草原、天山与东北方向：不同政治行动者和道路的空间};
+
+  \node[court] (changan) at (4.85,2.85) {长安\\朝廷与军政调度};
+  \node[frontier] (lingzhou) at (4.1,4.52) {北方边州\\东突厥战争后};
+  \node[external] (turks) at (5.95,5.0) {东突厥\\部众、牧地与交涉};
+  \node[frontier] (songzhou) at (2.48,2.3) {松州、河湟\\吐谷浑与吐蕃方向};
+  \node[external] (tibet) at (.86,1.48) {吐蕃方向\\战争、婚盟与道路};
+  \node[frontier] (xizhou) at (7.0,3.82) {高昌／西州\\640年置州};
+  \node[frontier] (kucha) at (9.15,3.58) {龟兹、安西\\648年后};
+  \node[external] (western) at (10.92,4.78) {西突厥方向\\657年战争与重组};
+  \node[frontier] (liaodong) at (8.36,1.42) {辽东、平壤\\远征与战争};
+  \node[external] (silla) at (10.78,1.1) {百济、新罗、倭\\联盟与海上战争};
+
+  \draw[<->,thick,dashed,timeline] (lingzhou) -- node[above,sloped,note]
+    {战争后的安置与交涉} (turks);
+  \draw[->,thick,dynasty] (changan) -- node[left,note]
+    {北方守御与任官} (lingzhou);
+  \draw[<->,thick,dashed,source] (songzhou) -- node[below,sloped,note]
+    {638年后：战争、婚盟与边地协商} (tibet);
+  \draw[->,thick,dynasty] (changan) -- node[above,sloped,note]
+    {640年高昌覆亡、置西州} (xizhou);
+  \draw[->,thick,dynasty] (xizhou) -- node[above,sloped,note]
+    {648年龟兹战争与驻防} (kucha);
+  \draw[<->,thick,dashed,timeline] (kucha) -- node[above,sloped,note]
+    {天山南北的多重关系} (western);
+  \draw[->,thick,dynasty] (changan) -- node[below,sloped,note]
+    {645年辽东远征（约略）} (liaodong);
+  \draw[<->,thick,dashed,source] (liaodong) -- node[below,sloped,note]
+    {660--668年联盟与战事} (silla);
+
+  \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+    inner sep=4pt,font=\scriptsize,text=source] at (2.5,5.03)
+    {节点与箭头只提示可见关系；\\不表示稳定统属、精确路线或连续疆界};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 唐初的边疆走廊与跨区域战争（630--668，示意）：据《旧唐书》《新唐书》突厥、吐谷浑、吐蕃、西域及东夷相关列传和《资治通鉴》，并参照突厥碑铭、吐蕃材料、《三国史记》与《日本书纪》，标出东突厥、高昌、西州、龟兹、辽东及朝鲜半岛方向的若干事件节点。官修唐史以朝廷行动为轴，外部材料各有自己的编年和政治语言；故本图不绘制唐的精确疆界或都护辖境，也不将战役、置州、联盟或婚盟等同于稳定控制、单向服从或完整行军路线。}
+\end{center}
