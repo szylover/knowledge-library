@@ -369,3 +369,24 @@ tasks:
     status: ready
     scope: [chapters/warring-qin/common/chronology-453-350.tex]
     goal: Expand early Warring States chronology.
+
+  - id: vol01-western-final
+    role: narrative
+    status: ready
+    scope: [chapters/western-zhou/]
+    goal: Complete remaining Western Zhou narrative modules.
+  - id: vol01-spring-final
+    role: narrative
+    status: ready
+    scope: [chapters/spring-autumn/]
+    goal: Complete remaining Spring and Autumn narrative modules.
+  - id: vol01-warring-final
+    role: narrative
+    status: ready
+    scope: [chapters/warring-qin/]
+    goal: Complete remaining Warring States and Qin narrative modules.
+  - id: vol01-continuity-final
+    role: continuity-editor
+    status: ready
+    scope: [chapters/appendix-*.tex, chapters/appendix-series-roadmap.tex]
+    goal: Complete cross-period continuity, source, event and figure indexing.
