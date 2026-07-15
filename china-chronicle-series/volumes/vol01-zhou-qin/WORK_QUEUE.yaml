@@ -29,7 +29,7 @@ tasks:
 
   - id: vol01-prose-western
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/western-zhou/
     depends_on:
@@ -56,7 +56,7 @@ tasks:
 
   - id: vol01-maps-western-spring
     role: cartographer
-    status: ready
+    status: done
     scope:
       - figures/western-zhou/
       - figures/spring-autumn/
