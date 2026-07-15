@@ -361,7 +361,7 @@ tasks:
   - id: vol06-map-entry-conquest
     volume: vol06-qing-1912
     role: cartographer
-    status: ready
+    status: done
     scope:
       - figures/early-qing/
     goal: Add source-aware schematics for Qing entry, southern conquest, and early frontier governance.
