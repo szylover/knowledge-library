@@ -8,3 +8,10 @@ tasks:
     scope:
       - data/source-corpus/ming.md
     goal: Build a source matrix for Ming before any ledger or prose begins.
+
+  - id: vol05-ledger-early-ming
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/ming.csv
+    goal: Establish a source-aware early Ming event ledger before prose begins.
