@@ -1,0 +1,30 @@
+\begin{center}
+\begin{tikzpicture}[x=.88cm,y=.88cm,font=\small]
+  \fill[paper] (0,0) rectangle (11.8,6.25);
+  \draw[blue!55,line width=1pt] (.35,4.9) .. controls (3.2,4.55) and (7.1,5.15) .. (11.25,4.55);
+  \node[text=blue!70!black,above] at (7.2,4.8) {黄河方向};
+
+  \fill[dynasty!22] (1.0,2.0) ellipse (1.35 and 1.0);
+  \node[align=center] at (1.0,2.0) {关中\\咸阳};
+  \fill[yellow!22] (4.75,3.95) ellipse (1.25 and .82);
+  \node[align=center] at (4.75,3.95) {旧韩、魏地区\\郡县接管};
+  \fill[purple!17] (6.7,1.45) ellipse (1.25 and .82);
+  \node[align=center] at (6.7,1.45) {旧楚地区\\迁陵县文书};
+  \fill[cyan!20] (9.75,3.65) ellipse (1.2 and .82);
+  \node[align=center] at (9.75,3.65) {齐鲁方向\\郡县接管};
+
+  \draw[-{Stealth[length=2mm]},ultra thick,color=dynasty] (2.2,2.55) -- (3.75,3.55);
+  \draw[-{Stealth[length=2mm]},ultra thick,color=dynasty] (2.3,1.8) -- (5.4,1.5);
+  \draw[-{Stealth[length=2mm]},ultra thick,color=dynasty] (2.25,2.35) .. controls (5.4,3.3) .. (8.5,3.65);
+  \node[align=center,text=dynasty] at (3.25,2.62) {驰道、使者\\与军需方向};
+
+  \node[draw=source!65,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (jun) at (4.75,5.35) {郡\\守、尉、监};
+  \node[draw=source!65,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (xian) at (6.95,5.35) {县\\簿籍、收发};
+  \draw[-{Stealth[length=1.7mm]},thick,color=source] (jun) -- node[above,font=\scriptsize]{文书、考核} (xian);
+  \draw[-{Stealth[length=1.7mm]},thick,color=source] (xian.south) -- (4.95,4.78);
+  \node[align=center,text=source,font=\scriptsize] at (7.05,5.95) {中央任命与地方操作\\并非单向无阻};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 统一后咸阳、道路与郡县节点示意：据《史记·秦始皇本纪》《李斯列传》以及里耶、睡虎地秦简，说明咸阳、道路、郡县与地方文书如何构成可传递命令和征发资源的关系。图不重建“三十六郡”的确切范围、驰道路向或全国执行速度；各区域边界均为约略示意。}
+\end{center}
