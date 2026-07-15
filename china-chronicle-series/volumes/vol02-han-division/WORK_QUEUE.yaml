@@ -51,3 +51,10 @@ tasks:
       - chapters/ch02-eastern-han.tex
       - chapters/eastern-han/restoration-and-luoyang.tex
     goal: Convert the existing Eastern Han restoration ledger cluster into source-aware narrative prose.
+
+  - id: vol02-ledger-three-kingdoms
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/han-division.csv
+    goal: Extend the shared Han ledger through the Three Kingdoms period without replacing existing rows.

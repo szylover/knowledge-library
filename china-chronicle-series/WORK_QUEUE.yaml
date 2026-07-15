@@ -40,6 +40,22 @@ tasks:
       - data/event-ledger/warring-qin.csv
     goal: Expand Warring-Qin ledger toward its 700-1000 event target.
 
+  - id: vol01-ledger-warring-phase2
+    volume: vol01-zhou-qin
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/warring-qin.csv
+    goal: Add source-aware Warring States entries across the middle period without replacing existing rows.
+
+  - id: vol01-source-spring
+    volume: vol01-zhou-qin
+    role: source
+    status: ready
+    scope:
+      - data/source-corpus/spring-autumn.md
+    goal: Strengthen the Spring and Autumn source matrix with coverage gaps and event-specific evidence guidance.
+
   - id: vol01-map-campaigns
     volume: vol01-zhou-qin
     role: cartographer
@@ -89,3 +105,19 @@ tasks:
       - chapters/ch02-eastern-han.tex
       - chapters/eastern-han/restoration-and-luoyang.tex
     goal: Convert the existing Eastern Han restoration ledger cluster into source-aware narrative prose.
+
+  - id: vol02-ledger-three-kingdoms
+    volume: vol02-han-division
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/han-division.csv
+    goal: Extend the shared Han ledger through the Three Kingdoms period without replacing existing rows.
+
+  - id: vol03-source-sui-tang-five
+    volume: vol03-sui-tang-five
+    role: source
+    status: ready
+    scope:
+      - data/source-corpus/sui-tang-five.md
+    goal: Build a source matrix for Sui, Tang and Five Dynasties before any ledger or prose begins.
