@@ -139,28 +139,35 @@ tasks:
 
   - id: vol01-ledger-spring-to-400
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/spring-autumn.csv
     goal: Expand Spring and Autumn coverage from 207 to 400 source-aware events.
 
   - id: vol01-ledger-warring-to-650
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/warring-qin.csv
     goal: Expand Warring States and Qin coverage from 312 to 650 source-aware events.
 
   - id: vol01-prose-transition
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/spring-autumn/synthesis/partition-of-jin.tex
     goal: Write the existing ledgered Spring-to-Warring transition as source-aware prose.
 
   - id: vol01-prose-reforms
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/warring-qin/synthesis/reforms-and-state-capacity.tex
     goal: Write the existing ledgered Warring States reforms comparison as source-aware prose.
+
+  - id: vol01-ledger-warring-to-850
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/warring-qin.csv
+    goal: Extend Warring States and Qin coverage from 650 to 850 source-aware events.

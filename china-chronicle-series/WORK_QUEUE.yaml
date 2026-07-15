@@ -404,7 +404,7 @@ tasks:
   - id: vol01-ledger-warring-to-650
     volume: vol01-zhou-qin
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/warring-qin.csv
     goal: Extend the Warring States and Qin ledger from 312 to 650 source-aware events without replacing existing rows.
@@ -412,7 +412,7 @@ tasks:
   - id: vol01-prose-transition
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/spring-autumn/synthesis/partition-of-jin.tex
     goal: Expand the ledgered Spring-to-Warring transition into source-aware prose.
@@ -420,7 +420,15 @@ tasks:
   - id: vol01-prose-reforms
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/warring-qin/synthesis/reforms-and-state-capacity.tex
     goal: Expand the ledgered Warring States reforms comparison into source-aware prose.
+
+  - id: vol01-ledger-warring-to-850
+    volume: vol01-zhou-qin
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/warring-qin.csv
+    goal: Extend the Warring States and Qin ledger from 650 to 850 source-aware events without replacing existing rows.
