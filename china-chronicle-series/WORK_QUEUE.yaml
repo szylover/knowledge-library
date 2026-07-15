@@ -114,6 +114,14 @@ tasks:
       - data/event-ledger/han-division.csv
     goal: Extend the shared Han ledger through the Three Kingdoms period without replacing existing rows.
 
+  - id: vol02-map-western-han
+    volume: vol02-han-division
+    role: cartographer
+    status: ready
+    scope:
+      - figures/western-han/
+    goal: Add source-aware schematics for the Qin-Han transition and early Han spatial constraints.
+
   - id: vol03-source-sui-tang-five
     volume: vol03-sui-tang-five
     role: source
