@@ -797,7 +797,7 @@ tasks:
   - id: vol05-prose-standard
     volume: vol05-ming
     role: narrative
-    status: ready
+    status: done
     scope: [chapters/]
     goal: Expand initial Ming narrative clusters from verified ledger events.
   - id: vol06-ledger-standard
