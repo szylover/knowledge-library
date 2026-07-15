@@ -42,3 +42,12 @@ tasks:
     scope:
       - figures/northern-song/
     goal: Add source-aware schematics for Northern Song founding, Liao frontier, and early state capacity.
+
+  - id: vol04-integrate-northern-song-maps
+    role: integrator
+    status: ready
+    scope:
+      - chapters/northern-song/founding-and-frontiers.tex
+      - PROGRESS.md
+      - pdf/china-chronicle/vol04-song-yuan.pdf
+    goal: Insert verified Northern Song figures into the written event cluster, compile, and publish the updated Volume IV PDF.
