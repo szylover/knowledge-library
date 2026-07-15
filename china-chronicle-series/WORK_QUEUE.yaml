@@ -64,3 +64,12 @@ tasks:
       - chapters/ch01-western-han.tex
       - chapters/western-han/qin-han-transition.tex
     goal: Convert the existing Qin-Han transition ledger cluster into source-aware narrative prose.
+
+  - id: vol02-prose-eastern-restoration
+    volume: vol02-han-division
+    role: narrative
+    status: ready
+    scope:
+      - chapters/ch02-eastern-han.tex
+      - chapters/eastern-han/restoration-and-luoyang.tex
+    goal: Convert the existing Eastern Han restoration ledger cluster into source-aware narrative prose.
