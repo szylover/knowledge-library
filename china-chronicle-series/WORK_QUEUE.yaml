@@ -21,7 +21,7 @@ tasks:
   - id: vol02-evidence-passport-pilot
     volume: vol02-han-division
     role: evidence-auditor
-    status: ready
+    status: done
     scope:
       - data/evidence-passports/
     goal: Create evidence passports for selected written Qin-Han, Eastern Han, Three Kingdoms, and Western Jin events without changing ledger rows.
