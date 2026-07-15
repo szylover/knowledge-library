@@ -1,0 +1,36 @@
+\documentclass[11pt,a4paper,openany]{book}
+\input{preamble}
+
+\begin{document}
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[dynasty] (current page.north west) rectangle ([yshift=-8.2cm]current page.north east);
+    \fill[timeline] ([yshift=-8.2cm]current page.north west) rectangle ([yshift=-8.55cm]current page.north east);
+  \end{tikzpicture}
+  \centering
+  \vspace*{2.0cm}
+  {\color{white}\fontsize{35}{44}\selectfont\bfseries 中国大事编年·第五卷\par}
+  \vspace{.6cm}
+  {\color{white!90}\Large 明（1368—1644）\par}
+  \vfill
+  {\normalsize \today\par}
+  \vspace{2cm}
+\end{titlepage}
+
+\frontmatter
+\tableofcontents
+
+\mainmatter
+\part{皇权、财政、边疆与晚期危机}
+\include{chapters/ch01-hongwu-jianwen-yongle}
+\include{chapters/ch02-hongxi-tianshun}
+\include{chapters/ch03-chenghua-zhengde}
+\include{chapters/ch04-jiajing-longqing}
+\include{chapters/ch05-wanli}
+\include{chapters/ch06-tianqi-chongzhen}
+
+\appendix
+\include{chapters/appendix-sources}
+\include{chapters/appendix-index}
+\include{chapters/appendix-series-roadmap}
+\end{document}
