@@ -1,0 +1,52 @@
+\phantomsection\label{fig:vol03:wu-zhou-xuanzong:wu-zhou-kaiyuan-centers-frontiers}
+\begin{center}
+\begin{tikzpicture}[
+  x=.78cm,y=.78cm,font=\small,
+  place/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,
+    inner sep=3pt},
+  court/.style={place,draw=dynasty,fill=dynasty!22},
+  frontier/.style={place,fill=timeline!18},
+  external/.style={place,draw=source,fill=source!13},
+  note/.style={font=\scriptsize,text=source,align=center}
+]
+  \fill[paper] (0,0) rectangle (12.5,6.9);
+  \node[font=\bfseries\large,text=dynasty] at (6.25,6.42)
+    {武周至开元：两京、江淮转运与边疆压力};
+  \node[note] at (6.25,5.94) {约690--751年：中枢、财政通道与若干边地走廊（示意）};
+
+  \fill[source!11] (.58,4.72) -- (11.92,4.51) -- (11.8,5.59) -- (.72,5.78) -- cycle;
+  \node[note] at (9.45,5.18) {河西、西域与东北边地：驻防、交涉和补给的不同约束};
+
+  \node[court] (luoyang) at (5.65,3.22) {洛阳／神都\\武周中枢};
+  \node[court] (changan) at (3.02,2.58) {长安\\复唐后与开元朝廷};
+  \node[frontier] (jianghuai) at (6.18,.98) {江淮、扬州\\户籍、漕运与税源};
+  \node[frontier] (yingzhou) at (8.32,4.55) {营州、东北\\契丹起事与边防};
+  \node[frontier] (hexi) at (1.42,4.45) {河西、陇右\\吐蕃压力与军需};
+  \node[frontier] (anxi) at (.98,2.55) {安西、北庭\\692、702年后};
+  \node[external] (tibet) at (.72,1.14) {吐蕃方向\\边防与道路};
+  \node[external] (turks) at (10.72,5.03) {后突厥、草原方向\\交涉与防务};
+  \node[frontier] (yunnan) at (9.8,1.56) {云南、南诏方向\\远征与补给限制};
+
+  \draw[<->,very thick,dynasty] (changan) -- node[above,sloped,note]
+    {复唐后的人事、礼仪与行政连续性} (luoyang);
+  \draw[<->,thick,timeline] (luoyang) -- node[right,note]
+    {括户、漕运与粮道的联系} (jianghuai);
+  \draw[<->,thick,dashed,source] (hexi) -- node[left,note]
+    {吐蕃压力、驻军与补给} (tibet);
+  \draw[<->,thick,timeline] (hexi) -- node[above,sloped,note]
+    {河西走廊与军政文书} (anxi);
+  \draw[->,thick,dynasty] (changan) -- node[above,sloped,note]
+    {边防调度与任命} (hexi);
+  \draw[<->,thick,dashed,timeline] (yingzhou) -- node[above,sloped,note]
+    {东北防务与草原交涉} (turks);
+  \draw[->,thick,dynasty] (luoyang) .. controls (7.3,2.9) and (8.85,2.18) ..
+    node[above,sloped,note] {开元、天宝前的南方远征压力（约略）} (yunnan);
+
+  \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+    inner sep=4pt,font=\scriptsize,text=source] at (10.18,.58)
+    {色块不代表国界；线条不量化\\漕粮、兵额、税源或统治深度};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 武周至开元的两京、江淮转运与边疆压力（约690--751，示意）：据《旧唐书》《新唐书》则天、玄宗诸纪及吐蕃、突厥、契丹、西域、南诏相关列传，《资治通鉴》并参照《唐六典》《通典》、敦煌吐鲁番军政文书、吐蕃和突厥碑铭。图连接神都／洛阳、长安与江淮财政交通，以及河西、安西北庭、东北和云南方向的若干节点；制度汇编和正史适于确认政策名目、任命与年序，却不能证明全国同步执行或边军、漕粮和税收的精确规模。箭头与色块均为约略关系，不是疆界、道路复原或各地实际控制的量尺。}
+\end{center}

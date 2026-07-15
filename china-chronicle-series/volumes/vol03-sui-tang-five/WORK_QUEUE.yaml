@@ -41,6 +41,17 @@ tasks:
       - chapters/appendix-index.tex
     goal: Add and wire warm-paper schematic maps for Sui reunification, Tang frontier forces and the An Shi war, and the late Tang to Five Dynasties regional order.
 
+  - id: vol03-maps-early-wuzhou
+    role: cartographer
+    status: done
+    scope:
+      - figures/early-tang/tang-frontiers-silk-road.tex
+      - figures/wu-zhou-xuanzong/wu-zhou-kaiyuan-centers-frontiers.tex
+      - chapters/ch02-early-tang.tex
+      - chapters/ch03-wu-zhou-xuanzong.tex
+      - chapters/appendix-index.tex
+    goal: Add and wire warm-paper schematic maps for early Tang frontier corridors and for Wu Zhou to Kaiyuan capitals, transport, and frontier pressures.
+
   - id: vol03-prose-sui-reunification
     role: narrative
     status: done
