@@ -1,5 +1,14 @@
 series: china-chronicle
 tasks:
+  - id: series-evidence-passport
+    role: evidence-auditor
+    status: ready
+    scope:
+      - shared/evidence/
+      - scripts/validate-event-ledger.ps1
+      - tasks/
+    goal: Establish a backward-compatible evidence-passport schema and validator before migrating volume ledgers.
+
   - id: vol01-ledger-western
     volume: vol01-zhou-qin
     role: chronology
