@@ -751,6 +751,67 @@ tasks:
     status: ready
     scope: [chapters/warring-qin/states/chu/wu-qi-and-southern-state.tex, chapters/warring-qin/states/wei/early-reforms.tex]
     goal: Integrate all remaining Chu and Wei ledger events into prose anchors.
+
+  - id: vol02-ledger-standard
+    volume: vol02-han-division
+    role: chronology
+    status: ready
+    scope: [data/event-ledger/han-division.csv]
+    goal: Expand Han through Northern and Southern Dynasties ledger toward volume-standard coverage.
+  - id: vol02-prose-standard
+    volume: vol02-han-division
+    role: narrative
+    status: ready
+    scope: [chapters/]
+    goal: Expand initial Han narrative clusters from verified ledger events.
+  - id: vol03-ledger-standard
+    volume: vol03-sui-tang-five
+    role: chronology
+    status: ready
+    scope: [data/event-ledger/sui-tang-five.csv]
+    goal: Expand Sui, Tang and Five Dynasties ledger toward volume-standard coverage.
+  - id: vol03-prose-standard
+    volume: vol03-sui-tang-five
+    role: narrative
+    status: ready
+    scope: [chapters/]
+    goal: Expand initial Sui-Tang narrative clusters from verified ledger events.
+  - id: vol04-ledger-standard
+    volume: vol04-song-yuan
+    role: chronology
+    status: ready
+    scope: [data/event-ledger/song-yuan.csv]
+    goal: Expand Song-Yuan ledger toward volume-standard coverage.
+  - id: vol04-prose-standard
+    volume: vol04-song-yuan
+    role: narrative
+    status: ready
+    scope: [chapters/]
+    goal: Expand initial Song-Yuan narrative clusters from verified ledger events.
+  - id: vol05-ledger-standard
+    volume: vol05-ming
+    role: chronology
+    status: ready
+    scope: [data/event-ledger/ming.csv]
+    goal: Expand Ming ledger toward volume-standard coverage.
+  - id: vol05-prose-standard
+    volume: vol05-ming
+    role: narrative
+    status: ready
+    scope: [chapters/]
+    goal: Expand initial Ming narrative clusters from verified ledger events.
+  - id: vol06-ledger-standard
+    volume: vol06-qing-1912
+    role: chronology
+    status: ready
+    scope: [data/event-ledger/qing-1912.csv]
+    goal: Expand Qing-to-1912 ledger toward volume-standard coverage.
+  - id: vol06-prose-standard
+    volume: vol06-qing-1912
+    role: narrative
+    status: ready
+    scope: [chapters/]
+    goal: Expand initial Qing narrative clusters from verified ledger events.
   - id: vol01-final-publish
     volume: vol01-zhou-qin
     role: integrator
