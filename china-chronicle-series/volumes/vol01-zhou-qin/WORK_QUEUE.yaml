@@ -171,3 +171,31 @@ tasks:
     scope:
       - data/event-ledger/warring-qin.csv
     goal: Extend Warring States and Qin coverage from 650 to 850 source-aware events.
+
+  - id: vol01-prose-spring-chu
+    role: narrative
+    status: ready
+    scope:
+      - chapters/spring-autumn/states/chu/southern-power.tex
+    goal: Expand the Spring and Autumn Chu dossier from existing ledger events.
+
+  - id: vol01-prose-spring-zhou
+    role: narrative
+    status: ready
+    scope:
+      - chapters/spring-autumn/states/zhou/royal-court.tex
+    goal: Expand the Spring and Autumn Zhou royal court dossier from existing ledger events.
+
+  - id: vol01-prose-warring-chu
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/states/chu/wu-qi-and-southern-state.tex
+    goal: Expand the Warring States Chu dossier from existing ledger events.
+
+  - id: vol01-prose-warring-han
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/states/han/shen-buhai.tex
+    goal: Expand the Warring States Han dossier from existing ledger events.
