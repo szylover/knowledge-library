@@ -33,7 +33,21 @@ Set-Location D:\projects\knowledge-library\china-chronicle-series
 
 在系列根目录运行：
 
+```
+
+每次更新上述目录后，同步到 Azure Blob Storage 账户 `zyshaobook` 的 `$web` 静态网站容器：
+
 ```powershell
+Set-Location D:\projects\knowledge-library
+az storage blob upload-batch `
+  --account-name zyshaobook `
+  --auth-mode key `
+  --destination '$web' `
+  --source pdf\china-chronicle `
+  --overwrite
+```
+
+Blob 端点：<https://zyshaobook.blob.core.windows.net/>；发布站点：<https://zyshaobook.z7.web.core.windows.net/>。powershell
 .\scripts\show-parallel-status.ps1
 ```
 

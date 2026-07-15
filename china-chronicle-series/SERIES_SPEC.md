@@ -70,3 +70,7 @@ causes, consequences, target_file, tier
 所有任务在 `WORK_QUEUE.yaml` 中声明。Agent 必须使用独立 worktree 和 `chronicle/<task-id>` 分支；一个文件只能有一个 writer。Integrator 是唯一可以合并至 `main` 和发布根目录 PDF 的角色。
 
 详见系列 `AGENTS.md` 与各卷 `AGENTS.md`。
+
+## 发布契约
+
+每次 Integrator 合并并更新 `pdf/china-chronicle/` 中任一卷 PDF，必须将整个目录同步发布到 Azure Blob Storage 账户 `zyshaobook`：Blob 端点 `https://zyshaobook.blob.core.windows.net/`、公开站点 `https://zyshaobook.z7.web.core.windows.net/`。发布目标为 `$web` 静态网站容器；发布后须确认对应 `volXX-<slug>.pdf` 可从公开站点访问。

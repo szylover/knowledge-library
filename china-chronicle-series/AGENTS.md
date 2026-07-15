@@ -9,7 +9,7 @@
 3. Chronology 先写账本，Narrative 只写账本已有事件，Map 只写独立图文件。
 4. 不跨任务范围修改文件。需要改 wrapper、索引、PDF 时交给 Integrator。
 5. 交接时报告文件、事件 ID、来源、争议、构建结果。
-6. 发布 PDF 只能写在仓库根 `pdf/china-chronicle/`，文件名为 `volXX-<slug>.pdf`；不得与其他书系的 PDF 平铺混放。
+6. 发布 PDF 只能写在仓库根 `pdf/china-chronicle/`，文件名为 `volXX-<slug>.pdf`；不得与其他书系的 PDF 平铺混放。每次合并并更新书系 PDF 后，Integrator 必须将该目录同步到 Azure Blob Storage 账户 `zyshaobook` 的 `$web` 静态网站容器（`https://zyshaobook.z7.web.core.windows.net/`），再报告发布结果。
 
 ## 共享资源
 
