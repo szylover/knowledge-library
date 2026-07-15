@@ -296,7 +296,7 @@ tasks:
   - id: vol02-prose-western-jin
     volume: vol02-han-division
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch04-western-jin.tex
       - chapters/western-jin/court-politics-and-eight-princes.tex
@@ -322,7 +322,7 @@ tasks:
   - id: vol03-prose-an-lushan
     volume: vol03-sui-tang-five
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch04-an-lushan-late-tang.tex
       - chapters/an-lushan-late-tang/an-lushan-crisis.tex
@@ -370,7 +370,7 @@ tasks:
   - id: vol05-prose-tianshun
     volume: vol05-ming
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch02-hongxi-tianshun.tex
       - chapters/mid-ming/tumu-restoration-and-court.tex

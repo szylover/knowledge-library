@@ -91,7 +91,7 @@ tasks:
 
   - id: vol02-prose-western-jin
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch04-western-jin.tex
       - chapters/western-jin/court-politics-and-eight-princes.tex

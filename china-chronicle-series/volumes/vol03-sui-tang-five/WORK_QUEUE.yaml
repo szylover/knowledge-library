@@ -45,7 +45,7 @@ tasks:
 
   - id: vol03-prose-an-lushan
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch04-an-lushan-late-tang.tex
       - chapters/an-lushan-late-tang/an-lushan-crisis.tex

@@ -45,7 +45,7 @@ tasks:
 
   - id: vol05-prose-tianshun
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch02-hongxi-tianshun.tex
       - chapters/mid-ming/tumu-restoration-and-court.tex
