@@ -4,7 +4,7 @@ stage: source-corpus
 tasks:
   - id: vol03-source-sui-tang-five
     role: source
-    status: ready
+    status: done
     scope:
       - data/source-corpus/sui-tang-five.md
     goal: Build a source matrix for Sui, Tang and Five Dynasties before any ledger or prose begins.

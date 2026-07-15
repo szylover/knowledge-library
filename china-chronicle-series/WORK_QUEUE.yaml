@@ -51,7 +51,7 @@ tasks:
   - id: vol01-source-spring
     volume: vol01-zhou-qin
     role: source
-    status: ready
+    status: done
     scope:
       - data/source-corpus/spring-autumn.md
     goal: Strengthen the Spring and Autumn source matrix with coverage gaps and event-specific evidence guidance.
@@ -125,7 +125,7 @@ tasks:
   - id: vol03-source-sui-tang-five
     volume: vol03-sui-tang-five
     role: source
-    status: ready
+    status: done
     scope:
       - data/source-corpus/sui-tang-five.md
     goal: Build a source matrix for Sui, Tang and Five Dynasties before any ledger or prose begins.
