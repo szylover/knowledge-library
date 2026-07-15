@@ -296,7 +296,7 @@ tasks:
   - id: vol03-ledger-late-tang
     volume: vol03-sui-tang-five
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/sui-tang-five.csv
     goal: Extend the shared ledger through An Lushan, late Tang, and Five Dynasties without replacing existing rows.
