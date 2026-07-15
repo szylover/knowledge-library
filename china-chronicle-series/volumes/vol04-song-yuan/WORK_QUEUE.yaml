@@ -45,7 +45,7 @@ tasks:
 
   - id: vol04-integrate-northern-song-maps
     role: integrator
-    status: ready
+    status: done
     scope:
       - chapters/northern-song/founding-and-frontiers.tex
       - PROGRESS.md
