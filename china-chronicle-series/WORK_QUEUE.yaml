@@ -11,7 +11,7 @@ tasks:
 
   - id: series-history-threads
     role: continuity-editor
-    status: ready
+    status: done
     scope:
       - shared/series-threads.yaml
       - shared/threads/

@@ -1,0 +1,296 @@
+schema_version: '1.0'
+series: china-chronicle
+purpose: >-
+  Stable reader questions that let volumes be compared without treating a
+  recurrence, chronological succession, or shared vocabulary as causation.
+
+connection_contract:
+  - 'Every event_id must exactly match the id column of its ledger_file.'
+  - 'Every chapter_path must be an existing repository-relative file.'
+  - >-
+    relation describes how an event enters a question, not an unmarked causal
+    relationship to another connection.
+  - >-
+    Connections are entry points, not a complete event bibliography or a
+    substitute for an event ledger, source matrix, or evidence passport.
+
+relation_vocabulary:
+  documented_change:
+    meaning: 'The source record supports a change, decision, or practice at this event node.'
+    not_a_claim: 'It does not establish that the change was effective beyond its attested setting.'
+  chronological_sequence:
+    meaning: 'The nodes are ordered in time only.'
+    not_a_claim: 'Earlier does not mean caused later.'
+  structural_condition:
+    meaning: 'Multiple sources support a durable constraint on the choices available to actors.'
+    not_a_claim: 'A condition does not predetermine an outcome or replace immediate evidence.'
+  enabling_condition:
+    meaning: 'Evidence supports a resource, route, institution, or alliance as making an action feasible.'
+    not_a_claim: 'Feasibility is not sufficiency, intention, or sole cause.'
+  documented_consequence:
+    meaning: 'A near result is explicitly supported by the event evidence or its cross-checks.'
+    not_a_claim: 'It must not be extended into a later outcome without separate evidence.'
+  feedback_loop:
+    meaning: 'A documented outcome altered a condition addressed by a later, independently evidenced node.'
+    not_a_claim: 'Do not use this label for a merely plausible long-term pattern.'
+  comparison:
+    meaning: 'The entries are compared for a shared question, difference, or alternative arrangement.'
+    not_a_claim: 'Comparison asserts neither inheritance nor influence.'
+  contested:
+    meaning: 'The connection is retained to expose an evidentiary disagreement or classification problem.'
+    not_a_claim: 'It does not resolve the disagreement by choosing one account silently.'
+
+threads:
+  - id: state-reach
+    title: '国家触及：命令、道路、城邑与登记到达了哪里'
+    scope: >-
+      Trace how political centers sought to make orders, personnel, records,
+      transport, and jurisdiction operative, while keeping announced rules
+      distinct from local execution and uneven reach.
+    reader_facing_wording: >-
+      统治者的命令怎样穿过城门、道路和文书抵达地方？哪些地方仍不在它的
+      可见范围内？
+    relation_vocabulary:
+      - documented_change
+      - structural_condition
+      - enabling_condition
+      - comparison
+      - contested
+    evidence_cautions:
+      - '诏令、制度志和册命首先证明规范或宣示，不自动证明全国或全域执行。'
+      - '城址、道路和行政文书须分别标明断代、地点与样本边界。'
+      - '不要把后世制度名称倒灌为早期同名制度的实际覆盖率。'
+    initial_connections:
+      - volume: vol01-zhou-qin
+        ledger_file: 'volumes\vol01-zhou-qin\data\event-ledger\western-zhou.csv'
+        event_id: WZ-EAST-CHENGZHOU
+        chapter_path: 'volumes\vol01-zhou-qin\chapters\western-zhou\states\eastern-network\settlement-and-enfeoffment.tex'
+        path_basis: ledger_target
+        relation: documented_change
+        connection_note: '以成周营建和东方安置考察王室可调度的节点，不推定其已均匀控制东方。'
+      - volume: vol02-han-division
+        ledger_file: 'volumes\vol02-han-division\data\event-ledger\han-division.csv'
+        event_id: EH-0025-LUOYANG-CAPITAL
+        chapter_path: 'volumes\vol02-han-division\chapters\eastern-han\restoration-and-luoyang.tex'
+        path_basis: ledger_target
+        relation: comparison
+        connection_note: '以定都洛阳及其军政调度问题与早期都城节点比较，不把都城迁置写成自动恢复全国治理。'
+
+  - id: fiscal-military-capacity
+    title: '财赋与军力：供给、征发、道路与可持续动员'
+    scope: >-
+      Follow the practical conversion of land, labor, stores, transport, and
+      local cooperation into military and administrative capacity; attend to
+      burdens, failure, and regional variation as well as mobilization.
+    reader_facing_wording: >-
+      一支军队和一套官府靠什么持续运转？粮、路、人力和地方资源的代价由谁承担？
+    relation_vocabulary:
+      - documented_change
+      - structural_condition
+      - enabling_condition
+      - documented_consequence
+      - comparison
+    evidence_cautions:
+      - '兵额、斩获、户口、粮赋和岁入数字须保留统计机构、地域、口径与政治场景。'
+      - '一批简牍、仓储或边塞材料只能说明其机构和时段，不能直接外推全国。'
+      - '战争叙事中的胜负不能单独还原补给规模、征发率或社会负担。'
+    initial_connections:
+      - volume: vol01-zhou-qin
+        ledger_file: 'volumes\vol01-zhou-qin\data\event-ledger\warring-qin.csv'
+        event_id: QIN-0220-ROADS
+        chapter_path: 'volumes\vol01-zhou-qin\chapters\warring-qin\states\qin\conquest-and-empire.tex'
+        path_basis: ledger_target
+        relation: documented_change
+        connection_note: '把驰道作为交通与调度的可见工程，不从工程记录推定各地动员效果相同。'
+      - volume: vol02-han-division
+        ledger_file: 'volumes\vol02-han-division\data\event-ledger\han-division.csv'
+        event_id: WH-0204-JINGXING
+        chapter_path: 'volumes\vol02-han-division\chapters\western-han\qin-han-transition.tex'
+        path_basis: ledger_target
+        relation: comparison
+        connection_note: '以井陉后收编赵地兵员的节点追问战时人力转换，不把叙事中的兵数当作完整资源账。'
+
+  - id: multi-polity-coordination
+    title: '多政权协调：会盟、使节、战争、承认与失约'
+    scope: >-
+      Examine how contemporaneous polities coordinated, competed, or refused
+      coordination through assemblies, envoys, hostages, territorial
+      arrangements, and war; no single polity supplies the sole clock.
+    reader_facing_wording: >-
+      当不止一个政权能动员人和资源时，它们怎样结盟、谈判、相互承认，又为何失约？
+    relation_vocabulary:
+      - chronological_sequence
+      - documented_change
+      - enabling_condition
+      - documented_consequence
+      - comparison
+      - contested
+    evidence_cautions:
+      - '盟辞、使者机锋和战略意图常来自后出叙事，不当作逐字记录或唯一动机。'
+      - '国号、正闰和僭伪标签是材料立场，不能先行决定合法性。'
+      - '跨政权日期须保留各方纪年、换算依据及不能裁定之处。'
+    initial_connections:
+      - volume: vol01-zhou-qin
+        ledger_file: 'volumes\vol01-zhou-qin\data\event-ledger\spring-autumn.csv'
+        event_id: SA-0546-MIBING
+        chapter_path: 'volumes\vol01-zhou-qin\chapters\spring-autumn\common\chronology-631-481.tex'
+        path_basis: ledger_target
+        relation: documented_change
+        connection_note: '以宋向戌调停的弭兵之会追问协调的条件和限度，不将会盟视为稳定秩序的同义语。'
+      - volume: vol01-zhou-qin
+        ledger_file: 'volumes\vol01-zhou-qin\data\event-ledger\warring-qin.csv'
+        event_id: WQ-0318-HEZONG
+        chapter_path: 'volumes\vol01-zhou-qin\chapters\warring-qin\synthesis\diplomacy-hezong-lianheng.tex'
+        path_basis: ledger_target
+        relation: comparison
+        connection_note: '把五国合纵的受挫与春秋会盟作问题比较，不把两种联盟机制写成同一制度。'
+      - volume: vol02-han-division
+        ledger_file: 'volumes\vol02-han-division\data\event-ledger\han-division.csv'
+        event_id: WH-0206-EIGHTEEN-KINGS
+        chapter_path: 'volumes\vol02-han-division\chapters\western-han\qin-han-transition.tex'
+        path_basis: ledger_target
+        relation: comparison
+        connection_note: '以十八王分封后的多中心局面追问承认与资源分配，不预设分封必然导致后续战争。'
+
+  - id: migration-and-identity
+    title: '迁徙与身份：安置、编户、归属与自我命名'
+    scope: >-
+      Follow movements of people, households, military settlers, elites, and
+      displaced groups together with the changing administrative, political,
+      and self-described identities that made movement legible.
+    reader_facing_wording: >-
+      人们为何离开、被安置或被编入新的秩序？迁徙怎样改变归属，而归属又怎样被命名？
+    relation_vocabulary:
+      - documented_change
+      - structural_condition
+      - documented_consequence
+      - comparison
+      - contested
+    evidence_cautions:
+      - '迁置、编户、降附和族属的记录不等于完整人口流量或稳定的群体边界。'
+      - '墓志、家谱和地方叙事多为精英自述；行政分类、语言、婚姻与自我表述须分开。'
+      - '不得由一地文书或遗址把区域经验扩展为全国迁徙模式。'
+    initial_connections:
+      - volume: vol01-zhou-qin
+        ledger_file: 'volumes\vol01-zhou-qin\data\event-ledger\warring-qin.csv'
+        event_id: WQ-0316-SHU-MIGRATION
+        chapter_path: 'volumes\vol01-zhou-qin\chapters\warring-qin\common\economy-society.tex'
+        path_basis: ledger_target
+        relation: documented_change
+        connection_note: '以巴蜀军民迁入和城邑人口重组追问安置与治理，不据此量化迁徙规模。'
+      - volume: vol02-han-division
+        ledger_file: 'volumes\vol02-han-division\data\event-ledger\han-division.csv'
+        event_id: EH-0035-EMANCIPATION-EDICT
+        chapter_path: 'volumes\vol02-han-division\chapters\eastern-han\restoration-and-luoyang.tex'
+        path_basis: prose_contains_event
+        relation: comparison
+        connection_note: '以战乱中掠卖者的核实释放追问身份重定，不将诏令存在等同于释放已普遍落实。'
+
+  - id: border-multilingual-politics
+    title: '边地与多语政治：通道、称谓、翻译与交错的主张'
+    scope: >-
+      Treat frontiers as places of negotiation, coercion, exchange, movement,
+      and overlapping claims. Track names, languages, and political
+      affiliations without converting them into fixed modern identities.
+    reader_facing_wording: >-
+      边地不是一条静止的线：谁在那里行动、用什么称谓交涉，哪些道路和语言使政治得以发生？
+    relation_vocabulary:
+      - documented_change
+      - structural_condition
+      - enabling_condition
+      - comparison
+      - contested
+    evidence_cautions:
+      - '中央史书的夷夏、胡、戎等称谓和后世民族标签均不能直接定义群体本质或语言。'
+      - '地名、译名、原始纪年和文书语言应逐项记录；边界宜写影响区和节点，不画精确年界。'
+      - '单方战报、朝贡记录或一处遗址不能独自说明边地社会的全部立场。'
+    initial_connections:
+      - volume: vol01-zhou-qin
+        ledger_file: 'volumes\vol01-zhou-qin\data\event-ledger\warring-qin.csv'
+        event_id: WQ-0307-HUFU
+        chapter_path: 'volumes\vol01-zhou-qin\chapters\warring-qin\states\zhao\riding-and-changping.tex'
+        path_basis: ledger_target
+        relation: documented_change
+        connection_note: '以胡服骑射考察北方接触与军事选择，避免由服饰或史书称谓推断单一族群身份。'
+      - volume: vol02-han-division
+        ledger_file: 'volumes\vol02-han-division\data\event-ledger\han-division.csv'
+        event_id: EH-0034-WEI-XIAO-SURRENDER
+        chapter_path: 'volumes\vol02-han-division\chapters\eastern-han\restoration-and-luoyang.tex'
+        path_basis: prose_contains_event
+        relation: comparison
+        connection_note: '以陇右集团归降及其通道位置观察边区政治；此节点不单独证明当地语种或群体构成。'
+
+  - id: knowledge-and-legitimacy
+    title: '知识与正当性：铭文、礼仪、文本与可被承认的统治'
+    scope: >-
+      Compare how inscriptions, ritual, historiography, learning, legal
+      language, and political titles made claims to rule intelligible and
+      contestable to different audiences.
+    reader_facing_wording: >-
+      统治为何能被说成正当？铭文、礼仪、典籍和名号为谁提供了可承认、也可争辩的语言？
+    relation_vocabulary:
+      - documented_change
+      - structural_condition
+      - comparison
+      - contested
+    evidence_cautions:
+      - '铭文、诏书和礼仪文本首先是公开呈现，不能单独证明受众接受、实际执行或个人信念。'
+      - '文本成书、抄写、编纂与所叙事件日期必须分开；后出正史不能抹平异文。'
+      - '正统语言应作为行动者争用的资源，而非对政权真伪的预先裁决。'
+    initial_connections:
+      - volume: vol01-zhou-qin
+        ledger_file: 'volumes\vol01-zhou-qin\data\event-ledger\western-zhou.csv'
+        event_id: WZ-HE-ZUN
+        chapter_path: 'volumes\vol01-zhou-qin\chapters\western-zhou\states\eastern-network\bronze-evidence-and-institutional-balance.tex'
+        path_basis: ledger_target
+        relation: documented_change
+        connection_note: '把何尊铭文作为王命与政治语言的物证，而非成王时期制度全貌或普遍认同的证明。'
+      - volume: vol02-han-division
+        ledger_file: 'volumes\vol02-han-division\data\event-ledger\han-division.csv'
+        event_id: EH-0025-GUANGWU-ACCESSION
+        chapter_path: 'volumes\vol02-han-division\chapters\eastern-han\restoration-and-luoyang.tex'
+        path_basis: ledger_target
+        relation: comparison
+        connection_note: '以建武改元和复汉名号比较合法性语言的重新组织，不将名号视为战争停止或承认完成。'
+
+  - id: center-local-intermediaries
+    title: '中心与地方中介：封国、家族、军政集团与资源结点'
+    scope: >-
+      Follow the people and institutions that connected, redirected, or
+      limited central claims: enfeoffed houses, local elites, officeholders,
+      military groups, households, and regional political centers.
+    reader_facing_wording: >-
+      中心的命令要经过谁才会成为地方的现实？这些中介怎样积累资源，也怎样改变政局？
+    relation_vocabulary:
+      - documented_change
+      - structural_condition
+      - enabling_condition
+      - documented_consequence
+      - comparison
+      - contested
+    evidence_cautions:
+      - '列传、墓志和家谱偏向精英；不得把一支家族或一个政权中心等同于整片地方社会。'
+      - '官职、封邑、军权、婚姻和资源的关系须逐项证明，不把后世“门阀”或“地方势力”标签倒灌。'
+      - '地方归附、降服或任命的记载不自动说明基层秩序已稳定。'
+    initial_connections:
+      - volume: vol01-zhou-qin
+        ledger_file: 'volumes\vol01-zhou-qin\data\event-ledger\western-zhou.csv'
+        event_id: WZ-EAST-ENFEOFFMENT
+        chapter_path: 'volumes\vol01-zhou-qin\chapters\western-zhou\states\eastern-network\enfeoffment-network.tex'
+        path_basis: ledger_target
+        relation: documented_change
+        connection_note: '以宗亲、功臣与旧商贵族构成的封国网络追问中介关系，不把网络当作固定的行政层级。'
+      - volume: vol01-zhou-qin
+        ledger_file: 'volumes\vol01-zhou-qin\data\event-ledger\spring-autumn.csv'
+        event_id: SA-0481-LIN
+        chapter_path: 'volumes\vol01-zhou-qin\chapters\spring-autumn\states\lu-zheng-song\central-plains.tex'
+        path_basis: ledger_target
+        relation: comparison
+        connection_note: '以田氏权力跃升追问家族、军政位置和承认的组合，不把它化约为单线的地方取代中央。'
+      - volume: vol02-han-division
+        ledger_file: 'volumes\vol02-han-division\data\event-ledger\han-division.csv'
+        event_id: EH-0030-GONGSUN-SHU-EMPEROR
+        chapter_path: 'volumes\vol02-han-division\chapters\eastern-han\restoration-and-luoyang.tex'
+        path_basis: prose_contains_event
+        relation: comparison
+        connection_note: '以成家在成都的独立政权中心追问区域网络与中央任命的边界，不把巴蜀写成单一行动者。'
