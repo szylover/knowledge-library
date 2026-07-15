@@ -29,6 +29,20 @@ Set-Location D:\projects\knowledge-library\china-chronicle-series
 
 这会创建 `.chronicle-worktrees/<task-id>` 与 `chronicle/<task-id>` 分支。Agent 只能修改任务锁定的文件；总编 Agent 审查、编译和合并。
 
+## 查看并行进度
+
+在系列根目录运行：
+
+```powershell
+.\scripts\show-parallel-status.ps1
+```
+
+看板会列出每个活跃 worktree 的任务、分支、队列状态、未提交文件数、增删行数与最后提交。持续刷新使用：
+
+```powershell
+.\scripts\show-parallel-status.ps1 -Watch -RefreshSeconds 10
+```
+
 ## 发布约定
 
 本书系的发布 PDF 永远放在仓库根 `pdf/china-chronicle/`：
