@@ -33,22 +33,7 @@ Set-Location D:\projects\knowledge-library\china-chronicle-series
 
 在系列根目录运行：
 
-```
-
-每次更新上述目录后，同步到 Azure Blob Storage 账户 `szydownloads` 的 `downloads/books/china-chronicle/`：
-
 ```powershell
-Set-Location D:\projects\knowledge-library
-az storage blob upload-batch `
-  --account-name szydownloads `
-  --auth-mode key `
-  --destination downloads `
-  --destination-path books/china-chronicle `
-  --source pdf\china-chronicle `
-  --overwrite
-```
-
-下载路径：<https://szydownloads.blob.core.windows.net/downloads/books/china-chronicle/>。powershell
 .\scripts\show-parallel-status.ps1
 ```
 
@@ -67,3 +52,12 @@ pdf/china-chronicle/vol01-zhou-qin.pdf
 pdf/china-chronicle/vol02-han-division.pdf
 ...
 ```
+
+每次更新上述目录后，同步到 Azure Blob Storage 账户 `szydownloads` 的 `downloads/books/china-chronicle/`：
+
+```powershell
+Set-Location D:\projects\knowledge-library\china-chronicle-series
+.\scripts\publish-downloads.ps1
+```
+
+下载路径：<https://szydownloads.blob.core.windows.net/downloads/books/china-chronicle/>。
