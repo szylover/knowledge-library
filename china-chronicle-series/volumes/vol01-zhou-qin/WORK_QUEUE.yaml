@@ -20,6 +20,13 @@ tasks:
       - data/event-ledger/spring-autumn.csv
     goal: Expand Spring from 55 to 400-600 source-aware events.
 
+  - id: vol01-ledger-spring-middle
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/spring-autumn.csv
+    goal: Add source-aware Spring and Autumn entries for the middle and late period without replacing existing rows.
+
   - id: vol01-ledger-warring
     role: chronology
     status: done
@@ -61,6 +68,13 @@ tasks:
       - figures/western-zhou/
       - figures/spring-autumn/
     goal: Add source-aware maps, routes, timelines, and institutional figures.
+
+  - id: vol01-map-spring-states
+    role: cartographer
+    status: ready
+    scope:
+      - figures/spring-autumn/
+    goal: Add source-aware state and alliance schematics for Spring and Autumn chapters.
 
   - id: vol01-maps-warring
     role: cartographer

@@ -16,6 +16,22 @@ tasks:
       - data/event-ledger/spring-autumn.csv
     goal: Expand Spring ledger toward its 400-600 event target.
 
+  - id: vol01-ledger-spring-middle
+    volume: vol01-zhou-qin
+    role: chronology
+    status: ready
+    scope:
+      - data/event-ledger/spring-autumn.csv
+    goal: Add source-aware Spring and Autumn entries for the middle and late period without replacing existing rows.
+
+  - id: vol01-map-spring-states
+    volume: vol01-zhou-qin
+    role: cartographer
+    status: ready
+    scope:
+      - figures/spring-autumn/
+    goal: Add source-aware state and alliance schematics for Spring and Autumn chapters.
+
   - id: vol01-ledger-warring
     volume: vol01-zhou-qin
     role: chronology
