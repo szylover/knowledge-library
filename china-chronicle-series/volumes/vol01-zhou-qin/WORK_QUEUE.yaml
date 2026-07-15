@@ -146,7 +146,7 @@ tasks:
 
   - id: vol01-appendix-controversies
     role: integrator
-    status: ready
+    status: done
     scope:
       - main.tex
       - chapters/appendix-controversies.tex
