@@ -30,7 +30,7 @@ tasks:
 
   - id: vol03-prose-sui-reunification
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch01-sui.tex
       - chapters/sui/sui-reunification.tex

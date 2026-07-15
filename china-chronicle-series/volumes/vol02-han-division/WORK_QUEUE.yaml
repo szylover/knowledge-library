@@ -68,7 +68,7 @@ tasks:
 
   - id: vol02-prose-three-kingdoms
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch03-three-kingdoms.tex
       - chapters/three-kingdoms/foundation-and-three-emperors.tex

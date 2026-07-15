@@ -228,7 +228,7 @@ tasks:
   - id: vol01-prose-spring-qi
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/spring-autumn/states/qi/hegemony.tex
     goal: Expand the ledgered Qi Huan alliance and succession cluster into source-aware prose.
@@ -236,7 +236,7 @@ tasks:
   - id: vol02-prose-three-kingdoms
     volume: vol02-han-division
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch03-three-kingdoms.tex
       - chapters/three-kingdoms/foundation-and-three-emperors.tex
@@ -245,7 +245,7 @@ tasks:
   - id: vol03-prose-sui-reunification
     volume: vol03-sui-tang-five
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch01-sui.tex
       - chapters/sui/sui-reunification.tex
@@ -254,7 +254,7 @@ tasks:
   - id: vol04-integrate-foundation
     volume: vol04-song-yuan
     role: integrator
-    status: ready
+    status: done
     scope:
       - main.tex
       - preamble.tex
@@ -267,7 +267,7 @@ tasks:
   - id: vol05-prose-founding
     volume: vol05-ming
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch01-hongwu-jianwen-yongle.tex
       - chapters/early-ming/founding-and-state-building.tex
@@ -276,7 +276,7 @@ tasks:
   - id: vol06-prose-entry
     volume: vol06-qing-1912
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch01-early-qing.tex
       - chapters/early-qing/entry-and-regency.tex

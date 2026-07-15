@@ -30,7 +30,7 @@ tasks:
 
   - id: vol05-prose-founding
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch01-hongwu-jianwen-yongle.tex
       - chapters/early-ming/founding-and-state-building.tex

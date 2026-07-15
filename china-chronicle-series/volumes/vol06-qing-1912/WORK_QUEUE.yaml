@@ -30,7 +30,7 @@ tasks:
 
   - id: vol06-prose-entry
     role: narrative
-    status: ready
+    status: done
     scope:
       - chapters/ch01-early-qing.tex
       - chapters/early-qing/entry-and-regency.tex
