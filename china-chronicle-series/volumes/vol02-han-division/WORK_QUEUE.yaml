@@ -80,3 +80,11 @@ tasks:
     scope:
       - data/event-ledger/han-division.csv
     goal: Extend the shared ledger through Western Jin, Eastern Jin, and Sixteen Kingdoms without replacing existing rows.
+
+  - id: vol02-map-jin-division
+    role: cartographer
+    status: ready
+    scope:
+      - figures/western-jin/
+      - figures/eastern-jin-sixteen-kingdoms/
+    goal: Add source-aware schematics for Western Jin collapse, southern court relocation, and northern multi-polity geography.
