@@ -480,3 +480,51 @@ tasks:
     scope:
       - chapters/warring-qin/states/han/shen-buhai.tex
     goal: Expand the ledgered Warring States Han dossier into source-aware prose.
+
+  - id: vol01-prose-spring-central
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/spring-autumn/states/lu-zheng-song/central-plains.tex
+    goal: Expand the ledgered Spring and Autumn central plains dossiers into source-aware prose.
+
+  - id: vol01-prose-warring-qin-empire
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/states/qin/conquest-and-empire.tex
+    goal: Expand the ledgered Qin conquest and empire dossier into source-aware prose.
+
+  - id: vol01-prose-warring-zhao
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/states/zhao/riding-and-changping.tex
+    goal: Expand the ledgered Warring States Zhao dossier into source-aware prose.
+
+  - id: vol01-prose-warring-wei
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/states/wei/early-reforms.tex
+    goal: Expand the ledgered Warring States Wei dossier into source-aware prose.
+
+  - id: vol01-prose-warring-qi
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/states/qi/jixia-and-collapse.tex
+    goal: Expand the ledgered Warring States Qi dossier into source-aware prose.
+
+  - id: vol01-prose-warring-economy
+    volume: vol01-zhou-qin
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/common/economy-society.tex
+    goal: Expand the ledgered Warring States economy and society synthesis into source-aware prose.

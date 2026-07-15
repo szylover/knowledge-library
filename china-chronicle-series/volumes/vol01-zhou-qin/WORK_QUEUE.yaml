@@ -206,3 +206,45 @@ tasks:
     scope:
       - chapters/warring-qin/states/han/shen-buhai.tex
     goal: Expand the Warring States Han dossier from existing ledger events.
+
+  - id: vol01-prose-spring-central
+    role: narrative
+    status: ready
+    scope:
+      - chapters/spring-autumn/states/lu-zheng-song/central-plains.tex
+    goal: Expand the Spring and Autumn central plains dossiers from existing ledger events.
+
+  - id: vol01-prose-warring-qin-empire
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/states/qin/conquest-and-empire.tex
+    goal: Expand the Qin conquest and empire dossier from existing ledger events.
+
+  - id: vol01-prose-warring-zhao
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/states/zhao/riding-and-changping.tex
+    goal: Expand the Warring States Zhao dossier from existing ledger events.
+
+  - id: vol01-prose-warring-wei
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/states/wei/early-reforms.tex
+    goal: Expand the Warring States Wei dossier from existing ledger events.
+
+  - id: vol01-prose-warring-qi
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/states/qi/jixia-and-collapse.tex
+    goal: Expand the Warring States Qi dossier from existing ledger events.
+
+  - id: vol01-prose-warring-economy
+    role: narrative
+    status: ready
+    scope:
+      - chapters/warring-qin/common/economy-society.tex
+    goal: Expand the Warring States economy and society synthesis from existing ledger events.
