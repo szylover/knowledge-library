@@ -19,7 +19,7 @@ tasks:
   - id: vol01-ledger-spring-middle
     volume: vol01-zhou-qin
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/spring-autumn.csv
     goal: Add source-aware Spring and Autumn entries for the middle and late period without replacing existing rows.
@@ -43,7 +43,7 @@ tasks:
   - id: vol01-ledger-warring-phase2
     volume: vol01-zhou-qin
     role: chronology
-    status: ready
+    status: done
     scope:
       - data/event-ledger/warring-qin.csv
     goal: Add source-aware Warring States entries across the middle period without replacing existing rows.
