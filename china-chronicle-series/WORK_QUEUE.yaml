@@ -829,6 +829,37 @@ tasks:
     scope: [preamble.tex, chapters/appendix-*.tex]
     goal: Add event-link macros and index entry points for Volume II.
 
+  - id: vol02-maps-standard
+    volume: vol02-han-division
+    role: cartographer
+    status: ready
+    scope: [figures/, chapters/]
+    goal: Add late Han-to-Sui maps and wire them into the narrative.
+  - id: vol03-maps-standard
+    volume: vol03-sui-tang-five
+    role: cartographer
+    status: ready
+    scope: [figures/, chapters/]
+    goal: Add Sui-Tang-Five Dynasties maps and wire them into the narrative.
+  - id: vol04-maps-standard
+    volume: vol04-song-yuan
+    role: cartographer
+    status: ready
+    scope: [figures/, chapters/]
+    goal: Add Song-Yuan maps and wire them into the narrative.
+  - id: vol05-maps-standard
+    volume: vol05-ming
+    role: cartographer
+    status: ready
+    scope: [figures/, chapters/]
+    goal: Add Ming maps and wire them into the narrative.
+  - id: vol06-maps-standard
+    volume: vol06-qing-1912
+    role: cartographer
+    status: ready
+    scope: [figures/, chapters/]
+    goal: Add Qing-to-1912 maps and wire them into the narrative.
+
   - id: vol03-anchor-system
     volume: vol03-sui-tang-five
     role: indexer
