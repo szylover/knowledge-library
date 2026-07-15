@@ -35,19 +35,20 @@ Set-Location D:\projects\knowledge-library\china-chronicle-series
 
 ```
 
-每次更新上述目录后，同步到 Azure Blob Storage 账户 `zyshaobook` 的 `$web` 静态网站容器：
+每次更新上述目录后，同步到 Azure Blob Storage 账户 `szydownloads` 的 `downloads/books/china-chronicle/`：
 
 ```powershell
 Set-Location D:\projects\knowledge-library
 az storage blob upload-batch `
-  --account-name zyshaobook `
+  --account-name szydownloads `
   --auth-mode key `
-  --destination '$web' `
+  --destination downloads `
+  --destination-path books/china-chronicle `
   --source pdf\china-chronicle `
   --overwrite
 ```
 
-Blob 端点：<https://zyshaobook.blob.core.windows.net/>；发布站点：<https://zyshaobook.z7.web.core.windows.net/>。powershell
+下载路径：<https://szydownloads.blob.core.windows.net/downloads/books/china-chronicle/>。powershell
 .\scripts\show-parallel-status.ps1
 ```
 

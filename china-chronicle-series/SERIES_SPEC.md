@@ -73,4 +73,4 @@ causes, consequences, target_file, tier
 
 ## 发布契约
 
-每次 Integrator 合并并更新 `pdf/china-chronicle/` 中任一卷 PDF，必须将整个目录同步发布到 Azure Blob Storage 账户 `zyshaobook`：Blob 端点 `https://zyshaobook.blob.core.windows.net/`、公开站点 `https://zyshaobook.z7.web.core.windows.net/`。发布目标为 `$web` 静态网站容器；发布后须确认对应 `volXX-<slug>.pdf` 可从公开站点访问。
+每次 Integrator 合并并更新 `pdf/china-chronicle/` 中任一卷 PDF，必须将整个目录同步到 Azure Blob Storage 账户 `szydownloads` 的容器 `downloads`、路径 `books/china-chronicle/`。下载页使用直接 Blob 链接 `https://szydownloads.blob.core.windows.net/downloads/books/china-chronicle/volXX-<slug>.pdf`；发布后须确认对应文件可访问。书系不再重复同步到 `$web` 静态网站容器。
