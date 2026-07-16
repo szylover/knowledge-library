@@ -916,7 +916,10 @@ tasks:
   - id: vol02a-han-depth
     volume: vol02a-han
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/vol02a-han-depth
+    started: 2026-07-16T17:35:13+08:00
+    completed: 2026-07-16T17:35:13+08:00
     scope: [volumes/vol02a-han/chapters/]
     goal: Expand Han Empire reader prose to the Volume I depth standard.
   - id: vol02b-three-depth
