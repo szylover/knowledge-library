@@ -709,7 +709,10 @@ tasks:
   - id: vol01-western-final
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/vol01-western-final
+    started: 2026-07-16T17:36:08+08:00
+    completed: 2026-07-16T17:38:29+08:00
     scope: [chapters/western-zhou/]
     goal: Complete remaining Western Zhou narrative modules.
   - id: vol01-spring-final
