@@ -951,6 +951,31 @@ tasks:
     scope: [volumes/vol02c-jin-northern-southern/chapters/]
     goal: Integrate historical, institutional, literary, and historiographical cross-reading into Jin and Northern-Southern event clusters.
 
+  - id: vol03-crossread
+    volume: vol03-sui-tang-five
+    role: narrative
+    status: ready
+    scope: [volumes/vol03-sui-tang-five/chapters/]
+    goal: Integrate historical, institutional, literary, and historiographical cross-reading into Sui-Tang-Five event clusters.
+  - id: vol04-crossread
+    volume: vol04-song-yuan
+    role: narrative
+    status: ready
+    scope: [volumes/vol04-song-yuan/chapters/]
+    goal: Integrate historical, institutional, literary, and historiographical cross-reading into Song-Yuan event clusters.
+  - id: vol05-crossread
+    volume: vol05-ming
+    role: narrative
+    status: ready
+    scope: [volumes/vol05-ming/chapters/]
+    goal: Integrate historical, institutional, literary, and historiographical cross-reading into Ming event clusters.
+  - id: vol06-crossread
+    volume: vol06-qing-1912
+    role: narrative
+    status: ready
+    scope: [volumes/vol06-qing-1912/chapters/]
+    goal: Integrate historical, institutional, literary, and historiographical cross-reading into Qing-to-1912 event clusters.
+
   - id: vol03-narrative-rebuild
     volume: vol03-sui-tang-five
     role: continuity-editor
