@@ -1004,7 +1004,9 @@ tasks:
   - id: vol03-chronicle-flow
     volume: vol03-sui-tang-five
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/vol03-chronicle-flow
+    started: 2026-07-16T17:49:39+08:00
     scope: [volumes/vol03-sui-tang-five/chapters/]
     goal: Restore chronological event-cluster reading flow while retaining cross-reading and syntheses as supporting layers.
   - id: vol04-chronicle-flow
