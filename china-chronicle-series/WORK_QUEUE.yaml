@@ -896,7 +896,10 @@ tasks:
   - id: vol05-index-final
     volume: vol05-ming
     role: indexer
-    status: ready
+    status: done
+    branch: chronicle/vol05-index-final
+    started_at: 2026-07-16T17:59:16+08:00
+    completed: 2026-07-16T18:02:21+08:00
     scope: [chapters/appendix-index.tex]
     goal: Replace index placeholders with complete ledger-driven event, source, and figure navigation.
   - id: vol06-index-final
