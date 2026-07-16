@@ -1,16 +1,27 @@
-# 《中国大事编年·第二卷甲：汉帝国》Agent 指令
+# 第二卷《汉帝国》Agent 入口
 
-本卷是独立的汉帝国卷，范围为前206年至220年。开始工作前阅读 `../../SERIES_SPEC.md` 与系列 `AGENTS.md`。
+先读 `../../SERIES_SPEC.md`、`../../AGENTS.md` 与
+`data/source-corpus/han.md`。根规范是本卷的生产、角色、审阅、构建与发布
+标准；本文件只定义汉帝国卷的例外。
 
-## 卷内约定
+## 范围与结构
 
-- 正文由事件簇和四个综合专题组成；不得把账本锚点逐条搬进阅读主线。
-- `data/event-ledger/han.csv` 是从第二卷母账本筛出的本卷记录。正文只扩写其中已有的内部 ID；全量导航留在 `chapters/appendices/appendix-ledger-navigation.tex`。
-- 图件必须是 `figures/` 下可版本化的 TikZ 示意图。不得将示意性的节点、路线或色块误作精确疆界。
-- `main.tex` 只负责卷面、目录、分部及 wrappers；正文分别写入 `western-han/`、`eastern-han/` 和 `synthesis/`。
-- 事件名称面向读者使用中文；内部 ID 只出现在链接锚点、账本和维护文件中。
-- 先在 `WORK_QUEUE.yaml` 锁定范围，再开始写入。完成时更新 `PROGRESS.md`，报告账本 ID、来源、争议和构建结果。
+- 范围为前206年至220年：西汉、新、东汉和汉魏禅代必须连读；秦末起事仅作
+  开国条件，220年是本卷终点而非可省略的三国背景。
+- 事件先入 `data/event-ledger/han.csv`。它由母账本筛出；正文只能扩写已有
+  ID，全量导航留在 `chapters/appendices/appendix-ledger-navigation.tex`。
+- 正文以 `western-han/`、`eastern-han/` 与 `synthesis/` 的事件簇和四项
+  综合专题组织，不得逐条改写账本。
 
-## 构建与交付
+## 材料与争议
 
-运行 `scripts/build-volume.ps1`。它会以 Tectonic 编译至临时 `.build/`，短暂复制到仓库根 `pdf/china-chronicle/vol02a-han.pdf` 后默认删除；不要提交任何 PDF 或构建产物。若确有人工发布需要，可显式传入 `-KeepPublishedPdf`，并由 Integrator 依照系列发布契约处理。
+- 以《史记》《汉书》《后汉书》《后汉纪》《资治通鉴》维持年序；制度和
+  边地问题结合《食货志》、盐铁材料、居延/肩水金关/悬泉置简牍与考古。
+- 核验楚汉战争、汉匈战争和汉末战争的数字、路线与言辞；户口财政数字的
+  口径；“羌”“匈奴”“鲜卑”等政治分类；王莽、东汉和曹魏禅代的仪式文本。
+
+## 卷内交付
+
+图件仅在 `figures/` 维护为 TikZ 示意图；事件名对读者使用中文。运行
+`scripts/build-volume.ps1` 做临时验证；仅 Integrator 可用
+`-KeepPublishedPdf` 发布 `vol02a-han.pdf`。

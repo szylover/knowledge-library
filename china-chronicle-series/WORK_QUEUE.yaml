@@ -1082,3 +1082,21 @@ tasks:
     depends_on: [vol01-western-final, vol01-spring-final, vol01-warring-final, vol01-continuity-final]
     scope: [main.tex, chapters/ch02-western-zhou.tex, chapters/ch03-spring-autumn.tex, chapters/ch04-warring-qin.tex, PROGRESS.md, ../../../pdf/china-chronicle/vol01-zhou-qin.pdf]
     goal: Validate final Volume I totals and links, compile the publication PDF, update progress, and publish it after all final narrative and continuity tasks complete.
+  - id: agent-blueprint-standard
+    role: integrator
+    status: done
+    branch: chronicle/agent-blueprint-standard
+    started: 2026-07-16T17:14:35+08:00
+    completed: 2026-07-16T17:33:14+08:00
+    scope:
+      - AGENTS.md
+      - volumes/vol01-zhou-qin/AGENTS.md
+      - volumes/vol02a-han/AGENTS.md
+      - volumes/vol02b-three-kingdoms/AGENTS.md
+      - volumes/vol02c-jin-northern-southern/AGENTS.md
+      - volumes/vol03-sui-tang-five/AGENTS.md
+      - volumes/vol04-song-yuan/AGENTS.md
+      - volumes/vol05-ming/AGENTS.md
+      - volumes/vol06-qing-1912/AGENTS.md
+      - WORK_QUEUE.yaml
+    goal: Promote the reusable Volume I production blueprint to the series Agent standard, preserve volume-specific exceptions, and stop for user review before any content work.
