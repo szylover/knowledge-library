@@ -1,0 +1,20 @@
+volume: vol02a-han
+tasks:
+  - id: vol02a-han-split
+    role: integrator
+    status: done
+    branch: chronicle/vol02a-han-split
+    started: 2026-07-16T10:13:38+08:00
+    completed: 2026-07-16T10:13:38+08:00
+    scope:
+      - AGENTS.md
+      - main.tex
+      - preamble.tex
+      - PROGRESS.md
+      - WORK_QUEUE.yaml
+      - scripts/build-volume.ps1
+      - data/event-ledger/han.csv
+      - data/source-corpus/han.md
+      - chapters/
+      - figures/
+    goal: Split the Han Empire (206 BCE–220 CE) into a standalone, source-aware volume with event-cluster narrative, synthesis, navigable ledger appendix, figures, and a transient standalone build.
