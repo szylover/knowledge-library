@@ -18,3 +18,19 @@ tasks:
       - chapters/
       - figures/
     goal: Split the Han Empire (206 BCE–220 CE) into a standalone, source-aware volume with event-cluster narrative, synthesis, navigable ledger appendix, figures, and a transient standalone build.
+  - id: vol02a-han-depth
+    role: narrative
+    status: done
+    branch: chronicle/vol02a-han-depth
+    started: 2026-07-16T13:47:37+08:00
+    completed: 2026-07-16T13:47:37+08:00
+    scope:
+      - WORK_QUEUE.yaml
+      - PROGRESS.md
+      - chapters/ch01-western-han.tex
+      - chapters/ch02-eastern-han.tex
+      - chapters/ch03-syntheses.tex
+      - chapters/common/
+      - chapters/polities/
+      - chapters/synthesis/
+    goal: Rewrite the Han volume to the Volume I chronology-first shared structure, then polity dossiers, syntheses, economy and society, culture and thought, institutional gains and losses, and a chapter closure.

@@ -709,7 +709,10 @@ tasks:
   - id: vol01-western-final
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/vol01-western-final
+    started: 2026-07-16T17:36:08+08:00
+    completed: 2026-07-16T17:38:29+08:00
     scope: [chapters/western-zhou/]
     goal: Complete remaining Western Zhou narrative modules.
   - id: vol01-spring-final
@@ -723,13 +726,19 @@ tasks:
   - id: vol01-warring-final
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/vol01-warring-final
+    started_at: 2026-07-16T17:36:08+08:00
+    completed_at: 2026-07-16T18:05:00+08:00
     scope: [chapters/warring-qin/]
     goal: Complete remaining Warring States and Qin narrative modules.
   - id: vol01-continuity-final
     volume: vol01-zhou-qin
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/vol01-continuity-final
+    started_at: 2026-07-16T17:36:08+08:00
+    completed_at: 2026-07-16T17:43:15+08:00
     scope: [chapters/appendix-*.tex, chapters/appendix-series-roadmap.tex]
     goal: Complete cross-period continuity, source, event and figure indexing.
 
@@ -767,7 +776,9 @@ tasks:
   - id: vol03-ledger-standard
     volume: vol03-sui-tang-five
     role: chronology
-    status: ready
+    status: done
+    branch: chronicle/vol03-ledger-standard
+    started_at: 2026-07-16T17:35:54+08:00
     scope: [data/event-ledger/sui-tang-five.csv]
     goal: Expand Sui, Tang and Five Dynasties ledger toward volume-standard coverage.
   - id: vol03-prose-standard
@@ -779,7 +790,9 @@ tasks:
   - id: vol04-ledger-standard
     volume: vol04-song-yuan
     role: chronology
-    status: ready
+    status: done
+    branch: chronicle/vol04-ledger-standard
+    started_at: 2026-07-16T17:35:54+08:00
     scope: [data/event-ledger/song-yuan.csv]
     goal: Expand Song-Yuan ledger toward volume-standard coverage.
   - id: vol04-prose-standard
@@ -894,7 +907,10 @@ tasks:
   - id: vol02a-han-split
     volume: vol02a-han
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/vol02a-han-split
+    started: 2026-07-16T17:33:14+08:00
+    completed: 2026-07-16T17:33:14+08:00
     scope: [volumes/vol02a-han/]
     goal: Create a standalone Han Empire volume from the existing Han source material and shared ledger.
   - id: vol02b-three-kingdoms-split
@@ -916,21 +932,30 @@ tasks:
   - id: vol02a-han-depth
     volume: vol02a-han
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/vol02a-han-depth
+    started: 2026-07-16T17:35:13+08:00
+    completed: 2026-07-16T17:35:13+08:00
     scope: [volumes/vol02a-han/chapters/]
     goal: Expand Han Empire reader prose to the Volume I depth standard.
   - id: vol02b-three-depth
     volume: vol02b-three-kingdoms
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/vol02b-three-depth
+    started: 2026-07-16T17:35:13+08:00
+    completed: 2026-07-16T17:39:17+08:00
     scope: [volumes/vol02b-three-kingdoms/chapters/]
     goal: Expand Three Kingdoms reader prose to the Volume I depth standard.
   - id: vol02c-jin-depth
     volume: vol02c-jin-northern-southern
     role: narrative
-    status: ready
+    status: done
     scope: [volumes/vol02c-jin-northern-southern/chapters/]
     goal: Expand Jin and Northern-Southern Dynasties reader prose to the Volume I depth standard.
+    branch: chronicle/vol02c-jin-depth
+    started: 2026-07-16T17:35:13+08:00
+    completed: 2026-07-16T17:38:26+08:00
 
   - id: vol02a-crossread
     volume: vol02a-han
@@ -1082,3 +1107,41 @@ tasks:
     depends_on: [vol01-western-final, vol01-spring-final, vol01-warring-final, vol01-continuity-final]
     scope: [main.tex, chapters/ch02-western-zhou.tex, chapters/ch03-spring-autumn.tex, chapters/ch04-warring-qin.tex, PROGRESS.md, ../../../pdf/china-chronicle/vol01-zhou-qin.pdf]
     goal: Validate final Volume I totals and links, compile the publication PDF, update progress, and publish it after all final narrative and continuity tasks complete.
+  - id: agent-blueprint-standard
+    role: integrator
+    status: done
+    branch: chronicle/agent-blueprint-standard
+    started: 2026-07-16T17:14:35+08:00
+    completed: 2026-07-16T17:33:14+08:00
+    scope:
+      - AGENTS.md
+      - volumes/vol01-zhou-qin/AGENTS.md
+      - volumes/vol02a-han/AGENTS.md
+      - volumes/vol02b-three-kingdoms/AGENTS.md
+      - volumes/vol02c-jin-northern-southern/AGENTS.md
+      - volumes/vol03-sui-tang-five/AGENTS.md
+      - volumes/vol04-song-yuan/AGENTS.md
+      - volumes/vol05-ming/AGENTS.md
+      - volumes/vol06-qing-1912/AGENTS.md
+      - WORK_QUEUE.yaml
+    goal: Promote the reusable Volume I production blueprint to the series Agent standard, preserve volume-specific exceptions, and stop for user review before any content work.
+  - id: vol05-ledger-late-ming
+    volume: vol05-ming
+    role: chronology
+    status: done
+    branch: chronicle/vol05-ledger-late-ming
+    started_at: 2026-07-16T17:35:54+08:00
+    completed_at: 2026-07-16T17:49:00+08:00
+    depends_on: [vol05-ledger-standard]
+    scope: [volumes/vol05-ming/data/event-ledger/ming.csv]
+    goal: Extend the Ming ledger from 1583 through 1644 with source-aware late-Ming court, fiscal, frontier, maritime, regional, social, and collapse events before new prose.
+  - id: vol06-ledger-1723-1912
+    volume: vol06-qing-1912
+    role: chronology
+    status: done
+    branch: chronicle/vol06-ledger-1723-1912
+    started_at: 2026-07-16T17:35:54+08:00
+    completed_at: 2026-07-16T17:41:01+08:00
+    depends_on: [vol06-ledger-standard]
+    scope: [volumes/vol06-qing-1912/data/event-ledger/qing-1912.csv]
+    goal: Extend the Qing-to-1912 ledger from 1723 through 1912 with source-aware imperial, regional, frontier, fiscal, social, diplomatic, reform, and revolutionary events before new prose.
