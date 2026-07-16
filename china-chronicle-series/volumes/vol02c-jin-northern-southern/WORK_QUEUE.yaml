@@ -1,0 +1,19 @@
+volume: vol02c-jin-northern-southern
+tasks:
+  - id: vol02c-jin-division-split
+    role: integrator
+    status: done
+    scope:
+      - main.tex
+      - preamble.tex
+      - scripts/
+      - data/
+      - chapters/
+      - appendices/
+      - figures/
+      - README.md
+      - AGENTS.md
+      - PROGRESS.md
+      - WORK_QUEUE.yaml
+    goal: Split the 280--589 material into a standalone, source-aware volume with independent compilation.
+    completed: 2026-07-16T10:13:38+08:00
