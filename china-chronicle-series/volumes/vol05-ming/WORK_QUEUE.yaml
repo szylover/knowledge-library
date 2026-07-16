@@ -50,3 +50,20 @@ tasks:
       - chapters/ch02-hongxi-tianshun.tex
       - chapters/mid-ming/tumu-restoration-and-court.tex
     goal: Write the Tumu crisis, Jingtai succession, and Tianshun restoration cluster from the verified ledger.
+
+  - id: vol05-chronicle-flow
+    role: narrative
+    status: done
+    branch: chronicle/vol05-chronicle-flow
+    scope:
+      - chapters/ch01-hongwu-jianwen-yongle.tex
+      - chapters/ch02-hongxi-tianshun.tex
+      - chapters/ch03-chenghua-zhengde.tex
+      - chapters/ch04-jiajing-longqing.tex
+      - chapters/ch05-wanli.tex
+      - chapters/ch06-tianqi-chongzhen.tex
+      - chapters/wanli/chronology-1573-1582.tex
+      - chapters/tianqi-chongzhen/ledger-gap.tex
+      - chapters/appendix-navigation.tex
+      - chapters/appendix-sources.tex
+    goal: Recast Volume V around shared chronological prose, followed by dynasty dossiers, issue syntheses, economy and society, culture, and institutional closure; retain only verified 1368--1582 ledger coverage and identify the 1583--1644 ledger gap.
