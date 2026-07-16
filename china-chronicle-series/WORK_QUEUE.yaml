@@ -905,7 +905,10 @@ tasks:
   - id: vol06-index-final
     volume: vol06-qing-1912
     role: indexer
-    status: ready
+    status: done
+    branch: chronicle/vol06-index-final
+    started_at: 2026-07-16T17:59:16+08:00
+    completed_at: 2026-07-16T18:03:45+08:00
     scope: [chapters/appendix-index.tex]
     goal: Complete ledger-driven event, source, and figure navigation.
 
