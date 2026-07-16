@@ -1100,3 +1100,17 @@ tasks:
       - volumes/vol06-qing-1912/AGENTS.md
       - WORK_QUEUE.yaml
     goal: Promote the reusable Volume I production blueprint to the series Agent standard, preserve volume-specific exceptions, and stop for user review before any content work.
+  - id: vol05-ledger-late-ming
+    volume: vol05-ming
+    role: chronology
+    status: ready
+    depends_on: [vol05-ledger-standard]
+    scope: [volumes/vol05-ming/data/event-ledger/ming.csv]
+    goal: Extend the Ming ledger from 1583 through 1644 with source-aware late-Ming court, fiscal, frontier, maritime, regional, social, and collapse events before new prose.
+  - id: vol06-ledger-1723-1912
+    volume: vol06-qing-1912
+    role: chronology
+    status: ready
+    depends_on: [vol06-ledger-standard]
+    scope: [volumes/vol06-qing-1912/data/event-ledger/qing-1912.csv]
+    goal: Extend the Qing-to-1912 ledger from 1723 through 1912 with source-aware imperial, regional, frontier, fiscal, social, diplomatic, reform, and revolutionary events before new prose.
