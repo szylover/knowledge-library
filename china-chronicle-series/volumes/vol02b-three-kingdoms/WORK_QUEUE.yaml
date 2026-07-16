@@ -1,0 +1,34 @@
+volume: vol02b-three-kingdoms
+stage: integrated
+
+tasks:
+  - id: vol02b-source-ledger
+    role: source-and-chronology
+    status: done
+    scope:
+      - data/source-corpus/three-kingdoms.md
+      - data/event-ledger/three-kingdoms-220-280.csv
+      - data/evidence-passports/
+    goal: Filter the 220—280 event corpus and preserve its source-aware evidence path.
+
+  - id: vol02b-regional-narrative
+    role: narrative
+    status: done
+    scope:
+      - chapters/ch01-three-centers.tex
+      - chapters/ch02-war-frontiers.tex
+      - chapters/ch03-society-texts.tex
+      - chapters/ch04-jin-unification.tex
+      - chapters/three-kingdoms/
+    goal: Organize ledgered events as regional-state dossiers and cross-polity causal clusters.
+
+  - id: vol02b-maps-index-build
+    role: integrator
+    status: done
+    scope:
+      - main.tex
+      - preamble.tex
+      - figures/three-kingdoms/
+      - chapters/appendix-*.tex
+      - scripts/build-volume.ps1
+    goal: Supply independent maps, navigation, source debate, and a Tectonic build entry point.
