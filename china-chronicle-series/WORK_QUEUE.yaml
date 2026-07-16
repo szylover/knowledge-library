@@ -860,6 +860,37 @@ tasks:
     scope: [figures/, chapters/]
     goal: Add Qing-to-1912 maps and wire them into the narrative.
 
+  - id: vol02-index-final
+    volume: vol02-han-division
+    role: indexer
+    status: ready
+    scope: [chapters/appendix-index.tex]
+    goal: Replace index placeholders with complete ledger-driven event, source, and figure navigation.
+  - id: vol03-index-final
+    volume: vol03-sui-tang-five
+    role: indexer
+    status: ready
+    scope: [chapters/appendix-index.tex]
+    goal: Replace chapter-only event links with complete ledger-driven event, source, and figure navigation.
+  - id: vol04-index-final
+    volume: vol04-song-yuan
+    role: indexer
+    status: ready
+    scope: [chapters/appendix-index.tex]
+    goal: Complete ledger-driven event, source, and figure navigation.
+  - id: vol05-index-final
+    volume: vol05-ming
+    role: indexer
+    status: ready
+    scope: [chapters/appendix-index.tex]
+    goal: Replace index placeholders with complete ledger-driven event, source, and figure navigation.
+  - id: vol06-index-final
+    volume: vol06-qing-1912
+    role: indexer
+    status: ready
+    scope: [chapters/appendix-index.tex]
+    goal: Complete ledger-driven event, source, and figure navigation.
+
   - id: vol03-anchor-system
     volume: vol03-sui-tang-five
     role: indexer
