@@ -17,3 +17,12 @@ tasks:
       - WORK_QUEUE.yaml
     goal: Split the 280--589 material into a standalone, source-aware volume with independent compilation.
     completed: 2026-07-16T10:13:38+08:00
+  - id: vol02c-jin-depth
+    role: narrative
+    status: done
+    scope:
+      - chapters/
+    goal: Replace the batch-style depth expansion with continuous, source-grounded chronicle prose.
+    branch: chronicle/vol02c-jin-depth
+    started: 2026-07-16T17:35:13+08:00
+    completed: 2026-07-16T17:38:26+08:00
