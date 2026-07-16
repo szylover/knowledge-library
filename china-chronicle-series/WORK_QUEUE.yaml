@@ -916,27 +916,52 @@ tasks:
   - id: vol03-narrative-rebuild
     volume: vol03-sui-tang-five
     role: continuity-editor
-    status: ready
+    status: done
     scope: [chapters/]
     goal: Rebuild main reading flow from template-like ledger anchors into Volume I-style event clusters, syntheses, institutional consequences, and source debates.
   - id: vol04-narrative-rebuild
     volume: vol04-song-yuan
     role: continuity-editor
-    status: ready
+    status: done
     scope: [chapters/]
     goal: Rebuild main reading flow from template-like ledger anchors into Volume I-style multi-polity event clusters and syntheses.
   - id: vol05-narrative-rebuild
     volume: vol05-ming
     role: continuity-editor
-    status: ready
+    status: done
     scope: [chapters/]
     goal: Rebuild main reading flow from template-like ledger anchors into Volume I-style event clusters, social history, and source debates.
   - id: vol06-narrative-rebuild
     volume: vol06-qing-1912
     role: continuity-editor
-    status: ready
+    status: done
     scope: [chapters/]
     goal: Rebuild main reading flow from template-like ledger anchors into Volume I-style event clusters, imperial society, and source debates.
+
+  - id: vol03-chapter-compasses
+    volume: vol03-sui-tang-five
+    role: continuity-editor
+    status: ready
+    scope: [chapters/]
+    goal: Add Volume I-style chapter opening arguments and closing syntheses across Volume III.
+  - id: vol04-chapter-compasses
+    volume: vol04-song-yuan
+    role: continuity-editor
+    status: ready
+    scope: [chapters/]
+    goal: Add Volume I-style chapter opening arguments and closing syntheses across Volume IV.
+  - id: vol05-chapter-compasses
+    volume: vol05-ming
+    role: continuity-editor
+    status: ready
+    scope: [chapters/]
+    goal: Add Volume I-style chapter opening arguments and closing syntheses across Volume V.
+  - id: vol06-chapter-compasses
+    volume: vol06-qing-1912
+    role: continuity-editor
+    status: ready
+    scope: [chapters/]
+    goal: Add Volume I-style chapter opening arguments and closing syntheses across Volume VI.
 
   - id: vol03-anchor-system
     volume: vol03-sui-tang-five
