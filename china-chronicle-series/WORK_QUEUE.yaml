@@ -1027,7 +1027,10 @@ tasks:
   - id: vol06-chronicle-flow
     volume: vol06-qing-1912
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/vol06-chronicle-flow
+    started_at: 2026-07-16T17:49:39+08:00
+    completed_at: 2026-07-16T17:54:17+08:00
     scope: [volumes/vol06-qing-1912/chapters/]
     goal: Restore Qing-to-1912 chronological event-cluster reading flow while retaining cross-reading and syntheses as supporting layers.
 
