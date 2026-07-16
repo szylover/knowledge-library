@@ -773,7 +773,9 @@ tasks:
   - id: vol03-ledger-standard
     volume: vol03-sui-tang-five
     role: chronology
-    status: ready
+    status: done
+    branch: chronicle/vol03-ledger-standard
+    started_at: 2026-07-16T17:35:54+08:00
     scope: [data/event-ledger/sui-tang-five.csv]
     goal: Expand Sui, Tang and Five Dynasties ledger toward volume-standard coverage.
   - id: vol03-prose-standard
