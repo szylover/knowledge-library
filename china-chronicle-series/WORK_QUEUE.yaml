@@ -1110,7 +1110,10 @@ tasks:
   - id: vol06-ledger-1723-1912
     volume: vol06-qing-1912
     role: chronology
-    status: ready
+    status: done
+    branch: chronicle/vol06-ledger-1723-1912
+    started_at: 2026-07-16T17:35:54+08:00
+    completed_at: 2026-07-16T17:41:01+08:00
     depends_on: [vol06-ledger-standard]
     scope: [volumes/vol06-qing-1912/data/event-ledger/qing-1912.csv]
     goal: Extend the Qing-to-1912 ledger from 1723 through 1912 with source-aware imperial, regional, frontier, fiscal, social, diplomatic, reform, and revolutionary events before new prose.
