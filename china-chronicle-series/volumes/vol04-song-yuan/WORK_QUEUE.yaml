@@ -51,3 +51,23 @@ tasks:
       - PROGRESS.md
       - pdf/china-chronicle/vol04-song-yuan.pdf
     goal: Insert verified Northern Song figures into the written event cluster, compile, and publish the updated Volume IV PDF.
+
+  - id: vol04-chronicle-flow
+    role: narrative
+    status: done
+    branch: chronicle/vol04-chronicle-flow
+    started_at: 2026-07-16T13:47:37+08:00
+    scope:
+      - chapters/ch01-northern-song.tex
+      - chapters/ch02-liao-western-xia.tex
+      - chapters/ch03-jin.tex
+      - chapters/ch04-southern-song.tex
+      - chapters/ch05-mongol-conquest.tex
+      - chapters/ch06-yuan.tex
+      - chapters/chronology-first-ledger-placeholder.tex
+      - chapters/northern-song/chronology-960-1127.tex
+      - chapters/northern-song/interwoven-layers.tex
+      - chapters/northern-song/founding-and-frontiers.tex
+      - chapters/northern-song/new-policies.tex
+      - chapters/northern-song/cultural-reading.tex
+    goal: Put the verified Northern Song material on a continuous chronology first, then interweave cross-polity, state, economic, social, and cultural layers; keep 1128--1368 visibly pending until source-aware ledger coverage exists.
