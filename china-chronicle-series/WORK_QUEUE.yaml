@@ -932,6 +932,25 @@ tasks:
     scope: [volumes/vol02c-jin-northern-southern/chapters/]
     goal: Expand Jin and Northern-Southern Dynasties reader prose to the Volume I depth standard.
 
+  - id: vol02a-crossread
+    volume: vol02a-han
+    role: narrative
+    status: ready
+    scope: [volumes/vol02a-han/chapters/]
+    goal: Integrate historical, institutional, literary, and historiographical cross-reading into Han Empire event clusters.
+  - id: vol02b-crossread
+    volume: vol02b-three-kingdoms
+    role: narrative
+    status: ready
+    scope: [volumes/vol02b-three-kingdoms/chapters/]
+    goal: Integrate historical, institutional, literary, and historiographical cross-reading into Three Kingdoms event clusters.
+  - id: vol02c-crossread
+    volume: vol02c-jin-northern-southern
+    role: narrative
+    status: ready
+    scope: [volumes/vol02c-jin-northern-southern/chapters/]
+    goal: Integrate historical, institutional, literary, and historiographical cross-reading into Jin and Northern-Southern event clusters.
+
   - id: vol03-narrative-rebuild
     volume: vol03-sui-tang-five
     role: continuity-editor
