@@ -913,6 +913,31 @@ tasks:
     scope: [volumes/vol02c-jin-northern-southern/]
     goal: Create a standalone Jin and Northern-Southern Dynasties volume from the existing source material and shared ledger.
 
+  - id: vol03-narrative-rebuild
+    volume: vol03-sui-tang-five
+    role: continuity-editor
+    status: ready
+    scope: [chapters/]
+    goal: Rebuild main reading flow from template-like ledger anchors into Volume I-style event clusters, syntheses, institutional consequences, and source debates.
+  - id: vol04-narrative-rebuild
+    volume: vol04-song-yuan
+    role: continuity-editor
+    status: ready
+    scope: [chapters/]
+    goal: Rebuild main reading flow from template-like ledger anchors into Volume I-style multi-polity event clusters and syntheses.
+  - id: vol05-narrative-rebuild
+    volume: vol05-ming
+    role: continuity-editor
+    status: ready
+    scope: [chapters/]
+    goal: Rebuild main reading flow from template-like ledger anchors into Volume I-style event clusters, social history, and source debates.
+  - id: vol06-narrative-rebuild
+    volume: vol06-qing-1912
+    role: continuity-editor
+    status: ready
+    scope: [chapters/]
+    goal: Rebuild main reading flow from template-like ledger anchors into Volume I-style event clusters, imperial society, and source debates.
+
   - id: vol03-anchor-system
     volume: vol03-sui-tang-five
     role: indexer
