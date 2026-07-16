@@ -1,6 +1,8 @@
 $ErrorActionPreference = 'Stop'
 
 $volumeRoot = Split-Path -Parent $PSScriptRoot
+$repositoryRoot = (& git -C $volumeRoot rev-parse --show-toplevel).Trim()
+$output = Join-Path $repositoryRoot 'pdf\china-chronicle\vol02b-three-kingdoms.pdf'
 $buildDirectory = Join-Path $volumeRoot '.build'
 $tectonic = 'D:\projects\tools\tectonic\tectonic.exe'
 
@@ -16,8 +18,11 @@ try {
     if ($LASTEXITCODE -ne 0) {
         throw "Tectonic compilation failed with exit code $LASTEXITCODE."
     }
-    Write-Output "Built local validation PDF: $(Join-Path $buildDirectory 'main.pdf')"
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $output) | Out-Null
+    Copy-Item -LiteralPath (Join-Path $buildDirectory 'main.pdf') -Destination $output -Force
+    Write-Output "Published: $output"
 }
 finally {
+    Remove-Item -LiteralPath $buildDirectory -Recurse -Force -ErrorAction SilentlyContinue
     Pop-Location
 }
