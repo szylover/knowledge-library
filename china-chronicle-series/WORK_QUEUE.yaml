@@ -976,6 +976,31 @@ tasks:
     scope: [volumes/vol06-qing-1912/chapters/]
     goal: Integrate historical, institutional, literary, and historiographical cross-reading into Qing-to-1912 event clusters.
 
+  - id: vol03-chronicle-flow
+    volume: vol03-sui-tang-five
+    role: narrative
+    status: ready
+    scope: [volumes/vol03-sui-tang-five/chapters/]
+    goal: Restore chronological event-cluster reading flow while retaining cross-reading and syntheses as supporting layers.
+  - id: vol04-chronicle-flow
+    volume: vol04-song-yuan
+    role: narrative
+    status: ready
+    scope: [volumes/vol04-song-yuan/chapters/]
+    goal: Restore multi-polity chronological event-cluster reading flow while retaining cross-reading and syntheses as supporting layers.
+  - id: vol05-chronicle-flow
+    volume: vol05-ming
+    role: narrative
+    status: ready
+    scope: [volumes/vol05-ming/chapters/]
+    goal: Restore Ming reign-year event-cluster reading flow while retaining cross-reading and syntheses as supporting layers.
+  - id: vol06-chronicle-flow
+    volume: vol06-qing-1912
+    role: narrative
+    status: ready
+    scope: [volumes/vol06-qing-1912/chapters/]
+    goal: Restore Qing-to-1912 chronological event-cluster reading flow while retaining cross-reading and syntheses as supporting layers.
+
   - id: vol03-narrative-rebuild
     volume: vol03-sui-tang-five
     role: continuity-editor
