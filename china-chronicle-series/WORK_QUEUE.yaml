@@ -729,7 +729,10 @@ tasks:
   - id: vol01-continuity-final
     volume: vol01-zhou-qin
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/vol01-continuity-final
+    started_at: 2026-07-16T17:36:08+08:00
+    completed_at: 2026-07-16T17:43:15+08:00
     scope: [chapters/appendix-*.tex, chapters/appendix-series-roadmap.tex]
     goal: Complete cross-period continuity, source, event and figure indexing.
 
