@@ -723,7 +723,10 @@ tasks:
   - id: vol01-warring-final
     volume: vol01-zhou-qin
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/vol01-warring-final
+    started_at: 2026-07-16T17:36:08+08:00
+    completed_at: 2026-07-16T18:05:00+08:00
     scope: [chapters/warring-qin/]
     goal: Complete remaining Warring States and Qin narrative modules.
   - id: vol01-continuity-final
