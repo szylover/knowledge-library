@@ -1103,7 +1103,10 @@ tasks:
   - id: vol05-ledger-late-ming
     volume: vol05-ming
     role: chronology
-    status: ready
+    status: done
+    branch: chronicle/vol05-ledger-late-ming
+    started_at: 2026-07-16T17:35:54+08:00
+    completed_at: 2026-07-16T17:49:00+08:00
     depends_on: [vol05-ledger-standard]
     scope: [volumes/vol05-ming/data/event-ledger/ming.csv]
     goal: Extend the Ming ledger from 1583 through 1644 with source-aware late-Ming court, fiscal, frontier, maritime, regional, social, and collapse events before new prose.
