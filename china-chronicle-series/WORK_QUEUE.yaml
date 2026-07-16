@@ -928,9 +928,12 @@ tasks:
   - id: vol02c-jin-depth
     volume: vol02c-jin-northern-southern
     role: narrative
-    status: ready
+    status: done
     scope: [volumes/vol02c-jin-northern-southern/chapters/]
     goal: Expand Jin and Northern-Southern Dynasties reader prose to the Volume I depth standard.
+    branch: chronicle/vol02c-jin-depth
+    started: 2026-07-16T17:35:13+08:00
+    completed: 2026-07-16T17:38:26+08:00
 
   - id: vol02a-crossread
     volume: vol02a-han
