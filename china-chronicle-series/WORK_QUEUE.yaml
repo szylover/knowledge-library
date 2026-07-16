@@ -913,6 +913,25 @@ tasks:
     scope: [volumes/vol02c-jin-northern-southern/]
     goal: Create a standalone Jin and Northern-Southern Dynasties volume from the existing source material and shared ledger.
 
+  - id: vol02a-han-depth
+    volume: vol02a-han
+    role: narrative
+    status: ready
+    scope: [volumes/vol02a-han/chapters/]
+    goal: Expand Han Empire reader prose to the Volume I depth standard.
+  - id: vol02b-three-depth
+    volume: vol02b-three-kingdoms
+    role: narrative
+    status: ready
+    scope: [volumes/vol02b-three-kingdoms/chapters/]
+    goal: Expand Three Kingdoms reader prose to the Volume I depth standard.
+  - id: vol02c-jin-depth
+    volume: vol02c-jin-northern-southern
+    role: narrative
+    status: ready
+    scope: [volumes/vol02c-jin-northern-southern/chapters/]
+    goal: Expand Jin and Northern-Southern Dynasties reader prose to the Volume I depth standard.
+
   - id: vol03-narrative-rebuild
     volume: vol03-sui-tang-five
     role: continuity-editor
