@@ -891,6 +891,25 @@ tasks:
     scope: [chapters/appendix-index.tex]
     goal: Complete ledger-driven event, source, and figure navigation.
 
+  - id: vol02a-han-split
+    volume: vol02a-han
+    role: integrator
+    status: ready
+    scope: [volumes/vol02a-han/]
+    goal: Create a standalone Han Empire volume from the existing Han source material and shared ledger.
+  - id: vol02b-three-kingdoms-split
+    volume: vol02b-three-kingdoms
+    role: integrator
+    status: ready
+    scope: [volumes/vol02b-three-kingdoms/]
+    goal: Create a standalone Three Kingdoms volume from the existing source material and shared ledger.
+  - id: vol02c-jin-division-split
+    volume: vol02c-jin-northern-southern
+    role: integrator
+    status: ready
+    scope: [volumes/vol02c-jin-northern-southern/]
+    goal: Create a standalone Jin and Northern-Southern Dynasties volume from the existing source material and shared ledger.
+
   - id: vol03-anchor-system
     volume: vol03-sui-tang-five
     role: indexer
