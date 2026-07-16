@@ -1016,7 +1016,10 @@ tasks:
   - id: vol05-chronicle-flow
     volume: vol05-ming
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/vol05-chronicle-flow
+    started_at: 2026-07-16T17:49:39+08:00
+    completed_at: 2026-07-16T17:53:41+08:00
     scope: [volumes/vol05-ming/chapters/]
     goal: Restore Ming reign-year event-cluster reading flow while retaining cross-reading and syntheses as supporting layers.
   - id: vol06-chronicle-flow
