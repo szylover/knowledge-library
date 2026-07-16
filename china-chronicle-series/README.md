@@ -14,9 +14,9 @@
 | 目录 | 书名 | 状态 |
 |---|---|---|
 | `volumes/vol01-zhou-qin/` | 第一卷《周秦卷》 | 正在扩写 |
-| `volumes/vol02a-han/` | 第二卷甲《汉帝国卷》 | 已拆分发布 |
-| `volumes/vol02b-three-kingdoms/` | 第二卷乙《三国卷》 | 已拆分发布 |
-| `volumes/vol02c-jin-northern-southern/` | 第二卷丙《两晋南北朝卷》 | 已拆分发布 |
+| `volumes/vol02a-han/` | 第二卷《汉帝国卷》 | 已拆分发布 |
+| `volumes/vol02b-three-kingdoms/` | 第三卷《三国卷》 | 已拆分发布 |
+| `volumes/vol02c-jin-northern-southern/` | 第四卷《两晋南北朝卷》 | 已拆分发布 |
 | `volumes/vol02-han-division/` | 原第二卷迁移源 | 保留总账本与旧书稿，不再作为主发布物 |
 | `volumes/vol03-sui-tang-five/` | 第三卷《隋唐五代卷》 | 待启动 |
 | `volumes/vol04-song-yuan/` | 第四卷《宋辽夏金元卷》 | 待启动 |
