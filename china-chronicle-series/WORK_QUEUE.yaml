@@ -907,7 +907,10 @@ tasks:
   - id: vol02a-han-split
     volume: vol02a-han
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/vol02a-han-split
+    started: 2026-07-16T17:33:14+08:00
+    completed: 2026-07-16T17:33:14+08:00
     scope: [volumes/vol02a-han/]
     goal: Create a standalone Han Empire volume from the existing Han source material and shared ledger.
   - id: vol02b-three-kingdoms-split
