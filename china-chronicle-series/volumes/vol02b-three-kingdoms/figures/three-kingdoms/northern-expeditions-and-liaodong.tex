@@ -1,0 +1,36 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=.84cm,y=.84cm,font=\small]
+  \fill[paper] (0,0) rectangle (12.6,6.45);
+  \fill[dynasty!45] (6.05,3.7) ellipse (1.35 and .9);
+  \node[align=center,text=white] at (6.05,3.7) {魏\\洛阳、关中};
+  \fill[timeline!32] (2.1,1.55) ellipse (1.25 and .77);
+  \node[align=center] at (2.1,1.55) {蜀汉\\成都、汉中};
+  \fill[timeline!20] (4.0,4.95) ellipse (1.22 and .72);
+  \node[align=center,font=\scriptsize] at (4.0,4.95) {陇右、祁山\\山口与粮道};
+  \fill[dynasty!25] (9.92,5.06) ellipse (1.32 and .77);
+  \node[align=center] at (9.92,5.06) {辽东、襄平\\公孙氏节点};
+  \fill[source!24] (10.45,1.35) ellipse (1.28 and .72);
+  \node[align=center,font=\scriptsize] at (10.45,1.35) {淮南、合肥\\魏吴接口};
+  \draw[source!55,dashed] (.7,3.1) .. controls (4.0,2.65) and
+    (7.8,3.15) .. (12.0,2.48);
+  \node[text=source,below,font=\scriptsize] at (8.1,2.72) {交通、转输方向（示意）};
+  \draw[->,very thick,color=timeline] (2.92,2.14) .. controls (3.2,3.1)
+    and (3.55,3.83) .. (3.76,4.22);
+  \node[text=timeline,left,font=\scriptsize,align=right] at (2.96,3.48)
+    {蜀军北出\\受山道与粮运限制};
+  \draw[->,very thick,color=dynasty] (6.98,4.1) .. controls (7.85,4.48)
+    and (8.42,4.72) .. (8.78,4.86);
+  \node[text=dynasty,above,font=\scriptsize] at (7.95,4.85) {238 年魏军东进};
+  \draw[->,thick,color=source] (7.0,3.18) .. controls (8.08,2.54)
+    and (8.86,1.86) .. (9.2,1.6);
+  \node[text=source,right,font=\scriptsize] at (7.9,2.23) {淮南的内外战争};
+  \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+    inner sep=3pt,font=\scriptsize] at (6.4,.56)
+    {北伐、辽东与淮南不是同一战场，却共同检验中枢能否把资源送到边缘。};
+\end{tikzpicture}
+\caption{陇右、辽东与淮南的边缘压力（约 228--258 年，示意）。据《三国志》
+魏、蜀、吴诸书及《资治通鉴》相关卷概括。图只标示相对战略走廊；不将地方
+部众、精确道路、疆界或军事控制范围绘作确定。}
+\label{fig:vol02b:northern-liaodong}
+\end{figure}

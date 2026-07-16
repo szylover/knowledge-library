@@ -1,0 +1,39 @@
+\documentclass[11pt,a4paper,openany]{book}
+\input{preamble}
+
+\begin{document}
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[dynasty] (current page.north west)
+      rectangle ([yshift=-8.2cm]current page.north east);
+    \fill[timeline] ([yshift=-8.2cm]current page.north west)
+      rectangle ([yshift=-8.55cm]current page.north east);
+  \end{tikzpicture}
+  \centering
+  \vspace*{2.0cm}
+  {\color{white}\fontsize{35}{44}\selectfont\bfseries 中国大事编年·第二卷乙\par}
+  \vspace{.6cm}
+  {\color{white!90}\Large 三国：区域国家、战争与再统一（220--280）\par}
+  \vspace{3.5cm}
+  {\Large 从洛阳、成都与建业出发，追问国家怎样抵达道路、家庭与边疆\par}
+  \vfill
+  {\normalsize \today\par}
+  \vspace{2cm}
+\end{titlepage}
+
+\frontmatter
+\include{chapters/preface}
+\tableofcontents
+
+\mainmatter
+\part{三座中枢与它们所能调用的世界}
+\include{chapters/ch01-three-centers}
+\include{chapters/ch02-war-frontiers}
+\include{chapters/ch03-society-texts}
+\include{chapters/ch04-jin-unification}
+
+\appendix
+\include{chapters/appendix-sources}
+\include{chapters/appendix-debates}
+\include{chapters/appendix-index}
+\end{document}

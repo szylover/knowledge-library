@@ -1,0 +1,45 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=.86cm,y=.86cm,font=\small]
+  \fill[paper] (0,0) rectangle (12.5,6.8);
+  \draw[source!65,line width=.8pt] (.6,2.1) .. controls (3.2,1.7) and
+    (7.3,2.65) .. (11.9,1.8);
+  \node[text=source,below,font=\scriptsize] at (8.5,1.85) {长江方向（示意）};
+  \draw[source!50,dashed] (.6,4.8) .. controls (4.2,4.3) and
+    (7.7,5.05) .. (11.8,4.55);
+  \node[text=source,above,font=\scriptsize] at (8.8,4.75) {黄河方向（示意）};
+
+  \fill[dynasty!45] (7.1,4.05) ellipse (1.55 and 1.02);
+  \node[align=center,text=white] at (7.1,4.05) {魏\\洛阳、北方仓储};
+  \fill[timeline!30] (2.05,2.2) ellipse (1.48 and .92);
+  \node[align=center] at (2.05,2.2) {蜀汉\\成都、汉中};
+  \fill[source!28] (10.02,1.08) ellipse (1.5 and .78);
+  \node[align=center] at (10.02,1.08) {孙吴\\武昌、建业};
+  \fill[dynasty!22] (4.92,2.35) ellipse (1.16 and .72);
+  \node[align=center,font=\scriptsize] at (4.92,2.35) {荆州、夷陵\\江汉节点};
+  \fill[timeline!22] (4.05,5.55) ellipse (1.1 and .65);
+  \node[align=center,font=\scriptsize] at (4.05,5.55) {关中、陇右\\山道与粮运};
+  \fill[source!23] (10.35,5.05) ellipse (1.15 and .72);
+  \node[align=center,font=\scriptsize] at (10.35,5.05) {淮南、合肥\\水陆前线};
+
+  \draw[->,very thick,color=dynasty] (5.84,3.83) .. controls (5.3,3.28)
+    and (4.88,2.9) .. (4.6,2.73);
+  \node[text=dynasty,below,font=\scriptsize,align=center] at (5.3,3.18)
+    {魏、吴争夺\\江汉与江淮};
+  \draw[->,thick,dashed,color=timeline] (2.9,2.86) .. controls (3.15,3.7)
+    and (3.58,4.35) .. (3.9,4.82);
+  \node[text=timeline,left,font=\scriptsize,align=right] at (3.05,4.08)
+    {汉中—陇右\\北伐方向};
+  \draw[->,thick,color=source] (8.12,3.25) .. controls (8.82,2.55)
+    and (9.2,1.95) .. (9.45,1.72);
+  \node[text=source,right,font=\scriptsize,align=left] at (8.45,2.45) {长江水军\\与行政腹地};
+
+  \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+    inner sep=3pt,font=\scriptsize] at (7.05,.57)
+    {三座中枢所能调用的资源不同；色块不等于疆界，箭线只提示竞争走廊。};
+\end{tikzpicture}
+\caption{三国的政治中心与主要竞争走廊（约 220--229 年，示意）。据《三国志》
+魏、蜀、吴诸纪传及《资治通鉴》卷六十九至七十一概括。都城、河流与路线只
+服务于比较道路、水面和山口的约束，不表示精确疆界、完整战线或可通行程度。}
+\label{fig:vol02b:polity-corridors}
+\end{figure}
