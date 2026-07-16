@@ -779,7 +779,9 @@ tasks:
   - id: vol04-ledger-standard
     volume: vol04-song-yuan
     role: chronology
-    status: ready
+    status: done
+    branch: chronicle/vol04-ledger-standard
+    started_at: 2026-07-16T17:35:54+08:00
     scope: [data/event-ledger/song-yuan.csv]
     goal: Expand Song-Yuan ledger toward volume-standard coverage.
   - id: vol04-prose-standard
