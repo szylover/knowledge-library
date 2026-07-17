@@ -1582,11 +1582,11 @@ tasks:
     goal: Replace the remaining 331 Ming causal/consequence and fiscal/disaster template patterns with reign-period-specific clusters using distinct sources, places, actioners and outcomes before strict revalidation.
   - id: acceptance-qing-final
     role: integrator
-    status: ready
+    status: blocked
     branch: chronicle/acceptance-qing-final
     started_at: 2026-07-17T16:29:06+08:00
-    blocked_at: 2026-07-17T16:29:06+08:00
-    blocked_reason: "Strict eight-criterion revalidation after anchor coverage scored 4/8 (50.00%): 1,412 static anchors remain bulk template prose, substantive regional balance is unevidenced, and appendix-sources.tex is empty beyond headings. The 95% gate blocks root PDF construction, Blob sync, and URL verification."
+    blocked_at: 2026-07-17T16:47:49+08:00
+    blocked_reason: "Strict latest-main validation after the Qing cluster rewrite is 4/8 (50.00%), below the 95% gate: 1,398 of 1,412 ledger IDs lack first-depiction anchors, so 1,398 appendix navigation links have no target and regional balance cannot be evidenced at ledger scale. The retired template markers are absent, but deletion does not replace them with source-aware prose. Criterion 8 is gate-blocked. No root PDF build, Blob sync, or direct URL verification was run."
     scope:
       - volumes/vol06-qing-1912/
       - pdf/china-chronicle/vol06-qing-1912.pdf
