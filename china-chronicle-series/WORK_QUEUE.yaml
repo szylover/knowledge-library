@@ -1294,3 +1294,11 @@ tasks:
       - volumes/vol02c-jin-northern-southern/chapters/
       - volumes/vol04-song-yuan/chapters/
     goal: Add source-aware event boxes at first deep narrative occurrences in Han, Three Kingdoms, Jin and Song-Yuan without converting prose into ledger cards.
+  - id: acceptance-progress-reconciliation
+    role: integrator
+    status: ready
+    scope:
+      - volumes/ACCEPTANCE_STATUS.md
+      - volumes/*/PROGRESS.md
+      - WORK_QUEUE.yaml
+    goal: Reconcile progress and acceptance status with current ledger, anchor, figure and index evidence without marking any volume accepted prematurely.
