@@ -1185,7 +1185,9 @@ tasks:
     goal: Repair medieval ledger schemas, target paths, coverage gaps and multi-polity density before further narrative work.
   - id: acceptance-ledger-late-imperial
     role: chronology
-    status: ready
+    status: done
+    branch: chronicle/acceptance-ledger-late-imperial
+    started_at: 2026-07-17T10:11:18+08:00
     scope:
       - volumes/vol05-ming/data/event-ledger/
       - volumes/vol06-qing-1912/data/event-ledger/
