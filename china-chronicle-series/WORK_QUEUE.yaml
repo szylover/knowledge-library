@@ -1552,7 +1552,11 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Ming, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-qing-final
     role: integrator
-    status: ready
+    status: blocked
+    branch: chronicle/acceptance-qing-final
+    started_at: 2026-07-17T16:12:00+08:00
+    blocked_at: 2026-07-17T16:18:00+08:00
+    blocked_reason: "Strict root eight-criterion validation is below the 95% gate: 1,398 of 1,412 ledger IDs lack first-depiction anchors (0.99% coverage); the gap matrix lacks required polity/region and evidence-planning fields; the reader index lacks polity/theme/source coverage and indexes only 7/14 figures. Criterion 4 cannot be evidenced and criterion 8 is gate-blocked. No root PDF, Blob sync, or URL verification was run."
     scope:
       - volumes/vol06-qing-1912/
       - pdf/china-chronicle/vol06-qing-1912.pdf
