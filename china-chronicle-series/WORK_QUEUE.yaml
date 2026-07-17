@@ -1506,11 +1506,11 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Three Kingdoms, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-song-yuan-final
     role: integrator
-    status: ready
+    status: blocked
     branch: chronicle/acceptance-song-yuan-final
-    started_at: 2026-07-17T14:58:36+08:00
-    blocked_at: 2026-07-17T15:01:19+08:00
-    blocked_reason: "Strict latest-main revalidation scored 3/8 (37.50%): all 2,200 ledger first depictions are batch-template or shared-chronology bridge prose; the coverage matrix lacks per-cell targets/bridges, density, caveats, gaps and routes; textwindow has zero uses. Ledger and static link/index/figure checks passed, but the 95% gate blocks PDF build, download sync and Blob verification."
+    started_at: 2026-07-17T15:24:25+08:00
+    blocked_at: 2026-07-17T15:24:25+08:00
+    blocked_reason: "Strict latest-main revalidation after rewrite scored 4/8 (50.00%): the 2,200 first depictions still contain recurrent batch prose (for example 1,082 repetitions of one spatial-limit sentence and 1,118 of one spatial-clue sentence), so they cannot demonstrate non-template narrative or substantive multi-polity balance; turningpoint and causalchain have zero deployments. The new grid matrix, textwindows, ledger, static links, figures and indexes pass, but the 95% gate blocks root-PDF build, download sync and Blob verification."
     scope:
       - volumes/vol04-song-yuan/
       - pdf/china-chronicle/vol04-song-yuan.pdf
