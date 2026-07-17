@@ -1440,6 +1440,12 @@ tasks:
       - volumes/vol02b-three-kingdoms/data/event-ledger/
       - volumes/vol02b-three-kingdoms/figures/
     goal: Replace each of the 399 remaining interchangeable TK-SRC occurrences with event-specific material, place, actor and consequence prose; complete cell-level gap matrices and index the period timeline for strict acceptance.
+  - id: acceptance-three-final-prose
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/
+    goal: Rewrite the remaining 399 TK-SRC first depictions so every event has non-interchangeable source, place, actor and consequence prose, clearing the final 92.88 percent strict-acceptance blocker.
   - id: acceptance-jin-reader-index
     role: indexer
     status: done
