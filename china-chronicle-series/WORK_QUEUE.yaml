@@ -1417,3 +1417,12 @@ tasks:
       - volumes/vol02c-jin-northern-southern/
       - pdf/china-chronicle/vol02c-jin-northern-southern.pdf
     goal: Run complete Volume-I-blueprint acceptance for Jin-Northern-Southern, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
+  - id: acceptance-jin-anchor-coverage
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/chapters/western-jin/
+      - volumes/vol02c-jin-northern-southern/chapters/eastern-jin-sixteen-kingdoms/
+      - volumes/vol02c-jin-northern-southern/chapters/northern-southern-dynasties/
+      - volumes/vol02c-jin-northern-southern/chapters/synthesis/
+    goal: Place ledgered Jin-Northern-Southern events at first real narrative depictions across all periods, raising anchor coverage above the 95 percent acceptance threshold without generated navigation templates.
