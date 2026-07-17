@@ -1543,6 +1543,20 @@ tasks:
       - volumes/vol04-song-yuan/
       - pdf/china-chronicle/vol04-song-yuan.pdf
     goal: Run complete Volume-I-blueprint acceptance for Song-Liao-Xia-Jin-Yuan, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
+  - id: acceptance-ming-final
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol05-ming/
+      - pdf/china-chronicle/vol05-ming.pdf
+    goal: Run complete Volume-I-blueprint acceptance for Ming, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
+  - id: acceptance-qing-final
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol06-qing-1912/
+      - pdf/china-chronicle/vol06-qing-1912.pdf
+    goal: Run complete Volume-I-blueprint acceptance for Qing-to-1912, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-jin-anchor-coverage
     role: narrative
     status: ready
