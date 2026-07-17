@@ -1573,11 +1573,11 @@ tasks:
     goal: Replace the 287 repeated causal and consequence sentences and 545 repeated source-limit prefixes in Ming first-depiction prose with event-specific material, place, actor and outcome narrative before strict revalidation.
   - id: acceptance-qing-final
     role: integrator
-    status: ready
+    status: blocked
     branch: chronicle/acceptance-qing-final
-    started_at: 2026-07-17T16:12:00+08:00
-    blocked_at: 2026-07-17T16:18:00+08:00
-    blocked_reason: "Strict root eight-criterion validation is below the 95% gate: 1,398 of 1,412 ledger IDs lack first-depiction anchors (0.99% coverage); the gap matrix lacks required polity/region and evidence-planning fields; the reader index lacks polity/theme/source coverage and indexes only 7/14 figures. Criterion 4 cannot be evidenced and criterion 8 is gate-blocked. No root PDF, Blob sync, or URL verification was run."
+    started_at: 2026-07-17T16:29:06+08:00
+    blocked_at: 2026-07-17T16:29:06+08:00
+    blocked_reason: "Strict eight-criterion revalidation after anchor coverage scored 4/8 (50.00%): 1,412 static anchors remain bulk template prose, substantive regional balance is unevidenced, and appendix-sources.tex is empty beyond headings. The 95% gate blocks root PDF construction, Blob sync, and URL verification."
     scope:
       - volumes/vol06-qing-1912/
       - pdf/china-chronicle/vol06-qing-1912.pdf
