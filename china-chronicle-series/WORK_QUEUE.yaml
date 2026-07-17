@@ -1430,7 +1430,11 @@ tasks:
     goal: Replace the 399 generated Three Kingdoms anchors with concrete first-depiction prose, remove duplicate Han-WEI anchors, update coverage matrices and add a period timeline before strict revalidation.
   - id: acceptance-three-strict-rewrite
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-strict-rewrite
+    started_at: 2026-07-17T14:51:58+08:00
+    completed_at: 2026-07-17T14:56:55+08:00
+    result: Rewrote 399 TK-SRC first depictions as source-aware actor/place/material/consequence prose; completed 20 time-polity and 24 time-actioner cells; indexed the period timeline; ledger checks and local Tectonic build passed.
     scope:
       - volumes/vol02b-three-kingdoms/chapters/
       - volumes/vol02b-three-kingdoms/data/event-ledger/
