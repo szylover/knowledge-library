@@ -29,3 +29,17 @@
 \newcommand{\eventid}[1]{\textcolor{dynasty}{\footnotesize\textsf{〔#1〕}}}
 \newcommand{\eventanchor}[2]{\hypertarget{evt:#1}{\eventid{#2}}}
 \newcommand{\eventref}[2]{\hyperlink{evt:#1}{\textcolor{dynasty}{〔#2〕}}}
+
+% Task-specific reading stops share the volume's paper, ink, and dynasty palette.
+\newcommand{\chronicleboxbegin}[2]{%
+  \par\medskip\noindent\begin{center}\setlength{\fboxsep}{7pt}%
+  \fcolorbox{#1}{paper}{\begin{minipage}{0.92\linewidth}%
+  \textcolor{#1}{\bfseries #2}\par\smallskip}}
+\newcommand{\chronicleboxend}{%
+  \end{minipage}}\end{center}\par\medskip}
+\newenvironment{event}[1]{\chronicleboxbegin{dynasty}{#1}}{\chronicleboxend}
+\newenvironment{turningpoint}[1]{\chronicleboxbegin{dynasty}{#1}}{\chronicleboxend}
+\newenvironment{causalchain}[1]{\chronicleboxbegin{timeline}{#1}}{\chronicleboxend}
+\newenvironment{textwindow}[1]{\chronicleboxbegin{source}{#1}}{\chronicleboxend}
+\newenvironment{sourcenote}[1]{\chronicleboxbegin{source}{#1}}{\chronicleboxend}
+\newenvironment{debate}[1]{\chronicleboxbegin{timeline}{#1}}{\chronicleboxend}
