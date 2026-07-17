@@ -1445,7 +1445,10 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Jin-Northern-Southern, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-han-final
     role: integrator
-    status: ready
+    status: blocked
+    branch: chronicle/acceptance-han-final
+    started_at: 2026-07-17T13:49:49+08:00
+    blocked_reason: "Below the 95% gate: stale 592-record matrices; 396 repeated template bridge anchors; missing timeline/Xin figure and polity/theme/source indices. No PDF or Blob publication."
     scope:
       - volumes/vol02a-han/
       - pdf/china-chronicle/vol02a-han.pdf
