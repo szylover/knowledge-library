@@ -1,0 +1,44 @@
+\phantomsection
+\label{fig:han-period-timeline}
+\begin{center}
+\begin{tikzpicture}[x=.035cm,y=1cm,font=\small]
+  \fill[paper] (-218,-.6) rectangle (232,2.55);
+  \draw[very thick,dynasty] (-206,1.25) -- (220,1.25);
+
+  \foreach \year/\labeltext/\side in {
+    -206/{前206\\分封}/above,
+    -202/{前202\\汉立}/below,
+    -154/{前154\\七国}/above,
+    -141/{前141\\武帝}/below,
+    -119/{前119\\漠北}/above,
+    -91/{前91\\太子危机}/below,
+    -9/{前9\\王莽居摄}/above,
+    9/{9\\新}/below,
+    23/{23\\更始}/above,
+    25/{25\\复汉}/below,
+    89/{89\\北边纪功}/above,
+    184/{184\\黄巾}/below,
+    189/{189\\宫门失守}/above,
+    200/{200\\官渡}/below,
+    208/{208\\赤壁}/above,
+    220/{220\\禅代}/below}
+  {
+    \draw[timeline,thick] (\year,1.12) -- (\year,1.38);
+    \node[\side,align=center,font=\scriptsize,text=ink] at (\year,1.42) {\labeltext};
+  }
+
+  \draw[dashed,source!75] (9,.08) -- (9,2.3);
+  \draw[dashed,source!75] (25,.08) -- (25,2.3);
+  \node[align=center,font=\scriptsize,text=dynasty] at (-100,.15) {西汉：关中、郡国、边疆与财政的重组};
+  \node[align=center,font=\scriptsize,text=timeline] at (17,2.27) {新与复汉：命令、名分和执行的断裂};
+  \node[align=center,font=\scriptsize,text=dynasty] at (124,.15) {东汉：雒阳复接、地方军权与区域竞争};
+
+  \node[draw=source!75,fill=paper,rounded corners=2pt,align=left,
+    inner sep=3pt,font=\scriptsize] at (105,2.45)
+    {时间轴为编年阅读的定位线，不表示事件之间\\
+     存在自动因果，也不按战争规模或政权控制范围绘制。};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 汉帝国时期时间轴（前206--220）：据《史记》《汉书》《后汉书》《后汉纪》《三国志》与《资治通鉴》的可核年序编制。它只标出本卷反复回看的转换点；政权更替、战争与制度动作的精确日期、参与者和影响范围仍以各节的来源注记为准。}
+\end{center}
