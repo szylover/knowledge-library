@@ -1763,6 +1763,24 @@ tasks:
       - volumes/vol05-ming/chapters/
       - volumes/vol06-qing-1912/chapters/
     goal: Remove ledger-style repeated core-source surface text from reader prose, keeping evidence limits only where they change interpretation and routing full provenance to source notes, text windows and appendices.
+  - id: acceptance-three-reader-rebuild
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol02b-three-kingdoms/chapters/
+    goal: Remove TK-LEDGER navigation prose and source-field narratives from reader chapters, preserve them as maintenance-only data, and rebuild curated event clusters and cross-index routes under the reader-surface rules.
+  - id: acceptance-song-yuan-reader-rebuild
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/
+    goal: Remove 2078 bare Song-Yuan navigation anchors from reader prose, preserve ledger navigation outside the reading path, and rebuild curated multi-polity event clusters, source notes and cross-index routes.
+  - id: acceptance-ming-reader-rebuild
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol05-ming/chapters/
+    goal: Replace 1304 Ming register anchors with curated first narrative depictions, move registry navigation out of reader prose, repair 73 missing depictions and rebuild cross-index routes.
   - id: acceptance-density-policy
     role: integrator
     status: done
