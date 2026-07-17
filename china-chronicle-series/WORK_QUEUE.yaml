@@ -1915,6 +1915,17 @@ tasks:
     scope:
       - volumes/vol03-sui-tang-five/chapters/
     goal: Remove residual ledger navigation and generated prose from Sui-Tang-Five reader chapters, rebuild curated period and multi-polity event clusters, and restore real cross-index routes under the reader-surface rules.
+  - id: acceptance-reader-index-figure-integrity
+    role: indexer
+    status: ready
+    scope:
+      - volumes/vol01-zhou-qin/chapters/
+      - volumes/vol01-zhou-qin/figures/
+      - volumes/vol02c-jin-northern-southern/appendices/
+      - volumes/vol03-sui-tang-five/chapters/
+      - volumes/vol04-song-yuan/chapters/
+      - volumes/vol06-qing-1912/chapters/
+    goal: Repair all audited reader-index and figure-route gaps: Jin 16 lost routes, Zhou-Qin seven orphan figures, and incomplete figure indexes in Sui-Tang, Song-Yuan and Qing.
   - id: acceptance-reader-cluster-density
     role: narrative
     status: done
