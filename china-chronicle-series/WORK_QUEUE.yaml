@@ -1545,10 +1545,11 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Song-Liao-Xia-Jin-Yuan, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-ming-final
     role: integrator
-    status: done
+    status: blocked
     branch: chronicle/acceptance-ming-final
-    started_at: 2026-07-17T16:11:58+08:00
-    completed_at: 2026-07-17T16:16:00+08:00
+    started_at: 2026-07-17T16:27:08+08:00
+    blocked_at: 2026-07-17T16:29:50+08:00
+    blocked_reason: "Strict post-anchor validation is 5/8 (62.5%), below the 95% gate: 1,389/1,462 anchors reach 95.01% numerically, but 1,304 new records rely on repeated template prose (287 repeated causal and consequence sentences; 545 repeated caveat prefixes), so criteria 3 and 4 fail. Criterion 8 is gate-blocked; no root PDF build, Blob sync, or URL verification was run."
     scope:
       - volumes/vol05-ming/
       - pdf/china-chronicle/vol05-ming.pdf
