@@ -1771,7 +1771,11 @@ tasks:
     goal: Remove TK-LEDGER navigation prose and source-field narratives from reader chapters, preserve them as maintenance-only data, and rebuild curated event clusters and cross-index routes under the reader-surface rules.
   - id: acceptance-song-yuan-reader-rebuild
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-song-yuan-reader-rebuild
+    started_at: 2026-07-17T17:30:13+08:00
+    completed_at: 2026-07-17T17:30:13+08:00
+    result: Removed 2078 bare reader-register entries; retained curated multi-polity prose and rebuilt source, event, and figure routes.
     scope:
       - volumes/vol04-song-yuan/chapters/
     goal: Remove 2078 bare Song-Yuan navigation anchors from reader prose, preserve ledger navigation outside the reading path, and rebuild curated multi-polity event clusters, source notes and cross-index routes.
