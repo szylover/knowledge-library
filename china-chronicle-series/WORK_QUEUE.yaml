@@ -1130,7 +1130,7 @@ tasks:
   - id: vol01-final-publish
     volume: vol01-zhou-qin
     role: integrator
-    status: blocked
+    status: ready
     branch: chronicle/vol01-final-publish
     started: 2026-07-17T12:42:27+08:00
     blocked_at: 2026-07-17T12:42:27+08:00
