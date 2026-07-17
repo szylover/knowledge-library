@@ -1893,7 +1893,10 @@ tasks:
     goal: Expand Jin-Northern-Southern reader-visible event clusters beyond 16 with multi-polity, migration, fiscal, religious and regional narration driven by the 1500-row ledger without template prose.
   - id: acceptance-qing-curated-coverage
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-qing-curated-coverage
+    started_at: 2026-07-17T18:33:30+08:00
+    completed_at: 2026-07-17T18:45:00+08:00
     scope:
       - volumes/vol06-qing-1912/chapters/
     goal: Expand Qing reader-visible event clusters beyond 31 with regional, frontier, fiscal, social, diplomatic and revolutionary narration driven by the 1412-row ledger without template prose.
