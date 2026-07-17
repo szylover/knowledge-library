@@ -1296,7 +1296,10 @@ tasks:
     goal: Add source-aware event boxes at first deep narrative occurrences in Han, Three Kingdoms, Jin and Song-Yuan without converting prose into ledger cards.
   - id: acceptance-progress-reconciliation
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-progress-reconciliation
+    started_at: 2026-07-17T11:31:59+08:00
+    completed_at: 2026-07-17T11:34:28+08:00
     scope:
       - volumes/ACCEPTANCE_STATUS.md
       - volumes/*/PROGRESS.md
