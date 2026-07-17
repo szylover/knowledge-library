@@ -51,3 +51,10 @@ Underfull `\vbox` 排版警告。
 进度、索引、链接、图件和构建范围内。因此未更新根目录既有的
 `pdf/china-chronicle/vol02c-jin-northern-southern.pdf`，未运行
 `publish-downloads.ps1`，也没有可验证的 Blob 直接 URL。
+
+## 叙事密度验收（2026-07-17）
+
+- 已将新增的 **624** 条账本事件直接接入既有的西晋、东晋—十六国与南北朝连续章节：`JH-DENS-280-A` 至 `JH-DENS-589-B` 的逐年桥接，以及 341、420、494、589 年的四个材料补点。
+- 每段以相应时段的正史、编年、志书、墓志、题记或城址材料为边界，区分朝廷年序与地方征收、迁徙、宗教、道路的可见范围；未将诏令、族称、战报或单项物证外推为全域事实。
+- 账本事件锚点现为 **1,500 / 1,500（100%）**，无重复、未知或缺失 ID，超过 95% 锚点覆盖门槛。
+- `scripts/validate-event-ledger.ps1` 已通过（1,500 条，`evidence-passport+tier-14`）；`scripts/build-volume.ps1` 已成功生成卷内 `.build/vol02c-jin-northern-southern.pdf`，仅有既有/排版性的 Underfull `\vbox` 警告。未发布或同步根目录 PDF。
