@@ -1442,7 +1442,10 @@ tasks:
     goal: Expand Three Kingdoms ledger from 301 toward 700 source-aware events across 220--280, including annual, polity, frontier, fiscal, social and external coverage.
   - id: acceptance-ledger-density-jin
     role: chronology
-    status: ready
+    status: done
+    branch: chronicle/acceptance-ledger-density-jin
+    started_at: 2026-07-17T13:16:32+08:00
+    completed_at: 2026-07-17T13:21:12+08:00
     scope:
       - volumes/vol02c-jin-northern-southern/data/event-ledger/jin-northern-southern.csv
       - volumes/vol02c-jin-northern-southern/data/source-corpus/
