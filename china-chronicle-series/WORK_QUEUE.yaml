@@ -1794,7 +1794,11 @@ tasks:
     goal: Replace 1304 Ming register anchors with curated first narrative depictions, move registry navigation out of reader prose, repair 73 missing depictions and rebuild cross-index routes.
   - id: acceptance-three-curated-coverage
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-curated-coverage
+    started_at: 2026-07-17T17:44:32+08:00
+    completed_at: 2026-07-17T18:05:00+08:00
+    validation: Raised visible first depictions from 43 to 80; 37 new ledger-backed clusters passed strict reader-token, uniqueness, source-completeness, ledger, and non-publishing Tectonic audits.
     scope:
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/
     goal: Expand Three Kingdoms reader-visible first depictions from 43 toward source-aware coverage across all four polities without reintroducing ledger navigation or template prose.
