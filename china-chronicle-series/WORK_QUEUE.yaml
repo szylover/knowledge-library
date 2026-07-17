@@ -1784,7 +1784,11 @@ tasks:
     goal: Remove 2078 bare Song-Yuan navigation anchors from reader prose, preserve ledger navigation outside the reading path, and rebuild curated multi-polity event clusters, source notes and cross-index routes.
   - id: acceptance-ming-reader-rebuild
     role: continuity-editor
-    status: ready
+    status: completed
+    branch: chronicle/acceptance-ming-reader-rebuild
+    started_at: 2026-07-17T17:30:13+08:00
+    completed_at: 2026-07-17T17:37:56+08:00
+    validation: Removed all 1,304 register-only anchors from the reader path; retained 85 curated narrative depictions, rerouted 25 reader-index events and all label/source routes, passed ledger validation and non-publishing Tectonic build.
     scope:
       - volumes/vol05-ming/chapters/
     goal: Replace 1304 Ming register anchors with curated first narrative depictions, move registry navigation out of reader prose, repair 73 missing depictions and rebuild cross-index routes.
