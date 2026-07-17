@@ -1551,7 +1551,10 @@ tasks:
     goal: Expand Song-Liao-Xia-Jin-Yuan ledger from 529 toward 2200 source-aware events across 960--1368 with parallel-polity chronological coverage.
   - id: acceptance-song-yuan-density-prose
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-song-yuan-density-prose
+    started_at: 2026-07-17T13:41:27+08:00
+    completed_at: 2026-07-17T13:48:00+08:00
     scope:
       - volumes/vol04-song-yuan/chapters/northern-song/
       - volumes/vol04-song-yuan/chapters/liao-western-xia/
