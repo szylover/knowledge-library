@@ -1468,6 +1468,12 @@ tasks:
       - volumes/vol02c-jin-northern-southern/chapters/northern-southern-dynasties/
       - volumes/vol02c-jin-northern-southern/chapters/synthesis/
     goal: Integrate the 624 newly added Jin-Northern-Southern ledger events into source-aware first-depiction narrative anchors, restoring at least 95 percent anchor coverage after density expansion.
+  - id: acceptance-jin-template-rewrite
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/chapters/
+    goal: Replace the 1484 generated or template Jin-Northern-Southern event anchors identified by strict acceptance with concrete, source-aware first-depiction prose before rerunning final acceptance.
   - id: acceptance-ledger-density-han
     role: chronology
     status: completed
