@@ -1456,9 +1456,21 @@ tasks:
     goal: Expand Song-Liao-Xia-Jin-Yuan ledger from 529 toward 2200 source-aware events across 960--1368 with parallel-polity chronological coverage.
   - id: acceptance-density-policy
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-density-policy
+    started_at: 2026-07-17T13:18:12+08:00
+    completed_at: 2026-07-17T13:20:27+08:00
     scope:
       - AGENTS.md
       - SERIES_SPEC.md
       - WORK_QUEUE.yaml
     goal: Record source-aware minimum ledger-density thresholds as a non-negotiable acceptance requirement for chronological volumes.
+    policy_targets:
+      han_206bce_220: 1500
+      three_kingdoms_220_280: 700
+      jin_northern_southern_280_589: 1500
+      song_liao_xia_jin_yuan_960_1368: 2200
+    acceptance_evidence_required:
+      - Each applicable ledger meets its source-aware minimum target.
+      - A time-band-by-polity/region gap matrix records counts, targets, material density, source limits, event-type gaps, and a supplementation path.
+      - No chronological volume is accepted, published, or called complete before both conditions are verified.
