@@ -1333,7 +1333,9 @@ tasks:
     goal: Split wrapper-targeted Sui-Tang-Five ledger records into safe leaf-file targets and wire corresponding wrappers without inventing events.
   - id: acceptance-sui-coverage
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-sui-coverage
+    started_at: 2026-07-17T12:20:05+08:00
     scope:
       - volumes/vol03-sui-tang-five/chapters/sui/
       - volumes/vol03-sui-tang-five/chapters/tang/
@@ -1341,6 +1343,8 @@ tasks:
       - volumes/vol03-sui-tang-five/chapters/an-lushan-late-tang/
       - volumes/vol03-sui-tang-five/chapters/five-dynasties-ten-kingdoms/
     goal: Expand rerouted Sui-Tang-Five ledger events into continuous, source-aware, non-template chronology across all periods and polities.
+    completed_at: 2026-07-17T12:27:38+08:00
+    validation: 10 chronology bridges across 581--960; ledger validation and Tectonic compile passed
   - id: acceptance-three-kingdoms-ledger-density
     role: chronology
     status: done
