@@ -1435,7 +1435,10 @@ tasks:
     goal: Expand Han ledger from 592 toward 1500 source-aware events across 206 BCE--220 CE before further acceptance claims.
   - id: acceptance-ledger-density-three
     role: chronology
-    status: ready
+    status: done
+    branch: chronicle/acceptance-ledger-density-three
+    started: 2026-07-17T13:16:32+08:00
+    completed: 2026-07-17T13:24:25+08:00
     scope:
       - volumes/vol02b-three-kingdoms/data/event-ledger/three-kingdoms-220-280.csv
       - volumes/vol02b-three-kingdoms/data/source-corpus/
