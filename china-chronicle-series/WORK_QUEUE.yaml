@@ -1442,7 +1442,11 @@ tasks:
     goal: Replace each of the 399 remaining interchangeable TK-SRC occurrences with event-specific material, place, actor and consequence prose; complete cell-level gap matrices and index the period timeline for strict acceptance.
   - id: acceptance-three-final-prose
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-final-prose
+    started_at: 2026-07-17T15:18:05+08:00
+    completed_at: 2026-07-17T15:22:38+08:00
+    result: Rewrote all 399 TK-SRC first depictions with source, place, actor, consequence, and evidence-boundary prose; strict detector, ledger validation, and Tectonic build passed.
     scope:
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/
     goal: Rewrite the remaining 399 TK-SRC first depictions so every event has non-interchangeable source, place, actor and consequence prose, clearing the final 92.88 percent strict-acceptance blocker.
