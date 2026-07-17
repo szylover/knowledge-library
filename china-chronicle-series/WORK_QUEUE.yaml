@@ -1582,7 +1582,7 @@ tasks:
     goal: Replace the remaining 331 Ming causal/consequence and fiscal/disaster template patterns with reign-period-specific clusters using distinct sources, places, actioners and outcomes before strict revalidation.
   - id: acceptance-qing-final
     role: integrator
-    status: blocked
+    status: ready
     branch: chronicle/acceptance-qing-final
     started_at: 2026-07-17T16:29:06+08:00
     blocked_at: 2026-07-17T16:29:06+08:00
