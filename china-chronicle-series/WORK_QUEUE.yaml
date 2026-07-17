@@ -1534,11 +1534,11 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Three Kingdoms, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-song-yuan-final
     role: integrator
-    status: ready
+    status: blocked
     branch: chronicle/acceptance-song-yuan-final
-    started_at: 2026-07-17T15:47:50+08:00
-    blocked_at: 2026-07-17T15:50:35+08:00
-    blocked_reason: "Strict latest-main revalidation after cluster rewrite scored 5/8 (62.50%), below 95%: only 56/2,200 (2.55%) unique ledger anchors remain; 2,144 first depictions are missing. The 52 remaining multi-anchor occurrences across 13 paragraphs cannot demonstrate event-specific narrative or multi-polity balance. Ledger, 42-cell matrix, static boxes, figures, index and references passed. PDF build, sync and Blob verification were withheld."
+    started_at: 2026-07-17T16:06:48+08:00
+    blocked_at: 2026-07-17T16:06:48+08:00
+    blocked_reason: "Strict latest-main validation after anchor restore remains below the 95% gate: although all 2,200 ledger IDs have unique anchors, 2,144 first depictions (97.45%) match eight repeated prose templates and only 56 (2.55%) are non-template; this also prevents demonstrating substantive multi-polity balance. Five static criteria pass, for an 8-criterion weighted ceiling of 62.82%. Root-PDF build, Blob sync, and direct URL verification were not run."
     scope:
       - volumes/vol04-song-yuan/
       - pdf/china-chronicle/vol04-song-yuan.pdf
