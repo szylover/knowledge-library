@@ -860,7 +860,10 @@ tasks:
   - id: vol04-maps-standard
     volume: vol04-song-yuan
     role: cartographer
-    status: ready
+    status: done
+    branch: chronicle/vol04-maps-standard
+    started_at: 2026-07-17T11:02:58+08:00
+    completed_at: 2026-07-17T11:06:21+08:00
     scope: [figures/, chapters/]
     goal: Add Song-Yuan maps and wire them into the narrative.
   - id: vol05-maps-standard
