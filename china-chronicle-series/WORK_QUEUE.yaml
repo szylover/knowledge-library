@@ -1943,7 +1943,9 @@ tasks:
     goal: Raise curated reader-visible Han, Jin-Northern-Southern and Qing event-cluster density across every time band and polity/region cell, without ledger navigation, repeated prose or uncited inference.
   - id: acceptance-reader-cluster-density-wave2
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-reader-cluster-density-wave2
+    started_at: 2026-07-17T19:39:15+08:00
     scope:
       - volumes/vol02a-han/chapters/
       - volumes/vol02b-three-kingdoms/chapters/
@@ -1953,6 +1955,8 @@ tasks:
       - volumes/vol05-ming/chapters/
       - volumes/vol06-qing-1912/chapters/
     goal: Add a second wave of curated, source-aware reader event clusters across all post-Volume-I time bands and polity/region cells, prioritizing local society, frontiers, fiscal systems, migration, religion and external actors without ledger navigation or template prose.
+    completed_at: 2026-07-17T19:39:15+08:00
+    result: Added 19 source-aware narrative clusters across Han, Three Kingdoms, Jin-Northern-Southern, Sui-Tang, Song-Yuan, Ming and Qing, covering local households, frontiers, fiscal systems, migration, religion and external actors. Strict prose audit and all seven ledger validations passed; TeX engine unavailable for PDF builds.
   - id: acceptance-density-policy
     role: integrator
     status: done
