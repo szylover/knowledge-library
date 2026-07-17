@@ -1356,3 +1356,14 @@ tasks:
       - volumes/vol02b-three-kingdoms/data/event-ledger/three-kingdoms-220-280.csv
       - volumes/vol02b-three-kingdoms/data/source-corpus/
     goal: Expand the 220--280 Three Kingdoms ledger beyond the inherited 240-row filter, closing annual, polity, frontier, fiscal, social, textual and regional gaps before further narrative expansion.
+  - id: acceptance-three-kingdoms-coverage
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/wei-foundation-and-regency.tex
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/shu-han-state-and-expeditions.tex
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/sun-wu-state-and-south.tex
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/three-kingdoms-warfare-and-diplomacy.tex
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/three-kingdoms-society-and-material-record.tex
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/jin-unification.tex
+    goal: Integrate newly ledgered Three Kingdoms annual, frontier, fiscal, social, textual and regional events into continuous source-aware prose.
