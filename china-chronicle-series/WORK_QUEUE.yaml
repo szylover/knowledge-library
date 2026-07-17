@@ -1611,6 +1611,12 @@ tasks:
     scope:
       - volumes/vol06-qing-1912/chapters/
     goal: Replace Qing batch template prose with region-specific source-aware event clusters, demonstrate substantive frontier and local balance, and complete the source reading index before strict revalidation.
+  - id: acceptance-qing-anchor-restore
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol06-qing-1912/chapters/
+    goal: Restore 1398 missing Qing first-depiction anchors within distinct regional source-aware event clusters while retaining the non-template prose required by strict acceptance.
   - id: acceptance-jin-anchor-coverage
     role: narrative
     status: ready
