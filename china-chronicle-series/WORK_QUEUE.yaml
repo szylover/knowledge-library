@@ -1371,3 +1371,10 @@ tasks:
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/three-kingdoms-society-and-material-record.tex
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/jin-unification.tex
     goal: Integrate newly ledgered Three Kingdoms annual, frontier, fiscal, social, textual and regional events into continuous source-aware prose.
+  - id: acceptance-jin-reader-index
+    role: indexer
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/appendices/
+      - volumes/vol02c-jin-northern-southern/chapters/
+    goal: Build verified event, polity, theme, source and figure indexes for the Jin-Northern-Southern volume using only real narrative anchors and wired figures.
