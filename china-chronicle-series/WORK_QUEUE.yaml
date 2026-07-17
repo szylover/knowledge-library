@@ -1496,7 +1496,7 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Three Kingdoms, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-song-yuan-final
     role: integrator
-    status: blocked
+    status: ready
     branch: chronicle/acceptance-song-yuan-final
     started_at: 2026-07-17T14:30:24+08:00
     blocked_at: 2026-07-17T14:30:24+08:00
