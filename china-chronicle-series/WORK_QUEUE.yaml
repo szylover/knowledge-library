@@ -1331,7 +1331,11 @@ tasks:
     goal: Expand ledgered Han event clusters into non-template continuous prose, prioritizing fiscal, social, migration, religious and frontier actioners while retaining evidence limits.
   - id: acceptance-han-density-prose
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-han-density-prose
+    started_at: 2026-07-17T13:35:05+08:00
+    completed_at: 2026-07-17T13:35:05+08:00
+    validation: 1500/1500 first-depiction anchors (100%); ledger validator and Tectonic compile passed
     scope:
       - volumes/vol02a-han/chapters/western-han/
       - volumes/vol02a-han/chapters/eastern-han/
