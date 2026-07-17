@@ -1479,6 +1479,13 @@ tasks:
       - volumes/vol02b-three-kingdoms/
       - pdf/china-chronicle/vol02b-three-kingdoms.pdf
     goal: Run complete Volume-I-blueprint acceptance for Three Kingdoms, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
+  - id: acceptance-song-yuan-final
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/
+      - pdf/china-chronicle/vol04-song-yuan.pdf
+    goal: Run complete Volume-I-blueprint acceptance for Song-Liao-Xia-Jin-Yuan, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-jin-anchor-coverage
     role: narrative
     status: ready
