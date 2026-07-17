@@ -1329,6 +1329,14 @@ tasks:
       - volumes/vol02a-han/chapters/eastern-han/fiscal-frontier-and-local-power.tex
       - volumes/vol02a-han/chapters/eastern-han/imperial-breakdown.tex
     goal: Expand ledgered Han event clusters into non-template continuous prose, prioritizing fiscal, social, migration, religious and frontier actioners while retaining evidence limits.
+  - id: acceptance-han-density-prose
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/western-han/
+      - volumes/vol02a-han/chapters/eastern-han/
+      - volumes/vol02a-han/chapters/synthesis/
+    goal: Integrate the 908 newly added Han density events into source-aware first-depiction prose, restoring at least 95 percent anchor coverage after density expansion.
   - id: acceptance-sui-target-routing
     role: integrator
     status: done
