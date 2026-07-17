@@ -1810,7 +1810,10 @@ tasks:
     goal: Expand Song-Liao-Xia-Jin-Yuan reader-visible first depictions from 27 through curated multi-polity event clusters without reintroducing ledger navigation or template prose.
   - id: acceptance-ming-curated-coverage
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-ming-curated-coverage
+    started_at: 2026-07-17T17:44:31+08:00
+    completed_at: 2026-07-17T17:44:31+08:00
     scope:
       - volumes/vol05-ming/chapters/
     goal: Expand Ming reader-visible first depictions from 85 through reign-period event clusters without reintroducing register navigation or template prose.
