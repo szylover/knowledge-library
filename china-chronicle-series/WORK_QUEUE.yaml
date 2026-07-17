@@ -1448,7 +1448,10 @@ tasks:
     goal: Integrate the 624 newly added Jin-Northern-Southern ledger events into source-aware first-depiction narrative anchors, restoring at least 95 percent anchor coverage after density expansion.
   - id: acceptance-ledger-density-han
     role: chronology
-    status: ready
+    status: completed
+    branch: chronicle/acceptance-ledger-density-han
+    started_at: 2026-07-17T13:16:32+08:00
+    completed_at: 2026-07-17T13:25:57+08:00
     scope:
       - volumes/vol02a-han/data/event-ledger/han.csv
       - volumes/vol02a-han/data/source-corpus/
