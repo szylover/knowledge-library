@@ -1,0 +1,53 @@
+\phantomsection\label{fig:vol04:overview:multi-polity-spatial}
+\begin{center}
+\begin{tikzpicture}[x=.88cm,y=.88cm,font=\small]
+  \fill[paper] (0,0) rectangle (11.8,6.45);
+
+  \fill[source!18] (.55,3.85) -- (5.05,3.55) -- (5.35,5.95) -- (.75,5.9) -- cycle;
+  \node[align=center] at (2.85,5.02) {草原、东北与辽金\\部族、城镇和道路网络};
+  \fill[timeline!19] (5.55,3.75) -- (11.2,3.85) -- (11.1,5.9) -- (5.8,5.8) -- cycle;
+  \node[align=center] at (8.65,4.98) {燕云、华北与中原\\多次转换的政治空间};
+  \fill[dynasty!17] (.55,.65) -- (11.15,.75) -- (11.2,3.35) -- (8.85,3.65) --
+    (6.25,3.4) -- (4.15,3.55) -- (.65,3.4) -- cycle;
+  \node[align=center] at (7.5,1.25) {江淮、江南、河西、西南与海域\\水陆交通、财政、战场和地方社会};
+
+  \node[draw=source,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (liao)
+    at (2.25,4.45) {辽\\907/916--1125};
+  \node[draw=timeline,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (xia)
+    at (1.75,2.5) {西夏\\1038--1227};
+  \node[draw=dynasty,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (song)
+    at (6.25,2.1) {宋\\960--1279};
+  \node[draw=source,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (jin)
+    at (7.75,4.45) {金\\1115--1234};
+  \node[draw=timeline,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (xiliao)
+    at (3.95,4.8) {西辽及中亚\\1124--1218};
+  \node[draw=dynasty,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (dali)
+    at (3.45,1.2) {大理及西南\\至1253年转换};
+  \node[draw=source,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (mongol)
+    at (9.75,4.85) {蒙古--元\\1206、1271--1368};
+  \node[draw=timeline,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] (sea)
+    at (9.65,1.85) {高丽、日本、东南亚\\与印度洋海域联系};
+
+  \draw[<->,thick,dashed,color=timeline!85] (liao) -- node[above,font=\scriptsize]
+    {使节、边市与战争} (song);
+  \draw[<->,thick,dashed,color=timeline!85] (xia) -- node[below,sloped,font=\scriptsize]
+    {河西与西北道路} (song);
+  \draw[->,ultra thick,color=source!85] (liao) -- node[above,sloped,font=\scriptsize]
+    {东北、燕云转换} (jin);
+  \draw[->,ultra thick,color=dynasty!85] (jin) -- node[right,font=\scriptsize]
+    {华北、江淮战区} (song);
+  \draw[->,ultra thick,color=source!85] (mongol) -- node[above,sloped,font=\scriptsize]
+    {征服、接收与重组} (jin);
+  \draw[->,thick,dashed,color=source!85] (mongol) -- (sea);
+  \draw[<->,thick,dashed,color=timeline!85] (xiliao) -- node[left,font=\scriptsize]
+    {草原与中亚通道} (mongol);
+
+  \node[draw=source!70,fill=paper,rounded corners=2pt,align=center,inner sep=3pt] at (5.55,3.35)
+    {本卷从并立、接触与转换进入，\\不以任何一朝的疆域作为底图};
+  \node[text=source,align=center,font=\scriptsize] at (6.0,.72)
+    {政权范围、道路、海路和关系只作跨时段的约略示意；箭头不表示持续控制、固定路线或单向影响。};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 宋、辽、西夏、金、蒙古--元及周边行动者的空间总览（960--1368，示意）：据《宋史》《辽史》《金史》《元史》的本纪、地理志和交聘材料，结合《续资治通鉴长编》《建炎以来系年要录》《宋会要辑稿》及《元典章》所见交通、边事与行政线索，并参照契丹、女真、西夏、蒙古等文字碑刻、文书、城址和港口考古。它提示并立政权、道路与海域网络，而非重建任一年份的准确疆界、统属、族群分布、航线或贸易规模。}
+\end{center}

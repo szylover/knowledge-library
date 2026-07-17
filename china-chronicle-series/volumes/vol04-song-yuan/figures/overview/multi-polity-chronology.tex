@@ -1,0 +1,53 @@
+\phantomsection\label{fig:vol04:overview:multi-polity-chronology}
+\begin{center}
+\begin{tikzpicture}[x=.88cm,y=.88cm,font=\small]
+  \fill[paper] (0,0) rectangle (11.8,6.5);
+  \draw[->,very thick,color=ink] (1.6,5.98) -- (11.2,5.98);
+  \foreach \x/\year in {1.7/960,3.0/1005,4.1/1125,5.0/1141,6.0/1206,7.0/1227,7.75/1234,8.75/1271,9.25/1279,11.0/1368} {
+    \draw[thick,color=source!75] (\x,5.8) -- (\x,6.16);
+    \node[above,font=\scriptsize] at (\x,6.16) {\year};
+  }
+
+  \node[anchor=east] at (1.48,5.25) {辽};
+  \draw[line width=5pt,color=source!65] (1.35,5.25) -- (4.1,5.25);
+  \node[anchor=west,font=\scriptsize] at (4.18,5.25) {1125亡};
+
+  \node[anchor=east] at (1.48,4.65) {北宋};
+  \draw[line width=5pt,color=dynasty!75] (1.7,4.65) -- (4.1,4.65);
+  \node[anchor=west,font=\scriptsize] at (4.18,4.65) {1127南渡};
+
+  \node[anchor=east] at (1.48,4.05) {西夏};
+  \draw[line width=5pt,color=timeline!75] (3.55,4.05) -- (7.0,4.05);
+  \node[anchor=west,font=\scriptsize] at (7.08,4.05) {1227转换};
+
+  \node[anchor=east] at (1.48,3.45) {南宋};
+  \draw[line width=5pt,color=dynasty!75] (4.1,3.45) -- (9.25,3.45);
+  \node[anchor=west,font=\scriptsize] at (9.33,3.45) {1279终结};
+
+  \node[anchor=east] at (1.48,2.85) {金};
+  \draw[line width=5pt,color=source!75] (3.85,2.85) -- (7.75,2.85);
+  \node[anchor=west,font=\scriptsize] at (7.83,2.85) {1234亡};
+
+  \node[anchor=east] at (1.48,2.25) {西辽};
+  \draw[line width=5pt,color=timeline!75] (4.08,2.25) -- (6.6,2.25);
+  \node[anchor=west,font=\scriptsize] at (6.68,2.25) {1218纳入征服转换};
+
+  \node[anchor=east] at (1.48,1.65) {蒙古诸汗国与征服};
+  \draw[line width=5pt,color=source!75] (6.0,1.65) -- (10.95,1.65);
+  \node[anchor=west,font=\scriptsize] at (7.1,1.65) {1206统一诸部；多中心延续};
+
+  \node[anchor=east] at (1.48,1.05) {元};
+  \draw[line width=5pt,color=dynasty!75] (8.75,1.05) -- (11.0,1.05);
+  \node[anchor=west,font=\scriptsize] at (9.38,1.05) {1271国号；1368北退};
+
+  \foreach \x/\eventname/\position in {1.7/宋建国/below,3.0/澶渊盟约/below,4.1/辽亡、金入燕/below,5.0/宋金和议/below,6.0/蒙古统一/below,7.0/西夏亡/below,7.75/金亡/below,8.75/建元/below,9.25/宋亡/below,11.0/元亡/below} {
+    \draw[densely dotted,color=source!65] (\x,.78) -- (\x,5.75);
+    \node[\position,align=center,font=\scriptsize] at (\x,.75) {\eventname};
+  }
+  \node[text=source,align=center,font=\scriptsize] at (6.3,.22)
+    {条带只表示本卷采用的政权时段；建国、亡国、改元与实际区域控制并不在同一日完成。};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 多政权并立与转换的时间轴（960--1368）：以《宋史》《辽史》《金史》《元史》本纪及《续资治通鉴长编》《建炎以来系年要录》的年序为主，西辽、蒙古扩张和元朝形成另参《元朝秘史》、波斯文史籍与相关碑刻、文书研究。图中只压缩呈现可核的政权时段和转换节点；不把改元、都城易位、征服战事或地方实际控制简化为单一瞬间，也不以宋朝年号充当全体行动者的统一纪年。}
+\end{center}
