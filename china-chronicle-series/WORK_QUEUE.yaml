@@ -1161,3 +1161,32 @@ tasks:
     depends_on: [vol06-ledger-standard]
     scope: [volumes/vol06-qing-1912/data/event-ledger/qing-1912.csv]
     goal: Extend the Qing-to-1912 ledger from 1723 through 1912 with source-aware imperial, regional, frontier, fiscal, social, diplomatic, reform, and revolutionary events before new prose.
+  - id: acceptance-ledger-vol01
+    role: chronology
+    status: ready
+    scope:
+      - volumes/vol01-zhou-qin/data/event-ledger/
+      - volumes/vol01-zhou-qin/data/source-corpus/
+    goal: Normalize Volume I ledger fields, source caveats, tiers and coverage-gap matrices without changing prose.
+  - id: acceptance-ledger-early-imperial
+    role: chronology
+    status: ready
+    scope:
+      - volumes/vol02a-han/data/event-ledger/
+      - volumes/vol02b-three-kingdoms/data/event-ledger/
+      - volumes/vol02c-jin-northern-southern/data/event-ledger/
+    goal: Normalize Han through Jin ledgers with tiers, source caveats and coverage/actioner gap matrices before anchor migration.
+  - id: acceptance-ledger-medieval
+    role: chronology
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/data/event-ledger/
+      - volumes/vol04-song-yuan/data/event-ledger/
+    goal: Repair medieval ledger schemas, target paths, coverage gaps and multi-polity density before further narrative work.
+  - id: acceptance-ledger-late-imperial
+    role: chronology
+    status: ready
+    scope:
+      - volumes/vol05-ming/data/event-ledger/
+      - volumes/vol06-qing-1912/data/event-ledger/
+    goal: Repair late-imperial ledger coverage, schemas and actioner-gap matrices before further narrative work.
