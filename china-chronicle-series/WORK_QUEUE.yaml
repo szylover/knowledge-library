@@ -1442,7 +1442,7 @@ tasks:
     goal: Add explicit schematic and source/material-limit wording to the Western Zhou timeline required by final Volume I validation.
   - id: acceptance-jin-final
     role: integrator
-    status: blocked
+    status: ready
     branch: chronicle/acceptance-jin-final
     started_at: 2026-07-17T13:39:03+08:00
     blocked_reason: "Strict final revalidation rejects generated anchor prose: 860 per-record navigation paragraphs and 624 JH-DENS anchors are not first-depiction narrative; coverage/actioner matrices still total 876 while the ledger totals 1,500. No PDF or Blob publication."
