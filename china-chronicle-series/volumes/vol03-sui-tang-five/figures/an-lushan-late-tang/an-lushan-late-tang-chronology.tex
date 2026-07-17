@@ -1,0 +1,40 @@
+\phantomsection\label{fig:vol03:an-lushan-late-tang:chronology}
+\begin{center}
+\begin{tikzpicture}[
+  x=.88cm,y=.88cm,font=\small,
+  event/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,
+    inner sep=3pt,font=\scriptsize},
+  turning/.style={event,draw=dynasty,fill=dynasty!13},
+  note/.style={font=\scriptsize,text=source,align=center}
+]
+  \fill[paper] (0,0) rectangle (12.5,5.7);
+  \node[font=\bfseries\large,text=dynasty] at (6.25,5.18)
+    {安史危机至唐亡：编年提要};
+  \node[note] at (6.25,4.72) {750--907年（选择性年序；战争后各区域的节奏不同）};
+
+  \draw[line width=1.1pt,timeline] (.75,2.64) -- (11.78,2.64);
+  \foreach \x/\year in {.75/750,1.1/755,1.55/756,2.05/763,3.3/780,4.6/783,6.05/805,7.7/820,9.3/875,9.7/880,11.78/907}
+    \draw[timeline] (\x,2.44) -- (\x,2.84) node[below=4pt,note] {\year};
+
+  \node[event] at (.82,3.62) {750--751\\三镇兼领的\\资源集中};
+  \node[turning] at (1.28,1.56) {755\\安禄山起兵};
+  \node[turning] at (1.7,3.62) {756\\潼关失守、\\灵武即位};
+  \node[turning] at (2.2,1.56) {763\\战乱终结、\\吐蕃入长安};
+  \node[turning] at (3.3,3.62) {780\\两税法颁行};
+  \node[event] at (4.6,1.56) {783\\泾原兵变};
+  \node[event] at (6.05,3.62) {805\\永贞改制\\与短期政变};
+  \node[event] at (7.7,1.56) {820年代\\军镇与朝廷\\关系反复};
+  \node[turning] at (9.4,3.62) {875--884\\黄巢战争};
+  \node[turning] at (11.1,1.56) {907\\唐亡、\\后梁建立};
+
+  \foreach \x/\y in {.82/3.1,1.28/2.14,1.7/3.1,2.2/2.14,3.3/3.1,4.6/2.14,6.05/3.1,7.7/2.14,9.4/3.1,11.1/2.14}
+    \draw[densely dashed,source] (\x,\y) -- (\x,2.64);
+
+  \node[note,align=left] at (6.25,.56)
+    {年线将安史战争、财政改革和唐末战争置于同一阅读框架；它不把战后政治写成单线衰落，\\
+    也不以正史中的兵数、赋额或战果替代地方社会、江南与边地的不同证据。};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 安史危机至唐亡的编年提要（750--907，示意）：据两《唐书》帝纪、方镇与食货相关志传、《资治通鉴》及《唐会要》《通典》，并参照敦煌文书、碑志和城市、盐业、钱币等考古材料。图中改革颁行与战争节点可以确证相对顺序，却不能单独证明各地征收、军镇控制或人口损失的同一速度与规模。}
+\end{center}

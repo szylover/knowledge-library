@@ -1,0 +1,39 @@
+\phantomsection\label{fig:vol03:wu-zhou-xuanzong:chronology}
+\begin{center}
+\begin{tikzpicture}[
+  x=.88cm,y=.88cm,font=\small,
+  event/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,
+    inner sep=3pt,font=\scriptsize},
+  turning/.style={event,draw=dynasty,fill=dynasty!13},
+  note/.style={font=\scriptsize,text=source,align=center}
+]
+  \fill[paper] (0,0) rectangle (12.5,5.55);
+  \node[font=\bfseries\large,text=dynasty] at (6.25,5.04)
+    {武周至开元：编年提要};
+  \node[note] at (6.25,4.58) {655--742年（选择性年序；制度颁行不等于各地同步施行）};
+
+  \draw[line width=1.1pt,timeline] (.75,2.62) -- (11.78,2.62);
+  \foreach \x/\year in {.75/655,2.45/683,3.3/690,4.0/692,5.35/705,6.35/710,7.0/712,9.0/724,11.78/742}
+    \draw[timeline] (\x,2.42) -- (\x,2.82) node[below=4pt,note] {\year};
+
+  \node[event] at (.9,3.55) {655\\立后与宫廷\\权力重组};
+  \node[event] at (2.45,1.55) {683\\高宗去世、\\临朝加深};
+  \node[turning] at (3.3,3.55) {690\\改唐为周};
+  \node[event] at (4.0,1.55) {692\\安西四镇\\再置};
+  \node[turning] at (5.35,3.55) {705\\复唐};
+  \node[event] at (6.35,1.55) {710\\继承危机};
+  \node[turning] at (7.0,3.55) {712--713\\玄宗即位、\\整饬中枢};
+  \node[event] at (9.0,1.55) {724\\宇文融括户\\等财政举措};
+  \node[event] at (11.1,3.55) {742\\改元天宝\\前的秩序调整};
+
+  \foreach \x/\y in {.9/3.05,2.45/2.12,3.3/3.05,4.0/2.12,5.35/3.05,6.35/2.12,7.0/3.05,9.0/2.12,11.1/3.05}
+    \draw[densely dashed,source] (\x,\y) -- (\x,2.62);
+
+  \node[note,align=left] at (6.25,.55)
+    {宫廷改号、边镇重设、户籍清查和改元属于不同层次的证据；它们提示相互依赖，\\
+    但不自动证明政权合法性、边防强度或税收效果可以由一条年线直接量出。};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 武周至开元的编年提要（655--742，示意）：据《旧唐书》《新唐书》则天、睿宗、玄宗诸纪及《资治通鉴》，并参照《唐会要》《通典》《唐六典》、敦煌吐鲁番军政文书与吐蕃、突厥材料。日期与政策名称可作为查阅入口；后出的正统叙事、制度汇编和地方文书各有时间层次，不能合并为无缝的全国政治图景。}
+\end{center}
