@@ -1130,10 +1130,16 @@ tasks:
   - id: vol01-final-publish
     volume: vol01-zhou-qin
     role: integrator
-    status: in_progress
+    status: done
     branch: chronicle/vol01-final-publish
     started: 2026-07-17T13:03:11+08:00
+    completed: 2026-07-17T13:06:06+08:00
+    accepted: true
     blockers: []
+    acceptance_evidence:
+      - validate-event-ledger.ps1 passed western-zhou.csv (150), spring-autumn.csv (400), and warring-qin.csv (850).
+      - Tectonic compiled volumes/vol01-zhou-qin/main.tex successfully; 1,345 event anchors and 586 event references resolved uniquely.
+      - https://szydownloads.blob.core.windows.net/downloads/books/china-chronicle/vol01-zhou-qin.pdf returned HTTP 200 with Content-Length 1679175.
     depends_on: [vol01-western-final, vol01-spring-final, vol01-warring-final, vol01-continuity-final]
     scope: [main.tex, chapters/ch02-western-zhou.tex, chapters/ch03-spring-autumn.tex, chapters/ch04-warring-qin.tex, PROGRESS.md, ../../../pdf/china-chronicle/vol01-zhou-qin.pdf]
     goal: Validate final Volume I totals and links, compile the publication PDF, update progress, and publish it after all final narrative and continuity tasks complete.
