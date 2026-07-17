@@ -8,6 +8,7 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{tikz}
+\usepackage[most]{tcolorbox}
 
 \definecolor{dynasty}{HTML}{7A3326}
 \definecolor{ink}{HTML}{332B25}
@@ -33,3 +34,23 @@
 \newcommand{\sourceref}[2]{\hyperlink{src:#1}{\textcolor{source}{#2}}}
 \newcommand{\figureanchor}[2]{\hypertarget{fig:#1}{#2}}
 \newcommand{\figureref}[2]{\hyperlink{fig:#1}{\textcolor{timeline}{#2}}}
+\tcbset{chroniclebox/.style={
+  enhanced,
+  breakable,
+  colback=paper,
+  colframe=dynasty,
+  colbacktitle=dynasty,
+  coltitle=paper,
+  fonttitle=\bfseries,
+  boxrule=0.6pt,
+  left=1.2mm,
+  right=1.2mm,
+  top=1mm,
+  bottom=1mm
+}}
+\newtcolorbox{event}[1][]{chroniclebox,title={#1}}
+\newtcolorbox{turningpoint}[1][]{chroniclebox,title={#1}}
+\newtcolorbox{causalchain}[1][]{chroniclebox,title={#1}}
+\newtcolorbox{textwindow}[1][]{chroniclebox,title={#1}}
+\newtcolorbox{sourcenote}[1][]{chroniclebox,title={#1}}
+\newtcolorbox{debate}[1][]{chroniclebox,title={#1}}

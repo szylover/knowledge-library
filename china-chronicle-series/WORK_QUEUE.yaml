@@ -1217,7 +1217,10 @@ tasks:
     goal: Place medieval event anchors in first narrative occurrences, replace appendix-only navigation, add required information environments, and preserve real reader-facing links.
   - id: acceptance-anchors-late-imperial
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-anchors-late-imperial
+    started_at: 2026-07-17T10:18:23+08:00
+    completed_at: 2026-07-17T10:24:16+08:00
     scope:
       - volumes/vol05-ming/chapters/
       - volumes/vol06-qing-1912/chapters/
