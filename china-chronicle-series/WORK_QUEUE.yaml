@@ -1765,7 +1765,10 @@ tasks:
     goal: Remove ledger-style repeated core-source surface text from reader prose, keeping evidence limits only where they change interpretation and routing full provenance to source notes, text windows and appendices.
   - id: acceptance-three-reader-rebuild
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-reader-rebuild
+    started_at: 2026-07-17T17:30:13+08:00
+    completed_at: 2026-07-17T17:30:13+08:00
     scope:
       - volumes/vol02b-three-kingdoms/chapters/
     goal: Remove TK-LEDGER navigation prose and source-field narratives from reader chapters, preserve them as maintenance-only data, and rebuild curated event clusters and cross-index routes under the reader-surface rules.
