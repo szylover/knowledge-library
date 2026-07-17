@@ -1881,7 +1881,10 @@ tasks:
     goal: Complete Qing cross-regional reader event clusters, wire navigation/figures bidirectionally and repair omitted reader routes without restoring ledger template prose.
   - id: acceptance-han-curated-coverage
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-han-curated-coverage
+    started_at: 2026-07-17T18:33:30+08:00
+    completed_at: 2026-07-17T18:33:30+08:00
     scope:
       - volumes/vol02a-han/chapters/
     goal: Expand Han reader-visible event clusters beyond 34 with period, fiscal, frontier, social and regional narration driven by the 1500-row ledger without template prose.
