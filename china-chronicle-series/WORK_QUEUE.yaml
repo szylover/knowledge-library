@@ -1565,6 +1565,12 @@ tasks:
       - volumes/vol05-ming/data/event-ledger/
       - volumes/vol05-ming/figures/
     goal: Integrate 1304 missing Ming first-depiction anchors into concrete source-aware reign-period clusters and complete polity/theme/source/figure indexes before strict revalidation.
+  - id: acceptance-ming-template-rewrite
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol05-ming/chapters/
+    goal: Replace the 287 repeated causal and consequence sentences and 545 repeated source-limit prefixes in Ming first-depiction prose with event-specific material, place, actor and outcome narrative before strict revalidation.
   - id: acceptance-qing-final
     role: integrator
     status: ready
