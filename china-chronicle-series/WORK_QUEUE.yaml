@@ -1242,7 +1242,10 @@ tasks:
     goal: Make validation schema-aware across all accepted ledger variants, reconcile real PDF paths, run build/link/anchor validation, and record only evidence-backed acceptance status.
   - id: acceptance-anchor-integrity
     role: indexer
-    status: ready
+    status: done
+    branch: chronicle/acceptance-anchor-integrity
+    started_at: 2026-07-17T10:41:32+08:00
+    completed_at: 2026-07-17T10:41:32+08:00
     scope:
       - volumes/vol01-zhou-qin/chapters/
       - volumes/vol02b-three-kingdoms/chapters/
