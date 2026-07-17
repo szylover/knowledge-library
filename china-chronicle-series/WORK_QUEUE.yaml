@@ -1462,7 +1462,11 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Han, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-three-final
     role: integrator
-    status: ready
+    status: blocked
+    branch: chronicle/acceptance-three-final
+    started_at: 2026-07-17T14:03:10+08:00
+    blocked_at: 2026-07-17T14:03:10+08:00
+    blocked_reason: "Strict root acceptance failed: all 399 TK-SRC anchors are generated or template prose, leaving 301/700 (43.00%) first-depiction coverage; EH-0220-HAN-ABDICATION is duplicated; coverage/actioner matrices remain at the pre-expansion 240-row state; no period timeline. Tectonic compiled but reported the duplicate anchor. No root PDF or Blob publication."
     scope:
       - volumes/vol02b-three-kingdoms/
       - pdf/china-chronicle/vol02b-three-kingdoms.pdf
