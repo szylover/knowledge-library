@@ -1566,7 +1566,7 @@ tasks:
     goal: Integrate 1304 missing Ming first-depiction anchors into concrete source-aware reign-period clusters and complete polity/theme/source/figure indexes before strict revalidation.
   - id: acceptance-qing-final
     role: integrator
-    status: blocked
+    status: ready
     branch: chronicle/acceptance-qing-final
     started_at: 2026-07-17T16:12:00+08:00
     blocked_at: 2026-07-17T16:18:00+08:00
