@@ -1892,11 +1892,11 @@ tasks:
     goal: Add at least five natural PDF pages of Mongol-Yuan conquest, maritime, multilingual, religious and late-crisis reader prose.
   - id: acceptance-ming-final
     role: integrator
-    status: ready
+    status: blocked
     branch: chronicle/acceptance-ming-final
-    started_at: 2026-07-17T16:38:52+08:00
-    blocked_at: 2026-07-17T16:38:52+08:00
-    blocked_reason: "Strict latest-main validation after the template rewrite is 5/8 (62.5%), below the 95% gate: although 1,389/1,462 anchors (95.01%) are unique and linked, 331 repeated generic causal sentences and 331 matching consequence sentences remain, alongside other repeated finance, disaster, knowledge, and tribute/sea-defense prose. Criteria 3 and 4 fail; criterion 8 is gate-blocked. No root PDF build, Blob sync, or direct URL verification was run."
+    started_at: 2026-07-17T17:01:25+08:00
+    blocked_at: 2026-07-17T17:01:25+08:00
+    blocked_reason: "Strict latest-main validation after the cluster rewrite is 5/8 (62.5%), below the 95% gate: the 1,462-row ledger and 1,389 unique anchors (95.01%) pass static checks, but at least 333 reusable first-depiction clauses remain (two knowledge clauses appear 118 times each; four causal/consequence patterns appear 19-28 times each). Criteria 3 and 4 fail; criterion 8 is gate-blocked. No root PDF build, Blob sync, or direct URL verification was run."
     scope:
       - volumes/vol05-ming/
       - pdf/china-chronicle/vol05-ming.pdf
