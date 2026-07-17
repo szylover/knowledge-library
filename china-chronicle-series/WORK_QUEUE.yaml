@@ -1580,6 +1580,14 @@ tasks:
       - volumes/vol04-song-yuan/chapters/southern-song/
       - volumes/vol04-song-yuan/chapters/mongol-yuan/
     goal: Integrate the 1671 newly added Song-Liao-Xia-Jin-Yuan density events into parallel-polity source-aware first-depiction prose, restoring at least 95 percent anchor coverage after density expansion.
+  - id: acceptance-song-yuan-template-rewrite
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/
+      - volumes/vol04-song-yuan/figures/
+      - volumes/vol04-song-yuan/data/event-ledger/
+    goal: Replace the 2191 generated Song-Liao-Xia-Jin-Yuan anchor occurrences with concrete parallel-polity first-depiction prose, restore coverage matrices, information boxes and real reader indexes before strict revalidation.
   - id: acceptance-density-policy
     role: integrator
     status: done
