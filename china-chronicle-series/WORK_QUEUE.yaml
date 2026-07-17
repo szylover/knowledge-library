@@ -1407,3 +1407,10 @@ tasks:
     scope:
       - volumes/vol01-zhou-qin/figures/western-zhou/timeline.tex
     goal: Add explicit schematic and source/material-limit wording to the Western Zhou timeline required by final Volume I validation.
+  - id: acceptance-jin-final
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/
+      - pdf/china-chronicle/vol02c-jin-northern-southern.pdf
+    goal: Run complete Volume-I-blueprint acceptance for Jin-Northern-Southern, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
