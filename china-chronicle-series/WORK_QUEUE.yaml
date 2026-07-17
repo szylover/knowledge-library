@@ -1380,6 +1380,17 @@ tasks:
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/three-kingdoms-society-and-material-record.tex
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/jin-unification.tex
     goal: Integrate newly ledgered Three Kingdoms annual, frontier, fiscal, social, textual and regional events into continuous source-aware prose.
+  - id: acceptance-three-density-prose
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/wei-foundation-and-regency.tex
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/shu-han-state-and-expeditions.tex
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/sun-wu-state-and-south.tex
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/three-kingdoms-warfare-and-diplomacy.tex
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/three-kingdoms-society-and-material-record.tex
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/jin-unification.tex
+    goal: Integrate the 399 new Three Kingdoms density events into source-aware first-depiction prose, restoring at least 95 percent anchor coverage after density expansion.
   - id: acceptance-jin-reader-index
     role: indexer
     status: done
