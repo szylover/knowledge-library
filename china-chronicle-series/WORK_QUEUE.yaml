@@ -1240,3 +1240,12 @@ tasks:
       - volumes/
       - pdf/china-chronicle/
     goal: Make validation schema-aware across all accepted ledger variants, reconcile real PDF paths, run build/link/anchor validation, and record only evidence-backed acceptance status.
+  - id: acceptance-anchor-integrity
+    role: indexer
+    status: ready
+    scope:
+      - volumes/vol01-zhou-qin/chapters/
+      - volumes/vol02b-three-kingdoms/chapters/
+      - volumes/vol03-sui-tang-five/chapters/
+      - volumes/vol04-song-yuan/chapters/
+    goal: Remove duplicate generated anchors, retain only first narrative anchors, and add the missing Han-WEI transition target without changing ledgers.
