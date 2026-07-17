@@ -1751,6 +1751,18 @@ tasks:
       - volumes/vol04-song-yuan/chapters/southern-song/
       - volumes/vol04-song-yuan/chapters/mongol-yuan/
     goal: Restore 2144 missing Song-Liao-Xia-Jin-Yuan first-depiction anchors inside distinct source-aware event clusters, retaining non-template prose required by strict acceptance.
+  - id: acceptance-source-surface
+    role: continuity-editor
+    status: ready
+    scope:
+      - AGENTS.md
+      - volumes/vol02a-han/chapters/
+      - volumes/vol02b-three-kingdoms/chapters/
+      - volumes/vol02c-jin-northern-southern/chapters/
+      - volumes/vol04-song-yuan/chapters/
+      - volumes/vol05-ming/chapters/
+      - volumes/vol06-qing-1912/chapters/
+    goal: Remove ledger-style repeated core-source surface text from reader prose, keeping evidence limits only where they change interpretation and routing full provenance to source notes, text windows and appendices.
   - id: acceptance-density-policy
     role: integrator
     status: done
