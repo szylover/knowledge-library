@@ -1284,7 +1284,10 @@ tasks:
     goal: Add and wire a reader-facing how-to-read section for every post-Volume-I volume, covering scope, chronology, evidence limits, causation and information boxes.
   - id: acceptance-event-boxes
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-event-boxes
+    started_at: 2026-07-17T11:22:13+08:00
+    completed_at: 2026-07-17T11:22:13+08:00
     scope:
       - volumes/vol02a-han/chapters/
       - volumes/vol02b-three-kingdoms/chapters/
