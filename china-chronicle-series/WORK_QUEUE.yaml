@@ -1658,7 +1658,10 @@ tasks:
     goal: Replace all remaining repeated Song-Liao-Xia-Jin-Yuan first-depiction prose with distinct polity-and-period event clusters, including meaningful turningpoint and causalchain boxes, before strict revalidation.
   - id: acceptance-song-yuan-anchor-restore
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-song-yuan-anchor-restore
+    started_at: 2026-07-17T15:59:55+08:00
+    completed_at: 2026-07-17T16:04:44+08:00
     scope:
       - volumes/vol04-song-yuan/chapters/northern-song/
       - volumes/vol04-song-yuan/chapters/liao-western-xia/
