@@ -1,0 +1,26 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    date/.style={font=\scriptsize\bfseries, text=dynasty},
+    event/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\scriptsize, text=ink},
+    note/.style={font=\scriptsize\color{source}, align=center}
+  ]
+    \draw[timeline, line width=1.2pt] (0,0) -- (12,0);
+    \foreach \x/\year in {0/1851,1.8/1853,3.7/1856,5.4/1860,7.0/1861,8.7/1864,10.0/1868,12/1874}
+      {\draw[timeline] (\x,.12) -- (\x,-.12); \node[date, below] at (\x,-.18) {\year};}
+    \node[event, above] at (0,.42) {金田起事；\\永安建号};
+    \node[event, below] at (1.8,-.62) {南京／天京；\\跨省战场展开};
+    \node[event, above] at (3.7,.42) {天京事变与\\第二次鸦片战争};
+    \node[event, below] at (5.4,-.62) {北京战事与\\新条约安排};
+    \node[event, above] at (7.0,.42) {辛酉政变；\\总理衙门设置};
+    \node[event, below] at (8.7,-.62) {天京陷落；\\战后重建起点};
+    \node[event, above] at (10.0,.42) {捻军主力\\战争收束};
+    \node[event, below] at (12,-.62) {日本出兵台湾；\\海疆问题再现};
+    \node[note] at (6,-1.35)
+      {战争中心的覆亡、条约程序、地方军事化和海疆危机各有不同的起点与余波。};
+  \end{tikzpicture}
+  \caption{十九世纪中叶冲突的编年定位（1851--1874，简表）。本图将太平、捻军、西北和西南战争的时段，同第二次鸦片战争、外交机构与战后军政重组并置，但不把它们归结为同一场战争。日期主要据《清文宗实录》《清穆宗实录》、军机处档、战事方略和中外条约；伤亡、军费、地方控制与恢复程度仍须依各地档案和多方材料分别核验。}
+  \label{fig:nineteenth-century-conflicts-timeline}
+\end{figure}

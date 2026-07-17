@@ -1,0 +1,26 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    date/.style={font=\scriptsize\bfseries, text=dynasty},
+    event/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\scriptsize, text=ink},
+    note/.style={font=\scriptsize\color{source}, align=center}
+  ]
+    \draw[timeline, line width=1.2pt] (0,0) -- (12,0);
+    \foreach \x/\year in {0/1796,1.6/1805,3.2/1813,5.0/1826,6.8/1836,8.2/1839,9.8/1840,12/1842--50}
+      {\draw[timeline] (\x,.12) -- (\x,-.12); \node[date, below] at (\x,-.18) {\year};}
+    \node[event, above] at (0,.42) {嘉庆即位；\\白莲教战争};
+    \node[event, below] at (1.6,-.62) {大规模战事\\基本结束};
+    \node[event, above] at (3.2,.42) {天理教起事\\进入宫城};
+    \node[event, below] at (5.0,-.62) {张格尔和卓\\与南疆战事};
+    \node[event, above] at (6.8,.42) {弛禁论争；\\海防与白银问题};
+    \node[event, below] at (8.2,-.62) {虎门销烟};
+    \node[event, above] at (9.8,.42) {中英战争\\开始};
+    \node[event, below] at (12,-.62) {条约、五口与\\地方执行的分期};
+    \node[note] at (6,-1.35)
+      {“危机”由战后善后、河运财政、边务和沿海冲突交错构成，并非一个同时发生的全国状态。};
+  \end{tikzpicture}
+  \caption{中期危机的编年定位（1796--1850，简表）。年点用于连接战争、财政、边务、禁烟和条约口岸的不同时间线。日期主要据《清仁宗实录》《清宣宗实录》、军机处档与《筹办夷务始末》；条约的签署、批准、换约与地方实施须分开核验，不能由此表推断全境同步改变。}
+  \label{fig:mid-qing-crisis-timeline}
+\end{figure}

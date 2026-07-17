@@ -1,0 +1,26 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    date/.style={font=\scriptsize\bfseries, text=dynasty},
+    event/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\scriptsize, text=ink},
+    note/.style={font=\scriptsize\color{source}, align=center}
+  ]
+    \draw[timeline, line width=1.2pt] (0,0) -- (12,0);
+    \foreach \x/\year in {0/1723,1.6/1728,3.0/1735,5.0/1755,6.7/1759,8.3/1768,10.1/1786,12/1795}
+      {\draw[timeline] (\x,.12) -- (\x,-.12); \node[date, below] at (\x,-.18) {\year};}
+    \node[event, above] at (0,.42) {雍正即位；\\财政与西北军务};
+    \node[event, below] at (1.6,-.62) {准噶尔远征、\\驻藏部署};
+    \node[event, above] at (3.0,.42) {乾隆即位；\\山地与边地压力};
+    \node[event, below] at (5.0,-.62) {伊犁战事\\开始};
+    \node[event, above] at (6.7,.42) {天山南路\\战事收束};
+    \node[event, below] at (8.3,-.62) {第二次金川\\战争升级};
+    \node[event, above] at (10.1,.42) {台湾起事与\\廓尔喀边境战事};
+    \node[event, below] at (12,-.62) {禅位；嘉庆\\承接财政与战事压力};
+    \node[note] at (6,-1.35)
+      {军行、设制、迁调与地方治理是不同阶段；这条时间线不把它们压缩为“扩张完成”。};
+  \end{tikzpicture}
+  \caption{雍正、乾隆时期的编年定位（1723--1795，简表）。图以财政--军政、伊犁与天山南路、金川、台湾和高原的关键节点标示本章阅读顺序。主要依《清世宗实录》《清高宗实录》、军机处档和相关方略；方略的军功、兵数与“平定”语言须与地方、多语和物质材料互证。}
+  \label{fig:high-qing-timeline}
+\end{figure}

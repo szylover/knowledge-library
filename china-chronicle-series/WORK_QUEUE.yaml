@@ -877,7 +877,10 @@ tasks:
   - id: vol06-maps-standard
     volume: vol06-qing-1912
     role: cartographer
-    status: ready
+    status: done
+    branch: chronicle/vol06-maps-standard
+    started_at: 2026-07-17T11:02:58+08:00
+    completed: 2026-07-17T11:06:49+08:00
     scope: [figures/, chapters/]
     goal: Add Qing-to-1912 maps and wire them into the narrative.
 

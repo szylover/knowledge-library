@@ -1,0 +1,47 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    place/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\small},
+    court/.style={place, draw=dynasty, fill=dynasty!13},
+    water/.style={place, draw=timeline, fill=timeline!13},
+    frontier/.style={place, draw=source, fill=source!10},
+    note/.style={align=center, font=\scriptsize\color{source}}
+  ]
+    \fill[paper] (-.65,-3.7) rectangle (7.85,3.8);
+    \draw[dynasty, line width=.8pt] (-.65,3.8) -- (7.85,3.8);
+    \node[font=\bfseries\large, text=dynasty] at (3.6,3.37)
+      {1796--1850：财政、河运、海疆与边务的压力节点};
+
+    \node[court] (beijing) at (3.65,2.5) {北京\\户部、军机与\\八旗事务};
+    \node[water] (northwest) at (.25,1.1) {川楚陕\\白莲教战争\\1796--1805};
+    \node[water] (canal) at (2.0,.55) {运河、黄淮\\漕运、河工与\\灾赈压力};
+    \node[frontier] (kiakhta) at (5.9,1.3) {恰克图及北路\\贸易、疾病与\\跨境信息};
+    \node[frontier] (kashgar) at (5.85,-1.25) {喀什噶尔\\1826--1828\\战事与驻防};
+    \node[water] (guangzhou) at (.2,-1.65) {广州、虎门\\贸易、缉私与\\禁烟争论};
+    \node[water] (ports) at (2.65,-2.55) {沿海与长江口\\1840--1845\\战争、条约与口岸};
+    \node[frontier] (taiwan) at (6.65,-2.65) {台湾、海疆\\航路与地方\\行政的不同节奏};
+
+    \draw[dynasty, dashed] (beijing) -- node[above,sloped,note]
+      {军费、赈务与题报} (northwest);
+    \draw[dynasty, dashed] (beijing) -- node[above,sloped,note]
+      {漕粮与河工文书} (canal);
+    \draw[dynasty, dashed] (beijing) -- node[above,sloped,note]
+      {北路边务（示意）} (kiakhta);
+    \draw[->, timeline, dashed] (canal) -- node[below,sloped,note]
+      {转运、银价与海防压力} (guangzhou);
+    \draw[->, dynasty, line width=1.1pt] (guangzhou) -- node[left,sloped,note]
+      {缉私、战争与交涉} (ports);
+    \draw[timeline, dashed] (ports) -- node[below,sloped,note]
+      {航路与条约网络（示意）} (taiwan);
+    \draw[->, source, dashed] (kashgar) -- node[right,sloped,note]
+      {军费、贸易与驻防的延续} (kiakhta);
+
+    \node[draw=source, fill=paper, rounded corners=3pt, align=center,
+      text=source, font=\small] at (5.5,-.15)
+      {节点与连线只提示材料可见的\\财政、交通、军政或信息关系；\\不画连续疆界或统一影响范围};
+  \end{tikzpicture}
+  \caption{嘉庆、道光时期危机的空间总览（1796--1850，示意）。图并列川楚陕战争、黄淮--运河转运、广州海疆、条约口岸、喀什噶尔与北路贸易等压力节点，避免把财政危机或对外冲突写成只在北京发生的单一路径。依据《清仁宗实录》《清宣宗实录》、军机处与户部档、河工题本、《筹办夷务始末》及中外条约、地方志、绿洲和俄文边境材料。位置与连线均约略，不按比例；命令、条约、驻防或河工核销不表示地方执行、人口经验或稳定控制。}
+  \label{fig:mid-qing-crisis-overview}
+\end{figure}

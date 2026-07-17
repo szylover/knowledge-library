@@ -1,0 +1,26 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    date/.style={font=\scriptsize\bfseries, text=dynasty},
+    event/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\scriptsize, text=ink},
+    note/.style={font=\scriptsize\color{source}, align=center}
+  ]
+    \draw[timeline, line width=1.2pt] (0,0) -- (12,0);
+    \foreach \x/\year in {0/1878,1.8/1884--85,3.6/1894--95,5.5/1898,7.3/1900--01,9.2/1905,10.6/1906,12/1908}
+      {\draw[timeline] (\x,.12) -- (\x,-.12); \node[date, below] at (\x,-.18) {\year};}
+    \node[event, above] at (0,.42) {新疆战事收束；\\设省讨论};
+    \node[event, below] at (1.8,-.62) {中法战争、台湾\\建省与海防调整};
+    \node[event, above] at (3.6,.42) {甲午战争、\\《马关条约》};
+    \node[event, below] at (5.5,-.62) {戊戌变法\\与政变};
+    \node[event, above] at (7.3,.42) {义和团战争、\\《辛丑条约》};
+    \node[event, below] at (9.2,-.62) {日俄战争；\\废科举};
+    \node[event, above] at (10.6,.42) {预备立宪、\\新军与学制改革};
+    \node[event, below] at (12,-.62) {宪法大纲；\\摄政与继承};
+    \node[note] at (6,-1.35)
+      {设省、建军、学校、铁路、条约和立宪的制度日期，不等于地方采纳或社会影响的同一日期。};
+  \end{tikzpicture}
+  \caption{晚清改革与边政的编年定位（1878--1908，简表）。图把新疆、台湾、东北和沿海的边政--战争节点，同甲午、义和团、新政和立宪程序并列。主要依据《清德宗实录》《清宣统政纪》、军机处和总理衙门档、条约文本、机构记录与中外报刊；诏令、方案、编练和工程开办只能证明相应制度动作，不能证明全省覆盖或实际效果。}
+  \label{fig:late-qing-reform-timeline}
+\end{figure}

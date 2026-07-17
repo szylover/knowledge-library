@@ -1,0 +1,25 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    date/.style={font=\scriptsize\bfseries, text=dynasty},
+    event/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\scriptsize, text=ink},
+    note/.style={font=\scriptsize\color{source}, align=center}
+  ]
+    \draw[timeline, line width=1.2pt] (0,0) -- (12,0);
+    \foreach \x/\year in {0/1908,2.0/1909,4.0/1910,6.0/1911.5,8.0/1911.10,10.0/1912.1,12/1912.2}
+      {\draw[timeline] (\x,.12) -- (\x,-.12); \node[date, below] at (\x,-.18) {\year};}
+    \node[event, above] at (0,.42) {光绪、慈禧去世；\\摄政体制};
+    \node[event, below] at (2.0,-.62) {咨议局开办；\\路权争论加剧};
+    \node[event, above] at (4.0,.42) {资政院开院；\\立宪咨询程序};
+    \node[event, below] at (6.0,-.62) {铁路国有化；\\四川保路危机};
+    \node[event, above] at (8.0,.42) {武昌起义；\\各地行动不同步};
+    \node[event, below] at (10.0,-.62) {南京临时政府\\成立};
+    \node[event, above] at (12,.42) {退位诏书；\\帝制名义终结};
+    \node[note] at (6,-1.35)
+      {宣言、军事控制、财政交接、谈判和日常秩序不能由一条“革命时间”同时说明。};
+  \end{tikzpicture}
+  \caption{帝国终结的编年定位（1908--1912，简表）。图将立宪程序、铁路危机、武昌起义、各省政治转换、南京政府与退位安排分列，以免把1911--1912年写成一夜完成的全国转向。主要据《清宣统政纪》、内阁及部院档、资政院与地方咨议局材料、铁路文件、电报和中外报刊；刊登、发报、宣言、军事行动与实际交接的日期和范围须分别核验。}
+  \label{fig:revolution-and-empire-end-timeline}
+\end{figure}
