@@ -1855,7 +1855,10 @@ tasks:
     goal: Wire curated Han event chapters into the main reading path, repair dangling reader routes and update matrices from the obsolete 592-row basis without restoring ledger navigation prose.
   - id: acceptance-jin-reader-integration
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-jin-reader-integration
+    started_at: 2026-07-17T18:15:06+08:00
+    completed_at: 2026-07-17T18:21:11+08:00
     scope:
       - volumes/vol02c-jin-northern-southern/main.tex
       - volumes/vol02c-jin-northern-southern/chapters/
