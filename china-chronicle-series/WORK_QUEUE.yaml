@@ -1625,7 +1625,10 @@ tasks:
     goal: Replace every remaining interchangeable Song-Liao-Xia-Jin-Yuan first-depiction bridge with event-specific material, place, actor and consequence prose; complete cell-level gap matrices and text windows for strict acceptance.
   - id: acceptance-song-yuan-cluster-rewrite
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-song-yuan-cluster-rewrite
+    started_at: 2026-07-17T15:32:20+08:00
+    completed_at: 2026-07-17T15:32:20+08:00
     scope:
       - volumes/vol04-song-yuan/chapters/
     goal: Replace all remaining repeated Song-Liao-Xia-Jin-Yuan first-depiction prose with distinct polity-and-period event clusters, including meaningful turningpoint and causalchain boxes, before strict revalidation.
