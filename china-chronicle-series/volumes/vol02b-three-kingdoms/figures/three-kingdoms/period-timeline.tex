@@ -1,0 +1,40 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=.14cm,y=.82cm,font=\small]
+  \fill[paper] (-3.5,-.7) rectangle (64,4.6);
+  \draw[very thick,dynasty] (0,2.2) -- (60,2.2);
+  \foreach \x/\year in {0/220,10/230,20/240,30/250,40/260,50/270,60/280}
+    {\draw[timeline,thick] (\x,2.02) -- (\x,2.38);
+     \node[below,font=\scriptsize] at (\x,2.0) {\year};}
+  \fill[dynasty] (0,3.45) circle (2.2pt);
+  \node[above,align=center,font=\scriptsize] at (0,3.45) {汉魏禅代\\曹魏定都洛阳};
+  \fill[timeline] (1,1.0) circle (2.2pt);
+  \node[below,align=center,font=\scriptsize] at (1,1.0) {蜀汉建国};
+  \fill[source] (2,3.45) circle (2.2pt);
+  \node[above,align=center,font=\scriptsize] at (2,3.45) {夷陵};
+  \fill[timeline] (5,1.0) circle (2.2pt);
+  \node[below,align=center,font=\scriptsize] at (5,1.0) {南中重置};
+  \fill[dynasty] (8,3.45) circle (2.2pt);
+  \node[above,align=center,font=\scriptsize] at (8,3.45) {祁山、街亭};
+  \fill[source] (9,1.0) circle (2.2pt);
+  \node[below,align=center,font=\scriptsize] at (9,1.0) {孙权称帝};
+  \fill[timeline] (14,3.45) circle (2.2pt);
+  \node[above,align=center,font=\scriptsize] at (14,3.45) {五丈原};
+  \fill[dynasty] (19,1.0) circle (2.2pt);
+  \node[below,align=center,font=\scriptsize] at (19,1.0) {高平陵};
+  \fill[source] (38,3.45) circle (2.2pt);
+  \node[above,align=center,font=\scriptsize] at (38,3.45) {魏灭蜀};
+  \fill[dynasty] (45,1.0) circle (2.2pt);
+  \node[below,align=center,font=\scriptsize] at (45,1.0) {魏晋禅代};
+  \fill[timeline] (59,3.45) circle (2.2pt);
+  \node[above,align=center,font=\scriptsize] at (59,3.45) {西晋伐吴};
+  \fill[source] (60,1.0) circle (2.2pt);
+  \node[below,align=center,font=\scriptsize] at (60,1.0) {孙皓出降};
+  \node[align=left,text=source,font=\scriptsize] at (29,4.15)
+    {上、下交错仅为阅读避让；时间轴以共同年序呈现，\\
+     不表示疆界、兵力或因果的单线关系。};
+\end{tikzpicture}
+\caption{三国至西晋统一的共同时间轴（220--280年，示意）。据《三国志》魏、蜀、
+吴书及《晋书·武帝纪》编年；节点标示可核年序，不将相邻事件自动处理为因果。}
+\label{fig:vol02b:period-timeline}
+\end{figure}
