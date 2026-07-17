@@ -1192,3 +1192,32 @@ tasks:
       - volumes/vol05-ming/data/event-ledger/
       - volumes/vol06-qing-1912/data/event-ledger/
     goal: Repair late-imperial ledger coverage, schemas and actioner-gap matrices before further narrative work.
+  - id: acceptance-anchors-early-imperial
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/
+      - volumes/vol02b-three-kingdoms/chapters/
+      - volumes/vol02c-jin-northern-southern/chapters/
+      - volumes/vol02a-han/preamble.tex
+      - volumes/vol02b-three-kingdoms/preamble.tex
+      - volumes/vol02c-jin-northern-southern/preamble.tex
+    goal: Move verified deep-event anchors into early-imperial narrative, remove generated navigation templates, add missing task-information environments, and preserve only real prose links.
+  - id: acceptance-anchors-medieval
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/
+      - volumes/vol04-song-yuan/chapters/
+      - volumes/vol03-sui-tang-five/preamble.tex
+      - volumes/vol04-song-yuan/preamble.tex
+    goal: Place medieval event anchors in first narrative occurrences, replace appendix-only navigation, add required information environments, and preserve real reader-facing links.
+  - id: acceptance-anchors-late-imperial
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol05-ming/chapters/
+      - volumes/vol06-qing-1912/chapters/
+      - volumes/vol05-ming/preamble.tex
+      - volumes/vol06-qing-1912/preamble.tex
+    goal: Move late-imperial deep-event anchors into prose, delete template navigation text, add required information environments, and reduce indexes to real anchors.
