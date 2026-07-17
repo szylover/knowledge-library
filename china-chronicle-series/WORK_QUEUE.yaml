@@ -1305,3 +1305,16 @@ tasks:
       - volumes/*/PROGRESS.md
       - WORK_QUEUE.yaml
     goal: Reconcile progress and acceptance status with current ledger, anchor, figure and index evidence without marking any volume accepted prematurely.
+  - id: acceptance-han-coverage
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/western-han/founding-and-recovery.tex
+      - volumes/vol02a-han/chapters/western-han/princes-frontier-and-expansion.tex
+      - volumes/vol02a-han/chapters/western-han/imperial-capacity.tex
+      - volumes/vol02a-han/chapters/western-han/regency-and-new.tex
+      - volumes/vol02a-han/chapters/eastern-han/restoration-and-frontiers.tex
+      - volumes/vol02a-han/chapters/eastern-han/court-society-and-learning.tex
+      - volumes/vol02a-han/chapters/eastern-han/fiscal-frontier-and-local-power.tex
+      - volumes/vol02a-han/chapters/eastern-han/imperial-breakdown.tex
+    goal: Expand ledgered Han event clusters into non-template continuous prose, prioritizing fiscal, social, migration, religious and frontier actioners while retaining evidence limits.
