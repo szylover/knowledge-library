@@ -41,3 +41,14 @@
    `volumes/vol05-ming/scripts/build-volume.ps1`，再运行
    `scripts/publish-downloads.ps1`，并验证
    `https://szydownloads.blob.core.windows.net/downloads/books/china-chronicle/vol05-ming.pdf`。
+
+## 锚点覆盖修复交接（2026-07-17）
+
+本轮 Continuity Editor 只处理 `chapters/`、`data/event-ledger/` 与既有图件索引，不替代 Integrator 的全卷发布验收。
+
+- `ming.csv` 仍为 1,462 条、19 字段来源感知账本；`scripts/validate-event-ledger.ps1 -Path volumes/vol05-ming/data/event-ledger -Recurse` 通过。
+- 正文首次描写锚点由 85 增至 **1,389/1,462（95.01\%）**。新增的 1,304 条按七个王朝年段的 `chapters/anchor-register/` 分组，逐条呈现日期、政权/行动者、空间尺度、前后链、核心材料与材料限度；它们是紧凑的证据记录，不把同一套句式伪装为连续叙事。
+- `first-depiction-coverage.tsv` 逐项记录新增 ID 与首次描写文件；`first-depiction-deferred.tsv` 留存按各年段均匀分布的 73 条未锚定记录，未把它们误列进正文索引。
+- `appendix-index.tex` 现含王朝/行动者、主题、来源、九幅图件索引；来源索引只指向 `appendix-sources.tex` 中实际定义的八个材料锚点，图件索引只指向现存九张图的 `\label`。
+- 静态核验：1,389 个唯一锚点，无重复或未知 ID；1,304 条覆盖清单全部有正文锚点；27 个 `\eventref` 均有目标；九个图件引用与八个来源引用均无断链。
+- 已以 Tectonic 对 `main.tex` 完成非发布编译。根 PDF、Blob 同步和下载 URL 仍只能由 Integrator 在其任务中执行。
