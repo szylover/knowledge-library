@@ -1130,7 +1130,13 @@ tasks:
   - id: vol01-final-publish
     volume: vol01-zhou-qin
     role: integrator
-    status: ready
+    status: blocked
+    branch: chronicle/vol01-final-publish
+    started: 2026-07-17T12:42:27+08:00
+    blocked_at: 2026-07-17T12:42:27+08:00
+    blockers:
+      - Nine unresolved Volume I event-reference targets: WQ-0319-HUISHI-WEI, WQ-0342-HAN-QI-AID, WQ-0342-MALING, WQ-0354-GUILIN, WQ-0370-WEI-SUCCESSION, WQ-0389-YINJIN, WQ-0408-WEI, WQ-0408-XIHE-PROCESS, WQ-WEI-WUQI.
+      - Three cross-file template prose duplicates in the Spring and Autumn state dossiers require narrative rewrites.
     depends_on: [vol01-western-final, vol01-spring-final, vol01-warring-final, vol01-continuity-final]
     scope: [main.tex, chapters/ch02-western-zhou.tex, chapters/ch03-spring-autumn.tex, chapters/ch04-warring-qin.tex, PROGRESS.md, ../../../pdf/china-chronicle/vol01-zhou-qin.pdf]
     goal: Validate final Volume I totals and links, compile the publication PDF, update progress, and publish it after all final narrative and continuity tasks complete.
