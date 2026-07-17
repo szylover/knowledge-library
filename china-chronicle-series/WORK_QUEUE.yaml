@@ -1307,7 +1307,9 @@ tasks:
     goal: Reconcile progress and acceptance status with current ledger, anchor, figure and index evidence without marking any volume accepted prematurely.
   - id: acceptance-han-coverage
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-han-coverage
+    started_at: 2026-07-17T11:39:34+08:00
     scope:
       - volumes/vol02a-han/chapters/western-han/founding-and-recovery.tex
       - volumes/vol02a-han/chapters/western-han/princes-frontier-and-expansion.tex
