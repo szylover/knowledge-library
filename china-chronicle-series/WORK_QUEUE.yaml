@@ -1341,6 +1341,13 @@ tasks:
       - volumes/vol02a-han/chapters/eastern-han/
       - volumes/vol02a-han/chapters/synthesis/
     goal: Integrate the 908 newly added Han density events into source-aware first-depiction prose, restoring at least 95 percent anchor coverage after density expansion.
+  - id: acceptance-han-template-rewrite
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/
+      - volumes/vol02a-han/figures/
+    goal: Replace the 396 template Han narrative blocks identified by strict acceptance with concrete source-aware prose and add the missing timeline, Xin diagram and reader indexes.
   - id: acceptance-sui-target-routing
     role: integrator
     status: done
