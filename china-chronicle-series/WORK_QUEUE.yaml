@@ -1320,3 +1320,10 @@ tasks:
       - volumes/vol02a-han/chapters/eastern-han/fiscal-frontier-and-local-power.tex
       - volumes/vol02a-han/chapters/eastern-han/imperial-breakdown.tex
     goal: Expand ledgered Han event clusters into non-template continuous prose, prioritizing fiscal, social, migration, religious and frontier actioners while retaining evidence limits.
+  - id: acceptance-sui-target-routing
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/data/event-ledger/sui-tang-five.csv
+      - volumes/vol03-sui-tang-five/chapters/
+    goal: Split wrapper-targeted Sui-Tang-Five ledger records into safe leaf-file targets and wire corresponding wrappers without inventing events.
