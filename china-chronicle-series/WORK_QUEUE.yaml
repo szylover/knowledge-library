@@ -1577,7 +1577,10 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Qing-to-1912, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-qing-anchor-coverage
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-qing-anchor-coverage
+    started_at: 2026-07-17T16:16:45+08:00
+    completed_at: 2026-07-17T16:27:35+08:00
     scope:
       - volumes/vol06-qing-1912/chapters/
       - volumes/vol06-qing-1912/data/event-ledger/
