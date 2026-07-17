@@ -37,3 +37,14 @@
 对应内容角色须先逐项重写首次呈现中的重复 prose，并为实际转折与因果链补入
 有材料边界的 `turningpoint`、`causalchain`。不得通过删改检测词或把账本、
 矩阵和锚点数量当成叙事通过证明。
+## Integrator 严格复验（2026-07-17，cluster rewrite 后最新 `main`）
+
+**结论：5/8（62.50%），低于 95% 门槛；不构建、不发布。**
+
+- 账本格式通过：2,200 条、`evidence-passport-13`；时间带×政权／地区矩阵有 42 个完整数据格。
+- 锚点静态核对失败：正文仅 56 个唯一 `\eventanchor`，缺失 2,144 个账本 ID（2.55% 覆盖率）；无重复、无未知锚点，68 个 `\eventref` 也都指向存在锚点。
+- 六个首次呈现文件的锚点分布为北宋 20、辽／西夏 20、金 6、南宋 1、蒙古 5、元 4；其中 52 个集中在 13 个多锚点段落，不能满足逐事件的首次深描和多政权平衡要求。
+- 旧两条批量短语的命中各为 0；信息框（`event=4`、`turningpoint=7`、`causalchain=6`、`textwindow=6`、`sourcenote=7`、`debate=1`）、图件（10）和读者索引静态通过。
+- 由于未达门槛，未运行会写入 `pdf/china-chronicle/vol04-song-yuan.pdf` 的构建、`publish-downloads.ps1` 或直接 Blob URL 验证。
+
+阻断来自 `acceptance-song-yuan-cluster-rewrite` 对首次呈现文件的删减；须由 Narrative 恢复 2,144 个缺失账本 ID 的事件特定、非模板首次呈现后重验。
