@@ -1604,7 +1604,10 @@ tasks:
     goal: Integrate 1398 missing Qing-to-1912 first-depiction anchors into concrete source-aware period clusters, complete cell-level matrices and polity/theme/source/figure indexes before strict revalidation.
   - id: acceptance-qing-template-rewrite
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-qing-template-rewrite
+    started_at: 2026-07-17T16:35:52+08:00
+    completed_at: 2026-07-17T16:42:19+08:00
     scope:
       - volumes/vol06-qing-1912/chapters/
     goal: Replace Qing batch template prose with region-specific source-aware event clusters, demonstrate substantive frontier and local balance, and complete the source reading index before strict revalidation.
