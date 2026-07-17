@@ -1553,6 +1553,14 @@ tasks:
       - volumes/vol05-ming/
       - pdf/china-chronicle/vol05-ming.pdf
     goal: Run complete Volume-I-blueprint acceptance for Ming, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
+  - id: acceptance-ming-anchor-coverage
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol05-ming/chapters/
+      - volumes/vol05-ming/data/event-ledger/
+      - volumes/vol05-ming/figures/
+    goal: Integrate 1304 missing Ming first-depiction anchors into concrete source-aware reign-period clusters and complete polity/theme/source/figure indexes before strict revalidation.
   - id: acceptance-qing-final
     role: integrator
     status: blocked
