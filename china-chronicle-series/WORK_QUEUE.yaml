@@ -1454,3 +1454,11 @@ tasks:
       - volumes/vol04-song-yuan/data/event-ledger/song-yuan.csv
       - volumes/vol04-song-yuan/data/source-corpus/
     goal: Expand Song-Liao-Xia-Jin-Yuan ledger from 529 toward 2200 source-aware events across 960--1368 with parallel-polity chronological coverage.
+  - id: acceptance-density-policy
+    role: integrator
+    status: ready
+    scope:
+      - AGENTS.md
+      - SERIES_SPEC.md
+      - WORK_QUEUE.yaml
+    goal: Record source-aware minimum ledger-density thresholds as a non-negotiable acceptance requirement for chronological volumes.
