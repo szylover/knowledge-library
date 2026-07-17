@@ -1,0 +1,38 @@
+\phantomsection
+\label{fig:xin-reform-fracture}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small,
+  nodebox/.style={draw=source!75,fill=paper,rounded corners=2pt,align=center,
+    minimum width=2.55cm,minimum height=.88cm,inner sep=4pt},
+  pressure/.style={draw=timeline!80,fill=timeline!13,rounded corners=2pt,align=center,
+    minimum width=2.55cm,minimum height=.88cm,inner sep=4pt},
+  outcome/.style={draw=dynasty!80,fill=dynasty!11,rounded corners=2pt,align=center,
+    minimum width=2.55cm,minimum height=.88cm,inner sep=4pt}]
+  \fill[paper] (-.55,-.7) rectangle (12.25,5.65);
+
+  \node[nodebox] (court) at (2.0,4.55) {长安中枢\\受禅、诏令与官名};
+  \node[nodebox] (measures) at (5.9,4.55) {改革项目\\土地、奴婢、货币、爵制};
+  \node[pressure] (local) at (9.8,4.55) {执行接口\\县乡、市场、边郡与地方协力};
+  \node[pressure] (strain) at (3.15,1.75) {累积压力\\灾荒、流动、地方竞争与武装};
+  \node[outcome] (claimants) at (8.65,1.75) {区域行动者\\绿林、赤眉、更始与刘秀集团};
+  \node[outcome] (restoration) at (5.9,.15) {复汉后的问题\\雒阳如何重新接通簿籍、道路与任命};
+
+  \draw[-{Stealth[length=2mm]},very thick,dynasty] (court) -- (measures);
+  \draw[-{Stealth[length=2mm]},very thick,timeline] (measures) -- (local);
+  \draw[-{Stealth[length=2mm]},thick,source] (local.south west) to[bend right=18] (strain.north east);
+  \draw[-{Stealth[length=2mm]},very thick,dynasty] (strain) -- (claimants);
+  \draw[-{Stealth[length=2mm]},very thick,dynasty] (claimants) -- (restoration);
+  \draw[-{Stealth[length=2mm]},thick,timeline] (court.south) to[bend right=14] (strain.north);
+
+  \node[align=center,font=\scriptsize,text=source] at (5.9,3.4)
+    {名称、诏令与钱币的变化\\不等于各地同步执行};
+  \node[draw=source!75,fill=paper,rounded corners=2pt,align=left,
+    inner sep=3pt,font=\scriptsize] at (10.0,.25)
+    {关系示意，非疆界图或因果总表。\\
+     箭线表示须经由的接口，不能量化支持度、\\
+     运输量或任何群体的统一态度。};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 新朝改革与统治断裂的关系示意：依据《汉书·王莽传》、新莽钱币与官印，以及《后汉书》《后汉纪》所保存的复汉年序，概括命令、执行与区域竞争之间的关系。图不重建政策覆盖率、民众态度或各方实际控制区。}
+\end{center}

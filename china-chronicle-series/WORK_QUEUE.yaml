@@ -1343,7 +1343,11 @@ tasks:
     goal: Integrate the 908 newly added Han density events into source-aware first-depiction prose, restoring at least 95 percent anchor coverage after density expansion.
   - id: acceptance-han-template-rewrite
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-han-template-rewrite
+    started_at: 2026-07-17T14:08:39+08:00
+    completed_at: 2026-07-17T14:31:00+08:00
+    validation: 1,500 IDs and anchors matched; 396 template bridges replaced; strict content checks and Tectonic build passed
     scope:
       - volumes/vol02a-han/chapters/
       - volumes/vol02a-han/figures/
