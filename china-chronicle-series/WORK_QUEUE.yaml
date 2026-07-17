@@ -1428,7 +1428,10 @@ tasks:
     goal: Place ledgered Jin-Northern-Southern events at first real narrative depictions across all periods, raising anchor coverage above the 95 percent acceptance threshold without generated navigation templates.
   - id: acceptance-ledger-density-han
     role: chronology
-    status: ready
+    status: completed
+    branch: chronicle/acceptance-ledger-density-han
+    started_at: 2026-07-17T13:16:32+08:00
+    completed_at: 2026-07-17T13:25:57+08:00
     scope:
       - volumes/vol02a-han/data/event-ledger/han.csv
       - volumes/vol02a-han/data/source-corpus/
