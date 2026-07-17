@@ -1847,7 +1847,10 @@ tasks:
     goal: Remove residual ledger-style Qing reader prose and rebuild curated period and regional event clusters with real cross-index routes.
   - id: acceptance-han-reader-integration
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-han-reader-integration
+    started_at: 2026-07-17T18:15:05+08:00
+    completed_at: 2026-07-17T18:24:28+08:00
     scope:
       - volumes/vol02a-han/main.tex
       - volumes/vol02a-han/chapters/
