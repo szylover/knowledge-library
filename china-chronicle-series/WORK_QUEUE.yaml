@@ -1825,7 +1825,10 @@ tasks:
     goal: Remove residual ledger-style Han reader prose and rebuild curated event, polity, theme, source and figure routes around real first narrative depictions.
   - id: acceptance-jin-reader-rebuild
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-jin-reader-rebuild
+    started_at: 2026-07-17T17:54:42+08:00
+    completed_at: 2026-07-17T17:59:59+08:00
     scope:
       - volumes/vol02c-jin-northern-southern/chapters/
       - volumes/vol02c-jin-northern-southern/appendices/
