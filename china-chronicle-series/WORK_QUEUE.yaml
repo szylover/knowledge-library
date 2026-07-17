@@ -1879,6 +1879,24 @@ tasks:
       - volumes/vol06-qing-1912/chapters/
       - volumes/vol06-qing-1912/data/event-ledger/
     goal: Complete Qing cross-regional reader event clusters, wire navigation/figures bidirectionally and repair omitted reader routes without restoring ledger template prose.
+  - id: acceptance-han-curated-coverage
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/
+    goal: Expand Han reader-visible event clusters beyond 34 with period, fiscal, frontier, social and regional narration driven by the 1500-row ledger without template prose.
+  - id: acceptance-jin-curated-coverage
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/chapters/
+    goal: Expand Jin-Northern-Southern reader-visible event clusters beyond 16 with multi-polity, migration, fiscal, religious and regional narration driven by the 1500-row ledger without template prose.
+  - id: acceptance-qing-curated-coverage
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol06-qing-1912/chapters/
+    goal: Expand Qing reader-visible event clusters beyond 31 with regional, frontier, fiscal, social, diplomatic and revolutionary narration driven by the 1412-row ledger without template prose.
   - id: acceptance-density-policy
     role: integrator
     status: done
