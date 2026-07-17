@@ -1450,6 +1450,13 @@ tasks:
       - volumes/vol02a-han/
       - pdf/china-chronicle/vol02a-han.pdf
     goal: Run complete Volume-I-blueprint acceptance for Han, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
+  - id: acceptance-three-final
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol02b-three-kingdoms/
+      - pdf/china-chronicle/vol02b-three-kingdoms.pdf
+    goal: Run complete Volume-I-blueprint acceptance for Three Kingdoms, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-jin-anchor-coverage
     role: narrative
     status: ready
