@@ -1390,7 +1390,10 @@ tasks:
     goal: Integrate newly ledgered Three Kingdoms annual, frontier, fiscal, social, textual and regional events into continuous source-aware prose.
   - id: acceptance-three-density-prose
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-density-prose
+    started_at: 2026-07-17T13:32:22+08:00
+    completed_at: 2026-07-17T13:37:22+08:00
     scope:
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/wei-foundation-and-regency.tex
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/shu-han-state-and-expeditions.tex
