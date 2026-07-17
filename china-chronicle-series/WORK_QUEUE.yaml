@@ -1481,7 +1481,11 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Three Kingdoms, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-song-yuan-final
     role: integrator
-    status: ready
+    status: blocked
+    branch: chronicle/acceptance-song-yuan-final
+    started_at: 2026-07-17T14:30:24+08:00
+    blocked_at: 2026-07-17T14:30:24+08:00
+    blocked_reason: "Strict root acceptance failed: only 8/2200 (0.36%) ledger events have non-generated, non-template first depictions; 2,191 of 2,199 ledger-anchor occurrences are generated/template. The required time-band × actioner gap matrix is absent (audit is stale at 529); turningpoint, causalchain and textwindow have zero uses; the source appendix is empty and the required polity/theme/source indexes are absent. PDF build and Blob publication were withheld."
     scope:
       - volumes/vol04-song-yuan/
       - pdf/china-chronicle/vol04-song-yuan.pdf
