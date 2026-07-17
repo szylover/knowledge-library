@@ -1387,3 +1387,11 @@ tasks:
       - volumes/vol02c-jin-northern-southern/appendices/
       - volumes/vol02c-jin-northern-southern/chapters/
     goal: Build verified event, polity, theme, source and figure indexes for the Jin-Northern-Southern volume using only real narrative anchors and wired figures.
+  - id: acceptance-vol01-final-blockers
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol01-zhou-qin/data/event-ledger/warring-qin.csv
+      - volumes/vol01-zhou-qin/chapters/warring-qin/
+      - volumes/vol01-zhou-qin/chapters/spring-autumn/
+    goal: Resolve the nine ledger targets and three duplicate Spring-and-Autumn prose blocks identified by final Volume I validation, using real first narrative anchors only.
