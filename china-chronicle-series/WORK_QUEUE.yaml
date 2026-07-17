@@ -1545,7 +1545,10 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Song-Liao-Xia-Jin-Yuan, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-ming-final
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-ming-final
+    started_at: 2026-07-17T16:11:58+08:00
+    completed_at: 2026-07-17T16:16:00+08:00
     scope:
       - volumes/vol05-ming/
       - pdf/china-chronicle/vol05-ming.pdf
