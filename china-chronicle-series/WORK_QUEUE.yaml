@@ -1817,6 +1817,25 @@ tasks:
     scope:
       - volumes/vol05-ming/chapters/
     goal: Expand Ming reader-visible first depictions from 85 through reign-period event clusters without reintroducing register navigation or template prose.
+  - id: acceptance-han-reader-rebuild
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/
+    goal: Remove residual ledger-style Han reader prose and rebuild curated event, polity, theme, source and figure routes around real first narrative depictions.
+  - id: acceptance-jin-reader-rebuild
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/chapters/
+      - volumes/vol02c-jin-northern-southern/appendices/
+    goal: Remove residual generated Jin reader prose and rebuild curated event, polity, theme, source and figure routes around real first narrative depictions.
+  - id: acceptance-qing-reader-rebuild
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol06-qing-1912/chapters/
+    goal: Remove residual ledger-style Qing reader prose and rebuild curated period and regional event clusters with real cross-index routes.
   - id: acceptance-density-policy
     role: integrator
     status: done
