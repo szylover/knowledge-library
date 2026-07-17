@@ -1523,11 +1523,11 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Han, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-three-final
     role: integrator
-    status: ready
+    status: done
     branch: chronicle/acceptance-three-final
-    started_at: 2026-07-17T15:28:03+08:00
-    blocked_at: 2026-07-17T15:28:03+08:00
-    blocked_reason: "Latest-main strict revalidation remains 92.88% (below 95%): the final prose rewrite left all 399 TK-SRC first-depiction anchors as variable-swapped generated prose; only 301/700 (43.00%) anchors are non-template. Ledger, matrices, anchors, references, figures and indexes passed preflight. Root PDF build, Blob sync and direct-URL verification were withheld."
+    started_at: 2026-07-17T15:53:38+08:00
+    completed_at: 2026-07-17T15:57:10+08:00
+    result: "Accepted at 95.71%: seven root criteria passed and criterion 3 counted 460/700 non-template first depictions; ledger, anchor, reference, figure and index checks passed; Tectonic root-PDF build, full download sync and direct Blob URL verification succeeded."
     scope:
       - volumes/vol02b-three-kingdoms/
       - pdf/china-chronicle/vol02b-three-kingdoms.pdf
