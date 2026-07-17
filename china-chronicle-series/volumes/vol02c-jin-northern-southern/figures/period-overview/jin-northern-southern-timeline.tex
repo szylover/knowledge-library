@@ -1,0 +1,31 @@
+\begin{center}
+\begin{tikzpicture}[x=.036cm,y=1cm,font=\small]
+  \fill[paper] (280,-.72) rectangle (589,.9);
+  \draw[-{Stealth[length=3mm]},line width=.8pt,color=source] (280,0) -- (593,0);
+
+  \foreach \year in {280,317,383,420,494,534,589} {
+    \draw[timeline!85,line width=.55pt] (\year,-.12) -- (\year,.12);
+  }
+  \node[align=center,font=\scriptsize] at (280,.42) {280\\西晋统一};
+  \node[align=center,font=\scriptsize] at (317,.8) {317\\东晋立};
+  \node[align=center,font=\scriptsize] at (383,.42) {383\\淝水};
+  \node[align=center,font=\scriptsize] at (420,.8) {420\\刘宋立};
+  \node[align=center,font=\scriptsize] at (494,.42) {494\\迁都洛阳};
+  \node[align=center,font=\scriptsize] at (534,.8) {534\\东西魏分立};
+  \node[align=center,font=\scriptsize] at (589,.42) {589\\隋灭陈};
+
+  \draw[dynasty,line width=2.4pt] (280,-.36) -- (316,-.36);
+  \node[below,font=\scriptsize] at (298,-.39) {西晋};
+  \draw[timeline,line width=2.4pt] (317,-.36) -- (420,-.36);
+  \node[below,font=\scriptsize] at (368,-.39) {东晋与十六国};
+  \draw[dynasty,line width=2.4pt] (420,-.36) -- (534,-.36);
+  \node[below,font=\scriptsize] at (477,-.39) {南朝与北魏};
+  \draw[timeline,line width=2.4pt] (534,-.36) -- (589,-.36);
+  \node[below,font=\scriptsize] at (561,-.39) {东西魏至隋陈};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 两晋与南北朝的阅读时间轴，280--589年：按《晋书》、南北朝正史、《隋书》与《资治通鉴》的年序标出本册各阶段的进入点。它只帮助定位并行政权和章节转换，不以单一朝代线替代十六国、地方军镇、迁徙、制度执行或宗教网络的不同节奏。}
+\end{center}
+
+\phantomsection\label{fig:jin-northern-southern-timeline}

@@ -1409,7 +1409,10 @@ tasks:
     goal: Add explicit schematic and source/material-limit wording to the Western Zhou timeline required by final Volume I validation.
   - id: acceptance-jin-final
     role: integrator
-    status: ready
+    status: blocked
+    branch: chronicle/acceptance-jin-final
+    started_at: 2026-07-17T13:07:24+08:00
+    blocked_reason: "Acceptance is 87.7%; 860 of 876 ledger IDs lack first-depiction anchors and require narrative work outside this integration task."
     scope:
       - volumes/vol02c-jin-northern-southern/
       - pdf/china-chronicle/vol02c-jin-northern-southern.pdf
