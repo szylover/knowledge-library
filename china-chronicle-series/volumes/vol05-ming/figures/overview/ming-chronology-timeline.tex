@@ -1,0 +1,44 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=.052cm,y=.88cm,font=\small,
+    event/.style={draw=dynasty!90,fill=dynasty!14,rounded corners=2pt,align=center,inner sep=3pt,font=\scriptsize},
+    note/.style={font=\scriptsize,align=center,text=source}
+  ]
+    \fill[paper] (-8,-.75) rectangle (284,5.1);
+    \draw[ultra thick,color=timeline!90] (0,2.25) -- (276,2.25);
+    \foreach \year/\label in {1368/1368,1424/1424,1464/1464,1521/1521,1572/1572,1620/1620,1644/1644} {
+      \draw[thick,color=timeline!90] (\year-1368,2.06) -- (\year-1368,2.44);
+      \node[below,font=\scriptsize,text=source] at (\year-1368,2.02) {\label};
+    }
+
+    \fill[dynasty!12] (0,3.1) rectangle (56,4.45);
+    \fill[source!13] (56,3.1) rectangle (96,4.45);
+    \fill[timeline!15] (96,3.1) rectangle (153,4.45);
+    \fill[dynasty!12] (153,3.1) rectangle (204,4.45);
+    \fill[source!13] (204,3.1) rectangle (252,4.45);
+    \fill[timeline!15] (252,3.1) rectangle (276,4.45);
+    \foreach \x in {0,56,96,153,204,252,276}
+      \draw[thin,color=paper] (\x,3.1) -- (\x,4.45);
+    \node[align=center,font=\scriptsize] at (28,3.78) {洪武、建文、永乐\\建国、迁都与北方经营};
+    \node[align=center,font=\scriptsize] at (76,3.78) {洪熙至天顺\\土木危机与朝廷重组};
+    \node[align=center,font=\scriptsize] at (124.5,3.78) {成化至正德\\地方治理、边地与近侍};
+    \node[align=center,font=\scriptsize] at (178.5,3.78) {嘉靖、隆庆\\礼制、海防与边市};
+    \node[align=center,font=\scriptsize] at (228,3.78) {万历\\清丈、战争与辽东压力};
+    \node[align=center,font=\scriptsize] at (264,3.78) {天启、崇祯\\多重危机与政权转换};
+
+    \node[event] at (0,1.1) {1368\\建国};
+    \node[event] at (42,1.1) {1415\\北京经营};
+    \node[event] at (81,1.1) {1449\\土木危机};
+    \node[event] at (153,1.1) {1524\\大礼议冲突};
+    \node[event] at (212,1.1) {1581\\一条鞭推进};
+    \node[event] at (232,1.1) {1592\\朝鲜战争};
+    \node[event] at (251,1.1) {1619\\萨尔浒战败};
+    \node[event] at (276,1.1) {1644\\北京政权转换};
+
+    \node[note] at (138,-.3)
+      {年序只标出本卷叙事的转折节点；同年发生的地方事件、政策实施和社会后果并不由此获得单一顺序或因果。};
+  \end{tikzpicture}
+  \caption{明代编年主线（1368—1644，简明示意时间轴）。建国、北京经营、土木危机、大礼议、庚戌危机、一条鞭相关整顿、朝鲜战争、萨尔浒战败及1644年北京政权转换的最低年序，可由《明实录》（崇祯朝除外）、《崇祯长编》《明史》及相关奏疏、地方与外部材料交叉定位。时间轴为阅读导航，不取代各事件的日期校勘，也不将同一年内的政策颁布、执行和地方后果压缩为一件事。}
+  \label{fig:vol05:ming-chronology-timeline}
+\end{figure}

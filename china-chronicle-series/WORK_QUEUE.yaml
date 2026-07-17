@@ -869,7 +869,9 @@ tasks:
   - id: vol05-maps-standard
     volume: vol05-ming
     role: cartographer
-    status: ready
+    status: done
+    branch: chronicle/vol05-maps-standard
+    started_at: 2026-07-17T11:02:58+08:00
     scope: [figures/, chapters/]
     goal: Add Ming maps and wire them into the narrative.
   - id: vol06-maps-standard
