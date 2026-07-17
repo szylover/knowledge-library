@@ -1864,7 +1864,10 @@ tasks:
     goal: Wire curated Jin reader routes into actual prose, repair cross-reading targets and update matrices from the obsolete 876-row basis without restoring generated prose.
   - id: acceptance-qing-reader-integration
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-qing-reader-integration
+    started_at: 2026-07-17T18:15:06+08:00
+    completed_at: 2026-07-17T18:26:44+08:00
     scope:
       - volumes/vol06-qing-1912/main.tex
       - volumes/vol06-qing-1912/chapters/
