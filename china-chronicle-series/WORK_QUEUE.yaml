@@ -1555,7 +1555,10 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Ming, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-ming-anchor-coverage
     role: continuity-editor
-    status: ready
+    status: completed
+    branch: chronicle/acceptance-ming-anchor-coverage
+    started_at: 2026-07-17T16:17:27+08:00
+    completed_at: 2026-07-17T16:24:00+08:00
     scope:
       - volumes/vol05-ming/chapters/
       - volumes/vol05-ming/data/event-ledger/
