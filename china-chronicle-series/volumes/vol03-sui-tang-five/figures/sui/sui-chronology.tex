@@ -1,0 +1,40 @@
+\phantomsection\label{fig:vol03:sui:chronology}
+\begin{center}
+\begin{tikzpicture}[
+  x=.88cm,y=.88cm,font=\small,
+  event/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,
+    inner sep=3pt,font=\scriptsize},
+  turning/.style={event,draw=dynasty,fill=dynasty!13},
+  note/.style={font=\scriptsize,text=source,align=center}
+]
+  \fill[paper] (0,0) rectangle (12.5,5.55);
+  \node[font=\bfseries\large,text=dynasty] at (6.25,5.04)
+    {隋的再统一、工程与崩解：编年提要};
+  \node[note] at (6.25,4.58) {581--618年（选择性年序，不替代逐年叙事）};
+
+  \draw[line width=1.1pt,timeline] (.75,2.62) -- (11.78,2.62);
+  \foreach \x/\year in {.75/581,3.35/589,6.95/604,8.58/611,9.55/612,11.78/618}
+    \draw[timeline] (\x,2.42) -- (\x,2.82) node[below=4pt,note] {\year};
+
+  \node[turning] at (.95,3.55) {581\\受禅建隋};
+  \node[turning] at (3.35,1.55) {588--589\\南下与陈亡};
+  \node[event] at (6.95,3.55) {604\\炀帝即位};
+  \node[event] at (8.58,1.55) {611\\山东等地起事\\相继可见};
+  \node[turning] at (9.55,3.55) {612--614\\辽东远征反复};
+  \node[turning] at (11.4,1.55) {617--618\\江都兵变、\\政权崩解};
+
+  \draw[densely dashed,source] (.95,3.05) -- (.95,2.82);
+  \draw[densely dashed,source] (3.35,2.42) -- (3.35,2.12);
+  \draw[densely dashed,source] (6.95,3.05) -- (6.95,2.82);
+  \draw[densely dashed,source] (8.58,2.42) -- (8.58,2.12);
+  \draw[densely dashed,source] (9.55,3.05) -- (9.55,2.82);
+  \draw[densely dashed,source] (11.4,2.42) -- (11.4,2.12);
+
+  \node[note,align=left] at (6.25,.55)
+    {年序标出朝廷更替、战争与地方反抗的可核节点；征役规模、工程进度和各地响应\\
+    在材料中并不均匀，不能由这些节点推出同步的全国经验。};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 隋的编年提要（581--618，示意）：以《隋书》帝纪、《北史》及《资治通鉴》开皇元年至义宁二年条为年序骨架，并参照陈亡、辽东战争和隋末群雄的相关纪传。图只选择与本章空间图相互说明的转折；它不量化劳役、兵额、伤亡或地方服从，也不把正史的亡国叙事视作对不同地区经验的完整记录。}
+\end{center}

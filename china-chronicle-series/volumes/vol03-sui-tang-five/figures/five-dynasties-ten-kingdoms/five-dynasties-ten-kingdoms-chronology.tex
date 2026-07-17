@@ -1,0 +1,43 @@
+\phantomsection\label{fig:vol03:five-dynasties-ten-kingdoms:chronology}
+\begin{center}
+\begin{tikzpicture}[
+  x=.88cm,y=.88cm,font=\small,
+  event/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,
+    inner sep=3pt,font=\scriptsize},
+  north/.style={event,draw=dynasty,fill=dynasty!13},
+  south/.style={event,fill=timeline!15},
+  note/.style={font=\scriptsize,text=source,align=center}
+]
+  \fill[paper] (0,0) rectangle (12.5,6.25);
+  \node[font=\bfseries\large,text=dynasty] at (6.25,5.74)
+    {五代十国的并行年序：编年提要};
+  \node[note] at (6.25,5.28) {880--960年（选择性年序；中原王朝与区域政权并列）};
+
+  \draw[line width=1.1pt,dynasty] (.75,3.58) -- (11.78,3.58);
+  \draw[line width=1.1pt,timeline] (.75,1.78) -- (11.78,1.78);
+  \node[note,anchor=east] at (.58,3.58) {中原／北方};
+  \node[note,anchor=east] at (.58,1.78) {南方与西南};
+  \foreach \x/\year in {.75/880,4.5/907,6.72/923,8.35/936,9.72/947,10.25/951,11.78/960}
+    \draw[source] (\x,1.58) -- (\x,3.78) node[below=4pt,note] {\year};
+
+  \node[north] at (.98,4.5) {880\\黄巢入长安};
+  \node[north] at (4.5,4.5) {907\\后梁建立};
+  \node[north] at (6.72,4.5) {923\\后唐灭梁};
+  \node[north] at (8.35,4.5) {936\\后晋立};
+  \node[north] at (9.72,4.5) {947\\后汉立};
+  \node[north] at (10.25,2.85) {951\\后周立};
+  \node[north] at (11.25,4.5) {960\\后周禅宋};
+
+  \node[south] at (2.1,.78) {902--907\\吴、前蜀等\\相继建国};
+  \node[south] at (5.15,.78) {917--918\\南汉、吴越等\\并行年号};
+  \node[south] at (7.55,.78) {937\\南唐建立};
+  \node[south] at (9.15,.78) {945\\闽、楚政局\\相继变动};
+  \node[south] at (10.75,.78) {955--960\\后周、南唐与\\北方边地互动};
+
+  \node[note,align=left] at (6.25,5.0)
+    {上、下两线只为并读而设：相同年份并不表示各政权具有同一政治节奏、疆界或财政能力。};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 五代十国的并行年序（880--960，示意）：以《旧五代史》《新五代史》《资治通鉴》为中原年序骨架，并参照《吴越备史》、南唐及十国辑佚材料、墓志、钱币和地方考古。十国国史散佚且年号并行，图只给出便于阅读的政权转换与区域节点；不能以中原纪年裁决地方材料的异文，也不能将任一建国年份误作对全域的即时控制。}
+\end{center}

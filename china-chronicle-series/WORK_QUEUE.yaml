@@ -851,7 +851,10 @@ tasks:
   - id: vol03-maps-standard
     volume: vol03-sui-tang-five
     role: cartographer
-    status: ready
+    status: done
+    branch: chronicle/vol03-maps-standard
+    started: 2026-07-17T11:02:58+08:00
+    completed: 2026-07-17T11:07:05+08:00
     scope: [figures/, chapters/]
     goal: Add Sui-Tang-Five Dynasties maps and wire them into the narrative.
   - id: vol04-maps-standard

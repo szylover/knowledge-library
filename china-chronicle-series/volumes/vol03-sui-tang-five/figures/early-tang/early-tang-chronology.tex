@@ -1,0 +1,37 @@
+\phantomsection\label{fig:vol03:early-tang:chronology}
+\begin{center}
+\begin{tikzpicture}[
+  x=.88cm,y=.88cm,font=\small,
+  event/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,
+    inner sep=3pt,font=\scriptsize},
+  turning/.style={event,draw=dynasty,fill=dynasty!13},
+  note/.style={font=\scriptsize,text=source,align=center}
+]
+  \fill[paper] (0,0) rectangle (12.5,5.55);
+  \node[font=\bfseries\large,text=dynasty] at (6.25,5.04)
+    {唐初建国与边疆行动：编年提要};
+  \node[note] at (6.25,4.58) {617--664年（选择性年序；边疆节点不等于稳定控制）};
+
+  \draw[line width=1.1pt,timeline] (.75,2.62) -- (11.78,2.62);
+  \foreach \x/\year in {.75/617,1.2/618,3.15/626,4.15/630,5.7/640,6.7/645,9.05/657,11.78/664}
+    \draw[timeline] (\x,2.42) -- (\x,2.82) node[below=4pt,note] {\year};
+
+  \node[turning] at (.95,3.55) {617--618\\建唐、受禅};
+  \node[turning] at (3.15,1.55) {626\\玄武门之变\\与太宗即位};
+  \node[event] at (4.15,3.55) {630\\东突厥汗国\\崩解后的交涉};
+  \node[turning] at (5.7,1.55) {640\\高昌覆亡、\\置西州};
+  \node[event] at (6.7,3.55) {645\\辽东远征};
+  \node[event] at (9.05,1.55) {657\\西突厥方向\\军事重组};
+  \node[turning] at (11.05,3.55) {660--664\\朝鲜半岛战争\\与联盟变化};
+
+  \foreach \x/\y in {.95/3.05,3.15/2.12,4.15/3.05,5.7/2.12,6.7/3.05,9.05/2.12,11.05/3.05}
+    \draw[densely dashed,source] (\x,\y) -- (\x,2.62);
+
+  \node[note,align=left] at (6.25,.55)
+    {同一年序包含宫廷继承与草原、西域、东北的不同行动；置州、战争、盟约与使节往来\\
+    不能被读成疆界的精确扩张，亦不能概括各地的行政实践。};
+\end{tikzpicture}
+
+\smallskip
+\small\textit{图\quad 唐初建国与边疆行动的编年提要（617--664，示意）：据《旧唐书》《新唐书》帝纪及突厥、西域、东夷相关列传、《资治通鉴》，并以突厥碑铭、《三国史记》等材料提示交叉校核方向。图只保留可比较的日期或顺序，不裁决外部材料的异年，也不以朝廷纪年替代草原、绿洲和半岛行动者自己的政治时间。}
+\end{center}
