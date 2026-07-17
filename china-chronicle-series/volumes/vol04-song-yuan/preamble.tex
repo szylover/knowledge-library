@@ -8,6 +8,8 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable,skins}
 
 \definecolor{dynasty}{HTML}{7A3326}
 \definecolor{ink}{HTML}{332B25}
@@ -30,16 +32,41 @@
 \newcommand{\eventanchor}[2]{\hypertarget{evt:#1}{\eventid{#2}}}
 \newcommand{\eventref}[2]{\hyperlink{evt:#1}{\textcolor{dynasty}{〔#2〕}}}
 
-% Task-specific reading stops share the volume's paper, ink, and dynasty palette.
-\newcommand{\chronicleboxbegin}[2]{%
-  \par\medskip\noindent\begin{center}\setlength{\fboxsep}{7pt}%
-  \fcolorbox{#1}{paper}{\begin{minipage}{0.92\linewidth}%
-  \textcolor{#1}{\bfseries #2}\par\smallskip}}
-\newcommand{\chronicleboxend}{%
-  \end{minipage}}\end{center}\par\medskip}
-\newenvironment{event}[1]{\chronicleboxbegin{dynasty}{#1}}{\chronicleboxend}
-\newenvironment{turningpoint}[1]{\chronicleboxbegin{dynasty}{#1}}{\chronicleboxend}
-\newenvironment{causalchain}[1]{\chronicleboxbegin{timeline}{#1}}{\chronicleboxend}
-\newenvironment{textwindow}[1]{\chronicleboxbegin{source}{#1}}{\chronicleboxend}
-\newenvironment{sourcenote}[1]{\chronicleboxbegin{source}{#1}}{\chronicleboxend}
-\newenvironment{debate}[1]{\chronicleboxbegin{timeline}{#1}}{\chronicleboxend}
+\newtcolorbox{event}[1]{
+  enhanced,breakable,arc=2pt,
+  colback=paper!55!white,colframe=timeline!45!white,
+  colbacktitle=timeline!18!paper,coltitle=ink,
+  boxrule=.4pt,left=10pt,right=8pt,top=6pt,bottom=6pt,
+  borderline west={2.2pt}{0pt}{dynasty},
+  fonttitle=\bfseries,title={#1}
+}
+\newtcolorbox{turningpoint}[1]{
+  enhanced,breakable,arc=3pt,
+  colback=dynasty!4,colframe=dynasty!72!black,
+  boxrule=.9pt,left=8pt,right=8pt,top=7pt,bottom=7pt,
+  fonttitle=\bfseries,title={【#1】}
+}
+\newtcolorbox{causalchain}[1]{
+  enhanced,breakable,arc=3pt,
+  colback=timeline!6,colframe=timeline!65!black,
+  boxrule=.7pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
+  fonttitle=\bfseries,title={【#1】}
+}
+\newtcolorbox{textwindow}[1]{
+  enhanced,breakable,arc=2pt,
+  colback=paper!70!timeline!5,colframe=timeline!50,
+  boxrule=.5pt,left=10pt,right=10pt,top=7pt,bottom=7pt,
+  fonttitle=\bfseries,title={【#1】}
+}
+\newtcolorbox{sourcenote}[1]{
+  enhanced,breakable,arc=3pt,
+  colback=source!6,colframe=source!65!black,
+  boxrule=.7pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
+  fonttitle=\bfseries,title={【#1】}
+}
+\newtcolorbox{debate}[1]{
+  enhanced,breakable,arc=3pt,
+  colback=gray!5,colframe=gray!60,
+  boxrule=.6pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
+  fonttitle=\bfseries,title={【#1】}
+}
