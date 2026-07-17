@@ -1561,6 +1561,14 @@ tasks:
       - volumes/vol06-qing-1912/
       - pdf/china-chronicle/vol06-qing-1912.pdf
     goal: Run complete Volume-I-blueprint acceptance for Qing-to-1912, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
+  - id: acceptance-qing-anchor-coverage
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol06-qing-1912/chapters/
+      - volumes/vol06-qing-1912/data/event-ledger/
+      - volumes/vol06-qing-1912/figures/
+    goal: Integrate 1398 missing Qing-to-1912 first-depiction anchors into concrete source-aware period clusters, complete cell-level matrices and polity/theme/source/figure indexes before strict revalidation.
   - id: acceptance-jin-anchor-coverage
     role: narrative
     status: ready
