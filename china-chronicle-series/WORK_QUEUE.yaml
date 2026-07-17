@@ -1792,6 +1792,24 @@ tasks:
     scope:
       - volumes/vol05-ming/chapters/
     goal: Replace 1304 Ming register anchors with curated first narrative depictions, move registry navigation out of reader prose, repair 73 missing depictions and rebuild cross-index routes.
+  - id: acceptance-three-curated-coverage
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/
+    goal: Expand Three Kingdoms reader-visible first depictions from 43 toward source-aware coverage across all four polities without reintroducing ledger navigation or template prose.
+  - id: acceptance-song-yuan-curated-coverage
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/
+    goal: Expand Song-Liao-Xia-Jin-Yuan reader-visible first depictions from 27 through curated multi-polity event clusters without reintroducing ledger navigation or template prose.
+  - id: acceptance-ming-curated-coverage
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol05-ming/chapters/
+    goal: Expand Ming reader-visible first depictions from 85 through reign-period event clusters without reintroducing register navigation or template prose.
   - id: acceptance-density-policy
     role: integrator
     status: done
