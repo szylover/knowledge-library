@@ -1576,7 +1576,11 @@ tasks:
     goal: Replace the 287 repeated causal and consequence sentences and 545 repeated source-limit prefixes in Ming first-depiction prose with event-specific material, place, actor and outcome narrative before strict revalidation.
   - id: acceptance-ming-cluster-rewrite
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-ming-cluster-rewrite
+    started_at: 2026-07-17T16:43:45+08:00
+    completed_at: 2026-07-17T16:50:24+08:00
+    validation: 590 causal/consequence/fiscal/disaster clauses replaced; strict target checks, ledger validation, and non-publishing Tectonic build passed
     scope:
       - volumes/vol05-ming/chapters/anchor-register/
     goal: Replace the remaining 331 Ming causal/consequence and fiscal/disaster template patterns with reign-period-specific clusters using distinct sources, places, actioners and outcomes before strict revalidation.
