@@ -1,0 +1,25 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,
+    date/.style={font=\scriptsize\bfseries, text=dynasty},
+    event/.style={draw=timeline, fill=paper, rounded corners=2pt, align=center,
+      inner sep=3pt, font=\scriptsize, text=ink},
+    note/.style={font=\scriptsize\color{source}, align=center}
+  ]
+    \draw[timeline, line width=1.2pt] (0,0) -- (11.8,0);
+    \foreach \x/\year in {0/1644,2.0/1645,4.0/1661,5.8/1673,7.7/1683,9.8/1691,11.8/1720}
+      {\draw[timeline] (\x,.12) -- (\x,-.12); \node[date, below] at (\x,-.18) {\year};}
+    \node[event, above] at (0, .42) {入关、北京\\政权建立};
+    \node[event, below] at (2.0,-.62) {南京失守；\\南方多中心延续};
+    \node[event, above] at (4.0,.42) {顺治帝去世；\\康熙即位};
+    \node[event, below] at (5.8,-.62) {撤藩与\\三藩战争};
+    \node[event, above] at (7.7,.42) {澎湖战事；\\台湾接收程序};
+    \node[event, below] at (9.8,-.62) {多伦会盟；\\北方关系重组};
+    \node[event, above] at (11.8,.42) {拉萨危机后的\\军行与制度调整};
+    \node[note] at (5.9,-1.35)
+      {早期清朝不是一条单线：南方战事、海峡接收、蒙古关系与高原军政的节奏并不相同。};
+  \end{tikzpicture}
+  \caption{早期清朝的编年定位（1644--1720，简表）。年点只标出本章讨论的政权、战争、海疆与边地节点，不是完整年表，也不把接收、驻防、会盟或制度调整视为立即完成的区域控制。日期与程序主要据《清世祖实录》《清圣祖实录》、内阁与军政档；南明、郑氏、蒙古、藏文及海洋材料须与清廷编年互校。}
+  \label{fig:early-qing-timeline}
+\end{figure}
