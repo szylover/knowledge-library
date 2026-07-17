@@ -4,9 +4,8 @@
 
 \begingroup
 \let\visibleeventanchor\eventanchor
-\renewcommand{\eventanchor}[1]{\hypertarget{evt:#1}{}}
+\RenewDocumentCommand{\eventanchor}{m g}{\IfNoValueTF{#2}{\hypertarget{evt:#1}{}}{\hypertarget{evt:#1}{\eventid{#2}}}}
 \renewcommand{\visibleeventanchor}[2]{\hyperlink{evt:#1}{#2}}
-
 \begin{event}{前445年至前403年}{安邑、西河与新魏国的重心}{可靠纪年，早期政务细节有限}{魏}
 \eventanchor{WQ-0445-WEI-WENHOU-ASCEND}\visibleeventanchor{WQ-0445-WEI-WENHOU-ASCEND}{战国·魏文侯即位}\eventanchor{WQ-0444-WEI-COUNSELORS}\eventanchor{WQ-0432-WEI-ANYI-URBAN-NETWORK}
 魏文侯即位时，安邑并非一座只为朝会而存在的旧都。河东的农业、盐池资源以及通向黄河渡口和西河的转输路线，使它能够把近处的粮食、盐利和远处的戍守联结起来。这里也是魏与旧晋地理关系最紧的一面：它占据的是晋国腹地的一部分，不是坐拥天然边界的完整领土；向西越河要面对秦，向北、向东的扩张又会触动赵、中山和齐。故而“中原居中”既是可集中资源的条件，也意味着每一条道路都可能变成敌军的进路。
@@ -30,14 +29,14 @@
 
 \eventanchor{WQ-0413-WEI-QIN-HEXI}
 \begin{event}{前413年至前405年前后}{西河的渡口、道路与边防行政}{可靠纪年与后设推断并存}{魏、秦、郑}
-\visibleeventanchor{WQ-0413-WEI-QIN-HEXI}{战国·魏争河西}\eventanchor{WQ-0412-WEI-ZHENG}\eventanchor{WQ-0410-WEI-HEXI-OFFICES}\eventanchor{WQ-0408-XIHE-PROCESS}\eventanchor{WQ-0405-WEI-HEXI}\eventanchor{WQ-0405-WEI-XIHE-ROAD}
+\visibleeventanchor{WQ-0413-WEI-QIN-HEXI}{战国·魏争河西}\eventanchor{WQ-0412-WEI-ZHENG}\eventanchor{WQ-0410-WEI-HEXI-OFFICES}\eventanchor{WQ-0408-XIHE-PROCESS}{战国·魏经营西河}\eventanchor{WQ-0405-WEI-HEXI}\eventanchor{WQ-0405-WEI-XIHE-ROAD}
 魏军沿黄河向河西城邑推进，同时向郑地方向施压，测试通往洛阳东南的交通线；这两件事共同显示魏不是只守安邑。西河的意义也不只是地图上的一块边地：渡口要有人戍守，远征的粮食要沿河东道路送达，前线城邑还须有人传令、征发和维持秩序。后世所说的“西河经营”，所指应是这样的连续过程，而非某一次取城即告完成。
 
 《史记·魏世家》和《资治通鉴》提供了河西竞争的大致年代；河西古道、渡口和历史地理研究补足空间关系。魏代守邑官名、道路工程和具体征粮程序却没有连续档案，不能拿睡虎地秦简所见的成熟秦制替魏逐项补齐。能够说的只是：西河若没有常设的军政网络，魏在中山与秦之间反复投射兵力便无从谈起；这种网络越向边地延伸，维护它的财政和人力成本也越高。
 \end{event}
 
-\eventanchor{WQ-0408-WEI}
-\begin{event}{前408年前后}{李悝传统与魏国的早期整顿}{年代与细节有争议}{魏}\visibleeventanchor{WQ-0408-WEI}{战国·魏国早期改革}\eventanchor{WQ-0420-WEI-LAW-JUDGMENT}
+\eventanchor{WQ-0408-WEI}{战国·魏国早期改革}
+\begin{event}{前408年前后}{李悝传统与魏国的早期整顿}{年代与细节有争议}{魏}\eventanchor{WQ-0420-WEI-LAW-JUDGMENT}
 《史记·魏世家》把李悝列在魏文侯所任用的人物之中；较晚的《汉书·食货志》则把“尽地力”与平籴的议论系于他。两种叙事共同保存了一项重要的历史记忆：当谷物丰歉足以摇动价格、徭役和军粮时，国家不能只在收成之后向封邑索取，而要设法看见土地的产出、储藏与流通。魏的优势正在这里逐步形成：旧贵族的门第仍有分量，但能被官府统计、调度和供给的资源，开始比家族私下的从属关系更能决定一国的行动速度。
 
 不过，后人常把这段历史收束成“李悝作《法经》、魏国遂变法”的整齐开端，材料并不容许这样的肯定。今见《法经》篇目主要出自后出的法制史追述，原书早已不存；“平籴”的办法也不能据此倒推出一套已可逐条复原的魏国法规。从现存材料看，更稳妥的说法是：魏国早期确有把农政、刑名和任官纳入国家竞争的趋势，李悝成为这一趋势最有力的后世符号。个人的履历、政策的形成和制度的长期运行，不能被压成同一件事。
@@ -49,16 +48,16 @@
 
 李悝传统所指向的，是把散在乡里的收成与劳力纳入可计算秩序的努力；吴起的故事所指向的，则是把同一批可征发的人变成可反复使用的军队。两者未必是一个人设计的一套蓝图，却在魏的中原处境中彼此需要：没有较稳定的供给，精锐无从久驻；没有能在边境取胜的军队，田地与市场也难以免于他国征取。
 
-\eventanchor{WQ-WEI-WUQI}
-\begin{event}{魏文侯、武侯时期}{吴起与魏武卒}{年代与细节有争议}{魏}\visibleeventanchor{WQ-WEI-WUQI}{战国·魏武卒}\eventanchor{WQ-0400-WEI-WUZU}\eventanchor{WQ-0391-WEI-WUZU-DRILL}
+\eventanchor{WQ-WEI-WUQI}{战国·魏武卒}
+\begin{event}{魏文侯、武侯时期}{吴起与魏武卒}{年代与细节有争议}{魏}\eventanchor{WQ-0400-WEI-WUZU}\eventanchor{WQ-0391-WEI-WUZU-DRILL}
 《史记·孙子吴起列传》说吴起在魏用兵有功，后世遂以“魏武卒”概括魏军的锐利。《吴子》又描绘负甲、持兵、行军的选拔条件，仿佛一张可以逐项核验的征募清单。可这部兵书的成书层累和这些标准的适用年代都存在疑问，不能把它直接当作魏文侯、武侯朝的一份军籍簿。可以把握的，是魏确实在战国早期以更严密的选拔、训练、赏罚和供给来提高军队的可用性；至于“武卒”的人数、装备和全部考核办法，仍须留在传说与制度史之间审慎辨认。
 
 这里的人事转折并不神秘。像吴起这样的外来行动者能够在魏获得位置，反映的是君主需要能够组织战争的专业才能；而这类才能一旦与旧有贵族、君权和军功分配发生摩擦，也不可能只凭战场声望安然存在。史书随后写吴起离魏入楚，所保留的正是这种政治处境的结果，而非一段可以补写出心理独白的个人传奇。
 \end{event}
 
-\eventanchor{WQ-0389-YINJIN}
+\eventanchor{WQ-0389-YINJIN}{战国·阴晋之战}
 \begin{event}{前389年及其后}{阴晋胜利：把战场成果留在渡口}{年代与战果数字有争议}{魏、秦}
-\visibleeventanchor{WQ-0389-YINJIN}{战国·阴晋之战}\eventanchor{WQ-0389-WEI-QIN-YINJIN-AFTERMATH}
+\eventanchor{WQ-0389-WEI-QIN-YINJIN-AFTERMATH}
 《史记·孙子吴起列传》把吴起在阴晋击秦保存为魏军早期强盛的证据，《吴子》又使后人更容易把它读成武卒制度的必然胜利。胜负的基本脊柱可以把握，战果数字、战场地望和兵种构成却仍有争议。尤其不能因为后出兵书描绘严密的考选，便断言每一名参战者都按同一套标准编入军籍。
 
 阴晋更值得注意的后果，是魏若要把一次胜利变成对秦的压力，便须继续守住黄河渡口和粮道。史书没有保存胜后增设戍守的明文；将胜利与渡口控制联系起来，是根据边防竞争所作的有限推断，而非可复原的建置清单。正是这种从野战到守邑的转换，才显示早期魏军的能力不是单纯的冲锋技艺。
@@ -66,7 +65,7 @@
 
 \eventanchor{WQ-0396-WEI-WENHOU}
 \begin{event}{前396年至前362年前后}{继承裂缝与大梁的选择}{王年较可靠，迁都过程有异说}{魏、韩、赵}
-\visibleeventanchor{WQ-0396-WEI-WENHOU}{战国·魏文侯卒}\eventanchor{WQ-0396-WEI-WENHOU-FUNERAL}\eventanchor{WQ-0395-WEI-WU-HOU-COURT}\eventanchor{WQ-0373-WEI-ZHAO-FRICTION}\eventanchor{WQ-0370-WEI-SUCCESSION}\eventanchor{WQ-0370-WEI-SUCCESSION-ESTATES}\eventanchor{WQ-0370-HAN-ZHAO-WEI-INTERVENE}\eventanchor{WQ-0369-WEI-HUIWANG}\eventanchor{WQ-0362-WEI-DALIANG-CAPITAL}\eventanchor{WQ-0349-WEI-DALIANG-WATERWAYS}
+\visibleeventanchor{WQ-0396-WEI-WENHOU}{战国·魏文侯卒}\eventanchor{WQ-0396-WEI-WENHOU-FUNERAL}\eventanchor{WQ-0395-WEI-WU-HOU-COURT}\eventanchor{WQ-0373-WEI-ZHAO-FRICTION}\eventanchor{WQ-0370-WEI-SUCCESSION}{战国·魏国继承冲突}\eventanchor{WQ-0370-WEI-SUCCESSION-ESTATES}\eventanchor{WQ-0370-HAN-ZHAO-WEI-INTERVENE}\eventanchor{WQ-0369-WEI-HUIWANG}\eventanchor{WQ-0362-WEI-DALIANG-CAPITAL}\eventanchor{WQ-0349-WEI-DALIANG-WATERWAYS}
 文侯死于前396年，武侯承继安邑朝廷并延续西河路线；《史记·魏世家》能够给出这条王位线，却不能使丧礼程序或旧臣名单忽然清楚。前370年武侯死后，继承冲突终于让这种不确定变成公开的政治风险。韩、赵出兵干预，魏罃压倒公中缓而即位。传世材料足以确定邻国介入和惠王继位，关于双方怎样争夺封邑、军队与宫廷支持的细节则各有异文，不宜据此编排一场完整的宫廷政变。
 
 惠王将政治重心移向大梁，是在这种内外压力下改变资源重心的选择。安邑靠近河东和西河，亦离秦的进攻方向更近；大梁连接鸿沟及黄河支流，更便于汇集粮食、车马和中原的使者。迁都的确年、完成步骤和早期渠工都难以从《魏世家》与后出的《水经注》复原。可以看见的却是一个战略取舍：水网扩大了漕运与守城的能力，也把魏日后的防务更深地系在可被敌方利用的河沟上。
@@ -74,15 +73,15 @@
 
 魏军的锋芒使它能够向外施压，也使中原诸国更早学会以联盟回应它。前354年，魏军围赵都邯郸，赵向齐求援。齐不必在赵城下同魏军硬碰，便可选择把战事引回魏所倚重的腹地；《史记·孙子吴起列传》所叙田忌、孙膑的行动，由此成为“围魏救赵”的经典模型。战场在桂陵，胜负所打断的却是魏以一场围城迫使赵屈服的盘算。
 
-\eventanchor{WQ-0354-GUILIN}
-\begin{event}{前354年起}{邯郸危局与桂陵受挫}{可靠纪年}{魏、赵、齐}\visibleeventanchor{WQ-0354-GUILIN}{战国·桂陵之战}\eventanchor{WQ-0353-WEI-HANDAN-SUPPLY}
+\eventanchor{WQ-0354-GUILIN}{战国·桂陵之战}
+\begin{event}{前354年起}{邯郸危局与桂陵受挫}{可靠纪年}{魏、赵、齐}\eventanchor{WQ-0353-WEI-HANDAN-SUPPLY}
 桂陵的故事之所以传得最广，正在于它把复杂的战略选择压缩为一条迂回路线。但围邯郸、齐军出动与桂陵交锋在不同史书中的编年并非完全整齐，后出的兵家叙事又强化了孙膑运筹的戏剧性。能够确定的是，齐的介入迫使魏在赵地之外顾及本土和补给线；\eventref{WQ-0354-GUILIN}{战国·桂陵之战}的直接后果，不是魏立刻失去一切，而是它再也不能把中原的每一场战争当成两国之间的单线较量。
 \end{event}
 
 十余年后，魏攻韩，齐又以救援者的身份出兵。马陵一役在前342年的传统编年中成为魏军受创最深的节点。传世叙事写孙膑减灶诱敌、庞涓自尽，画面锐利，却主要依赖《史记》与《战国策》的后出铺陈；银雀山汉简所见《孙膑兵法》证明相关兵学传统并非全然无根，却不能逐句为这场战役作证。应当保留的，不是一则奇谋的细节，而是魏军在长期外战、强邻合纵与补给压力交织之下，已难维持早期那种由它选择战场的主动。
 
-\eventanchor{WQ-0342-MALING}
-\begin{event}{前342年}{马陵之战与魏的战略收缩}{可靠纪年}{魏、韩、齐}\visibleeventanchor{WQ-0342-MALING}{战国·马陵之战}\eventanchor{WQ-0342-HAN-QI-AID}\eventanchor{WQ-0342-MALING-PRISONERS}\eventanchor{WQ-0341-WEI-MALING-RECOVERY}
+\eventanchor{WQ-0342-MALING}{战国·马陵之战}
+\begin{event}{前342年}{马陵之战与魏的战略收缩}{可靠纪年}{魏、韩、齐}\eventanchor{WQ-0342-HAN-QI-AID}{战国·韩国求齐援}\eventanchor{WQ-0342-MALING-PRISONERS}\eventanchor{WQ-0341-WEI-MALING-RECOVERY}
 马陵之后，魏仍是大国，后来还与齐互称王；败战并不等于国家骤然坍塌。它改变的是力量的相对位置：齐证明自己能够越出东方干预中原，韩、赵也不再只是魏的附庸式邻国，西面的秦则在河西与关中的竞争中等待机会。魏的地理曾使它最先聚拢道路和资源，如今也使它必须在更多方向上分兵、结交和付出财政成本。战国的中心没有消失，只是不再由魏独占。
 
 马陵之后魏重编残军、依靠大梁仓储维持防线的说法，说明败者仍有恢复军政的能力；重编的程序、仓储数量和太子申被俘、庞涓战死等具体情节，却分别受《史记》《战国策》与后来的兵家叙事塑造，不能合并成一份无误的战报。
@@ -94,7 +93,7 @@
 
 \begin{event}{前330年至前302年}{失去河西后，魏如何同秦谈判}{可靠纪年为主，外交条件多不完整}{魏、秦}
 \eventanchor{WQ-0330-HEXI}
-\visibleeventanchor{WQ-0330-HEXI}{战国·魏割河西}\eventanchor{WQ-0330-WEI-HEXI-HOUSEHOLDS}\eventanchor{WQ-0319-WEI-XIANG}\eventanchor{WQ-0319-WEI-DEFENSIVE-ALLIANCE}\eventanchor{WQ-0319-HUISHI-WEI}\eventanchor{WQ-0311-WEI-XIANG-DIPLOMACY}\eventanchor{WQ-0303-QIN-PUBAN}\eventanchor{WQ-0303-QIN-PUBAN-WEI-RIVER-FORD}\eventanchor{WQ-0302-QIN-WEI-YINGTING}\eventanchor{WQ-0302-WEI-CHAOQIN}
+\visibleeventanchor{WQ-0330-HEXI}{战国·魏割河西}\eventanchor{WQ-0330-WEI-HEXI-HOUSEHOLDS}\eventanchor{WQ-0319-WEI-XIANG}\eventanchor{WQ-0319-WEI-DEFENSIVE-ALLIANCE}\eventanchor{WQ-0319-HUISHI-WEI}{战国·惠施在魏}\eventanchor{WQ-0311-WEI-XIANG-DIPLOMACY}\eventanchor{WQ-0303-QIN-PUBAN}\eventanchor{WQ-0303-QIN-PUBAN-WEI-RIVER-FORD}\eventanchor{WQ-0302-QIN-WEI-YINGTING}\eventanchor{WQ-0302-WEI-CHAOQIN}
 前330年割让河西，并不是地图上抹去一片颜色而已。魏原来用来牵制秦的田邑、渡口和编户，自此成为秦的资源；安邑朝廷的西部财源也随之收缩。编户如何改隶并没有连续账簿，不能把人口、田亩和赋额说成精确的数字，但《史记·魏世家》《秦本纪》的割地记录足以说明，魏的西河体系从此不再是可以反攻的纵深，而成了秦向东经营的起点。
 
 惠王死于前319年，魏襄王继位后更依赖使聘、局部结盟和游士的辩说来填补马陵后的兵力缺口。惠施参与魏廷的年月、职掌及其名辩究竟怎样转化为外交决策，主要须由《庄子》《吕氏春秋》和传世叙事拼合，不可把他塑成掌握全部国策的一位相。前311年前后秦惠文王去世，魏可以借西方权力交接调整防备，却只得到有限喘息。

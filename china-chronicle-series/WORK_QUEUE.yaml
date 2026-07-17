@@ -1389,7 +1389,10 @@ tasks:
     goal: Build verified event, polity, theme, source and figure indexes for the Jin-Northern-Southern volume using only real narrative anchors and wired figures.
   - id: acceptance-vol01-final-blockers
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-vol01-final-blockers
+    started_at: 2026-07-17T12:47:13+08:00
+    completed_at: 2026-07-17T12:53:08+08:00
     scope:
       - volumes/vol01-zhou-qin/data/event-ledger/warring-qin.csv
       - volumes/vol01-zhou-qin/chapters/warring-qin/
