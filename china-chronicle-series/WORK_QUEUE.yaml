@@ -1229,3 +1229,11 @@ tasks:
       - volumes/vol05-ming/preamble.tex
       - volumes/vol06-qing-1912/preamble.tex
     goal: Move late-imperial deep-event anchors into prose, delete template navigation text, add required information environments, and reduce indexes to real anchors.
+  - id: acceptance-integrator-validation
+    role: integrator
+    status: ready
+    scope:
+      - scripts/validate-event-ledger.ps1
+      - volumes/
+      - pdf/china-chronicle/
+    goal: Make validation schema-aware across all accepted ledger variants, reconcile real PDF paths, run build/link/anchor validation, and record only evidence-backed acceptance status.
