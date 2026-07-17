@@ -1397,3 +1397,9 @@ tasks:
       - volumes/vol01-zhou-qin/chapters/warring-qin/
       - volumes/vol01-zhou-qin/chapters/spring-autumn/
     goal: Resolve the nine ledger targets and three duplicate Spring-and-Autumn prose blocks identified by final Volume I validation, using real first narrative anchors only.
+  - id: acceptance-vol01-timeline-limit
+    role: cartographer
+    status: ready
+    scope:
+      - volumes/vol01-zhou-qin/figures/western-zhou/timeline.tex
+    goal: Add explicit schematic and source/material-limit wording to the Western Zhou timeline required by final Volume I validation.
