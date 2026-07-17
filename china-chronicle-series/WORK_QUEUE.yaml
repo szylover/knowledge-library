@@ -1415,7 +1415,10 @@ tasks:
     goal: Integrate the 399 new Three Kingdoms density events into source-aware first-depiction prose, restoring at least 95 percent anchor coverage after density expansion.
   - id: acceptance-three-template-rewrite
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-template-rewrite
+    started_at: 2026-07-17T14:23:23+08:00
+    completed_at: 2026-07-17T14:35:00+08:00
     scope:
       - volumes/vol02b-three-kingdoms/chapters/
       - volumes/vol02b-three-kingdoms/figures/
