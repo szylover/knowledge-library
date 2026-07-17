@@ -27,6 +27,70 @@ $passportColumns = @(
     'source_locator',
     'source_caveat'
 )
+$tierColumn = @('tier')
+$acceptanceColumns = @(
+    'year_ce',
+    'chronological_band',
+    'tier',
+    'actioner_representation',
+    'spatial_scope',
+    'source_caveat_class'
+)
+$acceptedSchemas = @(
+    [pscustomobject]@{
+        Name                = 'legacy-10'
+        Columns             = $legacyColumns
+        RequiredColumns     = $legacyColumns
+        HasEvidencePassport = $false
+        HasTier             = $false
+    },
+    [pscustomobject]@{
+        Name                = 'legacy+caveat+tier-12'
+        Columns             = @($legacyColumns + 'source_caveat' + 'tier')
+        RequiredColumns     = @($legacyColumns + 'source_caveat' + 'tier')
+        HasEvidencePassport = $false
+        HasTier             = $true
+    },
+    [pscustomobject]@{
+        Name                = 'evidence-passport-13'
+        Columns             = @($legacyColumns + $passportColumns)
+        RequiredColumns     = @($legacyColumns + $passportColumns)
+        HasEvidencePassport = $true
+        HasTier             = $false
+    },
+    [pscustomobject]@{
+        Name                = 'evidence-passport+tier-14'
+        Columns             = @($legacyColumns + $passportColumns + $tierColumn)
+        RequiredColumns     = @($legacyColumns + $passportColumns + $tierColumn)
+        HasEvidencePassport = $true
+        HasTier             = $true
+    },
+    [pscustomobject]@{
+        Name                = 'acceptance-evidence-19'
+        Columns             = @($legacyColumns + $passportColumns + $acceptanceColumns)
+        RequiredColumns     = @($legacyColumns + $passportColumns + $acceptanceColumns)
+        HasEvidencePassport = $true
+        HasTier             = $true
+    }
+)
+$auxiliarySchemas = @(
+    [pscustomobject]@{
+        Name    = 'coverage-actioner-gap'
+        Columns = @('chronological_band', 'actioner_representation', 'record_count', 'gap_status')
+    },
+    [pscustomobject]@{
+        Name    = 'coverage-year-gap'
+        Columns = @('year_ce', 'record_count', 'gap_status')
+    },
+    [pscustomobject]@{
+        Name    = 'ledger-schema'
+        Columns = @('field', 'required', 'controlled_values_or_format', 'evidence_boundary')
+    },
+    [pscustomobject]@{
+        Name    = 'source-caveat-audit'
+        Columns = @('evidence_type', 'source_caveat_class', 'record_count', 'blank_source_caveat_count')
+    }
+)
 $seriesRoot = Split-Path -Parent $PSScriptRoot
 $allowedEvidenceTypes = @(
     'annalistic_record',
@@ -35,8 +99,31 @@ $allowedEvidenceTypes = @(
     'official_or_administrative_document',
     'excavated_text_or_inscription',
     'archaeological_context',
-    'modern_research'
+    'modern_research',
+    'archival_record',
+    'cross_polity_record',
+    'local_record'
 )
+$allowedTiers = @('A', 'B', 'C')
+
+function Test-ColumnSequence {
+    param(
+        [string[]]$Actual,
+        [string[]]$Expected
+    )
+
+    if ($Actual.Count -ne $Expected.Count) {
+        return $false
+    }
+
+    for ($index = 0; $index -lt $Expected.Count; $index++) {
+        if ($Actual[$index] -cne $Expected[$index]) {
+            return $false
+        }
+    }
+
+    return $true
+}
 
 function Get-LedgerFiles {
     param(
@@ -95,7 +182,8 @@ function Test-EventLedger {
     $issues = [System.Collections.Generic.List[string]]::new()
     $seenIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
     $recordCount = 0
-    $hasPassportColumns = $false
+    $schema = $null
+    $skipSchema = $null
     $parser = $null
 
     try {
@@ -117,29 +205,34 @@ function Test-EventLedger {
                 $header[0] = $header[0].TrimStart([char]0xFEFF)
             }
 
-            $expectedHeader = @($legacyColumns)
-            if ($header.Count -gt $legacyColumns.Count) {
-                $expectedHeader += $passportColumns
-                $hasPassportColumns = $true
+            $schema = @(
+                $acceptedSchemas | Where-Object {
+                    Test-ColumnSequence -Actual $header -Expected $_.Columns
+                }
+            ) | Select-Object -First 1
+            if ($null -eq $schema) {
+                $skipSchema = @(
+                    $auxiliarySchemas | Where-Object {
+                        Test-ColumnSequence -Actual $header -Expected $_.Columns
+                    }
+                ) | Select-Object -First 1
             }
 
-            if ($header.Count -ne $expectedHeader.Count) {
+            if ($null -ne $skipSchema) {
+                # Coverage and audit CSVs share the ledger directory but are not ledgers.
+            }
+            elseif ($null -eq $schema) {
                 Add-Issue -Issues $issues -Message (
-                    "Header has $($header.Count) columns; expected $($legacyColumns.Count) legacy columns " +
-                    "or $($legacyColumns.Count + $passportColumns.Count) columns with the evidence-passport extension."
+                    "Unrecognized ledger header. Accepted schemas: " +
+                    "$(($acceptedSchemas.Name) -join ', ')."
                 )
             }
             else {
-                for ($index = 0; $index -lt $expectedHeader.Count; $index++) {
-                    if ($header[$index] -cne $expectedHeader[$index]) {
-                        Add-Issue -Issues $issues -Message (
-                            "Header column $($index + 1) is '$($header[$index])'; expected '$($expectedHeader[$index])'."
-                        )
-                    }
+                $columnPositions = @{}
+                for ($index = 0; $index -lt $schema.Columns.Count; $index++) {
+                    $columnPositions[$schema.Columns[$index]] = $index
                 }
-            }
 
-            if ($issues.Count -eq 0) {
                 while (-not $parser.EndOfData) {
                     try {
                         $fields = @($parser.ReadFields())
@@ -154,16 +247,16 @@ function Test-EventLedger {
                     }
 
                     $recordCount++
-                    if ($fields.Count -ne $expectedHeader.Count) {
+                    if ($fields.Count -ne $schema.Columns.Count) {
                         Add-Issue -Issues $issues -Message (
-                            "Data row $recordCount has $($fields.Count) columns; expected $($expectedHeader.Count)."
+                            "Data row $recordCount has $($fields.Count) columns; expected $($schema.Columns.Count)."
                         )
                         continue
                     }
 
-                    for ($index = 0; $index -lt $legacyColumns.Count; $index++) {
-                        if ([string]::IsNullOrWhiteSpace($fields[$index])) {
-                            Add-Issue -Issues $issues -Message "Data row $recordCount has an empty '$($legacyColumns[$index])' value."
+                    foreach ($column in $schema.RequiredColumns) {
+                        if ([string]::IsNullOrWhiteSpace($fields[$columnPositions[$column]])) {
+                            Add-Issue -Issues $issues -Message "Data row $recordCount has an empty '$column' value."
                         }
                     }
 
@@ -172,24 +265,21 @@ function Test-EventLedger {
                         Add-Issue -Issues $issues -Message "Data row $recordCount repeats id '$id'."
                     }
 
-                    if ($hasPassportColumns) {
-                        $passportValues = @($fields[$legacyColumns.Count..($expectedHeader.Count - 1)])
-                        $populatedPassportFields = @(
-                            $passportValues | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
-                        ).Count
+                    if ($schema.HasEvidencePassport) {
+                        $evidenceType = $fields[$columnPositions['evidence_type']].Trim()
+                        if ($allowedEvidenceTypes -cnotcontains $evidenceType) {
+                            Add-Issue -Issues $issues -Message (
+                                "Data row $recordCount has unsupported evidence_type '$evidenceType'."
+                            )
+                        }
+                    }
 
-                        if ($populatedPassportFields -ne 0) {
-                            if ($populatedPassportFields -ne $passportColumns.Count) {
-                                Add-Issue -Issues $issues -Message (
-                                    "Data row $recordCount has a partial evidence-passport; " +
-                                    "evidence_type, source_locator, and source_caveat must all be populated."
-                                )
-                            }
-                            elseif ($allowedEvidenceTypes -cnotcontains $fields[$legacyColumns.Count].Trim()) {
-                                Add-Issue -Issues $issues -Message (
-                                    "Data row $recordCount has unsupported evidence_type '$($fields[$legacyColumns.Count])'."
-                                )
-                            }
+                    if ($schema.HasTier) {
+                        $tier = $fields[$columnPositions['tier']].Trim()
+                        if ($allowedTiers -cnotcontains $tier) {
+                            Add-Issue -Issues $issues -Message (
+                                "Data row $recordCount has unsupported tier '$tier'."
+                            )
                         }
                     }
                 }
@@ -205,13 +295,29 @@ function Test-EventLedger {
         }
     }
 
-    $status = if ($issues.Count -eq 0) { 'PASS' } else { 'FAIL' }
-    $schema = if ($hasPassportColumns) { 'legacy+passport' } else { 'legacy-10' }
+    $status = if ($null -ne $skipSchema) {
+        'SKIP'
+    }
+    elseif ($issues.Count -eq 0) {
+        'PASS'
+    }
+    else {
+        'FAIL'
+    }
+    $schemaName = if ($null -ne $schema) {
+        $schema.Name
+    }
+    elseif ($null -ne $skipSchema) {
+        $skipSchema.Name
+    }
+    else {
+        'unrecognized'
+    }
     [pscustomobject]@{
         File    = $File.FullName
         Status  = $status
         Records = $recordCount
-        Schema  = $schema
+        Schema  = $schemaName
         Issues  = $issues
     }
 }

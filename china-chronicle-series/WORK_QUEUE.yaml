@@ -1231,7 +1231,10 @@ tasks:
     goal: Move late-imperial deep-event anchors into prose, delete template navigation text, add required information environments, and reduce indexes to real anchors.
   - id: acceptance-integrator-validation
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-integrator-validation
+    started_at: 2026-07-17T10:33:40+08:00
+    completed_at: 2026-07-17T10:39:53+08:00
     scope:
       - scripts/validate-event-ledger.ps1
       - volumes/
