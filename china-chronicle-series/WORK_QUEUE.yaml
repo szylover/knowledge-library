@@ -1413,6 +1413,14 @@ tasks:
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/three-kingdoms-society-and-material-record.tex
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/jin-unification.tex
     goal: Integrate the 399 new Three Kingdoms density events into source-aware first-depiction prose, restoring at least 95 percent anchor coverage after density expansion.
+  - id: acceptance-three-template-rewrite
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol02b-three-kingdoms/chapters/
+      - volumes/vol02b-three-kingdoms/figures/
+      - volumes/vol02b-three-kingdoms/data/event-ledger/
+    goal: Replace the 399 generated Three Kingdoms anchors with concrete first-depiction prose, remove duplicate Han-WEI anchors, update coverage matrices and add a period timeline before strict revalidation.
   - id: acceptance-jin-reader-index
     role: indexer
     status: done
