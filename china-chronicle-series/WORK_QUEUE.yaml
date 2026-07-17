@@ -1617,10 +1617,14 @@ tasks:
     goal: Replace Qing batch template prose with region-specific source-aware event clusters, demonstrate substantive frontier and local balance, and complete the source reading index before strict revalidation.
   - id: acceptance-qing-anchor-restore
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-qing-anchor-restore
+    started_at: 2026-07-17T16:50:57+08:00
+    completed_at: 2026-07-17T17:05:00+08:00
     scope:
       - volumes/vol06-qing-1912/chapters/
     goal: Restore 1398 missing Qing first-depiction anchors within distinct regional source-aware event clusters while retaining the non-template prose required by strict acceptance.
+    result: Restored 1,398 source-aware first-depiction anchors across Qing regional clusters; the anchor audit is 1,412/1,412 unique ledger IDs, and ledger validation plus Tectonic compilation passed.
   - id: acceptance-jin-anchor-coverage
     role: narrative
     status: ready
