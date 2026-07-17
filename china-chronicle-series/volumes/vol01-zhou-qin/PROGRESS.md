@@ -51,18 +51,17 @@
 
 ## 集成验收记录（2026-07-17）
 
-- 状态：阻塞；未复制根目录 PDF、未运行 Blob 同步。唯一剩余项是已入书的
-  西周时间轴图件缺少明确的“示意”或“疆界约略”及材料限度提示。
+- 状态：八项卷一蓝图验收均通过，已发布。
 - 账本：`western-zhou.csv`、`spring-autumn.csv`、`warring-qin.csv` 均通过
   `validate-event-ledger.ps1`，合计 1,400 条（150、400、850）。
-- 锚点与重复 prose：1,345 个事件锚点均唯一，586 个事件引用全部解析；
+- 锚点、链接与索引：1,345 个事件锚点均唯一，586 个事件引用全部解析；29 个
+  标签均唯一，49 个 `\hyperref` 均可解析；72 个 `\input`/`\include` 目标、
+  14 个实际入书图件、图件索引的 14 个目标和来源索引的 9 个目标均存在。
   跨文件段落检查未发现重复 prose。
-- 链接与索引：72 个 `\input`/`\include` 目标均存在；29 个标签均唯一，49 个
-  `\hyperref` 均可解析；索引的 14 个图件目标和 9 个来源目标均可解析，5 个
-  来源语料文件、来源附录、争议附录和索引均存在。
-- 图件：21 个独立图件文件中有 14 个实际入书，14 个图件标签与索引条目全部
-  对应，且输入目标均存在；`figures/western-zhou/timeline.tex` 已入书却没有
-  所需的示意/材料限度提示，故图件验收未通过。
-- 构建：Tectonic 对完整 `main.tex` 退出 0，未见未定义链接或致命诊断；生成的
-  卷内 `main.pdf` 仅作验证。待该图件修正并复验后，方可复制根目录 PDF 并运行
-  Blob 同步。
+- 图件：西周时间轴现明确标作“示意”，并说明横轴、断代、传世文献、金文和
+  考古材料各自不能证明的范围；其余已入书图件及其索引对应关系复验通过。
+- 构建与发布：Tectonic 对完整 `main.tex` 退出 0，未见未定义链接或致命诊断。
+  已更新根目录 `pdf/china-chronicle/vol01-zhou-qin.pdf`（1,679,175 bytes），
+  运行 `scripts/publish-downloads.ps1` 同步目录并刷新下载页。直接链接
+  `https://szydownloads.blob.core.windows.net/downloads/books/china-chronicle/vol01-zhou-qin.pdf`
+  于 2026-07-17 13:06 +08:00 返回 HTTP 200，`Content-Length: 1679175`。
