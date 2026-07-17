@@ -1497,6 +1497,16 @@ tasks:
       - volumes/vol04-song-yuan/data/event-ledger/song-yuan.csv
       - volumes/vol04-song-yuan/data/source-corpus/
     goal: Expand Song-Liao-Xia-Jin-Yuan ledger from 529 toward 2200 source-aware events across 960--1368 with parallel-polity chronological coverage.
+  - id: acceptance-song-yuan-density-prose
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/northern-song/
+      - volumes/vol04-song-yuan/chapters/liao-western-xia/
+      - volumes/vol04-song-yuan/chapters/jin/
+      - volumes/vol04-song-yuan/chapters/southern-song/
+      - volumes/vol04-song-yuan/chapters/mongol-yuan/
+    goal: Integrate the 1671 newly added Song-Liao-Xia-Jin-Yuan density events into parallel-polity source-aware first-depiction prose, restoring at least 95 percent anchor coverage after density expansion.
   - id: acceptance-density-policy
     role: integrator
     status: done
