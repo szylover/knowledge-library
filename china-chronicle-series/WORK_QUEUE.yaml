@@ -1449,7 +1449,10 @@ tasks:
     goal: Expand Jin-Northern-Southern ledger from 876 toward 1500 source-aware events across 280--589 with regional and multi-polity balance.
   - id: acceptance-ledger-density-song-yuan
     role: chronology
-    status: ready
+    status: done
+    branch: chronicle/acceptance-ledger-density-song-yuan
+    started_at: 2026-07-17T13:16:32+08:00
+    completed_at: 2026-07-17T13:58:00+08:00
     scope:
       - volumes/vol04-song-yuan/data/event-ledger/song-yuan.csv
       - volumes/vol04-song-yuan/data/source-corpus/
