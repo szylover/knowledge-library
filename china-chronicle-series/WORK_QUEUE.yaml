@@ -1908,7 +1908,10 @@ tasks:
     goal: Expand Qing reader-visible event clusters beyond 31 with regional, frontier, fiscal, social, diplomatic and revolutionary narration driven by the 1412-row ledger without template prose.
   - id: acceptance-sui-reader-rebuild
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-sui-reader-rebuild
+    started_at: 2026-07-17T19:14:43+08:00
+    completed_at: 2026-07-17T19:24:08+08:00
     scope:
       - volumes/vol03-sui-tang-five/chapters/
     goal: Remove residual ledger navigation and generated prose from Sui-Tang-Five reader chapters, rebuild curated period and multi-polity event clusters, and restore real cross-index routes under the reader-surface rules.
