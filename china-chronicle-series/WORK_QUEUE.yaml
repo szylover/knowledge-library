@@ -1611,7 +1611,9 @@ tasks:
     goal: Replace the 2191 generated Song-Liao-Xia-Jin-Yuan anchor occurrences with concrete parallel-polity first-depiction prose, restore coverage matrices, information boxes and real reader indexes before strict revalidation.
   - id: acceptance-song-yuan-strict-rewrite
     role: continuity-editor
-    status: ready
+    status: in_progress
+    branch: chronicle/acceptance-song-yuan-strict-rewrite
+    started_at: 2026-07-17T15:08:59+08:00
     scope:
       - volumes/vol04-song-yuan/chapters/
       - volumes/vol04-song-yuan/figures/
