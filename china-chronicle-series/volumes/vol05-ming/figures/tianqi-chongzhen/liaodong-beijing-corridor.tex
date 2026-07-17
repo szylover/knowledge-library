@@ -1,0 +1,44 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=.88cm,y=.88cm,font=\small,
+    place/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,inner sep=3pt},
+    court/.style={place,draw=dynasty!90,fill=dynasty!14},
+    frontier/.style={place,draw=source!85,fill=source!13},
+    crisis/.style={place,draw=timeline!90,fill=timeline!15},
+    note/.style={font=\scriptsize,align=center,text=source}
+  ]
+    \fill[paper] (-.35,-.45) rectangle (12.15,6.35);
+    \fill[source!14] (.2,4.15) -- (11.9,4.0) -- (11.95,6.1) -- (.35,6.2) -- cycle;
+    \fill[dynasty!11] (.2,.1) -- (11.9,.15) -- (11.9,3.85) -- (.35,4.0) -- cycle;
+    \node[font=\bfseries,text=source] at (9.35,5.5) {后金与辽东战场（约略）};
+    \node[font=\bfseries,text=dynasty] at (1.7,3.45) {山海关、京师与运输节点};
+
+    \node[frontier] (hetu) at (9.85,5.15) {赫图阿拉及后金\\动员与政权中心};
+    \node[frontier] (fushun) at (8.1,4.35) {抚顺、沈阳、辽阳\\失守与撤退的节点};
+    \node[frontier] (ningyuan) at (6.6,4.8) {宁远、锦州\\守备与粮道节点};
+    \node[court] (shanhai) at (5.1,3.45) {山海关\\关隘、人员与物资通道};
+    \node[court] (beijing) at (3.15,2.25) {北京\\任命、军饷与信息汇集};
+    \node[crisis] (canal) at (6.45,1.15) {通州、运河与山东方向\\征解、仓储与转输};
+    \node[crisis] (korea) at (10.05,2.05) {朝鲜方向\\外交、难民与外部观察};
+
+    \draw[->,very thick,color=source!90] (hetu) -- node[above,sloped,note]
+      {1618年后战争压力} (fushun);
+    \draw[->,ultra thick,color=source!90] (fushun) -- node[above,sloped,note]
+      {撤退、攻守与补给重组} (ningyuan);
+    \draw[->,very thick,color=dynasty] (ningyuan) -- node[above,sloped,note]
+      {军情、人员与物资流动} (shanhai);
+    \draw[->,very thick,color=dynasty] (shanhai) -- node[below,sloped,note]
+      {塘报、任命与军费请求} (beijing);
+    \draw[->,thick,dashed,color=timeline!90] (canal) -- node[right,note]
+      {粮运、征解与守备条件} (beijing);
+    \draw[<->,thick,dashed,color=source!90] (korea) -- node[right,note]
+      {使节、战事与异源记录} (fushun);
+
+    \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+      font=\scriptsize,text=source] at (2.25,.55)
+      {箭头只示意文书、资源与战事关联；\\不表示固定路线、兵力、控制区或补给实到。};
+  \end{tikzpicture}
+  \caption{晚明辽东—山海关—北京之间的危机走廊（1618—1627，示意）。后金兴起、抚顺等城失守、辽阳—沈阳防线变化、宁远守备和京师的军饷调度，可据《神宗实录》《熹宗实录》《明史》〈兵志〉、辽东奏疏及《朝鲜王朝实录》交叉追踪；战役路线、守军人数、运输量、城镇控制时间和朝鲜境内影响均须逐项核验。图不复原疆界或战场比例，亦不把后金、明军或朝鲜方面视为内部一致的行动者。}
+  \label{fig:vol05:liaodong-beijing-corridor}
+\end{figure}

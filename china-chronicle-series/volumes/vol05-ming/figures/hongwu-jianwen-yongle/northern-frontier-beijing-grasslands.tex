@@ -9,7 +9,7 @@
   ]
     \fill[paper] (-.4,-.5) rectangle (12.2,6.5);
     \fill[source!16] (.2,4.5) -- (11.9,4.25) -- (12,6.2) -- (.4,6.25) -- cycle;
-    \node[font=\bfseries,text=source] at (9.75,5.55) {草原诸部与北元活动空间（约略）};
+    \node[font=\bfseries,text=source] at (9.75,5.55) {草原诸部与北方接触地带（约略）};
     \fill[dynasty!12] (.2,.05) -- (11.9,.2) -- (11.8,4.05) -- (.35,4.25) -- cycle;
     \node[font=\bfseries,text=dynasty] at (1.55,3.72) {明朝北方腹地};
 
@@ -17,7 +17,7 @@
     \node[court] (beijing) at (5.5,3.1) {北平／北京\\北方政治与军政节点};
     \node[court] (xuande) at (8.15,2.55) {宣府、大同\\边镇与军需};
     \node[court] (liaodong) at (10.45,2.1) {辽东\\卫所、市场与交涉};
-    \node[steppe] (tumu) at (6.7,4.55) {土木、怀来一带\\1449年危机节点};
+    \node[steppe] (northcampaign) at (6.7,4.55) {漠北方向\\北征、使节与接触节点};
     \node[steppe] (mongolia) at (9.7,5.25) {蒙古诸部\\部众、使节与交换网络};
     \node[steppe] (northwest) at (2.0,5.25) {西北边地\\关隘、驿路与补给};
 
@@ -28,9 +28,9 @@
     \draw[->,thick,color=timeline!90] (xuande) -- node[below,sloped,note]
       {边镇联络（示意）} (liaodong);
     \draw[->,very thick,color=source!85] (mongolia) -- node[right,note]
-      {南下、使节与互市的不同路径} (tumu);
-    \draw[->,thick,dashed,color=source!85] (tumu) -- node[left,note]
-      {危机冲击北京防务} (beijing);
+      {北征、使节与互市的不同路径} (northcampaign);
+    \draw[->,thick,dashed,color=source!85] (northcampaign) -- node[left,note]
+      {边情、军需与京师防务} (beijing);
     \draw[<->,thick,dashed,color=timeline!85] (northwest) -- node[above,note]
       {关隘、驿递与边地交换} (mongolia);
 
@@ -38,6 +38,6 @@
       font=\scriptsize,text=source] at (3.55,.15)
       {线条呈现行政、军需与接触关系，\\不表示固定疆界、兵力规模或实际控制范围。};
   \end{tikzpicture}
-  \caption{明初至土木之变前后的北方前沿与北京节点（示意）。北平改称北京、北方军政经营以及1449年土木危机可据《明太宗实录》永乐元年正月条、《明英宗实录》正统十四年七月至八月条与《明史》相关本纪、兵志互校；草原诸部、边镇和卫所的行动范围、人数与控制关系，则须分别参照边报、地方志和对方材料。图中路线与分区仅显示北京、边镇和草原接触地带之间的关系，非比例地图，亦不构成任何时期的疆界复原。}
+  \caption{洪武、建文与永乐时期的北方前沿和北京节点（1368—1424，示意）。北平的军政经营、北京营建、北方出征及边镇部署可据《明太祖实录》《明太宗实录》与《明史》相关本纪、兵志互校；草原诸部、边镇和卫所的行动范围、人数与控制关系，则须分别参照边报、地方志和对方材料。图中路线与分区仅显示北京、边镇和草原接触地带之间的关系，非比例地图，亦不构成任何时期的疆界复原。}
   \label{fig:vol05:northern-frontier-beijing-grasslands}
 \end{figure}

@@ -1,0 +1,44 @@
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=.88cm,y=.88cm,font=\small,
+    place/.style={draw=timeline!85,fill=paper,rounded corners=2pt,align=center,inner sep=3pt},
+    court/.style={place,draw=dynasty!90,fill=dynasty!14},
+    frontier/.style={place,draw=source!85,fill=source!13},
+    network/.style={place,draw=timeline!90,fill=timeline!15},
+    note/.style={font=\scriptsize,align=center,text=source}
+  ]
+    \fill[paper] (-.35,-.45) rectangle (12.15,6.35);
+    \fill[source!14] (.25,4.2) -- (11.9,4.0) -- (11.95,6.1) -- (.35,6.2) -- cycle;
+    \fill[dynasty!11] (.2,.15) -- (11.9,.2) -- (11.9,3.85) -- (.35,4.0) -- cycle;
+    \node[font=\bfseries,text=source] at (9.65,5.48) {北方、辽东与海上接触地带（约略）};
+    \node[font=\bfseries,text=dynasty] at (1.55,3.5) {明朝行政与资源节点（示意）};
+
+    \node[court] (beijing) at (6.25,3.15) {北京\\中枢、仓储与军政调度};
+    \node[court] (nanjing) at (3.65,1.15) {南京、江南\\田赋、漕粮与市镇};
+    \node[network] (canal) at (5.85,1.75) {运河、山东与通州\\粮运、河工与转输};
+    \node[frontier] (datong) at (2.2,4.7) {宣府、大同等边镇\\关隘、军需与边市};
+    \node[frontier] (liaodong) at (9.6,4.15) {辽东\\卫所、城镇与交涉};
+    \node[frontier] (steppe) at (6.8,5.3) {蒙古诸部\\使节、贸易与冲突网络};
+    \node[network] (southeast) at (9.55,1.35) {东南沿海\\港口、海防与海外贸易};
+
+    \draw[->,ultra thick,color=timeline!90] (nanjing) -- node[below,sloped,note]
+      {漕粮、河工与地方征解} (canal);
+    \draw[->,very thick,color=timeline!90] (canal) -- node[right,note]
+      {转运与仓储} (beijing);
+    \draw[->,thick,color=dynasty] (beijing) -- node[above,sloped,note]
+      {军饷、命令与使节} (datong);
+    \draw[->,thick,color=dynasty] (beijing) -- node[above,sloped,note]
+      {军政、市场与防务} (liaodong);
+    \draw[<->,thick,dashed,color=source!90] (steppe) -- node[left,note]
+      {接触、交换与战事的不同路径} (datong);
+    \draw[<->,thick,dashed,color=source!90] (southeast) -- node[below,sloped,note]
+      {港口规则、海防与商路} (nanjing);
+
+    \node[draw=source!75,fill=paper,rounded corners=2pt,align=center,
+      font=\scriptsize,text=source] at (1.9,.3)
+      {分区、箭头与节点只标出关系；\\不是比例地图、行政疆界或实际控制范围。};
+  \end{tikzpicture}
+  \caption{明代国家能力所依赖的若干空间关系（1368—1644，示意）。北京与南京/江南、运河、北方边镇、辽东及东南港口之间的行政、资源和接触关系，可据《明实录》《明会典》《明史》〈食货志〉、〈兵志〉与〈外国传〉建立问题框架，并须以边镇奏疏、河工与地方文书、港口材料及朝鲜、蒙古、海上档案分别核验。图不描绘任何时期的疆界、漕粮实到量、军饷数额、贸易规模或实际控制范围。}
+  \label{fig:vol05:ming-spatial-overview}
+\end{figure}
