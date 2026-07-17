@@ -1373,7 +1373,10 @@ tasks:
     goal: Integrate newly ledgered Three Kingdoms annual, frontier, fiscal, social, textual and regional events into continuous source-aware prose.
   - id: acceptance-jin-reader-index
     role: indexer
-    status: ready
+    status: done
+    branch: chronicle/acceptance-jin-reader-index
+    started_at: 2026-07-17T12:37:05+08:00
+    completed_at: 2026-07-17T12:37:05+08:00
     scope:
       - volumes/vol02c-jin-northern-southern/appendices/
       - volumes/vol02c-jin-northern-southern/chapters/
