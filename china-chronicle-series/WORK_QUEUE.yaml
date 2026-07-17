@@ -1656,6 +1656,16 @@ tasks:
     scope:
       - volumes/vol04-song-yuan/chapters/
     goal: Replace all remaining repeated Song-Liao-Xia-Jin-Yuan first-depiction prose with distinct polity-and-period event clusters, including meaningful turningpoint and causalchain boxes, before strict revalidation.
+  - id: acceptance-song-yuan-anchor-restore
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/northern-song/
+      - volumes/vol04-song-yuan/chapters/liao-western-xia/
+      - volumes/vol04-song-yuan/chapters/jin/
+      - volumes/vol04-song-yuan/chapters/southern-song/
+      - volumes/vol04-song-yuan/chapters/mongol-yuan/
+    goal: Restore 2144 missing Song-Liao-Xia-Jin-Yuan first-depiction anchors inside distinct source-aware event clusters, retaining non-template prose required by strict acceptance.
   - id: acceptance-density-policy
     role: integrator
     status: done
