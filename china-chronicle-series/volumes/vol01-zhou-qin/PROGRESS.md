@@ -51,5 +51,21 @@
 
 ## 集成验收记录（2026-07-17）
 
-- 状态：未验收通过。账本与构建检查的证据及 50 个重复事件锚点的阻塞项见
-  `../ACCEPTANCE_STATUS.md`；本轮未发布或同步 PDF。
+- 状态：未验收通过，未复制根目录 PDF、未运行 Blob 同步。
+- 账本：`western-zhou.csv`、`spring-autumn.csv`、`warring-qin.csv` 均通过
+  `validate-event-ledger.ps1`，合计 1,400 条（150、400、850）。
+- 链接：1,314 个事件锚点均为唯一；586 个实际事件引用中仍有九个无目标：
+  `WQ-0319-HUISHI-WEI`、`WQ-0342-HAN-QI-AID`、`WQ-0342-MALING`、
+  `WQ-0354-GUILIN`、`WQ-0370-WEI-SUCCESSION`、`WQ-0389-YINJIN`、
+  `WQ-0408-WEI`、`WQ-0408-XIHE-PROCESS`、`WQ-WEI-WUQI`。它们分布于
+  战国共享年序、魏/韩国/楚国 dossier、变法专题与事件索引，须在首次深描处
+  补入唯一锚点后再验。
+- 重复 prose：跨文件检查发现三段可独立成段的重复文字，涉及
+  `spring-autumn/states/jin/expansion-and-factions.tex`、
+  `spring-autumn/states/qi/hegemony.tex` 与
+  `spring-autumn/states/wu-yue/lower-yangtze.tex`；须按各事件的材料、空间、
+  行动者和后果重写，不能以模板段落通过验收。
+- 其余静态检查：72 个 `\input`/`\include` 目标均存在；索引的 14 个图件目标和
+  9 个来源目标均可解析，5 个来源语料文件、来源附录、争议附录和索引均存在。
+- 构建：Tectonic 对完整 `main.tex` 退出 0，未见未定义链接或致命诊断；生成的
+  卷内 `main.pdf` 仅作验证。八项验收尚未全过，不能据此声称发布成功。
