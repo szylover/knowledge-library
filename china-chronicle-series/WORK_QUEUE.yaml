@@ -1428,7 +1428,10 @@ tasks:
     goal: Place ledgered Jin-Northern-Southern events at first real narrative depictions across all periods, raising anchor coverage above the 95 percent acceptance threshold without generated navigation templates.
   - id: acceptance-jin-density-prose
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-jin-density-prose
+    started_at: 2026-07-17T13:25:50+08:00
+    completed_at: 2026-07-17T13:30:57+08:00
     scope:
       - volumes/vol02c-jin-northern-southern/chapters/western-jin/
       - volumes/vol02c-jin-northern-southern/chapters/eastern-jin-sixteen-kingdoms/
