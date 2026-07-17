@@ -1908,7 +1908,10 @@ tasks:
     goal: Expand Qing reader-visible event clusters beyond 31 with regional, frontier, fiscal, social, diplomatic and revolutionary narration driven by the 1412-row ledger without template prose.
   - id: acceptance-reader-cluster-density
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-reader-cluster-density
+    started_at: 2026-07-17T18:43:41+08:00
+    completed_at: 2026-07-17T18:51:45+08:00
     scope:
       - volumes/vol02a-han/chapters/
       - volumes/vol02c-jin-northern-southern/chapters/
