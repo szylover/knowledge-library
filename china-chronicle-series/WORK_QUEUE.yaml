@@ -1343,7 +1343,11 @@ tasks:
     goal: Expand rerouted Sui-Tang-Five ledger events into continuous, source-aware, non-template chronology across all periods and polities.
   - id: acceptance-three-kingdoms-ledger-density
     role: chronology
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-kingdoms-ledger-density
+    started_at: 2026-07-17T12:22:19+08:00
+    completed_at: 2026-07-17T12:22:19+08:00
+    result: Added 61 source-aware TK-DENS records; ledger now has 301 rows with no annual gap.
     scope:
       - volumes/vol02b-three-kingdoms/data/event-ledger/three-kingdoms-220-280.csv
       - volumes/vol02b-three-kingdoms/data/source-corpus/
