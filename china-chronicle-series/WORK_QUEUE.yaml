@@ -1845,6 +1845,31 @@ tasks:
     scope:
       - volumes/vol06-qing-1912/chapters/
     goal: Remove residual ledger-style Qing reader prose and rebuild curated period and regional event clusters with real cross-index routes.
+  - id: acceptance-han-reader-integration
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol02a-han/main.tex
+      - volumes/vol02a-han/chapters/
+      - volumes/vol02a-han/data/event-ledger/
+    goal: Wire curated Han event chapters into the main reading path, repair dangling reader routes and update matrices from the obsolete 592-row basis without restoring ledger navigation prose.
+  - id: acceptance-jin-reader-integration
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/main.tex
+      - volumes/vol02c-jin-northern-southern/chapters/
+      - volumes/vol02c-jin-northern-southern/appendices/
+      - volumes/vol02c-jin-northern-southern/data/event-ledger/
+    goal: Wire curated Jin reader routes into actual prose, repair cross-reading targets and update matrices from the obsolete 876-row basis without restoring generated prose.
+  - id: acceptance-qing-reader-integration
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol06-qing-1912/main.tex
+      - volumes/vol06-qing-1912/chapters/
+      - volumes/vol06-qing-1912/data/event-ledger/
+    goal: Complete Qing cross-regional reader event clusters, wire navigation/figures bidirectionally and repair omitted reader routes without restoring ledger template prose.
   - id: acceptance-density-policy
     role: integrator
     status: done
