@@ -1513,7 +1513,7 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Jin-Northern-Southern, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-jin-focus
     role: continuity-editor
-    status: in_progress
+    status: done
     branch: chronicle/acceptance-jin-focus
     started_at: 2026-07-20T19:16:10+08:00
     scope:
@@ -1533,10 +1533,10 @@ tasks:
     goal: Repair the Jin Sui-Chen reader link, rebuild latest main, measure physical and qualifying body pages, and publish only after final reader QA passes.
   - id: acceptance-jin-body-page-final
     role: narrative
-    status: blocked
+    status: in_progress
     branch: chronicle/acceptance-jin-body-page-final
     started_at: 2026-07-20T20:46:52+08:00
-    blocked_reason: "2026-07-20 build reached 215 physical pages from the 198-page baseline; the required 220 physical / 190 qualifying-body-page gate and the requested 30 added pages still require a further narrative pass."
+    completed_at: 2026-07-20T21:05:47+08:00
     scope:
       - volumes/vol02c-jin-northern-southern/chapters/western-jin/
       - volumes/vol02c-jin-northern-southern/chapters/eastern-jin-sixteen-kingdoms/
