@@ -2181,7 +2181,10 @@ tasks:
     goal: Expand Western Han reader prose to at least forty actual PDF pages and 30000 CJK characters through distinct source-aware scenes of founding, princes, frontier, fiscal systems and late transition.
   - id: acceptance-han-depth-xin
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-han-depth-xin
+    started_at: 2026-07-20T17:08:43+08:00
+    completed_at: 2026-07-20T17:08:43+08:00
     scope:
       - volumes/vol02a-han/chapters/polities/xin.tex
       - volumes/vol02a-han/chapters/western-han/regency-and-new.tex
