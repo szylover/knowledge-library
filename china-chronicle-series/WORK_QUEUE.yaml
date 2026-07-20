@@ -1532,6 +1532,13 @@ tasks:
       - volumes/vol02b-three-kingdoms/
       - pdf/china-chronicle/vol02b-three-kingdoms.pdf
     goal: Run complete Volume-I-blueprint acceptance for Three Kingdoms, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
+  - id: acceptance-three-reader-pdf
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol02b-three-kingdoms/
+      - pdf/china-chronicle/vol02b-three-kingdoms.pdf
+    goal: Rebuild the Three Kingdoms reader PDF from current reader-first source, verify legacy bracketed ledger prose is absent, and publish only after content checks pass.
   - id: acceptance-song-yuan-final
     role: integrator
     status: blocked
