@@ -2059,14 +2059,17 @@ tasks:
     goal: Suspend cross-volume production and bring the Three Kingdoms volume alone to 100 percent reader-first Volume-I-blueprint acceptance, including curated continuous chronology, source reading, cross-indexes, figures, build, PDF and Blob verification.
   - id: acceptance-three-reader-surface-final
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-reader-surface-final
+    started_at: 2026-07-20T14:34:39+08:00
     scope:
       - volumes/vol02b-three-kingdoms/preamble.tex
       - volumes/vol02b-three-kingdoms/chapters/how-to-read.tex
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/
       - volumes/vol02b-three-kingdoms/chapters/appendix-sources.tex
     goal: Remove remaining Three Kingdoms reader-surface leakage: event titles must not expose ledger source-caveat fields and reading guidance must use reader language rather than LaTeX environment names.
-    result: Completed the full Three Kingdoms reader-first audit and repair: 21 unique 300+ CJK deep clusters, 85 ledger-backed unique anchors, versioned source table, task-specific boxes, five bidirectionally indexed figures, 700-row ledger validation, 39-page PDF review, Blob HTTP 200 verification.
+    completed_at: 2026-07-20T14:42:00+08:00
+    result: Refactored all 21 reader-visible event titles to event, time, polity and place; moved interpretation-changing evidence limits into task-specific source/debate boxes; rewrote the reading guide in reader language; Tectonic build passed.
   - id: acceptance-strict-reader-clusters
     role: narrative
     status: done
