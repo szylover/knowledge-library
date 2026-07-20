@@ -1534,7 +1534,10 @@ tasks:
     goal: Expand Eastern Jin and Sixteen Kingdoms reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct multi-polity, migration, fiscal, religious and regional scenes.
   - id: acceptance-jin-depth-northern-southern
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-jin-depth-northern-southern
+    started: 2026-07-20T19:22:37+08:00
+    completed: 2026-07-20T19:50:00+08:00
     scope:
       - volumes/vol02c-jin-northern-southern/chapters/northern-southern-dynasties/
     goal: Expand Northern and Southern Dynasties reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct court, local society, frontier, religion and material-life scenes.
