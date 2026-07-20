@@ -1543,7 +1543,11 @@ tasks:
     goal: Remove all internal Jin ledger IDs from reader-facing prose, replacing them with reader event names or valid event references before final QA and publication.
   - id: acceptance-jin-final-rebuild
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-jin-final-rebuild
+    started_at: 2026-07-20T21:36:13+08:00
+    completed_at: 2026-07-20T21:46:21+08:00
+    result: "Rebuilt the current reader-surface source to 223 physical and 190 qualifying pages; all ID, route, template, ledger, and PDF QA checks passed; root PDF and Blob URL verified."
     scope:
       - volumes/vol02c-jin-northern-southern/
       - pdf/china-chronicle/vol02c-jin-northern-southern.pdf
