@@ -1548,7 +1548,10 @@ tasks:
     goal: Expand Northern and Southern Dynasties reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct court, local society, frontier, religion and material-life scenes.
   - id: acceptance-jin-depth-wei-sui
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-jin-depth-wei-sui
+    started: 2026-07-20T19:22:37+08:00
+    completed: 2026-07-20T19:22:37+08:00
     scope:
       - volumes/vol02c-jin-northern-southern/chapters/ch04-eastern-western-wei.tex
       - volumes/vol02c-jin-northern-southern/chapters/ch05-northern-qi-zhou-chen-sui.tex
