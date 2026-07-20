@@ -2139,6 +2139,36 @@ tasks:
     status: in_progress`r`n    branch: chronicle/acceptance-sui-body-page-final`r`n    started_at: 2026-07-20T23:31:57+08:00`r`n    scope:
       - volumes/vol03-sui-tang-five/chapters/
     goal: Add at least thirty natural pages of Sui-Tang-Five reader prose across all period sections to close the 192 physical / 162 qualifying body baseline to 220 physical / 190 body pages, and repair 25 event references lacking canonical first-depiction targets.
+  - id: acceptance-sui-body-sui-final
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/sui/
+    goal: Add at least six natural PDF pages of Sui reader prose to close the Sui-Tang-Five final body-page gap.
+  - id: acceptance-sui-body-early-final
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/tang/
+    goal: Add at least six natural PDF pages of early Tang reader prose to close the Sui-Tang-Five final body-page gap.
+  - id: acceptance-sui-body-wuzhou-final
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/wu-zhou/
+    goal: Add at least six natural PDF pages of Wu Zhou-Kaiyuan reader prose to close the Sui-Tang-Five final body-page gap.
+  - id: acceptance-sui-body-late-final
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/an-lushan-late-tang/
+    goal: Add at least six natural PDF pages of An Shi-late Tang reader prose to close the Sui-Tang-Five final body-page gap.
+  - id: acceptance-sui-body-five-final
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/five-dynasties-ten-kingdoms/
+    goal: Add at least six natural PDF pages of Five Dynasties-Ten Kingdoms reader prose to close the Sui-Tang-Five final body-page gap.
   - id: acceptance-sui-depth-sui
     role: narrative
     status: in_progress
