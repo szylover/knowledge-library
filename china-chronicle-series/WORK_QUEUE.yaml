@@ -2178,6 +2178,13 @@ tasks:
       - volumes/vol02a-han/figures/
       - volumes/vol02a-han/PROGRESS.md
     goal: Integrate all Han figures into adjacent reader prose with bidirectional figure routes, rebuild current main, and record measured physical plus qualifying body-page counts before final acceptance.
+  - id: acceptance-han-link-integrity
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/
+      - volumes/vol02a-han/figures/common/han-period-timeline.tex
+    goal: Repair the Han timeline backlink and all active event references lacking real first-depiction anchors before rerunning final reader QA.
   - id: acceptance-han-reading-depth
     role: narrative
     status: blocked
