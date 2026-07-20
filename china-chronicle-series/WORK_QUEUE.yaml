@@ -2181,7 +2181,7 @@ tasks:
     scope:
       - volumes/vol03-sui-tang-five/chapters/five-dynasties-ten-kingdoms/
     goal: Expand Five Dynasties and Ten Kingdoms reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct multi-polity, fiscal, local, maritime, frontier and textual scenes.
-    result: Expanded continuous prose to 30,010 CJK characters across the locked chapter directory; validated all 41 event references against the ledger. Blocked from the required PDF page measurement because this worktree has no XeLaTeX, latexmk, or alternate TeX engine executable.
+    result: Rebasing latest main added 9,799 CJK of source-aware continuous prose (39,809 CJK total); all 41 event references validate against the ledger. Tectonic prose-only measurement reports 35 qualifying reader pages (36 physical pages), excluding figures and appendices; the full volume build passed without publishing.
   - id: acceptance-reader-index-figure-integrity
     role: indexer
     status: done
