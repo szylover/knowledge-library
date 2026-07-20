@@ -2127,7 +2127,9 @@ tasks:
     goal: Remove residual ledger navigation and generated prose from Sui-Tang-Five reader chapters, rebuild curated period and multi-polity event clusters, and restore real cross-index routes under the reader-surface rules.
   - id: acceptance-sui-focus
     role: continuity-editor
-    status: ready
+    status: in_progress
+    branch: chronicle/acceptance-sui-focus
+    started_at: 2026-07-20T21:49:08+08:00
     scope:
       - volumes/vol03-sui-tang-five/
       - pdf/china-chronicle/vol03-sui-tang-five.pdf
