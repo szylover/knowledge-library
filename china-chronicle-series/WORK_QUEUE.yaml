@@ -1520,6 +1520,13 @@ tasks:
       - volumes/vol02c-jin-northern-southern/
       - pdf/china-chronicle/vol02c-jin-northern-southern.pdf
     goal: Bring Jin-Northern-Southern to 100 percent reader-first Volume-I-blueprint acceptance, beginning with a measured body-page baseline and expanding Western Jin, Eastern Jin/Sixteen Kingdoms, Northern-Southern, Eastern-Western Wei to Sui, and synthesis prose to full book depth before final PDF and Blob verification.
+  - id: acceptance-jin-final-integration
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/
+      - pdf/china-chronicle/vol02c-jin-northern-southern.pdf
+    goal: Repair the Jin Sui-Chen reader link, rebuild latest main, measure physical and qualifying body pages, and publish only after final reader QA passes.
   - id: acceptance-jin-depth-western
     role: narrative
     status: in_progress
