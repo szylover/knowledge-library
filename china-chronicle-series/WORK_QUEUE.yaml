@@ -1543,6 +1543,14 @@ tasks:
       - volumes/vol02b-three-kingdoms/
       - pdf/china-chronicle/vol02b-three-kingdoms.pdf
     goal: Rebuild the Three Kingdoms reader PDF from current reader-first source, verify legacy bracketed ledger prose is absent, and publish only after content checks pass.
+  - id: acceptance-three-reading-depth
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02b-three-kingdoms/chapters/
+      - volumes/vol02b-three-kingdoms/figures/
+      - volumes/vol02b-three-kingdoms/AGENTS.md
+    goal: Expand the Three Kingdoms reader edition from its thin 40-page form to at least 120 pages of continuous, source-aware, non-template reader prose through genuine event clusters, dossiers and cross-polity syntheses.
   - id: acceptance-song-yuan-final
     role: integrator
     status: blocked
