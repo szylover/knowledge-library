@@ -2177,7 +2177,9 @@ tasks:
     goal: Establish and meet a Han reader-body depth gate comparable to its 426-year scope: measure qualifying body pages, expand Western Han, Xin and Eastern Han continuous reader prose to full book depth without template prose or page padding, and withhold PDF publication until independent QA passes.
   - id: acceptance-han-body-page-final
     role: narrative
-    status: ready
+    status: in_progress
+    branch: chronicle/acceptance-han-body-page-final
+    started_at: 2026-07-20T18:19:49+08:00
     scope:
       - volumes/vol02a-han/chapters/
     goal: Add at least fifteen natural pages of source-aware Han reader prose to close the 182 physical / 157 qualifying body baseline to 200 physical / 170 body pages, and repair the remaining EH-0125-AN-DI-SUCCESSION duplicate anchor before final QA.
