@@ -2007,6 +2007,18 @@ tasks:
       - volumes/vol04-song-yuan/chapters/
       - volumes/vol06-qing-1912/chapters/
     goal: Add a fifth wave of curated non-template reader event clusters focused on consecutive causal chains in the lower-density Han, Three Kingdoms, Jin-Northern-Southern, Song-Yuan and Qing volumes.
+  - id: acceptance-reader-cluster-density-wave6
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/
+      - volumes/vol02b-three-kingdoms/chapters/
+      - volumes/vol02c-jin-northern-southern/chapters/
+      - volumes/vol03-sui-tang-five/chapters/
+      - volumes/vol04-song-yuan/chapters/
+      - volumes/vol05-ming/chapters/
+      - volumes/vol06-qing-1912/chapters/
+    goal: Add a sixth wave of at least three curated source-aware non-template reader event clusters per post-Volume-I volume, selected from remaining time-band and polity/region gaps and connected to prior causal chains.
     result: Added 15 source-aware causal event clusters (three in each scoped volume). Strict audit verified every cluster has 390--478 CJK characters, a direct source and caveat, and a single canonical anchor in the five-volume scope; all five volume builds passed.
   - id: acceptance-strict-reader-clusters
     role: narrative
