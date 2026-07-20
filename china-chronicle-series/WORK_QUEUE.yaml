@@ -1528,7 +1528,10 @@ tasks:
     goal: Expand Western Jin reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct source-aware scenes of unity, court, law, local society, frontier and collapse.
   - id: acceptance-jin-depth-eastern
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-jin-depth-eastern
+    started_at: 2026-07-20T19:22:37+08:00
+    completed_at: 2026-07-20T19:22:37+08:00
     scope:
       - volumes/vol02c-jin-northern-southern/chapters/eastern-jin-sixteen-kingdoms/
     goal: Expand Eastern Jin and Sixteen Kingdoms reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct multi-polity, migration, fiscal, religious and regional scenes.
