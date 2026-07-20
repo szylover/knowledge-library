@@ -2192,7 +2192,10 @@ tasks:
     goal: Add at least six natural PDF pages of Western Han and Xin reader prose on local economy, social repair, religious change and regime transition to close the Han body-page gate.
   - id: acceptance-han-body-eastern-final
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-han-body-eastern-final
+    started_at: 2026-07-20T18:27:37+08:00
+    completed_at: 2026-07-20T18:27:37+08:00
     scope:
       - volumes/vol02a-han/chapters/eastern-han/
       - volumes/vol02a-han/chapters/synthesis/
