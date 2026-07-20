@@ -2203,6 +2203,21 @@ tasks:
     scope:
       - volumes/vol02a-han/chapters/synthesis/
     goal: Expand Han cross-period syntheses to at least forty actual PDF pages and 30000 CJK characters connecting institutions, households, frontiers, fiscal systems, religion and source debates without template prose.
+  - id: acceptance-han-synthesis-households
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/synthesis/mobility-and-repair.tex
+      - volumes/vol02a-han/chapters/synthesis/rebuilding-local-worlds.tex
+    goal: Add at least four actual PDF pages of continuous Han cross-period prose on households, relief, migration, household registration and late local fragmentation.
+  - id: acceptance-han-synthesis-frontiers
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/synthesis/frontier-fiscal-and-power.tex
+      - volumes/vol02a-han/chapters/synthesis/social-religious-worlds.tex
+      - volumes/vol02a-han/chapters/synthesis/source-controversies.tex
+    goal: Add at least four actual PDF pages of continuous Han cross-period prose on frontier administration, religion, texts, fiscal credibility and source debate.
   - id: acceptance-three-reader-surface-final
     role: continuity-editor
     status: done
