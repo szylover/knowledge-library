@@ -2154,7 +2154,11 @@ tasks:
     goal: Expand Wu Zhou and Kaiyuan reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct political, fiscal, religious, regional, frontier and cultural scenes.
   - id: acceptance-sui-depth-late-tang
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-sui-depth-late-tang
+    started_at: 2026-07-20T22:01:40+08:00
+    completed_at: 2026-07-20T22:20:00+08:00
+    validation: 30002 CJK characters in locked chapter prose; Volume III Tectonic build passed
     scope:
       - volumes/vol03-sui-tang-five/chapters/an-lushan-late-tang/
     goal: Expand An Shi through late Tang reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct war, fiscal, urban, local, frontier and religious scenes.
