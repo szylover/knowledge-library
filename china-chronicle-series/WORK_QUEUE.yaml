@@ -2153,7 +2153,10 @@ tasks:
     goal: Add at least six natural PDF pages of early Tang reader prose to close the Sui-Tang-Five final body-page gap.
   - id: acceptance-sui-body-wuzhou-final
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-sui-body-wuzhou-final
+    started_at: 2026-07-20T23:40:19+08:00
+    completed_at: 2026-07-20T23:58:00+08:00
     scope:
       - volumes/vol03-sui-tang-five/chapters/wu-zhou/
     goal: Add at least six natural PDF pages of Wu Zhou-Kaiyuan reader prose to close the Sui-Tang-Five final body-page gap.
