@@ -1531,6 +1531,17 @@ tasks:
       - volumes/vol02c-jin-northern-southern/
       - pdf/china-chronicle/vol02c-jin-northern-southern.pdf
     goal: Repair the Jin Sui-Chen reader link, rebuild latest main, measure physical and qualifying body pages, and publish only after final reader QA passes.
+  - id: acceptance-jin-body-page-final
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/chapters/western-jin/
+      - volumes/vol02c-jin-northern-southern/chapters/eastern-jin-sixteen-kingdoms/
+      - volumes/vol02c-jin-northern-southern/chapters/northern-southern-dynasties/
+      - volumes/vol02c-jin-northern-southern/chapters/ch04-eastern-western-wei.tex
+      - volumes/vol02c-jin-northern-southern/chapters/ch05-northern-qi-zhou-chen-sui.tex
+      - volumes/vol02c-jin-northern-southern/chapters/synthesis/
+    goal: Add at least thirty natural pages of Jin-Northern-Southern reader prose across all period and synthesis sections to close the 198 physical / 162 qualifying body baseline to 220 physical / 190 body pages.
   - id: acceptance-jin-depth-western
     role: narrative
     status: in_progress
