@@ -1513,7 +1513,9 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Jin-Northern-Southern, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-jin-focus
     role: continuity-editor
-    status: ready
+    status: in_progress
+    branch: chronicle/acceptance-jin-focus
+    started_at: 2026-07-20T19:16:10+08:00
     scope:
       - volumes/vol02c-jin-northern-southern/
       - pdf/china-chronicle/vol02c-jin-northern-southern.pdf
