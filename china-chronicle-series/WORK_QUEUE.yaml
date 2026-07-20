@@ -1555,7 +1555,11 @@ tasks:
     goal: Expand Eastern-Western Wei through Sui reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct political, military, fiscal, religious and reunification scenes.
   - id: acceptance-jin-depth-synthesis
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-jin-depth-synthesis
+    started_at: 2026-07-20T19:22:37+08:00
+    completed_at: 2026-07-20T20:15:00+08:00
+    result: "Added 33,593 CJK characters of source-aware synthesis prose across migration, households, institutions, frontiers, religion, texts, and source debates. Rendered Chapter 6 spans reader pages 35--69 (35 pages); full unissued PDF has 88 physical pages."
     scope:
       - volumes/vol02c-jin-northern-southern/chapters/synthesis/
       - volumes/vol02c-jin-northern-southern/chapters/ch06-synthesis.tex
