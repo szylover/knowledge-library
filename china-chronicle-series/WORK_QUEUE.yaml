@@ -1555,7 +1555,10 @@ tasks:
     goal: Expand the Three Kingdoms reader edition from its thin 40-page form to at least 120 pages of continuous, source-aware, non-template reader prose through genuine event clusters, dossiers and cross-polity syntheses.
   - id: acceptance-three-body-page-depth
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-body-page-depth
+    started_at: 2026-07-20T15:48:48+08:00
+    completed_at: 2026-07-20T16:20:00+08:00
     scope:
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/
       - volumes/vol02b-three-kingdoms/AGENTS.md
