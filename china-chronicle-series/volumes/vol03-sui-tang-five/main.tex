@@ -22,6 +22,9 @@
 \tableofcontents
 
 \mainmatter
+\clearpage
+\newcounter{volthreefrontpages}
+\setcounter{volthreefrontpages}{\value{volthreephysicalpages}}
 \part{再统一、世界帝国与政权重组}
 \include{chapters/ch01-sui}
 \include{chapters/ch02-early-tang}
@@ -29,8 +32,11 @@
 \include{chapters/ch04-an-lushan-late-tang}
 \include{chapters/ch05-five-dynasties-ten-kingdoms}
 
+\clearpage
+\typeout{VOL03-READER-AND-FIGURE-PAGES=\the\numexpr\value{volthreephysicalpages}-\value{volthreefrontpages}\relax}
 \appendix
 \include{chapters/appendix-sources}
 \include{chapters/appendix-index}
 \include{chapters/appendix-series-roadmap}
+\typeout{VOL03-PHYSICAL-PAGES=\arabic{volthreephysicalpages}}
 \end{document}

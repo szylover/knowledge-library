@@ -28,6 +28,9 @@
 }
 \color{ink}
 
+\newcounter{volthreephysicalpages}
+\AddToHook{shipout/before}{\stepcounter{volthreephysicalpages}}
+
 % Keep event links compatible with the established Volume I anchor format.
 \providecommand{\eventid}[1]{\textcolor{dynasty}{\footnotesize\textsf{〔#1〕}}}
 \providecommand{\eventanchor}[2]{\hypertarget{evt:#1}{\eventid{#2}}}
