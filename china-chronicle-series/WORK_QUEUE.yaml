@@ -2024,7 +2024,9 @@ tasks:
     goal: Add a sixth wave of at least three curated source-aware non-template reader event clusters per post-Volume-I volume, selected from remaining time-band and polity/region gaps and connected to prior causal chains.
   - id: acceptance-reader-cluster-density-wave7
     role: narrative
-    status: ready
+    status: in_progress
+    branch: chronicle/acceptance-reader-cluster-density-wave7
+    started_at: 2026-07-20T11:08:34+08:00
     scope:
       - volumes/vol02a-han/chapters/
       - volumes/vol02b-three-kingdoms/chapters/
