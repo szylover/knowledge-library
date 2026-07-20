@@ -1968,7 +1968,10 @@ tasks:
     goal: Add a second wave of curated, source-aware reader event clusters across all post-Volume-I time bands and polity/region cells, prioritizing local society, frontiers, fiscal systems, migration, religion and external actors without ledger navigation or template prose.
   - id: acceptance-reader-cluster-density-wave3
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-reader-cluster-density-wave3
+    started_at: 2026-07-20T10:21:36+08:00
+    completed_at: 2026-07-20T10:21:36+08:00
     scope:
       - volumes/vol02b-three-kingdoms/chapters/
       - volumes/vol02c-jin-northern-southern/chapters/
