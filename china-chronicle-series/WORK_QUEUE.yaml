@@ -2185,7 +2185,10 @@ tasks:
     goal: Add at least fifteen natural pages of source-aware Han reader prose to close the 182 physical / 157 qualifying body baseline to 200 physical / 170 body pages, and repair the remaining EH-0125-AN-DI-SUCCESSION duplicate anchor before final QA.
   - id: acceptance-han-body-western-final
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-han-body-western-final
+    started_at: 2026-07-20T18:27:37+08:00
+    completed_at: 2026-07-20T18:27:37+08:00
     scope:
       - volumes/vol02a-han/chapters/western-han/
       - volumes/vol02a-han/chapters/polities/xin.tex
