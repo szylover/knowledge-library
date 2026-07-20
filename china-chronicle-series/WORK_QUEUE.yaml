@@ -2160,7 +2160,7 @@ tasks:
     branch: chronicle/acceptance-han-focus
     started_at: 2026-07-20T16:38:37+08:00
     completed_at: 2026-07-20T17:20:00+08:00
-    result: Reader body grew from 33 to 40 pages; 1,500-row ledger validation, unique anchors, final PDF build and Blob HTTP verification passed.
+    result: Reader body reached 179 qualifying pages within a 205-page physical PDF; 1,500-row ledger validation, unique anchors, reader-surface QA, bidirectional figure/index routes, final PDF build and Blob HTTP verification passed.
     scope:
       - volumes/vol02a-han/
       - pdf/china-chronicle/vol02a-han.pdf
