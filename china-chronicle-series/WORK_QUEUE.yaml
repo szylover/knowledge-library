@@ -2049,14 +2049,15 @@ tasks:
     goal: Add an eighth wave of at least six curated source-aware reader event clusters per lower-density post-Volume-I volume, emphasizing middle-period causal continuity, regional society and frontier interaction without template prose.
   - id: acceptance-three-kingdoms-focus
     role: continuity-editor
-    status: in_progress
+    status: done
     branch: chronicle/acceptance-three-kingdoms-focus
     started_at: 2026-07-20T14:12:59+08:00
+    completed_at: 2026-07-20T14:27:00+08:00
     scope:
       - volumes/vol02b-three-kingdoms/
       - pdf/china-chronicle/vol02b-three-kingdoms.pdf
     goal: Suspend cross-volume production and bring the Three Kingdoms volume alone to 100 percent reader-first Volume-I-blueprint acceptance, including curated continuous chronology, source reading, cross-indexes, figures, build, PDF and Blob verification.
-    result: Added 21 source-aware causal reader clusters (three in each scoped volume). Strict audit verified each has 349--441 CJK characters, one canonical scoped anchor, a direct source, place/actioner/effect, and a material caveat; all seven volume builds passed.
+    result: Completed the full Three Kingdoms reader-first audit and repair: 21 unique 300+ CJK deep clusters, 85 ledger-backed unique anchors, versioned source table, task-specific boxes, five bidirectionally indexed figures, 700-row ledger validation, 39-page PDF review, Blob HTTP 200 verification.
   - id: acceptance-strict-reader-clusters
     role: narrative
     status: done

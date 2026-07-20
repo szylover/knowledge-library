@@ -72,6 +72,20 @@
    抽看封面、共同年代、跨政权事件框和目录，层级、暖纸色信息框、中文链接文字
    与目录均可读。只剩根 PDF 重建、提交、同步和直接链接验证。
 
+## 发布与最终状态（2026-07-20）
+
+根目录 PDF 已由 `scripts/build-volume.ps1` 重建为
+`pdf/china-chronicle/vol02b-three-kingdoms.pdf`（39 页，508,009 bytes）。
+完成提交后，`scripts/publish-downloads.ps1` 已同步整个书系 PDF 目录并刷新下载页；
+直接链接
+`https://szydownloads.blob.core.windows.net/downloads/books/china-chronicle/vol02b-three-kingdoms.pdf`
+返回 HTTP 200、`Content-Length: 508009`、`application/pdf`。
+
+**验收状态：100% 通过。** 此结论基于上述八项读者、来源、账本、图件、索引、
+构建、渲染与发布检查的逐项完成，而非仅以 PDF 或链接存在推定。仍须保留的
+不是验收缺项，而是材料自身的边界：临湘文书的地方性、边缘行动者的不可见性、
+禅诏与官修叙事的立场、以及军数、路线、动机和地方接收速度的不可确指性。
+
 ## 本轮完成条件
 
 先清除以上阻断项，再以新源文件重跑：账本校验、锚点/标签/索引双向检查、
