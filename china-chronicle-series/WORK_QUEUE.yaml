@@ -2183,6 +2183,20 @@ tasks:
     scope:
       - volumes/vol02a-han/chapters/
     goal: Add at least fifteen natural pages of source-aware Han reader prose to close the 182 physical / 157 qualifying body baseline to 200 physical / 170 body pages, and repair the remaining EH-0125-AN-DI-SUCCESSION duplicate anchor before final QA.
+  - id: acceptance-han-body-western-final
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/western-han/
+      - volumes/vol02a-han/chapters/polities/xin.tex
+    goal: Add at least six natural PDF pages of Western Han and Xin reader prose on local economy, social repair, religious change and regime transition to close the Han body-page gate.
+  - id: acceptance-han-body-eastern-final
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/eastern-han/
+      - volumes/vol02a-han/chapters/synthesis/
+    goal: Add at least six natural PDF pages of Eastern Han and cross-period reader prose on local religion, logistics, relief, frontier and fragmentation to close the Han body-page gate.
   - id: acceptance-han-depth-western
     role: narrative
     status: in_progress
