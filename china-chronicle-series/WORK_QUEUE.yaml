@@ -1597,7 +1597,10 @@ tasks:
     goal: Expand the Sun Wu reader chapter by at least eleven actual PDF pages (15000+ CJK characters) through distinct source-aware scenes, closing the Three Kingdoms 120-page depth gap.
   - id: acceptance-three-depth-jin-final
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-depth-jin-final
+    started_at: 2026-07-20T15:23:52+08:00
+    completed_at: 2026-07-20T15:45:00+08:00
     scope:
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/reader-jin-afterlife.tex
     goal: Expand the Western Jin reader chapter by at least eleven actual PDF pages (15000+ CJK characters) through distinct source-aware scenes, closing the Three Kingdoms 120-page depth gap.
