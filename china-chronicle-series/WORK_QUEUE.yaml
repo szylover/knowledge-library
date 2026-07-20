@@ -2180,7 +2180,11 @@ tasks:
     goal: Integrate all Han figures into adjacent reader prose with bidirectional figure routes, rebuild current main, and record measured physical plus qualifying body-page counts before final acceptance.
   - id: acceptance-han-link-integrity
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-han-link-integrity
+    started_at: 2026-07-20T18:59:38+08:00
+    completed_at: 2026-07-20T19:05:00+08:00
+    result: Repaired the shared-chronology timeline return target and ten eventref targets with unique first-depiction prose anchors; static event/label validation and an unpublished build passed.
     scope:
       - volumes/vol02a-han/chapters/
       - volumes/vol02a-han/figures/common/han-period-timeline.tex
