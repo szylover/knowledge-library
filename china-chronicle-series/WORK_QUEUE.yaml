@@ -1575,7 +1575,11 @@ tasks:
     goal: Remove all forced sparse-page breaks from Three Kingdoms depth chapters, repair the Meng Da cross-reference to a real first depiction, and preserve only naturally flowing continuous reader prose before remeasuring body pages.
   - id: acceptance-three-body-page-final
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-body-page-final
+    started_at: 2026-07-20T16:11:21+08:00
+    completed_at: 2026-07-20T16:17:50+08:00
+    result: "Added sustained, source-aware prose on Liaodong, Huainan/Shouchun, late Shu-Nanzhong, and late Wu local conscription without forced page breaks. Local-only Tectonic build measured 142 physical pages and 121 qualifying continuous-narrative body pages (mainmatter pages 1-125 minus the Part title and three figure-only chapter openings); no PDF was published."
     scope:
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/
     goal: Add at least twelve natural pages of non-template Three Kingdoms reader prose on remaining border, regency, Shu-Han and late Wu social gaps so qualifying continuous body exceeds 120 pages without forced page breaks.
