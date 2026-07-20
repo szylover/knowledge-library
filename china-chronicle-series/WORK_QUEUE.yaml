@@ -2165,6 +2165,15 @@ tasks:
       - volumes/vol02a-han/
       - pdf/china-chronicle/vol02a-han.pdf
     goal: Bring the Han Empire volume alone to 100 percent reader-first Volume-I-blueprint acceptance, beginning with a measured reader-body baseline and expanding continuous source-aware Western Han, Xin and Eastern Han narrative to full book depth before final PDF and Blob verification.
+  - id: acceptance-han-figure-depth-final
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol02a-han/main.tex
+      - volumes/vol02a-han/chapters/
+      - volumes/vol02a-han/figures/
+      - volumes/vol02a-han/PROGRESS.md
+    goal: Integrate all Han figures into adjacent reader prose with bidirectional figure routes, rebuild current main, and record measured physical plus qualifying body-page counts before final acceptance.
   - id: acceptance-han-reading-depth
     role: narrative
     status: blocked
