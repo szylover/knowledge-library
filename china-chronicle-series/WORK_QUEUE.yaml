@@ -1533,7 +1533,11 @@ tasks:
     goal: Repair the Jin Sui-Chen reader link, rebuild latest main, measure physical and qualifying body pages, and publish only after final reader QA passes.
   - id: acceptance-jin-reader-surface-final
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-jin-reader-surface-final
+    started_at: 2026-07-20T21:18:48+08:00
+    completed_at: 2026-07-20T21:25:00+08:00
+    result: "Replaced six reader-visible JH identifiers with named event references; all Jin chapters and the rebuilt PDF passed ID-leak scans."
     scope:
       - volumes/vol02c-jin-northern-southern/chapters/
     goal: Remove all internal Jin ledger IDs from reader-facing prose, replacing them with reader event names or valid event references before final QA and publication.
