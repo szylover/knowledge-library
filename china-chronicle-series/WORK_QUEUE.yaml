@@ -2136,8 +2136,7 @@ tasks:
     goal: Bring Sui-Tang-Five to 100 percent reader-first Volume-I-blueprint acceptance, beginning with measured body-page baseline and expanding Sui, early Tang, Wu Zhou-Kaiyuan, An Shi-late Tang and Five Dynasties-Ten Kingdoms prose to full book depth before final PDF and Blob verification.
   - id: acceptance-sui-body-page-final
     role: narrative
-    status: ready
-    scope:
+    status: in_progress`r`n    branch: chronicle/acceptance-sui-body-page-final`r`n    started_at: 2026-07-20T23:31:57+08:00`r`n    scope:
       - volumes/vol03-sui-tang-five/chapters/
     goal: Add at least thirty natural pages of Sui-Tang-Five reader prose across all period sections to close the 192 physical / 162 qualifying body baseline to 220 physical / 190 body pages, and repair 25 event references lacking canonical first-depiction targets.
   - id: acceptance-sui-depth-sui
