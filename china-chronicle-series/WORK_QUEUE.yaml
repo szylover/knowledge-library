@@ -2141,7 +2141,9 @@ tasks:
     goal: Add at least thirty natural pages of Sui-Tang-Five reader prose across all period sections to close the 192 physical / 162 qualifying body baseline to 220 physical / 190 body pages, and repair 25 event references lacking canonical first-depiction targets.
   - id: acceptance-sui-body-sui-final
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-sui-body-sui-final
+    started: 2026-07-20
     scope:
       - volumes/vol03-sui-tang-five/chapters/sui/
     goal: Add at least six natural PDF pages of Sui reader prose to close the Sui-Tang-Five final body-page gap.

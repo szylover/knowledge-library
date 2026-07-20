@@ -68,3 +68,7 @@
   掩盖。后续须在各自的首次深描处建立锚点，并逐条复验读者路线。
 - 本轮只作测量和链接修复；PDF 与 Azure Blob 均未发布。下一轮应先补足至少
   28 个物理页和 28 个合格连续正文页，并再次逐页排除图件和附录后再考虑验收。
+## Sui reader-body acceptance contribution（2026-07-20）
+
+- `acceptance-sui-body-sui-final` added nine source-aware Sui scenes in `chapters/sui/final-reader-pages.tex`, covering the 581 accession, 583 code, 589--590 Jiangnan reception, 605--607 eastern-capital administration, 609 Tuyuhun campaign, 612 Liaodong war, 611 Shandong uprising, and the 613--618 collapse.
+- The added reader prose contains **10,026 CJK characters** and links only to existing first-depiction anchors. `tectonic -X compile --keep-logs --outdir .build main.tex` succeeded: the complete volume is now **200 physical pages** and logs **180 reader-and-figure pages**. It remains below the volume-wide 220/190 acceptance threshold; this task does not claim final acceptance or publish a PDF.
