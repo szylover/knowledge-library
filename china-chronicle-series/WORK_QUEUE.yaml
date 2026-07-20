@@ -2171,6 +2171,31 @@ tasks:
       - volumes/vol02a-han/chapters/
       - volumes/vol02a-han/AGENTS.md
     goal: Establish and meet a Han reader-body depth gate comparable to its 426-year scope: measure qualifying body pages, expand Western Han, Xin and Eastern Han continuous reader prose to full book depth without template prose or page padding, and withhold PDF publication until independent QA passes.
+  - id: acceptance-han-depth-western
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/western-han/
+    goal: Expand Western Han reader prose to at least forty actual PDF pages and 30000 CJK characters through distinct source-aware scenes of founding, princes, frontier, fiscal systems and late transition.
+  - id: acceptance-han-depth-xin
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/polities/xin.tex
+      - volumes/vol02a-han/chapters/western-han/regency-and-new.tex
+    goal: Expand the Xin regime and Western Han transition to at least forty actual PDF pages and 30000 CJK characters through distinct source-aware political, fiscal, regional and social scenes.
+  - id: acceptance-han-depth-eastern
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/eastern-han/
+    goal: Expand Eastern Han reader prose to at least forty actual PDF pages and 30000 CJK characters through distinct source-aware restoration, frontier, fiscal, social, religious and breakdown scenes.
+  - id: acceptance-han-depth-synthesis
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/synthesis/
+    goal: Expand Han cross-period syntheses to at least forty actual PDF pages and 30000 CJK characters connecting institutions, households, frontiers, fiscal systems, religion and source debates without template prose.
   - id: acceptance-three-reader-surface-final
     role: continuity-editor
     status: done
