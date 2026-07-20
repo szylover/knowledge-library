@@ -1531,6 +1531,12 @@ tasks:
       - volumes/vol02c-jin-northern-southern/
       - pdf/china-chronicle/vol02c-jin-northern-southern.pdf
     goal: Repair the Jin Sui-Chen reader link, rebuild latest main, measure physical and qualifying body pages, and publish only after final reader QA passes.
+  - id: acceptance-jin-reader-surface-final
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/chapters/
+    goal: Remove all internal Jin ledger IDs from reader-facing prose, replacing them with reader event names or valid event references before final QA and publication.
   - id: acceptance-jin-body-page-final
     role: narrative
     status: in_progress
