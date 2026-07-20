@@ -26,11 +26,12 @@
 }
 \color{ink}
 
+\newcommand{\eventtitle}[4]{#1\quad #2\quad\textcolor{source}{#3}\hfill\textcolor{source}{#4}}
 \newtcolorbox{event}[4]{
   enhanced,breakable,arc=2pt,colback=paper!55!white,colframe=timeline!45!white,
   colbacktitle=timeline!18!paper,coltitle=ink,boxrule=.4pt,left=10pt,right=8pt,top=6pt,bottom=6pt,
   borderline west={2.2pt}{0pt}{dynasty},fonttitle=\bfseries,
-  title={#1\quad #2\quad\textcolor{source}{#3}\hfill\textcolor{source}{#4}}
+  title={\eventtitle{#1}{#2}{#3}{#4}}
 }
 \newtcolorbox{turningpoint}[1][转折]{
   enhanced,breakable,arc=3pt,colback=dynasty!4,colframe=dynasty!72!black,
