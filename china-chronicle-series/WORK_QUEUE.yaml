@@ -1994,6 +1994,16 @@ tasks:
       - volumes/vol05-ming/chapters/
       - volumes/vol06-qing-1912/chapters/
     goal: Add a fourth wave of at least two curated non-template reader event clusters per post-Volume-I volume, selected from underrepresented time-band by polity/region cells to strengthen causal continuity.
+  - id: acceptance-reader-cluster-density-wave5
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/
+      - volumes/vol02b-three-kingdoms/chapters/
+      - volumes/vol02c-jin-northern-southern/chapters/
+      - volumes/vol04-song-yuan/chapters/
+      - volumes/vol06-qing-1912/chapters/
+    goal: Add a fifth wave of curated non-template reader event clusters focused on consecutive causal chains in the lower-density Han, Three Kingdoms, Jin-Northern-Southern, Song-Yuan and Qing volumes.
     result: Added 14 ledger-backed reader event clusters across seven post-Volume-I volumes; strict audit confirmed unique anchors, direct sources, caveats, distinct prose and 150+ CJK characters per cluster.
   - id: acceptance-strict-reader-clusters
     role: narrative
