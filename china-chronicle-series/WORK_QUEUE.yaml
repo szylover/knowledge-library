@@ -2194,10 +2194,9 @@ tasks:
     goal: Expand Eastern Han reader prose to at least forty actual PDF pages and 30000 CJK characters through distinct source-aware restoration, frontier, fiscal, social, religious and breakdown scenes.
   - id: acceptance-han-depth-synthesis
     role: narrative
-    status: blocked
+    status: in_progress
     branch: chronicle/acceptance-han-depth-synthesis
-    started_at: 2026-07-20T17:08:43+08:00
-    blocked_by: Synthesis now has 22834 CJK characters, below the required 30000; PDF build succeeded but the temporary build artifact was removed by the volume script before page measurement.
+    started_at: 2026-07-20T17:34:06+08:00
     scope:
       - volumes/vol02a-han/chapters/synthesis/
     goal: Expand Han cross-period syntheses to at least forty actual PDF pages and 30000 CJK characters connecting institutions, households, frontiers, fiscal systems, religion and source debates without template prose.
