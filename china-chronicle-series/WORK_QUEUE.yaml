@@ -1545,7 +1545,9 @@ tasks:
     goal: Rebuild the Three Kingdoms reader PDF from current reader-first source, verify legacy bracketed ledger prose is absent, and publish only after content checks pass.
   - id: acceptance-three-reading-depth
     role: narrative
-    status: ready
+    status: in_progress
+    branch: chronicle/acceptance-three-reading-depth
+    started_at: 2026-07-20T14:44:39+08:00
     scope:
       - volumes/vol02b-three-kingdoms/chapters/
       - volumes/vol02b-three-kingdoms/figures/
