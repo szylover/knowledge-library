@@ -2036,6 +2036,17 @@ tasks:
       - volumes/vol05-ming/chapters/
       - volumes/vol06-qing-1912/chapters/
     goal: Add a seventh wave of at least six curated source-aware non-template reader event clusters per post-Volume-I volume, focusing on the lowest-density time-band and polity/region cells until each volume supports continuous reading across its range.
+  - id: acceptance-reader-cluster-density-wave8
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/
+      - volumes/vol02b-three-kingdoms/chapters/
+      - volumes/vol02c-jin-northern-southern/chapters/
+      - volumes/vol04-song-yuan/chapters/
+      - volumes/vol05-ming/chapters/
+      - volumes/vol06-qing-1912/chapters/
+    goal: Add an eighth wave of at least six curated source-aware reader event clusters per lower-density post-Volume-I volume, emphasizing middle-period causal continuity, regional society and frontier interaction without template prose.
     result: Added 21 source-aware causal reader clusters (three in each scoped volume). Strict audit verified each has 349--441 CJK characters, one canonical scoped anchor, a direct source, place/actioner/effect, and a material caveat; all seven volume builds passed.
   - id: acceptance-strict-reader-clusters
     role: narrative
