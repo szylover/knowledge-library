@@ -1979,6 +1979,18 @@ tasks:
       - volumes/vol05-ming/chapters/
       - volumes/vol06-qing-1912/chapters/
     goal: Add a third wave of curated source-aware reader event clusters to deepen continuous chronology in the remaining low-density formal volumes, without navigation anchors, ledger fields or repeatable prose skeletons.
+  - id: acceptance-reader-cluster-density-wave4
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02a-han/chapters/
+      - volumes/vol02b-three-kingdoms/chapters/
+      - volumes/vol02c-jin-northern-southern/chapters/
+      - volumes/vol03-sui-tang-five/chapters/
+      - volumes/vol04-song-yuan/chapters/
+      - volumes/vol05-ming/chapters/
+      - volumes/vol06-qing-1912/chapters/
+    goal: Add a fourth wave of at least two curated non-template reader event clusters per post-Volume-I volume, selected from underrepresented time-band by polity/region cells to strengthen causal continuity.
   - id: acceptance-strict-reader-clusters
     role: narrative
     status: done
