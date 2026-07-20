@@ -1983,14 +1983,16 @@ tasks:
     goal: Raise every formal volume's curated reader events to strict non-navigation standard: unique anchor, direct source, at least 150 words, source-aware place/actioner/consequence prose, and coverage of audited time-band and polity/region gaps.
   - id: acceptance-reading-experience-gap
     role: continuity-editor
-    status: ready
+    branch: chronicle/acceptance-reading-experience-gap
+    started_at: 2026-07-20T10:11:59+08:00
+    status: done
     scope:
       - volumes/vol02a-han/chapters/
       - volumes/vol02b-three-kingdoms/chapters/
       - volumes/vol03-sui-tang-five/chapters/
     goal: Close reader-experience gaps versus Volume I: remove Han maintenance-surface text, add versioned Three Kingdoms source reading table, and deepen Sui-Tang-Five chapter event clusters with figure-adjacent narrative setup and recovery.
-    completed_at: 2026-07-17T20:14:00+08:00
-    result: Added or upgraded 15 strict reader-event clusters across all eight formal volumes, covering the audited Western Zhou, Han, Three Kingdoms, Jin, Sui-Ten Kingdoms, Xia-Jin-Southern Song, Ming and late-Qing gaps. Source-aware audit rose from 108 to 123 strict clusters; representative and changed-volume builds passed.
+    completed_at: 2026-07-20T10:11:59+08:00
+    result: Removed Han reader-facing maintenance leakage; added a versioned Three Kingdoms material-use table; deepened five Sui-Tang-Five event clusters and paired every chapter map with a question and narrative recovery.
   - id: acceptance-density-policy
     role: integrator
     status: done
