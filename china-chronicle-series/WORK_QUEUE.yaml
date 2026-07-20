@@ -2134,6 +2134,36 @@ tasks:
       - volumes/vol03-sui-tang-five/
       - pdf/china-chronicle/vol03-sui-tang-five.pdf
     goal: Bring Sui-Tang-Five to 100 percent reader-first Volume-I-blueprint acceptance, beginning with measured body-page baseline and expanding Sui, early Tang, Wu Zhou-Kaiyuan, An Shi-late Tang and Five Dynasties-Ten Kingdoms prose to full book depth before final PDF and Blob verification.
+  - id: acceptance-sui-depth-sui
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/sui/
+    goal: Expand Sui reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct source-aware unity, law, canal, frontier, local society and collapse scenes.
+  - id: acceptance-sui-depth-early-tang
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/tang/
+    goal: Expand early Tang reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct court, frontier, law, fiscal, local society, religious and external scenes.
+  - id: acceptance-sui-depth-wu-zhou
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/wu-zhou/
+    goal: Expand Wu Zhou and Kaiyuan reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct political, fiscal, religious, regional, frontier and cultural scenes.
+  - id: acceptance-sui-depth-late-tang
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/an-lushan-late-tang/
+    goal: Expand An Shi through late Tang reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct war, fiscal, urban, local, frontier and religious scenes.
+  - id: acceptance-sui-depth-five-dynasties
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/five-dynasties-ten-kingdoms/
+    goal: Expand Five Dynasties and Ten Kingdoms reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct multi-polity, fiscal, local, maritime, frontier and textual scenes.
   - id: acceptance-reader-index-figure-integrity
     role: indexer
     status: done
