@@ -1565,7 +1565,11 @@ tasks:
     goal: Expand Three Kingdoms qualifying continuous reader body to at least 120 A4 pages excluding title, contents, figures and appendices; require at least 140 physical PDF pages before final reader QA and publication.
   - id: acceptance-three-depth-integrity
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-depth-integrity
+    started_at: 2026-07-20T16:05:08+08:00
+    completed_at: 2026-07-20T16:09:23+08:00
+    result: "Removed 18 forced clearpages (5 Wei, 5 Shu, 8 Wu); anchored TK-0228-MENG-DA-REBELLION at its first real depiction. Local-only Tectonic build measured 132 physical pages and 111 qualifying continuous-narrative body pages (mainmatter pages 1-115 minus the Part title and three figure-only chapter openings); no PDF was published."
     scope:
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/
     goal: Remove all forced sparse-page breaks from Three Kingdoms depth chapters, repair the Meng Da cross-reference to a real first depiction, and preserve only naturally flowing continuous reader prose before remeasuring body pages.
