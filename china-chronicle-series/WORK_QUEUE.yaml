@@ -2156,7 +2156,11 @@ tasks:
     goal: Suspend cross-volume production and bring the Three Kingdoms volume alone to 100 percent reader-first Volume-I-blueprint acceptance, including curated continuous chronology, source reading, cross-indexes, figures, build, PDF and Blob verification.
   - id: acceptance-han-focus
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-han-focus
+    started_at: 2026-07-20T16:38:37+08:00
+    completed_at: 2026-07-20T17:20:00+08:00
+    result: Reader body grew from 33 to 40 pages; 1,500-row ledger validation, unique anchors, final PDF build and Blob HTTP verification passed.
     scope:
       - volumes/vol02a-han/
       - pdf/china-chronicle/vol02a-han.pdf
