@@ -1573,6 +1573,12 @@ tasks:
     scope:
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/
     goal: Remove all forced sparse-page breaks from Three Kingdoms depth chapters, repair the Meng Da cross-reference to a real first depiction, and preserve only naturally flowing continuous reader prose before remeasuring body pages.
+  - id: acceptance-three-body-page-final
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/
+    goal: Add at least twelve natural pages of non-template Three Kingdoms reader prose on remaining border, regency, Shu-Han and late Wu social gaps so qualifying continuous body exceeds 120 pages without forced page breaks.
   - id: acceptance-three-depth-wei
     role: narrative
     status: ready
