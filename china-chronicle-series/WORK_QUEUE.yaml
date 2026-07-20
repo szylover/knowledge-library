@@ -1520,6 +1520,38 @@ tasks:
       - volumes/vol02c-jin-northern-southern/
       - pdf/china-chronicle/vol02c-jin-northern-southern.pdf
     goal: Bring Jin-Northern-Southern to 100 percent reader-first Volume-I-blueprint acceptance, beginning with a measured body-page baseline and expanding Western Jin, Eastern Jin/Sixteen Kingdoms, Northern-Southern, Eastern-Western Wei to Sui, and synthesis prose to full book depth before final PDF and Blob verification.
+  - id: acceptance-jin-depth-western
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/chapters/western-jin/
+    goal: Expand Western Jin reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct source-aware scenes of unity, court, law, local society, frontier and collapse.
+  - id: acceptance-jin-depth-eastern
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/chapters/eastern-jin-sixteen-kingdoms/
+    goal: Expand Eastern Jin and Sixteen Kingdoms reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct multi-polity, migration, fiscal, religious and regional scenes.
+  - id: acceptance-jin-depth-northern-southern
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/chapters/northern-southern-dynasties/
+    goal: Expand Northern and Southern Dynasties reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct court, local society, frontier, religion and material-life scenes.
+  - id: acceptance-jin-depth-wei-sui
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/chapters/ch04-eastern-western-wei.tex
+      - volumes/vol02c-jin-northern-southern/chapters/ch05-northern-qi-zhou-chen-sui.tex
+    goal: Expand Eastern-Western Wei through Sui reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct political, military, fiscal, religious and reunification scenes.
+  - id: acceptance-jin-depth-synthesis
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02c-jin-northern-southern/chapters/synthesis/
+      - volumes/vol02c-jin-northern-southern/chapters/ch06-synthesis.tex
+    goal: Expand Jin-Northern-Southern cross-period syntheses to at least thirty-five actual PDF pages and 30000 CJK characters connecting migration, households, institutions, frontiers, religion, texts and source debates.
   - id: acceptance-han-final
     role: integrator
     status: ready
