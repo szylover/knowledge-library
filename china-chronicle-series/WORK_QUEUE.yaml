@@ -1534,7 +1534,11 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Three Kingdoms, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-three-reader-pdf
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-three-reader-pdf
+    started_at: 2026-07-20T10:13:45+08:00
+    completed_at: 2026-07-20T10:18:39+08:00
+    result: Reader PDF rebuilt and released after source and rendered-text checks found no legacy bracketed ledger prose; direct Blob URL returned HTTP 200. This task did not perform or assert strict acceptance.
     scope:
       - volumes/vol02b-three-kingdoms/
       - pdf/china-chronicle/vol02b-three-kingdoms.pdf

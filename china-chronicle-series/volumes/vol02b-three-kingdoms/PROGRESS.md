@@ -1,6 +1,6 @@
 # 《中国大事编年·第二卷乙：三国》进度
 
-最后更新：2026-07-17
+最后更新：2026-07-20
 
 | 项目 | 状态 | 说明 |
 |---|---|---|
@@ -13,6 +13,20 @@
 
 账本保留全部过滤事件，索引只列出已有正文锚点的关键节点。未被索引的
 记录仍是叙事核验与后续扩写的覆盖清单，而不是可被删除的“背景”。
+
+## 读者版 PDF 重建与发布（2026-07-20）
+
+**仅记录构建与发布，不构成严格验收结论。** 以当前 reader-first 源文件运行
+`scripts/build-volume.ps1`，成功生成根目录
+`pdf/china-chronicle/vol02b-three-kingdoms.pdf`（32 页，441,180 bytes）。
+源文件及提取出的 PDF 文本均未检出旧式方括号账本散文；渲染文本共 26,111
+字符，`TK-SRC`、`TK-DENS`、`core_sources`、`source_caveat`、“核心来源”与
+“来源限度”均为零命中。构建有既存的欠满页和本机字体路径警告，但未阻止输出。
+
+已运行 `scripts/publish-downloads.ps1` 同步整个 PDF 目录、刷新下载页；直接链接
+`https://szydownloads.blob.core.windows.net/downloads/books/china-chronicle/vol02b-three-kingdoms.pdf`
+返回 HTTP 200。此记录没有重算或宣称本卷已通过严格验收；完整的逐项、100% 验收
+仍须另行完成。
 
 ## 集成验收记录（2026-07-17）
 
