@@ -1966,6 +1966,16 @@ tasks:
       - volumes/vol05-ming/chapters/
       - volumes/vol06-qing-1912/chapters/
     goal: Add a second wave of curated, source-aware reader event clusters across all post-Volume-I time bands and polity/region cells, prioritizing local society, frontiers, fiscal systems, migration, religion and external actors without ledger navigation or template prose.
+  - id: acceptance-reader-cluster-density-wave3
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol02b-three-kingdoms/chapters/
+      - volumes/vol02c-jin-northern-southern/chapters/
+      - volumes/vol04-song-yuan/chapters/
+      - volumes/vol05-ming/chapters/
+      - volumes/vol06-qing-1912/chapters/
+    goal: Add a third wave of curated source-aware reader event clusters to deepen continuous chronology in the remaining low-density formal volumes, without navigation anchors, ledger fields or repeatable prose skeletons.
   - id: acceptance-strict-reader-clusters
     role: narrative
     status: done
