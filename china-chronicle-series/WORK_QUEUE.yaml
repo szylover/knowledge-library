@@ -2136,7 +2136,9 @@ tasks:
     goal: Bring Sui-Tang-Five to 100 percent reader-first Volume-I-blueprint acceptance, beginning with measured body-page baseline and expanding Sui, early Tang, Wu Zhou-Kaiyuan, An Shi-late Tang and Five Dynasties-Ten Kingdoms prose to full book depth before final PDF and Blob verification.
   - id: acceptance-sui-depth-sui
     role: narrative
-    status: ready
+    status: in_progress
+    branch: chronicle/acceptance-sui-depth-sui
+    started_at: 2026-07-20T22:01:40+08:00
     scope:
       - volumes/vol03-sui-tang-five/chapters/sui/
     goal: Expand Sui reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct source-aware unity, law, canal, frontier, local society and collapse scenes.
