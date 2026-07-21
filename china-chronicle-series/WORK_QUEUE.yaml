@@ -1774,7 +1774,9 @@ tasks:
     goal: Expand Northern Song reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct source-aware court, fiscal, frontier, urban, local and social scenes.
   - id: acceptance-song-yuan-depth-liao-xia
     role: narrative
-    status: ready
+    status: in_progress
+    branch: chronicle/acceptance-song-yuan-depth-liao-xia
+    started_at: 2026-07-21T12:05:36+08:00
     scope:
       - volumes/vol04-song-yuan/chapters/liao/
       - volumes/vol04-song-yuan/chapters/liao-western-xia/
