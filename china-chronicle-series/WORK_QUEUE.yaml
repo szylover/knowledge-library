@@ -1763,6 +1763,20 @@ tasks:
       - volumes/vol04-song-yuan/
       - pdf/china-chronicle/vol04-song-yuan.pdf
     goal: Bring Song-Liao-Xia-Jin-Yuan to 100 percent reader-first Volume-I-blueprint acceptance, beginning with measured body-page baseline and expanding Northern Song, Liao-Western Xia, Jin, Southern Song, and Mongol-Yuan prose to full multi-polity book depth before final PDF and Blob verification.
+  - id: acceptance-song-yuan-final-depth-wave
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/
+    goal: Add at least eighteen natural pages of Song-Liao-Xia-Jin-Yuan reader prose across the five polity paths, with priority on lifting Northern Song above 35 qualifying pages and the total baseline from 226 physical / 194 body to 240/210.
+  - id: acceptance-song-yuan-ledger-body-integrity
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/data/event-ledger/song-yuan.csv
+      - volumes/vol04-song-yuan/chapters/
+      - scripts/validate-event-ledger.ps1
+    goal: Repair all remaining Song-Liao-Xia-Jin-Yuan ledger target routes to current included narrative files and validate complete ledger-to-body traceability before final acceptance.
   - id: acceptance-song-yuan-depth-northern
     role: narrative
     status: in_progress
