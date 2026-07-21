@@ -2127,7 +2127,7 @@ tasks:
     goal: Remove residual ledger navigation and generated prose from Sui-Tang-Five reader chapters, rebuild curated period and multi-polity event clusters, and restore real cross-index routes under the reader-surface rules.
   - id: acceptance-sui-focus
     role: continuity-editor
-    status: in_progress
+    status: done
     branch: chronicle/acceptance-sui-focus
     started_at: 2026-07-20T21:49:08+08:00
     scope:
@@ -2136,7 +2136,7 @@ tasks:
     goal: Bring Sui-Tang-Five to 100 percent reader-first Volume-I-blueprint acceptance, beginning with measured body-page baseline and expanding Sui, early Tang, Wu Zhou-Kaiyuan, An Shi-late Tang and Five Dynasties-Ten Kingdoms prose to full book depth before final PDF and Blob verification.
   - id: acceptance-sui-body-page-final
     role: narrative
-    status: in_progress
+    status: done
     branch: chronicle/acceptance-sui-body-page-final
     started_at: 2026-07-20T23:31:57+08:00
     scope:
@@ -2157,11 +2157,18 @@ tasks:
     branch: chronicle/acceptance-sui-page-audit
     started_at: 2026-07-21T11:41:28+08:00
     completed_at: 2026-07-21T11:41:28+08:00
-    result: Current-main local build passed: 236 physical pages, 208 qualifying continuous body pages, and Sui/early Tang/Wu Zhou--Kaiyuan/An Shi--late Tang/Five Dynasties totals of 35/44/42/43/44; no publication or Blob sync.
+    result: "Current-main local build passed: 236 physical pages, 208 qualifying continuous body pages, and Sui/early Tang/Wu Zhou--Kaiyuan/An Shi--late Tang/Five Dynasties totals of 35/44/42/43/44; no publication or Blob sync."
     scope:
       - volumes/vol03-sui-tang-five/
       - pdf/china-chronicle/vol03-sui-tang-five.pdf
     goal: Produce a non-publishing current Sui-Tang-Five build and record a per-page exclusion audit proving qualifying continuous body pages and each five-period reader-page total before final publication.
+  - id: acceptance-sui-final-release
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/
+      - pdf/china-chronicle/vol03-sui-tang-five.pdf
+    goal: Run final Sui-Tang-Five release QA against the completed depth, page-audit, reader-route and ledger-body evidence; publish PDF and Blob only if all 100 percent acceptance gates pass.
   - id: acceptance-sui-depth-integrity-final
     role: continuity-editor
     status: done
