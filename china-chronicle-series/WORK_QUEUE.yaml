@@ -1013,6 +1013,7 @@ tasks:
     status: done
     branch: chronicle/vol05-crossread
     started: 2026-07-21T14:34:37+08:00
+    resumed: 2026-07-21T14:43:03+08:00
     scope: [volumes/vol05-ming/chapters/]
     goal: Integrate historical, institutional, literary, and historiographical cross-reading into Ming event clusters.
   - id: vol06-crossread
