@@ -1794,7 +1794,11 @@ tasks:
     goal: Expand Jin reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct conquest, administration, fiscal, frontier, social and cultural scenes.
   - id: acceptance-song-yuan-depth-jin-fiscal
     role: narrative
-    status: ready
+    status: completed
+    branch: chronicle/acceptance-song-yuan-depth-jin-fiscal
+    started_at: 2026-07-21T13:01:22+08:00
+    completed_at: 2026-07-21T13:19:27+08:00
+    validation: Added 8,178 CJK characters of source-aware Jin governance, fiscal, monetary, household, legal, office and road prose; clean/current PDF comparison measured 185 to 192 physical pages (+7), and a non-publishing Tectonic build completed.
     scope:
       - volumes/vol04-song-yuan/chapters/jin/reader-local-practices.tex
       - volumes/vol04-song-yuan/chapters/jin/reader-households-law.tex
