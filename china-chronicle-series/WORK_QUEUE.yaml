@@ -1862,7 +1862,10 @@ tasks:
     goal: Add at least five natural PDF pages of Mongol-Yuan regional administration, fiscal, military and local society reader prose.
   - id: acceptance-song-yuan-depth-mongol-seas
     role: narrative
-    status: ready
+    status: completed
+    branch: chronicle/acceptance-song-yuan-depth-mongol-seas
+    started_at: 2026-07-21T13:01:22+08:00
+    completed_at: 2026-07-21T13:25:50+08:00
     scope:
       - volumes/vol04-song-yuan/chapters/mongol-yuan/reader-depth-conquest.tex
       - volumes/vol04-song-yuan/chapters/mongol-yuan/reader-depth-crisis-and-seas.tex
