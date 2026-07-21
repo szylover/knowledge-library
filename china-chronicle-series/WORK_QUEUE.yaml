@@ -1852,7 +1852,10 @@ tasks:
     goal: Expand Mongol and Yuan reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct conquest, multi-regional administration, fiscal, social, religious and external scenes.
   - id: acceptance-song-yuan-depth-mongol-admin
     role: narrative
-    status: ready
+    status: completed
+    branch: chronicle/acceptance-song-yuan-depth-mongol-admin
+    started_at: 2026-07-21T13:01:22+08:00
+    completed_at: 2026-07-21T13:25:52+08:00
     scope:
       - volumes/vol04-song-yuan/chapters/mongol-yuan/reader-depth-regions.tex
       - volumes/vol04-song-yuan/chapters/mongol-yuan/reader-depth-provincial-late.tex
