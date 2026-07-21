@@ -2155,7 +2155,10 @@ tasks:
     goal: Repair all Sui-Tang-Five ledger target routes to current included narrative files, align unregistered reader anchors with canonical ledger IDs, and validate ledger-to-body traceability before final acceptance.
   - id: acceptance-sui-wuzhou-link
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-sui-wuzhou-link
+    started_at: 2026-07-21T10:54:55+08:00
+    completed_at: 2026-07-21T10:54:55+08:00
     scope:
       - volumes/vol03-sui-tang-five/chapters/wu-zhou/
       - volumes/vol03-sui-tang-five/chapters/appendix-index.tex
