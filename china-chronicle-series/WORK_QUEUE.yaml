@@ -2153,7 +2153,11 @@ tasks:
     goal: Add at least twenty-five natural pages of continuous Sui-Tang-Five reader prose across the 581–960 chronology, prioritizing transitions and local social/fiscal chains needed to raise the current 200 physical / under-180 qualifying-body baseline above 220/190.
   - id: acceptance-sui-page-audit
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-sui-page-audit
+    started_at: 2026-07-21T11:41:28+08:00
+    completed_at: 2026-07-21T11:41:28+08:00
+    result: Current-main local build passed: 236 physical pages, 208 qualifying continuous body pages, and Sui/early Tang/Wu Zhou--Kaiyuan/An Shi--late Tang/Five Dynasties totals of 35/44/42/43/44; no publication or Blob sync.
     scope:
       - volumes/vol03-sui-tang-five/
       - pdf/china-chronicle/vol03-sui-tang-five.pdf
