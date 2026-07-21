@@ -1017,6 +1017,8 @@ tasks:
     resumed_phase_three: 2026-07-21T14:48:10+08:00
     resumed_phase_four: 2026-07-21T14:53:30+08:00
     resumed_phase_five: 2026-07-21T14:56:42+08:00
+    resumed_phase_six: 2026-07-21T15:00:11+08:00
+    completed_phase_six: 2026-07-21T15:31:00+08:00
     scope: [volumes/vol05-ming/chapters/]
     goal: Integrate historical, institutional, literary, and historiographical cross-reading into Ming event clusters.
   - id: vol06-crossread
