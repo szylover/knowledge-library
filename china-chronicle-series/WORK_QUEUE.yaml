@@ -1765,7 +1765,9 @@ tasks:
     goal: Bring Song-Liao-Xia-Jin-Yuan to 100 percent reader-first Volume-I-blueprint acceptance, beginning with measured body-page baseline and expanding Northern Song, Liao-Western Xia, Jin, Southern Song, and Mongol-Yuan prose to full multi-polity book depth before final PDF and Blob verification.
   - id: acceptance-song-yuan-final-depth-wave
     role: narrative
-    status: ready
+    status: in_progress
+    branch: chronicle/acceptance-song-yuan-final-depth-wave
+    started_at: 2026-07-21T13:37:36+08:00
     scope:
       - volumes/vol04-song-yuan/chapters/
     goal: Add at least eighteen natural pages of Song-Liao-Xia-Jin-Yuan reader prose across the five polity paths, with priority on lifting Northern Song above 35 qualifying pages and the total baseline from 226 physical / 194 body to 240/210.
