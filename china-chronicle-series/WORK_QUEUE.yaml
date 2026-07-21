@@ -2429,7 +2429,7 @@ tasks:
     scope:
       - volumes/vol02a-han/chapters/
       - volumes/vol02a-han/AGENTS.md
-    goal: Establish and meet a Han reader-body depth gate comparable to its 426-year scope: measure qualifying body pages, expand Western Han, Xin and Eastern Han continuous reader prose to full book depth without template prose or page padding, and withhold PDF publication until independent QA passes.
+    goal: "Establish and meet a Han reader-body depth gate comparable to its 426-year scope: measure qualifying body pages, expand Western Han, Xin and Eastern Han continuous reader prose to full book depth without template prose or page padding, and withhold PDF publication until independent QA passes."
   - id: acceptance-han-body-page-final
     role: narrative
     status: in_progress
@@ -2515,7 +2515,7 @@ tasks:
       - volumes/vol02b-three-kingdoms/chapters/how-to-read.tex
       - volumes/vol02b-three-kingdoms/chapters/three-kingdoms/
       - volumes/vol02b-three-kingdoms/chapters/appendix-sources.tex
-    goal: Remove remaining Three Kingdoms reader-surface leakage: event titles must not expose ledger source-caveat fields and reading guidance must use reader language rather than LaTeX environment names.
+    goal: "Remove remaining Three Kingdoms reader-surface leakage: event titles must not expose ledger source-caveat fields and reading guidance must use reader language rather than LaTeX environment names."
     completed_at: 2026-07-20T14:42:00+08:00
     result: Refactored all 21 reader-visible event titles to event, time, polity and place; moved interpretation-changing evidence limits into task-specific source/debate boxes; rewrote the reading guide in reader language; Tectonic build passed.
   - id: acceptance-strict-reader-clusters
@@ -2532,7 +2532,7 @@ tasks:
       - volumes/vol04-song-yuan/chapters/
       - volumes/vol05-ming/chapters/
       - volumes/vol06-qing-1912/chapters/
-    goal: Raise every formal volume's curated reader events to strict non-navigation standard: unique anchor, direct source, at least 150 words, source-aware place/actioner/consequence prose, and coverage of audited time-band and polity/region gaps.
+    goal: "Raise every formal volume's curated reader events to strict non-navigation standard: unique anchor, direct source, at least 150 words, source-aware place/actioner/consequence prose, and coverage of audited time-band and polity/region gaps."
   - id: acceptance-reading-experience-gap
     role: continuity-editor
     branch: chronicle/acceptance-reading-experience-gap
@@ -2542,7 +2542,7 @@ tasks:
       - volumes/vol02a-han/chapters/
       - volumes/vol02b-three-kingdoms/chapters/
       - volumes/vol03-sui-tang-five/chapters/
-    goal: Close reader-experience gaps versus Volume I: remove Han maintenance-surface text, add versioned Three Kingdoms source reading table, and deepen Sui-Tang-Five chapter event clusters with figure-adjacent narrative setup and recovery.
+    goal: "Close reader-experience gaps versus Volume I: remove Han maintenance-surface text, add versioned Three Kingdoms source reading table, and deepen Sui-Tang-Five chapter event clusters with figure-adjacent narrative setup and recovery."
     completed_at: 2026-07-20T10:11:59+08:00
     result: Removed Han reader-facing maintenance leakage; added a versioned Three Kingdoms material-use table; deepened five Sui-Tang-Five event clusters and paired every chapter map with a question and narrative recovery.
   - id: acceptance-density-policy
