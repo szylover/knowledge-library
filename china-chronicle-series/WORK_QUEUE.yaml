@@ -1771,7 +1771,10 @@ tasks:
     goal: Add at least eighteen natural pages of Song-Liao-Xia-Jin-Yuan reader prose across the five polity paths, with priority on lifting Northern Song above 35 qualifying pages and the total baseline from 226 physical / 194 body to 240/210.
   - id: acceptance-song-yuan-ledger-body-integrity
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-song-yuan-ledger-body-integrity
+    started_at: 2026-07-21T13:37:36+08:00
+    completed_at: 2026-07-21T13:45:34+08:00
     scope:
       - volumes/vol04-song-yuan/data/event-ledger/song-yuan.csv
       - volumes/vol04-song-yuan/chapters/

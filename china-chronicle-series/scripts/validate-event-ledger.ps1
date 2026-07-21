@@ -211,6 +211,42 @@ function Get-IncludedTexFiles {
     return $included
 }
 
+function Get-NarrativeMarkerAudit {
+    param(
+        [System.Collections.Generic.HashSet[string]]$IncludedTexFiles
+    )
+
+    $anchors = @{}
+    $references = [System.Collections.Generic.List[string]]::new()
+
+    foreach ($file in $IncludedTexFiles) {
+        $content = [System.IO.File]::ReadAllText($file)
+        foreach ($match in [regex]::Matches($content, '\\eventanchor\{([^}]+)\}')) {
+            $id = $match.Groups[1].Value.Trim()
+            if ([string]::IsNullOrWhiteSpace($id) -or $id.StartsWith('#')) {
+                continue
+            }
+
+            if (-not $anchors.ContainsKey($id)) {
+                $anchors[$id] = [System.Collections.Generic.List[string]]::new()
+            }
+            $anchors[$id].Add($file)
+        }
+
+        foreach ($match in [regex]::Matches($content, '\\eventref\{([^}]+)\}')) {
+            $id = $match.Groups[1].Value.Trim()
+            if (-not [string]::IsNullOrWhiteSpace($id) -and -not $id.StartsWith('#')) {
+                $references.Add($id)
+            }
+        }
+    }
+
+    [pscustomobject]@{
+        Anchors    = $anchors
+        References = $references
+    }
+}
+
 function Add-Issue {
     param(
         [System.Collections.Generic.List[string]]$Issues,
@@ -232,6 +268,7 @@ function Test-EventLedger {
     $skipSchema = $null
     $parser = $null
     $includedTexFiles = $null
+    $markerAudit = $null
 
     try {
         $parser = [Microsoft.VisualBasic.FileIO.TextFieldParser]::new(
@@ -350,6 +387,30 @@ function Test-EventLedger {
                         }
                     }
                 }
+
+                if ($schema.ValidateNarrativeTargets -and $null -ne $includedTexFiles) {
+                    $markerAudit = Get-NarrativeMarkerAudit -IncludedTexFiles $includedTexFiles
+                    foreach ($anchor in $markerAudit.Anchors.GetEnumerator()) {
+                        if ($anchor.Value.Count -gt 1) {
+                            Add-Issue -Issues $issues -Message (
+                                "Event anchor '$($anchor.Key)' is declared $($anchor.Value.Count) times in included narrative files."
+                            )
+                        }
+                        if (-not $seenIds.Contains($anchor.Key)) {
+                            Add-Issue -Issues $issues -Message (
+                                "Included narrative anchor '$($anchor.Key)' has no matching ledger id."
+                            )
+                        }
+                    }
+
+                    foreach ($reference in $markerAudit.References) {
+                        if (-not $markerAudit.Anchors.ContainsKey($reference)) {
+                            Add-Issue -Issues $issues -Message (
+                                "Included narrative event reference '$reference' has no matching event anchor."
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -385,6 +446,8 @@ function Test-EventLedger {
         Status  = $status
         Records = $recordCount
         Schema  = $schemaName
+        Anchors = if ($null -ne $markerAudit) { $markerAudit.Anchors.Count } else { 0 }
+        References = if ($null -ne $markerAudit) { $markerAudit.References.Count } else { 0 }
         Issues  = $issues
     }
 }
@@ -396,7 +459,13 @@ if ($files.Count -eq 0) {
 
 $results = @($files | ForEach-Object { Test-EventLedger -File $_ })
 foreach ($result in $results) {
-    Write-Output "$($result.Status) $($result.File) ($($result.Records) data rows; $($result.Schema))"
+    $markerSummary = if ($result.Anchors -gt 0 -or $result.References -gt 0) {
+        "; $($result.Anchors) event anchors; $($result.References) event references"
+    }
+    else {
+        ''
+    }
+    Write-Output "$($result.Status) $($result.File) ($($result.Records) data rows; $($result.Schema)$markerSummary)"
     foreach ($issue in $result.Issues) {
         [Console]::Error.WriteLine("  - $issue")
     }
