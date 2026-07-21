@@ -2153,6 +2153,14 @@ tasks:
       - volumes/vol03-sui-tang-five/chapters/
       - scripts/validate-event-ledger.ps1
     goal: Repair all Sui-Tang-Five ledger target routes to current included narrative files, align unregistered reader anchors with canonical ledger IDs, and validate ledger-to-body traceability before final acceptance.
+  - id: acceptance-sui-wuzhou-link
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/wu-zhou/
+      - volumes/vol03-sui-tang-five/chapters/appendix-index.tex
+      - volumes/vol03-sui-tang-five/chapters/appendix-event-navigation.tex
+    goal: Move or retarget the Wu Zhou foundation canonical anchor to reader prose included by main.tex and repair all index and navigation routes.
   - id: acceptance-sui-body-sui-final
     role: narrative
     status: done
@@ -2256,7 +2264,7 @@ tasks:
       - volumes/vol03-sui-tang-five/chapters/
       - volumes/vol04-song-yuan/chapters/
       - volumes/vol06-qing-1912/chapters/
-    goal: Repair all audited reader-index and figure-route gaps: Jin 16 lost routes, Zhou-Qin seven orphan figures, and incomplete figure indexes in Sui-Tang, Song-Yuan and Qing.
+    goal: "Repair all audited reader-index and figure-route gaps: Jin 16 lost routes, Zhou-Qin seven orphan figures, and incomplete figure indexes in Sui-Tang, Song-Yuan and Qing."
     result: Restored 16/16 Jin reader routes to existing prose anchors; wired and indexed all 21 Zhou-Qin figures; completed indexes for all wired Sui-Tang (10), Song-Yuan (10), and Qing (14) figures. Reader-route and figure-route audits found no missing targets or navigation markers; representative Zhou-Qin and Qing builds passed.
   - id: acceptance-reader-cluster-density
     role: narrative
