@@ -2151,6 +2151,13 @@ tasks:
     scope:
       - volumes/vol03-sui-tang-five/chapters/
     goal: Add at least twenty-five natural pages of continuous Sui-Tang-Five reader prose across the 581–960 chronology, prioritizing transitions and local social/fiscal chains needed to raise the current 200 physical / under-180 qualifying-body baseline above 220/190.
+  - id: acceptance-sui-page-audit
+    role: integrator
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/
+      - pdf/china-chronicle/vol03-sui-tang-five.pdf
+    goal: Produce a non-publishing current Sui-Tang-Five build and record a per-page exclusion audit proving qualifying continuous body pages and each five-period reader-page total before final publication.
   - id: acceptance-sui-depth-integrity-final
     role: continuity-editor
     status: done
