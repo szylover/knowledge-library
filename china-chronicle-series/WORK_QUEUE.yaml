@@ -2153,7 +2153,10 @@ tasks:
     goal: Add at least twenty-five natural pages of continuous Sui-Tang-Five reader prose across the 581–960 chronology, prioritizing transitions and local social/fiscal chains needed to raise the current 200 physical / under-180 qualifying-body baseline above 220/190.
   - id: acceptance-sui-depth-integrity-final
     role: continuity-editor
-    status: ready
+    status: done
+    branch: chronicle/acceptance-sui-depth-integrity-final
+    started_at: 2026-07-21T11:26:51+08:00
+    completed_at: 2026-07-21T11:26:51+08:00
     scope:
       - volumes/vol03-sui-tang-five/chapters/
     goal: Remove literal escape leakage, repair five dead Sui-Tang-Five event routes, and replace the insufficient 2324-CJK final-depth wave with at least six natural reader pages and 10000 CJK characters per period section before remeasurement.
