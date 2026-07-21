@@ -43,6 +43,7 @@ $acceptedSchemas = @(
         RequiredColumns     = $legacyColumns
         HasEvidencePassport = $false
         HasTier             = $false
+        ValidateNarrativeTargets = $false
     },
     [pscustomobject]@{
         Name                = 'legacy+caveat+tier-12'
@@ -50,6 +51,7 @@ $acceptedSchemas = @(
         RequiredColumns     = @($legacyColumns + 'source_caveat' + 'tier')
         HasEvidencePassport = $false
         HasTier             = $true
+        ValidateNarrativeTargets = $false
     },
     [pscustomobject]@{
         Name                = 'evidence-passport-13'
@@ -57,6 +59,7 @@ $acceptedSchemas = @(
         RequiredColumns     = @($legacyColumns + $passportColumns)
         HasEvidencePassport = $true
         HasTier             = $false
+        ValidateNarrativeTargets = $true
     },
     [pscustomobject]@{
         Name                = 'evidence-passport+tier-14'
@@ -64,6 +67,7 @@ $acceptedSchemas = @(
         RequiredColumns     = @($legacyColumns + $passportColumns + $tierColumn)
         HasEvidencePassport = $true
         HasTier             = $true
+        ValidateNarrativeTargets = $false
     },
     [pscustomobject]@{
         Name                = 'acceptance-evidence-19'
@@ -71,6 +75,7 @@ $acceptedSchemas = @(
         RequiredColumns     = @($legacyColumns + $passportColumns + $acceptanceColumns)
         HasEvidencePassport = $true
         HasTier             = $true
+        ValidateNarrativeTargets = $false
     }
 )
 $auxiliarySchemas = @(
@@ -165,6 +170,47 @@ function Get-LedgerFiles {
     return @($files | Sort-Object FullName -Unique)
 }
 
+function Get-IncludedTexFiles {
+    param(
+        [System.IO.DirectoryInfo]$VolumeRoot
+    )
+
+    $mainFile = Join-Path $VolumeRoot.FullName 'main.tex'
+    if (-not (Test-Path -LiteralPath $mainFile -PathType Leaf)) {
+        throw "Cannot find volume main file: $mainFile"
+    }
+
+    $included = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::OrdinalIgnoreCase
+    )
+    $pending = [System.Collections.Generic.Queue[string]]::new()
+    $pending.Enqueue([System.IO.Path]::GetFullPath($mainFile))
+    $rootPrefix = "$([System.IO.Path]::GetFullPath($VolumeRoot.FullName))$([System.IO.Path]::DirectorySeparatorChar)"
+
+    while ($pending.Count -gt 0) {
+        $file = $pending.Dequeue()
+        if (-not $included.Add($file)) {
+            continue
+        }
+
+        $content = [System.IO.File]::ReadAllText($file)
+        foreach ($match in [regex]::Matches($content, '\\(?:input|include)\{([^}]+)\}')) {
+            $reference = $match.Groups[1].Value.Replace('/', [System.IO.Path]::DirectorySeparatorChar)
+            if ([System.IO.Path]::GetExtension($reference) -eq '') {
+                $reference += '.tex'
+            }
+
+            $candidate = [System.IO.Path]::GetFullPath((Join-Path $VolumeRoot.FullName $reference))
+            if ($candidate.StartsWith($rootPrefix, [System.StringComparison]::OrdinalIgnoreCase) -and
+                (Test-Path -LiteralPath $candidate -PathType Leaf)) {
+                $pending.Enqueue($candidate)
+            }
+        }
+    }
+
+    return $included
+}
+
 function Add-Issue {
     param(
         [System.Collections.Generic.List[string]]$Issues,
@@ -185,6 +231,7 @@ function Test-EventLedger {
     $schema = $null
     $skipSchema = $null
     $parser = $null
+    $includedTexFiles = $null
 
     try {
         $parser = [Microsoft.VisualBasic.FileIO.TextFieldParser]::new(
@@ -231,6 +278,14 @@ function Test-EventLedger {
                 $columnPositions = @{}
                 for ($index = 0; $index -lt $schema.Columns.Count; $index++) {
                     $columnPositions[$schema.Columns[$index]] = $index
+                }
+                if ($schema.ValidateNarrativeTargets) {
+                    try {
+                        $includedTexFiles = Get-IncludedTexFiles -VolumeRoot $File.Directory.Parent.Parent
+                    }
+                    catch {
+                        Add-Issue -Issues $issues -Message "Unable to inspect narrative targets: $($_.Exception.Message)"
+                    }
                 }
 
                 while (-not $parser.EndOfData) {
@@ -279,6 +334,18 @@ function Test-EventLedger {
                         if ($allowedTiers -cnotcontains $tier) {
                             Add-Issue -Issues $issues -Message (
                                 "Data row $recordCount has unsupported tier '$tier'."
+                            )
+                        }
+                    }
+
+                    if ($schema.ValidateNarrativeTargets -and $null -ne $includedTexFiles) {
+                        $target = $fields[$columnPositions['target']].Trim()
+                        $targetPath = [System.IO.Path]::GetFullPath((
+                            Join-Path $File.Directory.Parent.Parent.FullName $target.Replace('/', [System.IO.Path]::DirectorySeparatorChar)
+                        ))
+                        if (-not $includedTexFiles.Contains($targetPath)) {
+                            Add-Issue -Issues $issues -Message (
+                                "Data row $recordCount target '$target' is not an existing file included by the volume main.tex."
                             )
                         }
                     }
