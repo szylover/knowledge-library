@@ -2142,6 +2142,12 @@ tasks:
     scope:
       - volumes/vol03-sui-tang-five/chapters/
     goal: Add at least thirty natural pages of Sui-Tang-Five reader prose across all period sections to close the 192 physical / 162 qualifying body baseline to 220 physical / 190 body pages, and repair 25 event references lacking canonical first-depiction targets.
+  - id: acceptance-sui-final-depth-wave
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol03-sui-tang-five/chapters/
+    goal: Add at least twenty-five natural pages of continuous Sui-Tang-Five reader prose across the 581–960 chronology, prioritizing transitions and local social/fiscal chains needed to raise the current 200 physical / under-180 qualifying-body baseline above 220/190.
   - id: acceptance-sui-ledger-body-integrity
     role: integrator
     status: done
