@@ -1766,7 +1766,9 @@ tasks:
     goal: Bring Song-Liao-Xia-Jin-Yuan to 100 percent reader-first Volume-I-blueprint acceptance, beginning with measured body-page baseline and expanding Northern Song, Liao-Western Xia, Jin, Southern Song, and Mongol-Yuan prose to full multi-polity book depth before final PDF and Blob verification.
   - id: acceptance-song-yuan-depth-northern
     role: narrative
-    status: ready
+    status: in_progress
+    branch: chronicle/acceptance-song-yuan-depth-northern
+    started_at: 2026-07-21T12:05:36+08:00
     scope:
       - volumes/vol04-song-yuan/chapters/northern-song/
     goal: Expand Northern Song reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct source-aware court, fiscal, frontier, urban, local and social scenes.
