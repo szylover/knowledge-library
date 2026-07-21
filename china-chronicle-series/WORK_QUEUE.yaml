@@ -1828,7 +1828,10 @@ tasks:
     goal: Add at least five natural PDF pages of Liao dual institutions, frontier markets, local households and external diplomacy reader prose.
   - id: acceptance-song-yuan-depth-xia-documents
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-song-yuan-depth-xia-documents
+    started_at: 2026-07-21T13:01:22+08:00
+    completed_at: 2026-07-21T13:27:06+08:00
     scope:
       - volumes/vol04-song-yuan/chapters/western-xia/
       - volumes/vol04-song-yuan/chapters/liao-western-xia/
