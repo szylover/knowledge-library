@@ -1753,6 +1753,13 @@ tasks:
       - volumes/vol04-song-yuan/
       - pdf/china-chronicle/vol04-song-yuan.pdf
     goal: Run complete Volume-I-blueprint acceptance for Song-Liao-Xia-Jin-Yuan, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
+  - id: acceptance-song-yuan-focus
+    role: continuity-editor
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/
+      - pdf/china-chronicle/vol04-song-yuan.pdf
+    goal: Bring Song-Liao-Xia-Jin-Yuan to 100 percent reader-first Volume-I-blueprint acceptance, beginning with measured body-page baseline and expanding Northern Song, Liao-Western Xia, Jin, Southern Song, and Mongol-Yuan prose to full multi-polity book depth before final PDF and Blob verification.
   - id: acceptance-ming-final
     role: integrator
     status: ready
