@@ -2170,10 +2170,14 @@ tasks:
     goal: Add at least six natural PDF pages of An Shi-late Tang reader prose to close the Sui-Tang-Five final body-page gap.
   - id: acceptance-sui-body-five-final
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-sui-body-five-final
+    started_at: 2026-07-20T23:40:18+08:00
+    completed_at: 2026-07-20T23:40:18+08:00
     scope:
       - volumes/vol03-sui-tang-five/chapters/five-dynasties-ten-kingdoms/
     goal: Add at least six natural PDF pages of Five Dynasties-Ten Kingdoms reader prose to close the Sui-Tang-Five final body-page gap.
+    result: Added 10,081 CJK characters of source-aware, multi-polity Five Dynasties prose; local Tectonic build passed at 200 physical pages and 180 reader-and-figure pages. No PDF release or Blob sync.
   - id: acceptance-sui-depth-sui
     role: narrative
     status: in_progress

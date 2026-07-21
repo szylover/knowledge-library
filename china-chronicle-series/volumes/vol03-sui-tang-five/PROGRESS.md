@@ -66,9 +66,19 @@
 - 本次重复检查同时发现 25 个既有的 `\eventref` 尚无正文锚点，集中在五代十国的
   多政权段落，另有早唐与武周各少数节点；它们不是重复定义，未在本轮借批量锚点
   掩盖。后续须在各自的首次深描处建立锚点，并逐条复验读者路线。
-- 本轮只作测量和链接修复；PDF 与 Azure Blob 均未发布。下一轮应先补足至少
-  28 个物理页和 28 个合格连续正文页，并再次逐页排除图件和附录后再考虑验收。
-## Sui reader-body acceptance contribution（2026-07-20）
+- 本轮只作测量和链接修复；PDF 与 Azure Blob 均未发布。后续须逐页扣除图件和
+  附录，达到220物理页和190合格连续正文页后再考虑验收。
 
-- `acceptance-sui-body-sui-final` added nine source-aware Sui scenes in `chapters/sui/final-reader-pages.tex`, covering the 581 accession, 583 code, 589--590 Jiangnan reception, 605--607 eastern-capital administration, 609 Tuyuhun campaign, 612 Liaodong war, 611 Shandong uprising, and the 613--618 collapse.
-- The added reader prose contains **10,026 CJK characters** and links only to existing first-depiction anchors. `tectonic -X compile --keep-logs --outdir .build main.tex` succeeded: the complete volume is now **200 physical pages** and logs **180 reader-and-figure pages**. It remains below the volume-wide 220/190 acceptance threshold; this task does not claim final acceptance or publish a PDF.
+## 隋与五代十国正文补充（2026-07-20）
+
+- `acceptance-sui-body-sui-final` 在 `chapters/sui/final-reader-pages.tex`
+  新增九个来源限定场景，涵盖581年受禅、583年律令、589--590年江南接收、
+  605--607年东都行政、609年吐谷浑、612年辽东、611年山东起事及613--618年
+  崩解。新增 **10,026** 个CJK字符，且只链接既有首次深描锚点。
+- `acceptance-sui-body-five-final` 在
+  `chapters/five-dynasties-ten-kingdoms/long-form-reading.tex` 新增 **10,081**
+  个CJK字符的连续读者正文。场景涵盖汴州—成都接收、太原—燕云、江宁—建州、
+  广州—白藤江、开封—太原、杭州、江陵、潭州和成都，并为 `LT-959-117`
+  建立首次深描。
+- 当前本地Tectonic测量为 **200物理页 / 180个读者加图件页**；仍须在最终
+  Integrator验收中逐页扣除图件与附录。本记录不表示达到220/190门槛，PDF未发布。
