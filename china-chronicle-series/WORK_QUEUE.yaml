@@ -1782,7 +1782,11 @@ tasks:
     goal: Expand Liao and Western Xia reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct multi-language, frontier, institutional, religious, local and external scenes.
   - id: acceptance-song-yuan-depth-jin
     role: narrative
-    status: ready
+    status: in_progress
+    branch: chronicle/acceptance-song-yuan-depth-jin
+    started_at: 2026-07-21T12:05:35+08:00
+    blocked_at: 2026-07-21T12:05:35+08:00
+    blocked_reason: 'Jin reader rewrite is source-aware and non-template but measures 19,158 included CJK characters, below the required 30,000; the full-volume local build is 78 pages, but the 35 Jin-reader-page gate was not met or claimed.'
     scope:
       - volumes/vol04-song-yuan/chapters/jin/
     goal: Expand Jin reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct conquest, administration, fiscal, frontier, social and cultural scenes.
