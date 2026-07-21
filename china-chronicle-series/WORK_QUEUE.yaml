@@ -1810,7 +1810,11 @@ tasks:
     goal: Add at least five natural PDF pages of Jin frontier, migration, ecology and Jin-Mongol war reader prose.
   - id: acceptance-song-yuan-depth-liao-institutions
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-song-yuan-depth-liao-institutions
+    started_at: 2026-07-21T13:01:22+08:00
+    completed_at: 2026-07-21T13:20:00+08:00
+    result: Rewrote the Liao continuation with 9,114 CJK characters of source-aware dual-institution, frontier-market, household and diplomacy prose; private Tectonic build passed at 192 physical pages, with the new continuation occupying pages 77--83 (7 pages).
     scope:
       - volumes/vol04-song-yuan/chapters/liao/
       - volumes/vol04-song-yuan/chapters/liao-western-xia/
