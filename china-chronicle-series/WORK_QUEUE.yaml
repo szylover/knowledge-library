@@ -1802,7 +1802,10 @@ tasks:
     goal: Add at least five natural PDF pages of Jin local governance, fiscal, monetary, household and law reader prose.
   - id: acceptance-song-yuan-depth-jin-frontier
     role: narrative
-    status: ready
+    status: done
+    branch: chronicle/acceptance-song-yuan-depth-jin-frontier
+    started_at: 2026-07-21T13:01:21+08:00
+    completed_at: 2026-07-21T13:20:00+08:00
     scope:
       - volumes/vol04-song-yuan/chapters/jin/reader-border-exchange.tex
       - volumes/vol04-song-yuan/chapters/jin/reader-migration-ecology.tex
