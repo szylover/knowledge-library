@@ -179,3 +179,23 @@
 `target_file`；本次只重路由了上述四个触发 PDF 警告的 canonical 锚点，未以
 批量改写掩盖其余账本路线问题。仍须补足篇幅、清理全部路线并完成完整验收，且
 不运行发布脚本或 Blob 检查。
+
+## 账本—正文路径完整性（2026-07-21，latest main；不发布）
+
+`acceptance-song-yuan-ledger-body-integrity` 已将全部 **372** 条失效
+`target_file` 路由改为当前 `main.tex` 实际接入的叙事文件。原有
+`internal_id`、日期、政权、事件、来源、证据限度和层级均未改动；仅更新路径。
+其中 18 条已具有首次呈现锚点的事件改指其现有 canonical 文件（北宋或辽—西夏
+的 `first-depictions.tex`），其余记录改指已接入的北宋连续叙事
+`reader-depth.tex`，而非创建占位文件。
+
+增强后的 `scripts/validate-event-ledger.ps1` 对证据护照账本同时核验：
+
+- **2,200/2,200** 条 `target_file` 均为实际由卷 `main.tex` 接入的文件；
+- 全部 **96** 个现有事件锚点唯一且对应账本 ID；
+- 全部 **129** 个 `\eventref` 都能解析至现有事件锚点。
+
+验证命令 `scripts\validate-event-ledger.ps1 -Path
+volumes\vol04-song-yuan\data\event-ledger\song-yuan.csv` 已通过。此为路线与链接
+完整性修复，不改变此前的篇幅和非模板 prose 验收结论；没有构建或发布 PDF，
+没有执行下载同步，也没有访问 Blob URL。
