@@ -1792,6 +1792,36 @@ tasks:
     scope:
       - volumes/vol04-song-yuan/chapters/jin/
     goal: Expand Jin reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct conquest, administration, fiscal, frontier, social and cultural scenes.
+  - id: acceptance-song-yuan-depth-jin-fiscal
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/jin/reader-local-practices.tex
+      - volumes/vol04-song-yuan/chapters/jin/reader-households-law.tex
+      - volumes/vol04-song-yuan/chapters/jin/reader-office-road.tex
+    goal: Add at least five natural PDF pages of Jin local governance, fiscal, monetary, household and law reader prose.
+  - id: acceptance-song-yuan-depth-jin-frontier
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/jin/reader-border-exchange.tex
+      - volumes/vol04-song-yuan/chapters/jin/reader-migration-ecology.tex
+      - volumes/vol04-song-yuan/chapters/jin/reader-late-war.tex
+    goal: Add at least five natural PDF pages of Jin frontier, migration, ecology and Jin-Mongol war reader prose.
+  - id: acceptance-song-yuan-depth-liao-institutions
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/liao/
+      - volumes/vol04-song-yuan/chapters/liao-western-xia/
+    goal: Add at least five natural PDF pages of Liao dual institutions, frontier markets, local households and external diplomacy reader prose.
+  - id: acceptance-song-yuan-depth-xia-documents
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/western-xia/
+      - volumes/vol04-song-yuan/chapters/liao-western-xia/
+    goal: Add at least five natural PDF pages of Western Xia documents, religion, frontier society and multi-language diplomacy reader prose.
   - id: acceptance-song-yuan-depth-southern
     role: narrative
     status: ready
