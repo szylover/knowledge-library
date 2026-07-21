@@ -1755,7 +1755,11 @@ tasks:
     goal: Run complete Volume-I-blueprint acceptance for Song-Liao-Xia-Jin-Yuan, fix only verified integration gaps, then publish and Blob-sync if the volume reaches at least 95 percent of the acceptance matrix.
   - id: acceptance-song-yuan-focus
     role: continuity-editor
-    status: ready
+    status: blocked
+    blocked_at: 2026-07-21T11:58:48+08:00
+    blocked_reason: "Awaiting required user review of the revised vol04 depth gate before any prose, ledger, map, build, or publication work may continue."
+    branch: chronicle/acceptance-song-yuan-focus
+    started_at: 2026-07-21T11:58:48+08:00
     scope:
       - volumes/vol04-song-yuan/
       - pdf/china-chronicle/vol04-song-yuan.pdf
