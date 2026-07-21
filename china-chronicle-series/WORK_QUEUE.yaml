@@ -2141,7 +2141,10 @@ tasks:
     goal: Add at least thirty natural pages of Sui-Tang-Five reader prose across all period sections to close the 192 physical / 162 qualifying body baseline to 220 physical / 190 body pages, and repair 25 event references lacking canonical first-depiction targets.
   - id: acceptance-sui-ledger-body-integrity
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-sui-ledger-body-integrity
+    started_at: 2026-07-21T10:36:34+08:00
+    completed_at: 2026-07-21T11:00:00+08:00
     scope:
       - volumes/vol03-sui-tang-five/data/event-ledger/sui-tang-five.csv
       - volumes/vol03-sui-tang-five/chapters/
