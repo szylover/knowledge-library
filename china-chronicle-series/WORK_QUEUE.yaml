@@ -1764,6 +1764,38 @@ tasks:
       - volumes/vol04-song-yuan/
       - pdf/china-chronicle/vol04-song-yuan.pdf
     goal: Bring Song-Liao-Xia-Jin-Yuan to 100 percent reader-first Volume-I-blueprint acceptance, beginning with measured body-page baseline and expanding Northern Song, Liao-Western Xia, Jin, Southern Song, and Mongol-Yuan prose to full multi-polity book depth before final PDF and Blob verification.
+  - id: acceptance-song-yuan-depth-northern
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/northern-song/
+    goal: Expand Northern Song reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct source-aware court, fiscal, frontier, urban, local and social scenes.
+  - id: acceptance-song-yuan-depth-liao-xia
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/liao/
+      - volumes/vol04-song-yuan/chapters/liao-western-xia/
+      - volumes/vol04-song-yuan/chapters/western-xia/
+    goal: Expand Liao and Western Xia reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct multi-language, frontier, institutional, religious, local and external scenes.
+  - id: acceptance-song-yuan-depth-jin
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/jin/
+    goal: Expand Jin reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct conquest, administration, fiscal, frontier, social and cultural scenes.
+  - id: acceptance-song-yuan-depth-southern
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/southern-song/
+    goal: Expand Southern Song reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct war, fiscal, local, maritime, social and religious scenes.
+  - id: acceptance-song-yuan-depth-mongol-yuan
+    role: narrative
+    status: ready
+    scope:
+      - volumes/vol04-song-yuan/chapters/mongol-yuan/
+    goal: Expand Mongol and Yuan reader prose to at least thirty-five actual PDF pages and 30000 CJK characters through distinct conquest, multi-regional administration, fiscal, social, religious and external scenes.
   - id: acceptance-ming-final
     role: integrator
     status: ready
