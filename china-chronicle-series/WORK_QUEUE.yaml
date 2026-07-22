@@ -2301,7 +2301,11 @@ tasks:
     goal: Produce a non-publishing current Sui-Tang-Five build and record a per-page exclusion audit proving qualifying continuous body pages and each five-period reader-page total before final publication.
   - id: acceptance-sui-final-release
     role: integrator
-    status: ready
+    status: done
+    branch: chronicle/acceptance-sui-final-release
+    started_at: 2026-07-22T10:24:37+08:00
+    completed_at: 2026-07-22T10:29:01+08:00
+    result: "Accepted at 100% after current-source ledger, route, reader-surface, duplicate-prose and build review: 236 physical and 208 qualifying body pages; root PDF rebuilt, full download sync completed, and the direct Blob URL returned HTTP 200."
     scope:
       - volumes/vol03-sui-tang-five/
       - pdf/china-chronicle/vol03-sui-tang-five.pdf

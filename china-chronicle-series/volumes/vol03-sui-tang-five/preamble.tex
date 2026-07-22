@@ -8,6 +8,7 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{tikz}
+\usepackage{xstring}
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{breakable,skins}
 
@@ -33,7 +34,7 @@
 
 % Keep event links compatible with the established Volume I anchor format.
 \providecommand{\eventid}[1]{\textcolor{dynasty}{\footnotesize\textsf{〔#1〕}}}
-\providecommand{\eventanchor}[2]{\hypertarget{evt:#1}{\eventid{#2}}}
+\providecommand{\eventanchor}[2]{\hypertarget{evt:#1}{\IfBeginWith{#2}{ST-}{}{\IfBeginWith{#2}{LT-}{}{\eventid{#2}}}}}
 \providecommand{\eventref}[2]{\hyperlink{evt:#1}{\textcolor{dynasty}{〔#2〕}}}
 
 \newtcolorbox{event}[1]{
