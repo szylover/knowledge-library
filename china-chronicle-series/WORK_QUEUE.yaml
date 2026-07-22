@@ -822,7 +822,9 @@ tasks:
   - id: vol06-prose-standard
     volume: vol06-qing-1912
     role: narrative
-    status: ready
+    status: in_progress
+    branch: chronicle/vol06-prose-standard
+    started_at: 2026-07-22T10:36:43+08:00
     scope: [chapters/]
     goal: Expand initial Qing narrative clusters from verified ledger events.
 
