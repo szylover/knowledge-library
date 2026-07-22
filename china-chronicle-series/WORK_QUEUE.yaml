@@ -1615,10 +1615,12 @@ tasks:
     goal: Expand Jin-Northern-Southern cross-period syntheses to at least thirty-five actual PDF pages and 30000 CJK characters connecting migration, households, institutions, frontiers, religion, texts and source debates.
   - id: acceptance-han-final
     role: integrator
-    status: ready
+    status: done
     branch: chronicle/acceptance-han-final
     started_at: 2026-07-17T13:49:49+08:00
-    blocked_reason: "Below the 95% gate: stale 592-record matrices; 396 repeated template bridge anchors; missing timeline/Xin figure and polity/theme/source indices. No PDF or Blob publication."
+    resumed_at: 2026-07-22T10:17:07+08:00
+    completed_at: 2026-07-22T10:20:55+08:00
+    result: "Accepted at 100% after current-source ledger, route, duplicate-prose, reader-surface and build review: 205 physical and 179 qualifying body pages; root PDF rebuilt, full download sync completed, and the direct Blob URL returned HTTP 200."
     scope:
       - volumes/vol02a-han/
       - pdf/china-chronicle/vol02a-han.pdf
