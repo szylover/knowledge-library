@@ -94,8 +94,35 @@ $auxiliarySchemas = @(
         Columns = @('chronological_band', 'actioner_representation', 'record_count', 'gap_status')
     },
     [pscustomobject]@{
+        Name    = 'coverage-actioner-gap-extended'
+        Columns = @(
+            'chronological_band',
+            'actioner_representation',
+            'record_count',
+            'target_or_required_bridge',
+            'material_density',
+            'source_limit',
+            'uncovered_event_type',
+            'supplementation_route',
+            'gap_status'
+        )
+    },
+    [pscustomobject]@{
         Name    = 'coverage-year-gap'
         Columns = @('year_ce', 'record_count', 'gap_status')
+    },
+    [pscustomobject]@{
+        Name    = 'coverage-year-gap-extended'
+        Columns = @(
+            'year_ce',
+            'record_count',
+            'target_or_required_bridge',
+            'material_density',
+            'source_limit',
+            'uncovered_event_type',
+            'supplementation_route',
+            'gap_status'
+        )
     },
     [pscustomobject]@{
         Name    = 'ledger-schema'
@@ -281,6 +308,7 @@ function Test-EventLedger {
     $parser = $null
     $includedTexFiles = $null
     $markerAudit = $null
+    $hasRecordClassification = $false
 
     try {
         $parser = [Microsoft.VisualBasic.FileIO.TextFieldParser]::new(
@@ -328,6 +356,8 @@ function Test-EventLedger {
                 for ($index = 0; $index -lt $schema.Columns.Count; $index++) {
                     $columnPositions[$schema.Columns[$index]] = $index
                 }
+                $hasRecordClassification = $schema.PSObject.Properties.Match('HasRecordClassification').Count -gt 0 -and
+                    $schema.HasRecordClassification
                 if ($schema.ValidateNarrativeTargets) {
                     try {
                         $includedTexFiles = Get-IncludedTexFiles -VolumeRoot $File.Directory.Parent.Parent
@@ -386,7 +416,7 @@ function Test-EventLedger {
                             )
                         }
 
-                        if ($schema.HasRecordClassification) {
+                        if ($hasRecordClassification) {
                             $classification = $fields[$columnPositions['record_classification']].Trim()
                             if ($allowedRecordClassifications -cnotcontains $classification) {
                                 Add-Issue -Issues $issues -Message (
@@ -396,13 +426,13 @@ function Test-EventLedger {
                         }
                     }
 
-                    if ((-not $schema.HasRecordClassification -or $classification -eq 'event_included') -and
+                    if ((-not $hasRecordClassification -or $classification -eq 'event_included') -and
                         -not [string]::IsNullOrWhiteSpace($id)) {
                         [void]$includedIds.Add($id)
                     }
 
                     if ($schema.ValidateNarrativeTargets -and $null -ne $includedTexFiles -and
-                        (-not $schema.HasRecordClassification -or $classification -eq 'event_included')) {
+                        (-not $hasRecordClassification -or $classification -eq 'event_included')) {
                         $target = $fields[$columnPositions['target']].Trim()
                         $targetPath = [System.IO.Path]::GetFullPath((
                             Join-Path $File.Directory.Parent.Parent.FullName $target.Replace('/', [System.IO.Path]::DirectorySeparatorChar)
