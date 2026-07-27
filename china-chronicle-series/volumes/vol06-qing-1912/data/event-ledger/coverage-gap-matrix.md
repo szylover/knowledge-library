@@ -36,7 +36,7 @@
 | 1796-1840_jiaqing_daoguang | 蒙古与草原 | 0 | 0；材料空白，不以推断补齐 | 空带：理藩院分类与蒙文地方记录并不对称 | 理藩院分类与蒙文地方记录并不对称 | 牧地、寺院、盟旗内部协商 | 满汉蒙档、盟旗文书与俄蒙材料 |
 | 1796-1840_jiaqing_daoguang | 新疆与中亚边地 | 8 | 维持 8；必要桥接 0 | 可用：方略偏重凯旋叙事，绿洲地方文书不齐 | 方略偏重凯旋叙事，绿洲地方文书不齐；本格以annalistic_selection_limit、narrative_perspective_limit、official_administrative_scope_limit为主 | 水利、税役、安置与跨中亚贸易 | 维吾尔文、满汉档、城址与中亚档 |
 | 1796-1840_jiaqing_daoguang | 青藏高原与喜马拉雅 | 0 | 0；材料空白，不以推断补齐 | 空带：汉文驻藏叙事不能代替藏文地方时间线 | 汉文驻藏叙事不能代替藏文地方时间线 | 寺院、噶厦与道路补给 | 藏文档、寺院文书、满汉档与邻国材料 |
-| 1796-1840_jiaqing_daoguang | 西南山地与西南边务 | 2 | 0；材料空白，不以推断补齐 | 空带：官方族类和战报不能概括社区经验 | 官方族类和战报不能概括社区经验 | 矿业、迁徙、土司网络与战后土地 | 土司档、地方志、碑刻及苗彝文材料 |
+| 1796-1840_jiaqing_daoguang | 西南山地与西南边务 | 2 | 维持 2；必要桥接 0 | 有限：官方族类和战报不能概括社区经验 | 官方族类和战报不能概括社区经验 | 矿业、迁徙、土司网络与战后土地 | 土司档、地方志、碑刻及苗彝文材料 |
 | 1796-1840_jiaqing_daoguang | 台湾、海疆与口岸 | 25 | 维持 25；必要桥接 0 | 较密：港口记录、殖民材料与原住民材料保存层次不同 | 港口记录、殖民材料与原住民材料保存层次不同；本格以annalistic_selection_limit、narrative_perspective_limit、official_administrative_scope_limit为主 | 原住民、渔商、航路与地方土地关系 | 台湾档、契约、航海日志、荷日文及港口记录 |
 | 1796-1840_jiaqing_daoguang | 跨境外交与外国行动者 | 8 | 维持 8；必要桥接 0 | 可用：条约和外交照会证明文本与交涉，不等于地方执行 | 条约和外交照会证明文本与交涉，不等于地方执行；本格以annalistic_selection_limit、narrative_perspective_limit、official_administrative_scope_limit为主 | 翻译、领事网络、边界执行与居民经验 | 中外文本、外交档、海关档与地方材料 |
 | 1796-1840_jiaqing_daoguang | 竞争政权、战争与地方动员 | 20 | 维持 20；必要桥接 0 | 可用：官修胜败叙事与动员材料均有立场 | 官修胜败叙事与动员材料均有立场；本格以annalistic_selection_limit、narrative_perspective_limit、official_administrative_scope_limit为主 | 兵员、逃散、伤亡与城乡社会 | 对手文书、地方档、日记、报刊与遗址 |
