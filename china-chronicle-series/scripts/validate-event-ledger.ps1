@@ -36,6 +36,7 @@ $acceptanceColumns = @(
     'spatial_scope',
     'source_caveat_class'
 )
+$recordClassificationColumn = @('record_classification')
 $acceptedSchemas = @(
     [pscustomobject]@{
         Name                = 'legacy-10'
@@ -76,6 +77,15 @@ $acceptedSchemas = @(
         HasEvidencePassport = $true
         HasTier             = $true
         ValidateNarrativeTargets = $false
+    },
+    [pscustomobject]@{
+        Name                = 'acceptance-evidence-20-classified'
+        Columns             = @($legacyColumns + $passportColumns + $acceptanceColumns + $recordClassificationColumn)
+        RequiredColumns     = @($legacyColumns + $passportColumns + $acceptanceColumns + $recordClassificationColumn)
+        HasEvidencePassport = $true
+        HasTier             = $true
+        HasRecordClassification = $true
+        ValidateNarrativeTargets = $false
     }
 )
 $auxiliarySchemas = @(
@@ -110,6 +120,7 @@ $allowedEvidenceTypes = @(
     'local_record'
 )
 $allowedTiers = @('A', 'B', 'C')
+$allowedRecordClassifications = @('event_included', 'maintenance_excluded')
 
 function Test-ColumnSequence {
     param(
@@ -372,6 +383,15 @@ function Test-EventLedger {
                             Add-Issue -Issues $issues -Message (
                                 "Data row $recordCount has unsupported tier '$tier'."
                             )
+                        }
+
+                        if ($schema.HasRecordClassification) {
+                            $classification = $fields[$columnPositions['record_classification']].Trim()
+                            if ($allowedRecordClassifications -cnotcontains $classification) {
+                                Add-Issue -Issues $issues -Message (
+                                    "Data row $recordCount has unsupported record_classification '$classification'."
+                                )
+                            }
                         }
                     }
 
