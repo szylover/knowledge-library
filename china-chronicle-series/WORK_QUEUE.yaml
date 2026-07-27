@@ -1903,10 +1903,12 @@ tasks:
     goal: Add at least five natural PDF pages of Mongol-Yuan conquest, maritime, multilingual, religious and late-crisis reader prose.
   - id: acceptance-ming-final
     role: integrator
-    status: in_progress
+    status: done
     branch: chronicle/acceptance-ming-final
     started_at: 2026-07-17T17:01:25+08:00
     resumed_at: 2026-07-21T14:30:00+08:00
+    completed_at: 2026-07-27T13:32:53+08:00
+    result: "Accepted at 100%: 1,501 ledger records valid, 279/279 A/B first depictions anchored, current 202-page PDF published and Blob SHA-256 verified."
     scope:
       - volumes/vol05-ming/
       - pdf/china-chronicle/vol05-ming.pdf
@@ -1943,11 +1945,11 @@ tasks:
     goal: Replace the remaining 331 Ming causal/consequence and fiscal/disaster template patterns with reign-period-specific clusters using distinct sources, places, actioners and outcomes before strict revalidation.
   - id: acceptance-qing-final
     role: integrator
-    status: ready
+    status: done
     branch: chronicle/acceptance-qing-final
     started_at: 2026-07-17T16:29:06+08:00
-    blocked_at: 2026-07-17T16:47:49+08:00
-    blocked_reason: "Strict latest-main validation after the Qing cluster rewrite is 4/8 (50.00%), below the 95% gate: 1,398 of 1,412 ledger IDs lack first-depiction anchors, so 1,398 appendix navigation links have no target and regional balance cannot be evidenced at ledger scale. The retired template markers are absent, but deletion does not replace them with source-aware prose. Criterion 8 is gate-blocked. No root PDF build, Blob sync, or direct URL verification was run."
+    completed_at: 2026-07-27T13:27:52+08:00
+    result: "Accepted at 100% after classifying 592 real ledger events separately from maintenance records, completing 342/342 A/B first depictions, removing templates and duplicate routes, validating a 226-page current candidate, and completing release verification."
     scope:
       - volumes/vol06-qing-1912/
       - pdf/china-chronicle/vol06-qing-1912.pdf
