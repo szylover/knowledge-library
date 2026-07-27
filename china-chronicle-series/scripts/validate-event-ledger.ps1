@@ -37,6 +37,7 @@ $acceptanceColumns = @(
     'source_caveat_class'
 )
 $recordClassificationColumn = @('record_classification')
+$coverageActionSpaceColumn = @('coverage_action_space')
 $acceptedSchemas = @(
     [pscustomobject]@{
         Name                = 'legacy-10'
@@ -85,6 +86,22 @@ $acceptedSchemas = @(
         HasEvidencePassport = $true
         HasTier             = $true
         HasRecordClassification = $true
+        ValidateNarrativeTargets = $true
+    },
+    [pscustomobject]@{
+        Name                = 'acceptance-evidence-21-classified-action-space'
+        Columns             = @(
+            $legacyColumns + $passportColumns + $acceptanceColumns +
+            $recordClassificationColumn + $coverageActionSpaceColumn
+        )
+        RequiredColumns     = @(
+            $legacyColumns + $passportColumns + $acceptanceColumns +
+            $recordClassificationColumn + $coverageActionSpaceColumn
+        )
+        HasEvidencePassport = $true
+        HasTier             = $true
+        HasRecordClassification = $true
+        HasCoverageActionSpace = $true
         ValidateNarrativeTargets = $true
     }
 )
@@ -148,6 +165,18 @@ $allowedEvidenceTypes = @(
 )
 $allowedTiers = @('A', 'B', 'C')
 $allowedRecordClassifications = @('event_included', 'maintenance_excluded')
+$allowedCoverageActionSpaces = @(
+    'manchuria_northeast',
+    'mongolia_steppe',
+    'xinjiang_central_asia_frontier',
+    'tibetan_plateau_himalaya',
+    'southwest_highlands_frontier',
+    'taiwan_maritime_ports',
+    'crossborder_diplomacy_foreign_actors',
+    'rival_polities_war_local_mobilization',
+    'qing_court_interior_provinces_local_society',
+    'maintenance_excluded'
+)
 
 function Test-ColumnSequence {
     param(
@@ -294,6 +323,67 @@ function Add-Issue {
     [void]$Issues.Add($Message)
 }
 
+function Test-CoverageMatrix {
+    param(
+        [System.IO.FileInfo]$LedgerFile,
+        [hashtable]$IncludedCoverageCounts,
+        [int]$IncludedRecordCount
+    )
+
+    $issues = [System.Collections.Generic.List[string]]::new()
+    $matrixPath = Join-Path $LedgerFile.Directory.FullName 'coverage-gap-matrix.md'
+    if (-not (Test-Path -LiteralPath $matrixPath -PathType Leaf)) {
+        Add-Issue -Issues $issues -Message "Cannot find coverage matrix: $matrixPath"
+        return $issues
+    }
+
+    $matrixCounts = @{}
+    foreach ($line in [System.IO.File]::ReadLines($matrixPath)) {
+        if ($line -match '^\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*(\d+)\s*\|.*\|\s*([a-z_]+)\|\s*$') {
+            $band = $matches[1].Trim()
+            $count = [int]$matches[3]
+            $actionSpace = $matches[4].Trim()
+            if ($allowedCoverageActionSpaces -cnotcontains $actionSpace -or
+                $actionSpace -eq 'maintenance_excluded') {
+                continue
+            }
+
+            $key = "$band, $actionSpace"
+            if ($matrixCounts.ContainsKey($key)) {
+                Add-Issue -Issues $issues -Message "Coverage matrix repeats '$key'."
+            }
+            else {
+                $matrixCounts[$key] = $count
+            }
+        }
+    }
+
+    if ($matrixCounts.Count -eq 0) {
+        Add-Issue -Issues $issues -Message 'Coverage matrix has no parseable action-space rows.'
+        return $issues
+    }
+
+    $matrixTotal = ($matrixCounts.Values | Measure-Object -Sum).Sum
+    if ($matrixTotal -ne $IncludedRecordCount) {
+        Add-Issue -Issues $issues -Message (
+            "Coverage matrix total $matrixTotal does not equal included ledger total $IncludedRecordCount."
+        )
+    }
+
+    $allKeys = @($matrixCounts.Keys + $IncludedCoverageCounts.Keys | Sort-Object -Unique)
+    foreach ($key in $allKeys) {
+        $matrixCount = if ($matrixCounts.ContainsKey($key)) { $matrixCounts[$key] } else { 0 }
+        $ledgerCount = if ($IncludedCoverageCounts.ContainsKey($key)) { $IncludedCoverageCounts[$key] } else { 0 }
+        if ($matrixCount -ne $ledgerCount) {
+            Add-Issue -Issues $issues -Message (
+                "Coverage matrix '$key' is $matrixCount; included ledger rows are $ledgerCount."
+            )
+        }
+    }
+
+    return $issues
+}
+
 function Test-EventLedger {
     param(
         [System.IO.FileInfo]$File
@@ -309,6 +399,9 @@ function Test-EventLedger {
     $includedTexFiles = $null
     $markerAudit = $null
     $hasRecordClassification = $false
+    $hasCoverageActionSpace = $false
+    $includedCoverageCounts = @{}
+    $includedRecordCount = 0
 
     try {
         $parser = [Microsoft.VisualBasic.FileIO.TextFieldParser]::new(
@@ -358,6 +451,8 @@ function Test-EventLedger {
                 }
                 $hasRecordClassification = $schema.PSObject.Properties.Match('HasRecordClassification').Count -gt 0 -and
                     $schema.HasRecordClassification
+                $hasCoverageActionSpace = $schema.PSObject.Properties.Match('HasCoverageActionSpace').Count -gt 0 -and
+                    $schema.HasCoverageActionSpace
                 if ($schema.ValidateNarrativeTargets) {
                     try {
                         $includedTexFiles = Get-IncludedTexFiles -VolumeRoot $File.Directory.Parent.Parent
@@ -423,12 +518,45 @@ function Test-EventLedger {
                                     "Data row $recordCount has unsupported record_classification '$classification'."
                                 )
                             }
+
+                            if ($hasCoverageActionSpace) {
+                                $coverageActionSpace = $fields[$columnPositions['coverage_action_space']].Trim()
+                                if ($allowedCoverageActionSpaces -cnotcontains $coverageActionSpace) {
+                                    Add-Issue -Issues $issues -Message (
+                                        "Data row $recordCount has unsupported coverage_action_space '$coverageActionSpace'."
+                                    )
+                                }
+                                elseif ($classification -eq 'maintenance_excluded' -and
+                                    $coverageActionSpace -ne 'maintenance_excluded') {
+                                    Add-Issue -Issues $issues -Message (
+                                        "Data row $recordCount is maintenance_excluded but coverage_action_space is '$coverageActionSpace'."
+                                    )
+                                }
+                                elseif ($classification -eq 'event_included' -and
+                                    $coverageActionSpace -eq 'maintenance_excluded') {
+                                    Add-Issue -Issues $issues -Message (
+                                        "Data row $recordCount is event_included but coverage_action_space is maintenance_excluded."
+                                    )
+                                }
+                            }
                         }
                     }
 
                     if ((-not $hasRecordClassification -or $classification -eq 'event_included') -and
                         -not [string]::IsNullOrWhiteSpace($id)) {
                         [void]$includedIds.Add($id)
+                    }
+                    if ($hasRecordClassification -and $classification -eq 'event_included') {
+                        $includedRecordCount++
+                        if ($hasCoverageActionSpace -and
+                            $allowedCoverageActionSpaces -ccontains $coverageActionSpace -and
+                            $coverageActionSpace -ne 'maintenance_excluded') {
+                            $key = "$($fields[$columnPositions['chronological_band']].Trim()), $coverageActionSpace"
+                            if (-not $includedCoverageCounts.ContainsKey($key)) {
+                                $includedCoverageCounts[$key] = 0
+                            }
+                            $includedCoverageCounts[$key]++
+                        }
                     }
 
                     if ($schema.ValidateNarrativeTargets -and $null -ne $includedTexFiles -and
@@ -465,6 +593,12 @@ function Test-EventLedger {
                             Add-Issue -Issues $issues -Message (
                                 "Included narrative event reference '$reference' has no matching event anchor."
                             )
+                        }
+                    }
+
+                    if ($hasCoverageActionSpace -and $File.Name -eq 'qing-1912.csv') {
+                        foreach ($matrixIssue in (Test-CoverageMatrix -LedgerFile $File -IncludedCoverageCounts $includedCoverageCounts -IncludedRecordCount $includedRecordCount)) {
+                            Add-Issue -Issues $issues -Message $matrixIssue
                         }
                     }
                 }
