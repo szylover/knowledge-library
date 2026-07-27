@@ -85,7 +85,7 @@ $acceptedSchemas = @(
         HasEvidencePassport = $true
         HasTier             = $true
         HasRecordClassification = $true
-        ValidateNarrativeTargets = $false
+        ValidateNarrativeTargets = $true
     }
 )
 $auxiliarySchemas = @(
@@ -274,6 +274,7 @@ function Test-EventLedger {
 
     $issues = [System.Collections.Generic.List[string]]::new()
     $seenIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    $includedIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
     $recordCount = 0
     $schema = $null
     $skipSchema = $null
@@ -395,7 +396,13 @@ function Test-EventLedger {
                         }
                     }
 
-                    if ($schema.ValidateNarrativeTargets -and $null -ne $includedTexFiles) {
+                    if ((-not $schema.HasRecordClassification -or $classification -eq 'event_included') -and
+                        -not [string]::IsNullOrWhiteSpace($id)) {
+                        [void]$includedIds.Add($id)
+                    }
+
+                    if ($schema.ValidateNarrativeTargets -and $null -ne $includedTexFiles -and
+                        (-not $schema.HasRecordClassification -or $classification -eq 'event_included')) {
                         $target = $fields[$columnPositions['target']].Trim()
                         $targetPath = [System.IO.Path]::GetFullPath((
                             Join-Path $File.Directory.Parent.Parent.FullName $target.Replace('/', [System.IO.Path]::DirectorySeparatorChar)
@@ -416,7 +423,7 @@ function Test-EventLedger {
                                 "Event anchor '$($anchor.Key)' is declared $($anchor.Value.Count) times in included narrative files."
                             )
                         }
-                        if (-not $seenIds.Contains($anchor.Key)) {
+                        if (-not $includedIds.Contains($anchor.Key)) {
                             Add-Issue -Issues $issues -Message (
                                 "Included narrative anchor '$($anchor.Key)' has no matching ledger id."
                             )
