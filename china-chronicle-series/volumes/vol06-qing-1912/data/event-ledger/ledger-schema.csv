@@ -1,4 +1,4 @@
-"field","required","controlled_values_or_format","evidence_boundary"
+﻿"field","required","controlled_values_or_format","evidence_boundary"
 "id","yes","stable nonempty identifier","preserved ledger identifier"
 "date","yes","source-facing date string","does not replace original reign, lunar, or conversion qualification"
 "polity","yes","source-facing polity or action-space label","not an exhaustive list of actors"
@@ -18,3 +18,4 @@
 "actioner_representation","yes","semicolon-separated controlled categories","record-wording index, not an exhaustive agency claim"
 "spatial_scope","yes","imperial_or_multi_regional, local_or_provincial, frontier_or_borderland, maritime_or_transregional","record-wording index, not a precise territorial reconstruction"
 "source_caveat_class","yes","controlled evidence-limit class","audit aid; source_caveat remains the controlling qualification"
+"record_classification","yes","event_included, maintenance_excluded","event_included alone is counted in coverage denominators; maintenance_excluded preserves editorial PRELUDE, DECISION, and AFTERMATH scaffolds without asserting a separate historical event"
