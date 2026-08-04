@@ -73,6 +73,16 @@ session、context compaction、Provider prompt cache、KV cache 边界、extensi
 
 ---
 
+## 🌍 托福 100+ 在职学习
+
+### 在职 24 周新版托福 100+ 学习全书 — `toefl-100-plus-book/`（161 页）
+
+面向在职学习者的 2026 新版 TOEFL iBT 中文自学教材。覆盖入门诊断、24 周路线、词汇语法发音、听说读写、原创练习、阶段测验、两套压缩模考、评分复盘、*Sapiens* 辅助阅读和 ChatGPT 口语陪练。
+
+👉 [阅读说明](./toefl-100-plus-book/README.md) · [下载 PDF](./pdf/toefl-100-plus-book.pdf)
+
+---
+
 ## 📖 数学部分
 
 ### 线性代数 — `linear-algebra-book/`（241 页）
@@ -142,6 +152,7 @@ cd physics-textbook && lualatex main.tex && lualatex main.tex
 | `physics-textbook.pdf` | 270 |
 | `physics-exercises.pdf` | 157 |
 | `pi-learning-book.pdf` | 50 |
+| `toefl-100-plus-book.pdf` | 161 |
 
 ## 目录结构
 
@@ -154,6 +165,7 @@ cd physics-textbook && lualatex main.tex && lualatex main.tex
 ├── cpp-to-java-algo-book/     # 《C++ 到 Java 算法与数据结构》
 ├── claude-code-book/          # 《深入剖析 Claude Code》技术书 (17章)
 ├── pi-learning-book/           # 《系统理解 Pi》源码学习教材
+├── toefl-100-plus-book/        # 《在职 24 周新版托福 100+ 学习全书》
 ├── china-chronicle-series/    # 《中国通史》系列
 ├── linear-algebra-book/       # 线性代数
 ├── abstract-algebra-book/     # 抽象代数
