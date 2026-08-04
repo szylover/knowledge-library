@@ -12,16 +12,18 @@
 - *Sapiens* 辅助阅读支线
 - ChatGPT 口语陪练提示词与记录表
 
-当前 PDF 为 161 页 A4 精编版：
+当前 PDF 成品（均为 A4）：
 
-- [下载 PDF](../pdf/toefl-100-plus-book.pdf)
+- [主教材：792 页](../pdf/toefl-100-plus-book.pdf)
+- [可打印训练附册：98 页](../pdf/toefl-100-plus-printables.pdf)
+- [完整合并版：888 页](../pdf/toefl-100-plus-complete.pdf)
 - [阅读源稿](./book/00-使用说明与诊断.md)
 
 ## 使用边界
 
-本书可替代 Delta 的大部分渐进训练用途，但不能完全替代 OG 或 ETS 官方样题。OG 和官方材料仍用于校准正式题型、难度、界面及评分标准。本书不保证仅凭完成页数即可取得 100+。
+本书不是 ETS 官方材料，不能完全替代 OG、ETS 当期 Test Specifications 或官方样题；它们仍用于核对正式题型、难度、界面和评分说明。Delta 仅可作为可选训练补充：本书不依赖、不复制、也不冒充 Delta。本书不保证完成页数或训练任务即可取得旧分制 100+、新版约 5 分档或任何录取结果。
 
-所有练习均为原创，不复制 OG、Delta、TPO、*Sapiens* 或考试回忆题原文。
+所有练习均为原创，不复制 OG、Delta、TPO、*Sapiens*、真题、机经或考试回忆题原文；*Sapiens* 只作为读者合法取得的辅助阅读，非考试材料。
 
 ## 编译
 
@@ -36,4 +38,4 @@
 .\scripts\build.ps1
 ```
 
-成品输出到仓库根目录的 `pdf/toefl-100-plus-book.pdf`。
+成品输出到仓库根目录的 `pdf/`：主教材、可打印训练附册和完整合并版各一份。

@@ -13,10 +13,15 @@
 \setlength{\parindent}{2em}
 \setlength{\parskip}{0.25em}
 \setlength{\emergencystretch}{3em}
-\setlist{nosep,leftmargin=2em}
+\setlist{nosep,leftmargin=2.5em}
 \renewcommand{\arraystretch}{1.12}
 \AtBeginEnvironment{longtable}{\small\setlength{\tabcolsep}{3pt}}
 \setcounter{secnumdepth}{2}
+\makeatletter
+\renewcommand{\@pnumwidth}{2.1em}
+\makeatother
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter}{}}
+\renewcommand{\_}{\textunderscore\discretionary{}{}{}}
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small 在职 24 周新版托福 100+ 学习全书}

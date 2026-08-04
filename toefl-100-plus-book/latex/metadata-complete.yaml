@@ -1,0 +1,31 @@
+---
+title: "在职 24 周新版托福 100+ 学习全书：完整合并版"
+subtitle: "750+ 页主教材与可打印训练附册"
+author: "为在职自学者编写"
+date: "2026-08-04"
+lang: zh-CN
+documentclass: ctexbook
+classoption:
+  - openany
+  - oneside
+papersize: a4
+fontsize: 11pt
+geometry:
+  - top=22mm
+  - bottom=24mm
+  - left=22mm
+  - right=22mm
+toc: true
+toc-depth: 2
+numbersections: true
+colorlinks: true
+linkcolor: NavyBlue
+urlcolor: RoyalBlue
+CJKmainfont: "Microsoft YaHei"
+CJKsansfont: "Microsoft YaHei UI"
+mainfont: "DejaVu Serif"
+sansfont: "DejaVu Sans"
+monofont: "DejaVu Sans Mono"
+header-includes:
+  - \input{latex-header.tex}
+---

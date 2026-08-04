@@ -1,0 +1,32 @@
+---
+title: "新版托福 100+ 可打印训练附册"
+subtitle: "答题纸 · 作文纸 · 口语记录 · 错题复盘 · 24 周打卡"
+author: "为在职自学者编写"
+date: "2026-08-04"
+lang: zh-CN
+documentclass: ctexbook
+classoption:
+  - openany
+  - oneside
+papersize: a4
+fontsize: 11pt
+geometry:
+  - top=18mm
+  - bottom=18mm
+  - left=18mm
+  - right=18mm
+toc: true
+toc-depth: 2
+numbersections: true
+colorlinks: true
+linkcolor: NavyBlue
+urlcolor: RoyalBlue
+CJKmainfont: "Microsoft YaHei"
+CJKsansfont: "Microsoft YaHei UI"
+mainfont: "DejaVu Serif"
+sansfont: "DejaVu Sans"
+monofont: "DejaVu Sans Mono"
+header-includes:
+  - \input{latex-header.tex}
+  - \input{latex-printables-header.tex}
+---
