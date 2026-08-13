@@ -37,6 +37,41 @@ Duolingo 把这一轮单独拿出来，并不奇怪。\srcofficial\footnote{\url
 经典失败样子是：候选人读到第一行就说“这个类名不够好”“这里可以用 \code{also}”，然后五分钟后才发现代码会在 Fragment view 销毁后更新 UI。面试官会认为你缺乏工程风险排序。查错轮不是 lint 竞赛；Duolingo 已经有 detekt、ktlint、Android Lint 和 Splinter \srcofficial\footnote{\url{https://blog.duolingo.com/migrating-duolingos-android-app-to-100-kotlin/}}，他们需要的是能补足机器规则之外判断的人。
 \end{pitfall}
 
+\section{最常被问的一个问题：要不要动手改代码？}
+
+几乎每个准备这一轮的人都会卡在同一个问题上：Code Review 到底是让我口头挑毛病，还是让我把代码改对？
+
+先看官方定义。\srcofficial\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}} 官方对这一轮的完整描述只有一句：“You'll \textbf{identify issues and suggest improvements} to a set of code changes.” 三个信息量都在这句里：
+
+\begin{itemize}
+  \item \textbf{动词是 identify 与 suggest，不是 fix。} 这一轮没有“把测试跑绿”这种验收标准。评分看的是你能否发现问题、排出优先级、并把理由讲清楚。
+  \item \textbf{对象是 a set of code changes，}也就是一个改动集或 PR，而不是一张白纸。所以你的工作是逐处定位、定性、给方向，不是从零实现一个功能。
+  \item \textbf{“我们会帮你导航”。}官方明确说，如果评审代码对你是新事物，不用担心，面试官会引导。这也侧面说明它考的不是熟练度，而是判断力。
+\end{itemize}
+
+更有说服力的是轮次分工：Duolingo 另外单独设了 75 分钟的 Pair Programming 轮，明确让你“在与生产环境相似的代码库里写代码”。\srcofficial\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}} 如果 Code Review 轮也是让你埋头改代码，这两轮就重复了。把它们分开设计，本身就是答案：\textbf{Pair Programming 考“你能不能改”，Code Review 考“你能不能判断”}。
+
+\begin{keypoint}[一句话结论]
+以评审为主：找问题、排优先级、给出改进建议。不要求你把代码改到能编译能跑。但每条问题都必须附一个\textbf{具体的改法}，而不是停在“这里有风险”。
+\end{keypoint}
+
+不过有个现实补充，别被上面的结论带偏。这一轮在 CodeSignal 上进行，你面前是一个真的编辑器。\srccommunity 候选人报告里，面试官顺势追问“那你会怎么改”“把这段写出来看看”是常见的。所以实际打法是：
+
+\begin{enumerate}
+  \item \textbf{默认走口头评审}，按上一节的优先级阶梯从崩溃、ANR、数据丢失讲起，边读边说。
+  \item \textbf{每条问题给出一句话级别的具体改法}：不是“协程用法有问题”，而是“把 \code{GlobalScope.launch} 换成 \code{viewModelScope.launch}，这样页面销毁时请求会随作用域一起取消”。这一步是及格线与高分的分水岭。
+  \item \textbf{被要求写，就只写那一小段。}写出修正后的三五行，写完立刻回到评审主线。
+  \item \textbf{不要主动重构整个文件。}60 分钟里主动大改，通常不会被读成能力强，而是被读成不会取舍——而取舍恰恰是这一轮在考的东西。
+\end{enumerate}
+
+\begin{pitfall}[两种极端都会扣分]
+一端是只报警不给方案：把十个问题念一遍，每个都停在“这样不好”，面试官无法判断你是否真的懂。另一端是一上来就闷头重写：还没说清风险优先级，就开始大段敲代码，时间烧掉一半，而最严重的那个崩溃点可能压根没被提到。稳的做法在中间——\textbf{以评审为骨架，用最小的代码片段做论据}。
+\end{pitfall}
+
+\begin{sayit}[被问“你会怎么改”时的模板]
+“这里我会做最小改动：把 \code{GlobalScope} 换成 \code{viewModelScope}，这样不引入新依赖也不改调用方。如果这个仓库已经在别处统一注入 dispatcher，我会顺手让它也走注入，方便测试——但那属于第二优先级，可以放到后续 PR。”
+\end{sayit}
+
 \section{一遍读、两遍读、三遍读}
 
 不要从第一行开始逐字抠。60 分钟看似很长，但真实代码一旦有两个文件、三层调用和几个异步边界，时间很快被细节吞掉。推荐用三遍读法。
