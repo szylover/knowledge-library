@@ -272,6 +272,102 @@ class SessionRepository(
 不要把所有问题都塞进一个“更 Kotlin”的重写里。真正的修复顺序是：先把崩溃路径变成状态，再把线程契约收进 Repository，最后再清理重复表达。这样面试官能看到你是在按风险推进，而不是在炫技。
 \end{pitfall}
 
+\section{Checklist 生成不出来的三类问题}
+
+上面那次演练里，前两条（\code{!!} 崩溃、线程契约）是 checklist 直接能扫出来的：你认得 \code{!!}、认得 \code{first()}、认得 Repository 没切 dispatcher。但后三条不是——数据一致性、可测试性、重复表达式，在任何“Kotlin 常见坑”清单里都查不到，因为它们不是 API 知识，而是三个\textbf{提问习惯}。
+
+这也是查错轮拉开差距的地方。能报崩溃的人很多；能在崩溃之外还看出“这个数字不该由客户端算”的人少。下面把这三个习惯拆开讲，每个都给一个可以在代码上直接执行的扫描动作。
+
+\subsection{习惯一：这个数字的权威来源是谁？}
+
+回到那段代码的这一行：
+
+\begin{kotlin}
+streakText = "${user.streakDays + 1} day streak"
+\end{kotlin}
+
+单看语法完全正确，不会崩，不会泄漏，也不慢。它的问题在别处：\textbf{客户端在重算一个服务端已经算过的数字}。
+
+连胜不是简单的“今天做了课就加一天”。它至少还取决于：今天是不是已经完成过一节课（那就该 \code{+0}）、用户是否用了连胜冻结、以及“一天”按哪个时区的哪个时刻切换。这些规则都在服务端。客户端写死 \code{+ 1}，等于把一份业务规则复制了一遍，而复制出来的那份一定会先过期。
+
+更关键的证据就在同一段代码里：\code{session} 是服务端返回的结算结果，它\textbf{本来就应该带着结算后的 streak}。客户端越过一个权威字段去自己算，这是评审里非常明确的信号。
+
+\begin{idea}[扫描动作：在 UI 组装代码里找算术]
+读到把数据拼成 UI 文案的那几行时，专门扫一遍\textbf{运算符和比较}：\code{+ 1}、\code{- 1}、\code{* rate}、\code{expiry > now()}、\code{count / total}、以及任何本地日期计算。每命中一个就问一句：\textbf{这个结果服务端算过吗？如果两边算出来不一样，谁说了算？}
+\end{idea}
+
+这条在 Duolingo 尤其值钱，因为它正是他们公开写过的题目。\srcofficial\footnote{\url{https://blog.duolingo.com/frontend-prediction/}} 官方的 Frontend Prediction 一文专门讨论客户端预测服务端结果，并明确列出\textbf{哪些东西不能预测}——比如用 gems 购买、以及排行榜晋级——因为预测错了的代价是用户看到一个不存在的好消息，再被收回。连胜属于用户最在意的资产之一，在客户端凭空 \code{+1}，正是这篇文章警告的那类做法。
+
+\begin{sayit}[怎么说这一条]
+“这里客户端自己给 streak 加了一天。但连胜的结算规则在服务端——今天是否已完成过、有没有连胜冻结、按哪个时区跨天，客户端都不知道。而且 \code{session} 本身就是结算结果，应该直接用它返回的 streak 字段。否则用户会看到一个和服务端不一致的数字，下次刷新又变回去，这类不一致对连胜这种用户很在意的数据伤害比较大。”
+\end{sayit}
+
+\begin{pitfall}[不要把它说成“可能有 bug”]
+这条的说服力全在于\textbf{指出权威来源}。只说“这里加一可能不对”，面试官无法判断你是真懂还是在猜。一定要说出“服务端已经算过，且结果就在手上这个对象里”。
+\end{pitfall}
+
+\subsection{习惯二：让我给它写个测试会怎样？}
+
+“可测试性”听起来很虚，但它有一个非常机械的检查方式：\textbf{在脑子里给这个函数写一个单元测试，写不下去的地方就是问题}。对原来的 \code{load()} 试一次，会连着卡三次：
+
+\begin{enumerate}
+  \item \textbf{断言什么？}这个函数有\textbf{两个出口}：它既写 \code{\_summary} 状态，又调用 \code{userRepository.saveLastSeenLesson()}。一个测试要同时断言一份状态和一次副作用调用——这说明状态组装和副作用被耦合在了一起。
+  \item \textbf{失败路径怎么断言？}想写“网络失败时 UI 应该显示什么”，会发现\textbf{没有东西可断言}：状态类型是 \code{LessonSummaryUi?}，失败时它要么还是 \code{null}，要么直接抛异常崩掉。错误态、空推荐态\textbf{根本没有被建模}，所以测不了。
+  \item \textbf{怎么控制线程？}Repository 里的 dispatcher 是写死的，测试无法替换成 \code{TestDispatcher}，也就无法稳定地控制执行时机。
+\end{enumerate}
+
+三次卡壳对应三条建议，而这恰好就是原文那句“明确错误态、空推荐态，并注入 dispatcher”的来源。
+
+\begin{idea}[扫描动作：数出口、找失败态、找写死的依赖]
+\textbf{一，数出口}：这个函数除了返回值/状态之外还改了什么？超过一个就问是否该拆。\par
+\textbf{二，找失败态}：把“网络失败”“列表为空”“缓存没准备好”各念一遍，看看类型系统里\textbf{有没有地方能装下这个结果}。装不下就是没建模。\par
+\textbf{三，找写死的依赖}：dispatcher、\code{System.currentTimeMillis()}、\code{Random}、\code{Locale}、单例。凡是测试替换不掉的，都会让这段代码只能靠集成测试覆盖。
+\end{idea}
+
+\begin{keypoint}[可测试性不是风格问题]
+很多人把可测试性归到“nit”那一层，这是误判。\textbf{“失败态没有被建模”本质上是正确性问题}——它意味着这个 UI 在失败时的行为是未定义的，用户可能看到永远的加载中。所以这条应该排在风格之前，而不是和命名一起放在最后。
+\end{keypoint}
+
+\subsection{习惯三：同一个表达式我读到第几遍了？}
+
+\begin{kotlin}
+nextLessonId = session.recommendations.first().lessonId
+// ...
+userRepository.saveLastSeenLesson(session.recommendations.first().lessonId)
+\end{kotlin}
+
+同一个表达式出现两次。这条被归为 nit，但值得说，原因不止“少算一次”：
+
+\begin{itemize}
+  \item \textbf{意图不清楚}：读者需要自己确认这两处是不是同一个东西。存成 \code{val nextLesson = ...} 之后，代码直接说出了“它们是同一个”。
+  \item \textbf{两次求值不保证相同}：这里的接收者是普通对象所以没事，但同样的写法如果作用在可变集合、\code{Sequence} 或每次都重新计算的属性上，两次调用可以拿到不同结果。养成提取局部变量的习惯，能顺手消掉这一整类隐患。
+  \item \textbf{它和第一条崩溃修复是同一个动作}：把 \code{first()} 换成 \code{firstOrNull()} 并提到局部变量，一次改动同时解决空推荐崩溃、重复求值和意图不清。
+\end{itemize}
+
+最后这点是这条 nit 真正的价值所在：\textbf{它能和高优先级修复合并}。所以说它的方式不是单独提一句“建议提取变量”，而是在讲崩溃修复时顺带收尾。
+
+\begin{idea}[扫描动作：对重复的形状做视觉 diff]
+读代码时不要只读语义，也扫\textbf{形状}。两行长得几乎一样、只有末尾不同，就是一个信号。重复的链式调用、重复的 \code{?.let}、重复的字符串模板，都值得停一秒问：这是同一个值吗？如果是，为什么没有名字？
+\end{idea}
+
+\subsection{把三个习惯接到三遍读上}
+
+第三节的“三遍读”负责扫出崩溃、生命周期和惯用性；这三个习惯是接在它后面的\textbf{第四遍}，只要三个问题：
+
+\begin{enumerate}
+  \item \textbf{权威}：这段代码里每一个被\emph{算出来}的值，服务端是不是也算过？
+  \item \textbf{可测}：我给它写测试会在哪一步卡住？
+  \item \textbf{重复}：有没有同一个表达式被写了两遍？
+\end{enumerate}
+
+三个问题都很短，加起来花不了两分钟，但它们产出的正是面试官最容易记住的那几条——因为清单上没有。
+
+\begin{followup}[面试官很可能顺着追问]
+\textbf{“那 streak 应该由谁算？如果服务端返回慢呢？”}——引到乐观更新与回滚：可以先乐观展示，但必须能被服务端结果纠正，且像连胜这种资产要谨慎。第七章有完整的三种回滚策略。\par
+\textbf{“你会怎么拆这个函数？”}——答：state 组装是纯函数（输入 session + user，输出 UI 状态），副作用留在协程里显式调用，这样纯函数部分可以直接断言。\par
+\textbf{“错误态要做到多细？”}——答：至少区分可重试（网络）与不可重试（数据缺失），因为 UI 要决定是否给重试按钮。
+\end{followup}
+
 \begin{keypoint}[五行速记]
 Code Review 轮考的是风险排序，不是 nit 数量。\par
 先说正确性、崩溃、ANR、数据损坏，再说风格。\par

@@ -85,7 +85,7 @@ session、context compaction、Provider prompt cache、KV cache 边界、extensi
 
 ## 🦉 多邻国 Android 面试
 
-### 多邻国 Android 面试通关手册 — `duolingo-interview-book/`（11 章，165 页）
+### 多邻国 Android 面试通关手册 — `duolingo-interview-book/`（11 章，168 页）
 
 按 **Duolingo 官方真实面试轮次**组织的中文备战手册，面向 Android / Kotlin 岗位。与《Airbnb 面试通关手册》共用一套排版，但重心完全不同：Duolingo 有一轮**独立的 Code Review（查错）**，且 Android 岗的 Design 轮是**客户端架构设计**而非后端 System Design——这两轮恰恰是刷题准备迁移性最差、边际收益最高的地方。
 
@@ -177,7 +177,7 @@ cd physics-textbook && lualatex main.tex && lualatex main.tex
 ├── fullstack-interview-book/  # 《全栈面试指南》(18章)
 ├── pytorch-interview-book/    # 《PyTorch 面试速通》(8章, LaTeX)
 ├── airbnb-interview-book/     # 《Airbnb 面试指南》
-├── duolingo-interview-book/   # 《多邻国 Android 面试通关手册》(11章 165页, LaTeX)
+├── duolingo-interview-book/   # 《多邻国 Android 面试通关手册》(11章 168页, LaTeX)
 ├── cpp-to-java-algo-book/     # 《C++ 到 Java 算法与数据结构》
 ├── claude-code-book/          # 《深入剖析 Claude Code》技术书 (17章)
 ├── pi-learning-book/           # 《系统理解 Pi》源码学习教材
