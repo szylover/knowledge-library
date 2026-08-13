@@ -1,0 +1,217 @@
+\chapter{多邻国面试全景}
+
+多邻国的面试准备，最怕用错参照物。很多候选人默认“科技公司面试都差不多”：先刷算法，再背系统设计，再准备几段行为故事。这个框架并非完全错误，却会漏掉多邻国最有辨识度的部分。多邻国公开说过，他们希望面试让候选人感受到成为一名 Duolingo 工程师是什么样子；对应到 Android 岗，就是读现有代码、和工程师一起改代码、评审别人写的 Kotlin、解释一个客户端架构为什么能长期演进。
+
+因此，本章不是泛泛介绍流程，而是帮你建立一张地图：哪些信息来自官方，哪些只是社区面经；每一轮到底在考什么；Android 岗和后端岗的设计轮有什么本质差别；以及为什么多邻国的几篇官方工程博客值得反复读。
+
+\section{官方流程与轮次}
+
+\srcofficial 多邻国官方工程面试文章\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}}把流程拆成 Pre-Onsite 和 Virtual Onsite 两大阶段。Pre-Onsite 用来确认基本编码能力、沟通方式和岗位匹配；Virtual Onsite 则更接近真实工作日，包含结对编程、代码评审、设计和行为沟通。官方给出的轮次可以整理如下：
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X X l@{}}
+\toprule
+\textbf{面试类型} & \textbf{适用范围} & \textbf{允许语言} & \textbf{时长} \\
+\midrule
+Online Coding Task & 仅大学/应届 & Python, Java, JavaScript & 60 min \\
+Technical Video Interview & 所有职位 & Python, Java, JavaScript, Kotlin, Swift & 60 min \\
+Pair Programming & 所有职位 & Python 首选/Java；iOS $\to$ Swift；Android $\to$ Kotlin & 75 min \\
+Code Review & 所有职位 & 同上，Android 有专属 Kotlin 版本 & 60 min \\
+Whiteboard Interview & 仅大学/应届 & 任意语言，伪代码可 & 60 min \\
+Design Interview & 行业职位 & 后端 System Design；iOS/Android 为架构设计，不写代码 & 60 min \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+这张表最重要的不是时长，而是它明确告诉你：Android 候选人的设计轮不是默认的后端分布式系统设计。你当然可以了解缓存、队列、数据库和一致性，因为移动端应用终究要和后端系统协作；但如果你把 60 分钟全部讲成 API Gateway、Kafka 和分库分表，就很可能错过题目真正想看的移动端架构能力。多邻国 Android 面试更关心的是：一个复杂 App 如何组织状态，如何把业务逻辑从 UI 中移走，如何在客户端做预测又不破坏公平性，如何让代码可测试、可评审、可长期迁移。
+
+\srccommunity 公开面经和面试平台复盘\footnote{\url{https://interviewing.io/duolingo-interview-questions}}\footnote{\url{https://www.designgurus.io/answers/detail/what-is-the-duolingo-interview-process-like-round-by-round}}\footnote{\url{https://programhelp.net/vo/duolingo-sde-interview-recap/}}给出的端到端顺序大致是：Recruiter Screen，通常是 60 分钟 Zoom；Technical Phone Screen，在 CoderPad 或 CodeSignal 中完成，常见配置是两名工程师在场，一位主问、一位 shadow；Pair Programming，约 75 分钟，常用 VS Code 加 Live Share，候选人需要提前配置环境；然后是 3--4 小时 Virtual Onsite，包含 manager 主导的 Behavioral、Design、通过 CodeSignal 进行的 Code Review、可能追加的 coding，以及 2025 年以后一些候选人报告过的实验性 AI-Assisted Assessment。完整时间线常见为 4--6 周。另一个细节是，多邻国使用自建 scheduling portal，候选人可能提前看到面试官姓名，这意味着你可以更早地理解对方团队背景，但不要把它变成临场套近乎。
+
+\begin{pitfall}[最容易被低估的轮次不是算法]
+Pair Programming 是许多候选人事前不知道存在的一轮。公开复盘里相当一部分失败并不是“题不会”，而是环境配置、屏幕共享、VS Code Live Share、依赖安装或输入输出方式出了问题。把 Live Share 提前跑通，找朋友模拟一次共享编辑，比临时多刷两道题更有边际收益。
+\end{pitfall}
+
+\begin{idea}[面试是在模拟“当一天 Duolingo 工程师”]
+多邻国的流程不是为了把候选人关在抽象题库里，而是故意让你经历真实工程动作：读别人写过的代码，评审别人提交的 diff，在已有代码库里扩展功能，解释一个模块为什么应该这样拆。贯穿所有技术轮的元能力，是\textbf{在陌生代码中快速定位与表达}，不是 puzzle-solving。你越早按这个方向训练，越不会在现场被题型变化吓住。
+\end{idea}
+
+\section{各轮在考什么（Android 岗视角）}
+
+从 Android 岗看，多邻国每一轮的核心不是孤立知识点，而是不同颗粒度的工程判断。Technical Video Interview 看你能不能在有限时间内写出正确、清晰、可解释的代码；Pair Programming 看你能不能和另一位工程师一起推进一个小功能；Code Review 看你能不能识别别人代码里的风险；Design 看你能不能把移动端复杂度拆成可长期维护的架构。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+\toprule
+\textbf{轮次} & \textbf{核心考点} & \textbf{Duolingo 侧重} \\
+\midrule
+Recruiter Screen & 背景、动机、时间线、岗位匹配 & 是否理解教育产品、增长文化和移动端岗位范围 \\
+Technical Video Interview & 基础编码、边界条件、复杂度、沟通 & 能否边写边解释，并用 Kotlin/Java/Python 写出可读实现 \\
+Pair Programming & 协作编码、已有代码理解、增量修改 & 能否在提示下快速进入陌生项目，保持小步提交式思路 \\
+Code Review & 查错、可维护性、Kotlin 惯用性、测试意识 & 能否指出真实风险，而不是只挑格式和命名 \\
+Design Interview & Android 架构、状态管理、模块边界、离线与同步 & 能否把 MVVM、Repository、DI、SDUI、乐观更新讲成取舍 \\
+Behavioral & 原则、冲突、主人翁意识、学习能力 & 是否能用具体故事体现 Learners First、Explain Why、Reduce Complexity \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{keypoint}[一句话区分]
+Technical Screen 考“能不能独立写对”；Pair Programming 考“能不能一起改好”；Code Review 考“能不能看出风险并说服别人”；Design 考“能不能让 Android 代码库继续长大”；Behavioral 考“你是不是多邻国愿意长期合作的人”。
+\end{keypoint}
+
+对 Android 候选人来说，最值得训练的是把语言从“我会某个框架”改成“我知道这个框架解决了什么代价”。比如不要只说“我会 Hilt”，而要说“我们用依赖注入把全局单例和 Activity 生命周期解耦，使测试可以替换 Repository，也避免多个 feature 直接读写同一个可变对象”。这类表达会自然连接到多邻国自己的 Android Reboot 经验。
+
+\section{权重与准备时间的分配建议}
+
+如果你已经有基本刷题经验，准备多邻国 Android 面试时不应该把 80\% 时间继续投入 LeetCode。算法准备的迁移性很强：你为其他公司练过的哈希表、双指针、BFS、堆、动态规划，在这里仍然有用。Code Review 和 Android Design 的迁移性却弱得多，因为它们要求你用多邻国关心的工程语言来表达。也正因为如此，它们的边际收益最高。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l l X@{}}
+\toprule
+\textbf{准备模块} & \textbf{建议占比} & \textbf{原因} \\
+\midrule
+Code Review / 查错 & 25\%--30\% & 独立轮次，通用刷题几乎覆盖不到；最能体现真实工程判断 \\
+Android 架构设计 & 20\%--25\% & 行业 Android 岗核心差异点，不能用后端系统设计模板硬套 \\
+Pair Programming & 15\%--20\% & 既考编码也考协作和环境稳定性，需要模拟共享编辑 \\
+算法编码 & 20\%--25\% & 仍是硬门槛，但不应吞掉全部准备时间 \\
+Behavioral / Principles & 10\% & 多邻国价值观明确，故事要提前映射而不是临场发挥 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{idea}[把一半时间投给最不通用的两轮]
+Code Review 加 Design 约等于 50\% 的准备时间，看似激进，实际很理性。它们最不像通用题库，也最接近多邻国真实工作方式。你在这两轮里形成的方法论，还会反哺 Pair Programming：读代码更快，表达取舍更清楚，遇到提示也更能顺着面试官的方向演进。
+\end{idea}
+
+\section{Duolingo Android 技术底座}
+
+多邻国的 Android 面试不是凭空设计的。它背后有一条很清楚的工程主线：一个高速增长、实验密集、业务状态复杂的教育 App，如何从历史包袱中演进成可维护的现代 Kotlin Android 代码库。下面这些官方文章，不只是公司宣传材料，而是理解题型的入口。
+
+\subsection{Android Reboot（2020）}
+
+\srcofficial Android Reboot 的公开材料来自 Google Android Developers 的案例\footnote{\url{https://android-developers.googleblog.com/2021/08/android-app-excellence-duolingo.html}}和 Android Developers Stories\footnote{\url{https://developer.android.com/stories/apps/duolingo-excellence}}。当时多邻国 Android 端有一个巨大的全局可变状态对象 \\code{DuoState}，XP、streak、lesson 等多个业务域都共享它。随着团队和功能增长，这个对象让模块之间高度耦合，状态变更难以追踪，主线程工作也越来越难控制。官方披露的症状很严重：ANR rate 每月恶化 5--10\%；某次发布导致 crash 增加 10\%，frame rendering 慢 25\%，入门设备上 lesson start 慢 70\%。
+
+修复方式不是“顺手重构”，而是一次非常重的工程选择：冻结所有 feature work 8 周，集中做 Android Reboot。团队引入 MVVM，把 UI 状态和业务逻辑分层；用 Dagger 加 Hilt 替代到处可见的全局 \\code{DuoState} 访问；按 feature 做模块化；用 Repository pattern 把网络、数据库和耗时逻辑从主线程路径移走。结果同样明确：ANR 降低 41\%，frames missing deadline 的时间降低 28\%，scroll speed 提升 40\%。
+
+这段历史对面试的意义非常直接。任何 \\code{DuoState} 式反模式，都是 Code Review 和 Design 的高频素材：全局可变状态、过度耦合、生命周期不清、主线程阻塞、测试困难、一个 feature 的改动影响另一个 feature。你在查错轮里看到“随手从 singleton 里读写用户状态”，不要只说“这不优雅”；要说它会怎样造成竞态、陈旧 UI、难以复现的实验差异，以及为什么 Repository 或单向状态流能降低风险。
+
+\subsection{100\% Kotlin 迁移}
+
+\srcofficial 多邻国 Android 团队还公开写过迁移到 100\% Kotlin 的过程\footnote{\url{https://blog.duolingo.com/migrating-duolingos-android-app-to-100-kotlin/}}。这不是一次简单的语法替换，而是持续两年的工程迁移。官方数据包括：平均代码行数减少约 30\%，个别文件最多减少 90\%；Android developer NPS 提升 129；工具链上同时使用 detekt、ktlint、IntelliJ inspections、Android Lint，以及自研 Splinter。
+
+更值得面试准备借鉴的是迁移方法：一个 PR 只迁一个文件，并拆成三个提交，先由 IDE 自动转换，再修复编译错误，最后做 idiomatic refactor。这个顺序很像面试里应有的节奏：先让代码正确，再让它可读，最后再谈优雅。不要一开始就追求炫技式 Kotlin；但当功能正确后，要主动把 Java 味很重的写法改成 Kotlin 风格。
+
+\begin{keypoint}[Kotlin 惯用性是评分信号]
+Android 候选人的代码要“看起来像 Kotlin，而不是 Java”。空安全、\code{data class}、不可变集合、\code{sealed} 状态、扩展函数、作用域函数、协程取消与结构化并发，这些不是装饰，而是多邻国明确重视的工程语言。
+\end{keypoint}
+
+\subsection{Server-Driven UI}
+
+\srcofficial 多邻国的 Server-Driven UI 文章\footnote{\url{https://blog.duolingo.com/server-driven-ui/}}解释了他们如何把一些产品界面从客户端发版周期里解耦出来。响应由三部分组成：screens，也就是组件树；stylesheet，描述样式；以及 \\code{data\_model}，承载具体数据。组件库不是无限制的 HTML，而是约 12 种基础 component type，例如 labels、images、stacks、buttons、carousels。交互由 actions 描述，如 tap、show、dismiss；展示逻辑由 conditions 控制，可以依赖用户状态，例如 hearts count。
+
+最有价值的是版本兼容策略。新客户端可以拿到完整的 \\code{SDUIResponse} 并按服务端配置渲染；老客户端拿到 Partial Response，只接收 data model，再用本地缓存的 UI config 渲染。这样服务端不需要在每次响应前做复杂 client version check。多邻国已经把这套方案用于 Shop 和 Purchase Flow。
+
+对 Android Design 轮来说，这篇文章提供了非常好的取舍材料。SDUI 的收益是实验速度、配置能力和跨端一致性；代价是客户端渲染器复杂、schema 版本管理困难、可测试性要求更高、错误兜底必须设计清楚。面试中如果题目涉及动态首页、商城、付费流程、活动页或实验平台，SDUI 都是值得主动讨论的方向。
+
+\subsection{Frontend Prediction / 乐观更新}
+
+\srcofficial 如果只能读一篇多邻国工程博客，我会选 Frontend Prediction\footnote{\url{https://blog.duolingo.com/frontend-prediction/}}。这篇文章几乎把移动端面试最喜欢考的状态一致性问题讲透了，而且案例来自真实产品。
+
+第一个案例是课程进度。用户答完题后，客户端先把本地 counter 加一，让界面立刻反馈，之后再和服务端同步。收益是体验顺滑；成本是客户端和服务端都要维护一份状态和逻辑，一旦规则变化就可能不一致。第二个案例是排行榜 XP。客户端在请求还没完成时先预测 XP，问题在于客户端和服务端可能对 correct-answer count 不一致，也可能对 XP boost 是否生效判断不同。文章讨论了三种回滚策略：never roll back，体验稳定但可能长期显示错误；immediate rollback，真值回来就改，但 session end card 用 prediction、leaderboard tab 用 truth 时会出现同一 App 内部不一致；deferred rollback，让两个界面都先用 prediction，等 app restart 后替换成真值，体验更顺但调试困难。第三个案例是 Follow 按钮，这类操作更接近纯 optimistic UI，失败时回滚或提示都比较容易理解。
+
+关键是，多邻国明确说 prediction 不是到处都能用。购买 gems 这类 monetized resource 不适合预测，排行榜晋级这种涉及公平性的结果也不适合预测。这个判断比“会不会乐观更新”更重要：优秀候选人会先问数据域是否允许短暂不一致，再决定 UI 是否可以预测。
+
+\begin{idea}[最高收益官方读物]
+Frontend Prediction 是本书建议反复读的一篇文章。它同时连接 Code Review、Android Design 和 Behavioral：代码层面有重复状态和回滚 bug，设计层面有一致性边界，原则层面有 Learners First 与公平性取舍。
+\end{idea}
+
+\subsection{技术栈速查}
+
+下面这张表把官方确认与高置信推断分开。准备时可以把官方项当作重点语境，把推断项当作合理候选方案；不要在面试中把推断说成“多邻国一定在用”。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X l@{}}
+\toprule
+\textbf{领域} & \textbf{技术/实践} & \textbf{来源} \\
+\midrule
+Android 语言 & Kotlin 100\% & \srcofficial \\
+Android 架构 & MVVM，Repository，模块化 & \srcofficial \\
+依赖注入 & Dagger + Hilt & \srcofficial \\
+UI & Jetpack Compose 迁移进行中，Server-Driven UI & \srcofficial \\
+质量工具 & detekt，ktlint，Splinter，Android Lint & \srcofficial \\
+本地数据 & Room & \srcinferred \\
+图片 & Coil & \srcinferred \\
+网络 & Retrofit + OkHttp & \srcinferred \\
+后台任务与推送 & WorkManager，FCM & \srcinferred \\
+后端语言与框架 & Python + Flask 为主，Kotlin JVM 微服务 & \srcofficial \\
+基础设施 & AWS，DynamoDB，PostgreSQL，Redis，Kafka & \srcofficial/\srcinferred \\
+个性化学习 & Birdbrain 个性化选题 ML 系统 & \srcofficial \\
+实验文化 & 全公司 A/B 实验文化，300+ 并行实验 & \srcofficial \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+后台背景对 Android 候选人也有帮助。排行榜常让人想到 Redis Sorted Set；学习进度和实验分组会牵涉 PostgreSQL、DynamoDB 或服务端配置；事件流和训练数据可能经过 Kafka；Birdbrain 说明多邻国的产品体验高度个性化。这些不要求你像后端候选人一样设计完整基础设施，但能帮助你在移动端设计里问对问题：哪些状态来自服务端，哪些可以缓存，哪些必须实时，哪些失败可以延迟补偿。
+
+\section{官方 12 条 Operating Principles}
+
+\srcofficial 多邻国官方 Operating Principles\footnote{\url{https://blog.duolingo.com/operating-principles/}}是行为面和协作表达的底层语言。不要把它们当成口号；更好的用法是，把每条原则映射到一个真实故事或一次技术取舍。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\toprule
+\textbf{Principle} & \textbf{中文理解} \\
+\midrule
+Learners First & 先问什么对学习者真正有利，而不是只优化团队局部指标。 \\
+Prioritize Ruthlessly & 资源有限时敢于砍范围，把最重要的问题先做完。 \\
+Take the Long View & 不只追短期发布，也考虑代码、产品和用户信任的长期成本。 \\
+Test It First & 用实验和数据验证判断，尤其适合多邻国的 A/B 文化。 \\
+Reduce Complexity & 主动降低系统、流程和产品复杂度，不为聪明而复杂。 \\
+Ship It & 在质量可控的前提下尽快交付，让真实反馈进入循环。 \\
+Strive for Excellence & 对性能、体验、代码质量和细节保持高标准。 \\
+Be Candid and Kind & 反馈要直接，也要尊重人；Code Review 尤其需要这一点。 \\
+Explain Why & 不只给结论，还要解释背景、约束和取舍。 \\
+Embrace Challenges & 面对模糊、困难和失败时保持学习姿态。 \\
+Never Settle on Talent & 对招聘和团队质量保持高标准。 \\
+All for One, and One for All & 跨团队合作，愿意为整体目标调整局部计划。 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{pitfall}[不要引用不存在的价值观]
+网上不少准备材料会把 “Show, Don\textquotesingle{}t Tell” 列为 Duolingo 官方价值观，但它并不在官方 12 条 Operating Principles 里。行为面引用不存在的原则不是小问题：它会暴露你没有读官方材料。第十章会把这 12 条逐一映射到 STAR 故事。
+\end{pitfall}
+
+\section{级别差异}
+
+不同级别看到的“同一轮”，评分尺度并不相同。SWE I 更强调基础和潜力，Senior 开始强调复杂代码库中的判断，Staff 则会被期待讨论跨团队架构、长期演进和组织影响。下面的表格把社区报告和高置信推断合并整理；具体安排仍以 recruiter 给你的日程为准。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X X X X@{}}
+\toprule
+\textbf{级别} & \textbf{Pair Programming 期望} & \textbf{Code Review 期望} & \textbf{Design 期望} & \textbf{特别关注} \\
+\midrule
+SWE I（应届） & \srccommunity 能写出基础功能，接受提示后修正方向 & \srccommunity 通常无独立 Code Review & \srccommunity 通常无完整行业 Design，可能有 Whiteboard & 基础编码、学习速度、沟通清晰度 \\
+SWE II & \srcinferred 实现完整 feature，覆盖错误处理和简单测试 & \srcinferred 能找出主要 bug、边界条件和可读性问题 & \srcinferred 做单 feature 轻量设计，讲清 ViewModel/Repository 边界 & 独立交付、Kotlin 风格、范围控制 \\
+Senior & \srcinferred 能在复杂代码中重构并保持行为稳定 & \srcinferred 能识别架构性风险、并发/状态问题和测试缺口 & \srcinferred 端到端子系统设计，考虑离线、同步、实验、性能 & 技术取舍、长期维护、带动他人 \\
+Staff & \srcinferred 重点不在写多少代码，而在快速建立方向和约束 & \srcinferred 能从 diff 看出跨模块、跨团队和平台层风险 & \srcinferred 架构级讨论，跨团队边界、演进路线和迁移策略 & 组织影响、平台化、长期技术战略 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+这张表的用途不是给自己贴标签，而是校准表达深度。SWE II 候选人把一个 feature 做完整，比空谈平台化更有说服力；Senior 候选人如果只停留在“这里可以抽个 helper”，就显得深度不足；Staff 候选人则需要主动把问题提升到边界、迁移、团队协作和长期成本。
+
+\section{官方给的准备建议}
+
+\srcofficial 多邻国官方面试文章给出的建议非常务实。第一，think out loud。不要等想出完美答案再开口；面试官需要看到你的判断过程。第二，pragmatic，先从时间内能完成的最简单版本开始，再逐步改进。第三，把面试官当协作者。多邻国明确说面试官会给提示，他们不是敌人；你能否接住提示，本身就是评分信号。第四，主动澄清问题，不要擅自扩大范围。第五，考虑 edge cases，但不要让边界情况吞掉主路径。第六，准备好反问他们的问题，因为这也是你判断团队和岗位的机会。
+
+这些建议听起来普通，却和多邻国题型高度一致。Code Review 里，你需要一边读一边说“我先找 correctness，再看 state，再看可维护性”；Pair Programming 里，你需要说“我先让 happy path 跑通，再补 error path”；Design 里，你需要说“我先假设只做 Android 客户端，不设计完整后端，除非我们需要讨论同步协议”。这种开场能让面试官立刻知道你在控制范围。
+
+\begin{sayit}[开场可以这样说]
+“我先确认一下范围：这一轮我们更希望我优化 correctness，还是也要讨论架构和测试？”
+
+“我会先实现一个最小可工作的版本，然后回头处理边界条件和可读性；如果你希望我优先走另一条路线，请打断我。”
+
+“这里我先做一个假设：服务端返回的数据可能延迟或失败，所以客户端状态不能直接当作真值。后面如果这个假设不对，我会调整设计。”
+
+“我会边读代码边说出我在验证的假设：先看状态来源，再看生命周期，再看异步回调是否可能乱序。”
+\end{sayit}

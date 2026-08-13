@@ -1,0 +1,600 @@
+\chapter{设计题精讲（上）：离线、连胜、排行榜与实验}
+
+这一章进入真正的 60 分钟 Android 设计题。四道题都按同一结构展开：题面、澄清、架构图、数据模型、关键机制、边界、追问。请注意来源标注：\srccommunity 表示社区面经反复报告；\srcinferred 表示没有官方题面，但由 Duolingo 官方技术材料、职位描述和产品形态高置信推断；\srcofficial 表示来自 Duolingo 官方公开材料。
+
+\designq{1}{离线课程下载与进度同步}{Hard}
+
+\srccommunity 多份社区面经报告过离线课程、进度同步、学习 session 同步类题目；\srcofficial Duolingo 官方 frontend prediction 文章也直接讨论了课程进度在离线时先本地递增、恢复网络后同步的场景\footnote{\url{https://blog.duolingo.com/frontend-prediction/}}。因此这题既像真实题，也高度贴合官方关注点。
+
+\subsection{题面与常见变体}
+
+设计一个 Android 客户端能力：用户可以下载课程内容，离线完成 lesson；App 恢复网络后把进度、答题结果和 XP 同步到服务端。常见变体有三种：
+
+\begin{itemize}
+  \item “如何支持离线学习，并保证进度最终同步？”
+  \item “课程包很大，下载中断后怎么办？课程内容更新怎么办？”
+  \item “同一个账号在两台设备离线完成同一课，回来后如何合并？”
+\end{itemize}
+
+\subsection{需求澄清：你该问什么}
+
+\begin{itemize}
+  \item 问：离线时只允许学习已下载课程，还是也要浏览新课程？答：只保证已下载内容可学。
+  \item 问：进度是否允许乐观显示？答：允许，学习产品里完成反馈要即时；但服务端最终为准。
+  \item 问：课程内容更新时，正在学习旧版本的用户是否要被打断？答：不要打断，当前 session 跑完旧版本。
+  \item 问：同步失败是否阻塞用户继续学习？答：不阻塞，但要可见地标记 pending sync。
+  \item 问：目标设备？答：包括低端 Android；磁盘、电量和弱网都要考虑。\srcofficial Duolingo 公开强调入门级设备体验。
+\end{itemize}
+
+\subsection{架构总览}
+
+\begin{lstlisting}
++---------------------+      StateFlow       +----------------------+
+| Lesson UI           | <------------------- | LessonViewModel      |
+| download/learn/sync |                      | reduce lesson state  |
++----------+----------+                      +----------+-----------+
+           | user intent                                |
+           v                                            v
++---------------------+                      +----------------------+
+| DownloadUseCase     |                      | ProgressRepository   |
+| ProgressUseCase     |                      | single write gate    |
++----------+----------+                      +----+------------+----+
+           |                                      |            |
+           v                                      v            v
++---------------------+                 +---------------+  +----------------+
+| File cache          |                 | Room           |  | Remote API     |
+| chunks/assets       |                 | content/progress| | /sessions      |
++----------+----------+                 | pending ops    |  +-------+--------+
+           ^                            +-------+-------+          |
+           | checksum/version                   ^                  |
+           |                                    | ACK / retry      |
++----------+----------+                 +-------+------------------v+
+| DownloadWorker      |                 | SyncWorker + WorkManager |
+| network + charging? |                 | constraints + backoff    |
++---------------------+                 +--------------------------+
+\end{lstlisting}
+
+关键是把“课程内容下载”和“学习进度同步”拆成两条写路径。内容包是大文件，重点是断点续传、校验、版本和清理；进度是小而关键的业务事件，重点是本地事务、离线队列、幂等、合并。
+
+\subsection{数据模型}
+
+\begin{kotlin}
+@Entity(tableName = "lesson_content")
+data class LessonContentEntity(
+    @PrimaryKey val lessonId: String,
+    val courseId: String,
+    val version: Long,
+    val manifestUrl: String,
+    val localPath: String?,
+    val sizeBytes: Long,
+    val checksum: String,
+    val status: DownloadStatus,
+    val lastAccessAt: Long,
+)
+
+@Entity(
+    tableName = "lesson_progress",
+    primaryKeys = ["lessonId", "contentVersion"]
+)
+data class LessonProgressEntity(
+    val lessonId: String,
+    val contentVersion: Long,
+    val completedQuestionIds: Set<String>,
+    val lastSessionUuid: String?,
+    val isComplete: Boolean,
+    val updatedAt: Long,
+    val pendingSync: Boolean,
+)
+
+@Entity(tableName = "pending_operations")
+data class PendingOperationEntity(
+    @PrimaryKey val opId: String,          // client-generated UUID
+    val type: String,                      // COMPLETE_LESSON, ANSWER_BATCH
+    val idempotencyKey: String,
+    val payloadJson: String,
+    val createdAt: Long,
+    val attempt: Int,
+    val nextRunAt: Long,
+    val lastError: String?,
+)
+\end{kotlin}
+
+Room 存结构化内容索引、进度和 pending operations；文件目录存实际媒体与题目包；DataStore 可以存全局配额、最近同步时间、用户选择的自动下载策略。\srcinferred 这是标准 Jetpack 选型，不是 Duolingo 官方确认的具体实现。
+
+\subsection{关键机制逐个击破}
+
+\subsubsection{课程内容包：分片、断点续传、校验、版本化}
+
+课程包不要建模成“一个 URL 下完就完”。更稳的设计是 manifest 描述版本、总大小、chunk 列表和校验值；DownloadWorker 逐 chunk 下载到临时文件，成功后校验 checksum，再原子 rename 到正式目录。断点续传可以靠 HTTP range 或 chunk 粒度状态。低端设备上不要边下边解压到大量小文件而没有配额控制，否则存储碎片和 IO 会拖慢 lesson start。
+
+内容版本号是这题的灵魂。用户开始 lesson 时，ViewModel 绑定 \code{lessonId + contentVersion}。如果服务端发布新版本，已开始的 session 继续使用旧版本；下次进入再提示更新。这样可以避免“做到第 8 题，题目忽然被替换，答题结果无法解释”。
+
+\subsubsection{进度写路径：本地事务先行，后台同步}
+
+用户完成一课时，Repository 在一个 Room transaction 中同时更新 \code{lesson\_progress} 与插入 \code{pending\_operations}。UI 从 Room Flow 立刻看到完成状态和 pending sync 标记。随后 WorkManager 在网络可用时上传。这个设计的好处是：进程在“用户看到成功 UI”和“网络请求发出”之间被杀，也不会丢进度。
+
+\begin{lstlisting}
+complete lesson locally:
+  BEGIN Room transaction
+    upsert lesson_progress(isComplete=true, pendingSync=true)
+    insert pending_operations(opId=sessionUuid, idempotencyKey=sessionUuid)
+  COMMIT
+  enqueue unique sync work
+\end{lstlisting}
+
+WorkManager 约束要具体：同步小进度只要求 network connected；大内容下载可要求 unmetered 或 charging，取决于用户设置。\code{ExistingWorkPolicy} 用 \code{KEEP} 或 \code{APPEND\_OR\_REPLACE}，避免每次完成一题都启动一堆重复 worker。失败重试使用指数退避，并把 lastError 落库给调试与 UI。
+
+\subsubsection{幂等与逐条 ACK}
+
+每个学习 session 由客户端生成 UUID，作为 idempotency key。服务端看到同一 key 的 \code{PUT /sessions} 或 \code{POST /sessions} 重试，返回同一结果，不重复加进度或 XP。同步队列不要“一批失败全失败”；更好的协议是服务端逐条 ACK。客户端只删除成功 ACK 的 pending operation，失败项保留并更新 attempt。这样上线后如果某类 payload 因服务端校验失败，不会堵住整个队列。
+
+\subsubsection{冲突合并：服务端为准，但保守合并}
+
+多设备离线是必问追问。假设手机 A 和平板 B 都离线完成同一 lesson。A 先上线，服务端记录 session A；B 后上线，服务端发现 lesson 已完成。学习产品里我的建议是保守合并：进度取并集或最大值，绝不 downgrade。也就是说，如果客户端说完成了更多题，服务端可以验证题目属于该 lesson 后合并；如果服务端已有完成状态，B 的重复完成不应该把状态回退。
+
+这背后是产品判断：\srcinferred 对语言学习产品，宁可多给一点进度，也不要因为同步冲突让用户“学过的消失”。但这不适用于钱和公平晋级；XP 与 leaderboard 仍要以服务端计算为准。
+
+\subsubsection{网络恢复与队列调度}
+
+\code{ConnectivityManager.NetworkCallback} 适合触发“可以同步了”的信号，但真正执行交给 WorkManager。原因是 callback 只说明此刻网络可用，不保证 App 进程一直活着；WorkManager 才能跨进程死亡持久化任务。同步 worker 每次从 Room 取 nextRunAt 到期的一小批操作，按创建时间上传，避免一次性读出几千条导致内存压力。
+
+\subsubsection{磁盘配额与 LRU 清理}
+
+课程包、音频、图片都必须有上限。Room 的 content 表记录 sizeBytes 与 lastAccessAt；清理器在总量超过阈值时删除未 pinned、未 active session、最久未访问的包。删除文件后同步更新 Room，避免索引指向不存在的路径。正在学习的版本要 pin 住，直到 session 结束。
+
+\subsection{边界情况}
+
+\begin{itemize}
+  \item 上传成功一半：逐条 ACK；成功删除，失败保留，不阻塞后续可独立操作。
+  \item 课程版本过期：当前 session 继续旧版本；完成 payload 带 contentVersion，服务端按版本解释。
+  \item 磁盘满：下载前预估空间；失败后清理 LRU；仍不足则给用户明确提示。
+  \item App 被杀：Room transaction 已提交，pending operation 仍在；WorkManager 之后续跑。
+  \item 服务端返回 \code{new\_progress} 与预期不符：服务端为准，但如果会 downgrade 学习完成状态，要走产品确认或保守合并规则。
+\end{itemize}
+
+\begin{followup}[“WorkManager、前台 Service、裸协程怎么选？”]
+小同步用 WorkManager：可延迟、要跨进程死亡、需要网络约束。大课程包下载如果用户明确点了“下载整套课程”，且期望持续进行，用前台 Service 或 expedited work 并展示通知；否则容易被系统限制。裸协程只适合页面内短任务，例如保存草稿或发一个可重试的即时请求，不能承担离线最终一致的保证。
+\end{followup}
+
+\begin{followup}[“进程被杀时正在上传 session 怎么办？”]
+上传前 operation 已在 Room。若请求已经到达服务端但客户端没收到响应，WorkManager 重试时携带同一 idempotency key，服务端返回第一次结果。若请求根本没发出，重试就是第一次执行。两种情况客户端逻辑相同，这就是幂等键的价值。
+\end{followup}
+
+\begin{followup}[“如何测试离线逻辑？”]
+单元测试用 fake Repository 和 fake clock 验证 Room transaction、队列状态、合并规则；instrumentation 测试用 MockWebServer 模拟断网、500、超时、重复 ACK；端到端测试覆盖“完成 lesson 后杀进程、重启、恢复网络仍能同步”。还要有 migration 测试，确保 pending operations 在版本升级后不丢。
+\end{followup}
+
+\begin{idea}[可迁移心法]
+离线设计不是“缓存一点数据”，而是“把写操作变成可持久化、可重试、可幂等、可合并的事件”。只要你能说清事件的生命周期，离线课程、离线评论、离线收藏都是同一题。
+\end{idea}
+
+\begin{pitfall}[只存最终状态，不存操作]
+如果只在本地把 progress 改成 complete，却不记录是哪一次 session、何时完成、用哪个内容版本完成，恢复网络后就无法解释这次写入，也无法幂等重试。离线写路径必须存 operation log。
+\end{pitfall}
+
+\designq{2}{连胜（Streak）客户端}{Medium}
+
+\srccommunity 社区面经报告过 Streak 客户端设计；\srcinferred Streak 是 Duolingo 核心产品机制，Android 端必然涉及本地展示、提醒、离线预测与服务端校准。
+
+\subsection{题面与常见变体}
+
+设计 Duolingo Android 的 streak 客户端：用户每天完成学习后连胜加一；支持 Streak Freeze；支持本地提醒；断网和跨时区时仍给出合理体验。变体包括：
+
+\begin{itemize}
+  \item “今天”的边界按什么算？
+  \item 离线完成课程后 streak 是否立刻加一？
+  \item 如何调度“快失去连胜了”的提醒？
+\end{itemize}
+
+\subsection{需求澄清：你该问什么}
+
+\begin{itemize}
+  \item 问：day boundary 按设备时区还是账号时区？答：按服务端返回的用户时区。
+  \item 问：离线完成是否可以先显示 streak 增加？答：可以乐观展示，但最终以服务端校准。
+  \item 问：Streak Freeze 是付费/库存资源吗？答：是有限资源，消耗必须幂等且服务端确认。
+  \item 问：提醒是否必须精确到分钟？答：普通提醒不必，临近截止的紧急提醒尽量准但要尊重 Android 限制。
+\end{itemize}
+
+\subsection{架构总览}
+
+\begin{lstlisting}
++-------------------+       StateFlow       +-------------------+
+| Streak UI         | <-------------------- | StreakViewModel   |
+| count/freeze/CTA  |                       | state machine     |
++---------+---------+                       +---------+---------+
+          | complete lesson                           |
+          v                                           v
++-------------------+                       +-------------------+
+| Progress event    | --------------------> | StreakRepository  |
++-------------------+                       +----+----------+---+
+                                                   |          |
+                                                   v          v
+                                          +-----------+  +-----------+
+                                          | DataStore |  | Streak API|
+                                          | snapshot  |  | truth     |
+                                          +-----+-----+  +-----+-----+
+                                                ^              |
+                                                |              v
+                                          +-----+--------------+---+
+                                          | ReminderScheduler      |
+                                          | AlarmManager/WorkMgr   |
+                                          +------------------------+
+\end{lstlisting}
+
+Streak 的业务数据很小，DataStore 足够：当前 streak、最后完成日期、freeze 库存、账号时区、服务端校准时间。真正复杂的不是存储，而是“今天”的定义、时间作弊、freeze 幂等和提醒调度。
+
+\subsection{数据模型}
+
+\begin{kotlin}
+@Serializable
+data class StreakSnapshot(
+    val currentStreak: Int,
+    val lastCompletedLocalDate: String?, // date in account timezone
+    val accountTimeZone: String,
+    val freezeCount: Int,
+    val pendingOptimisticDay: String?,
+    val serverVersion: Long,
+    val updatedAtMillis: Long,
+)
+
+data class FreezeConsumeOp(
+    val dateKey: String,        // e.g. userId + yyyy-MM-dd
+    val idempotencyKey: String, // scoped to that streak day
+    val createdAtMillis: Long,
+)
+\end{kotlin}
+
+\subsection{关键机制逐个击破}
+
+\subsubsection{什么算“今天”：账号时区优先}
+
+不要按设备当前时区直接算 streak。用户旅行、系统时间错误、手动改时间都会让结果不稳定。更稳的规则是：服务端返回账号时区与当前 streak 状态；客户端用账号时区计算展示上的 local date 和剩余时间。设备时间只用于倒计时 UI，不能作为最终判定。
+
+用户跨时区旅行时，客户端可以提示“你的连胜按账号时区计算”。如果产品允许用户改账号时区，改动应由服务端确认，并有频率限制，避免通过频繁改时区延长一天。
+
+\subsubsection{完成课程后的乐观加一}
+
+课程完成是用户心理预期立刻发生的操作。\srcofficial 官方 frontend prediction 的课程进度例子支持“离线先本地递增，之后同步”。\srcinferred 对 streak 也可以采用类似策略：如果今天还未完成，完成 lesson 后本地 snapshot 把 currentStreak 加一，并记录 pendingOptimisticDay。若服务端之后确认，清掉 pending；若服务端拒绝，通常不应立刻把用户刚看到的 streak 打回去，而是展示“同步中/需要修复”的状态，并在下一次刷新时校准。
+
+这里要诚实：streak 的最终规则可能包括作弊检测、lesson 有效性、订阅修复等，客户端不能完全复现。客户端的乐观值是体验层，不是权威账本。
+
+\subsubsection{Streak Freeze 的幂等}
+
+Freeze 是有限库存，不能因为重试消耗两次。同一天触发 freeze 的操作必须有 date-scoped key，例如 \code{consume-freeze:userId:2026-08-13}。客户端离线时可以展示“freeze pending”，但真正扣库存应以后端确认为准。服务端若看到同一天重复请求，返回第一次消耗结果。
+
+\begin{keypoint}[同一天只能消耗一次]
+Streak Freeze 的幂等粒度不是“请求 UUID”这么简单，而是“用户 + streak day”。如果每次重试都生成新 UUID，服务端无法知道它们是同一天同一次逻辑消耗。
+\end{keypoint}
+
+\subsubsection{本地提醒调度}
+
+提醒有两类。第一类是用户设定的每日提醒，比如晚上 8 点学习；这类可以用 WorkManager 或普通 Alarm，允许一定不精确。第二类是“还有 3 小时保住连胜”的紧急提醒；它更需要接近截止时间。
+
+Android 12+ 对 exact alarm 有权限限制，Doze 也会延后后台任务。我的结论是：默认用 WorkManager/非精确 alarm 调度普通提醒；对临近 streak 截止的高价值提醒，如果产品确实要求准点，再申请 exact alarm 权限或使用可解释的降级策略。不要为了所有提醒都申请精确闹钟，这会增加权限摩擦和电量成本。
+
+\subsubsection{里程碑动画与状态机}
+
+Streak UI 不只是一个数字。可能有状态：normal、today completed、freeze protected、lost、repair available、milestone celebration。动画要由状态机驱动，且“庆祝已播放”最好记录在 DataStore，避免旋转屏幕或进程重建重复播放。
+
+\subsection{边界情况}
+
+\begin{itemize}
+  \item 手动改系统时间：UI 可受影响但不提交权威结果；下次服务端校准纠正。
+  \item 离线 7 天：本地可展示 pending days，但服务端回来后逐日验证；freeze 按 date-scoped key 幂等消耗。
+  \item 多设备：服务端 streakVersion 更新；客户端收到较新 version 后覆盖本地权威字段，保留本地 pending UI 标记。
+  \item 断连胜 UI：不要只显示失败；提供修复连胜入口，但购买或消耗资源必须服务端确认。
+\end{itemize}
+
+\begin{followup}[“用户把系统时间调到明天，能不能提前加 streak？”]
+不能把设备时间作为权威。客户端可以根据账号时区和最近服务端时间估算展示，但提交给服务端的 lesson session 带真实 server receipt 或同步时由服务端判定属于哪一天。若离线期间设备时间异常，回来后服务端校准。
+\end{followup}
+
+\begin{followup}[“离线 7 天回来怎么算？”]
+客户端上传 7 天的 completion events，每条带 session UUID、内容版本和客户端观察到的账号日期。服务端按账号时区、有效 lesson、freeze 库存逐日计算。客户端可以先展示乐观连续，但最终用服务端返回的 streak timeline 替换，并避免立刻造成突兀 downgrade：用解释性 UI 告诉用户哪些天已同步、哪些需要修复。
+\end{followup}
+
+\begin{followup}[“客户端和服务端 streak 不一致，以谁为准？”]
+服务端为准，因为 streak 涉及奖励、修复、可能的付费资源和作弊防护。客户端可以乐观展示，但必须标记 pending，并在权威结果回来后收敛。若收敛会降低用户刚看到的数字，要用产品化过渡，而不是静默跳变。
+\end{followup}
+
+\begin{idea}[可迁移心法]
+凡是“每日一次”的功能，都先定义 day boundary，再定义幂等粒度。Streak、每日任务、签到、免费宝箱，本质都是时间分桶下的状态机。
+\end{idea}
+
+\begin{pitfall}[直接信设备时间]
+设备时间可以被用户改，也可能因为旅行而变化。用它做最终 streak 判定，会制造客服无法解释的边界 bug。
+\end{pitfall}
+
+\designq{3}{排行榜客户端与 XP 预测}{Hard}
+
+\srcinferred 这题未被官方确认为面试原题，但 \srcofficial Duolingo 官方 frontend prediction 文章详细描述了排行榜 XP 预测、session end card、leaderboard tab 以及三种回滚策略，因此它是高概率、高价值设计题。
+
+\subsection{题面与常见变体}
+
+设计 Android 排行榜客户端：用户完成 lesson 后获得 XP，session end card 立即展示 XP 与排名变化；leaderboard tab 展示同组用户排名；弱网下也要体验顺滑。变体包括：
+
+\begin{itemize}
+  \item “如何在后端计算 XP 较慢时快速展示结果？”
+  \item “预测 XP 和服务端 XP 不一致怎么办？”
+  \item “排行榜晋级能不能也预测？”
+\end{itemize}
+
+\subsection{需求澄清：你该问什么}
+
+\begin{itemize}
+  \item 问：XP 计算是否完全能在客户端复现？答：不完全，可能有 boost、accuracy、实验规则。
+  \item 问：排行榜 tier 多大？答：\srcinferred Duolingo league 同 tier 通常是数十人规模，客户端分页压力不大，但仍要处理头像和刷新。
+  \item 问：晋级/降级是否可以预测？答：不能。\srcofficial 官方明确说排行榜晋级不适合 prediction，因为公平性需要后端确认。
+  \item 问：用户离线完成 lesson 后是否显示 XP？答：可以显示 pending/predicted XP，但不能发放权威排名奖励。
+\end{itemize}
+
+\subsection{架构总览}
+
+\begin{lstlisting}
+Lesson complete
+      |
+      v
++------------------+      predicted XP       +-------------------+
+| XpPredictor      | ----------------------> | SessionEndCard    |
+| local rules      |                         | immediate result  |
++--------+---------+                         +-------------------+
+         |
+         | session payload + idempotency key
+         v
++------------------+      authoritative       +-------------------+
+| Progress API     | ----------------------> | LeaderboardRepo   |
+| computes XP      |                         | reconcile state   |
++--------+---------+                         +------+------------+
+         |                                          |
+         v                                          v
++------------------+                         +-------------------+
+| Leaderboard API  | <---------------------- | Leaderboard Tab   |
+| ranks per league |     refresh on enter    | LazyColumn + pin  |
++------------------+                         +-------------------+
+\end{lstlisting}
+
+这题的主线是两套 UI：session end card 需要快，leaderboard tab 需要可信。它们可以共享 Repository，但不能共享“所有值都同等可信”的模型。
+
+\subsection{数据模型}
+
+\begin{kotlin}
+data class XpPrediction(
+    val sessionUuid: String,
+    val predictedXp: Int,
+    val ruleVersion: Long,
+    val confidence: PredictionConfidence,
+)
+
+@Entity(tableName = "leaderboard_entries")
+data class LeaderboardEntryEntity(
+    @PrimaryKey val userId: String,
+    val displayName: String,
+    val avatarUrl: String?,
+    val xp: Int,
+    val rank: Int,
+    val isCurrentUser: Boolean,
+    val source: ScoreSource, // PREDICTED or SERVER
+    val updatedAt: Long,
+)
+
+data class LeaderboardUiState(
+    val entries: List<LeaderboardEntry>,
+    val pinnedMe: LeaderboardEntry?,
+    val isRefreshing: Boolean,
+    val hasPredictedScore: Boolean,
+)
+\end{kotlin}
+
+\subsection{关键机制逐个击破}
+
+\subsubsection{数据流：课程结束到排行榜}
+
+课程结束后，客户端先用 \code{XpPredictor} 算预测 XP，session end card 立即展示。这一步的价值是减少等待，符合官方 prediction 文章的动机。随后上传 session，后端计算 authoritative XP。leaderboard tab 进入时拉取真实榜单，也可以在当前用户行上叠加 pending delta，但必须明确标记来源。
+
+\subsubsection{XP 预测为什么会错}
+
+\srcofficial 官方给出的不一致来源很真实：前端和后端对“答对题数”的计算可能不同；前端认为 XP boost 生效而后端不认。再加上 A/B 实验、反作弊、补偿规则，客户端很难完整复现。正确表达不是“保证预测一致”，而是“缩小预测范围并设计回滚”。
+
+\subsubsection{三种回滚策略完整推演}
+
+\textbf{Never roll back}：session end card 和 leaderboard tab 都继续显示预测值。体验最平滑，但风险最大。用户可能看到自己短暂成为第一名，甚至截图分享；服务端真实值回来后如果不改，就破坏公平；如果后台又改，用户无法理解。
+
+\textbf{Immediate rollback}：card 显示预测值，但 leaderboard tab 一进来就显示服务端真实值。技术上简单、数据可信，但两处 UI 同时不一致：刚结束一课说 +20 XP，点进榜单只多了 +10 XP。用户会怀疑 bug。
+
+\textbf{Deferred rollback}：本次会话内两个地方都显示预测值，并标记 pending；App 重启、下次进入或服务端确认窗口后替换为真实值。体验连续，缺点是调试困难，因为错误可能跨进程或跨启动显现。我的推荐是对“普通 XP 展示”使用 bounded deferred rollback：有时间上限、pending 标记和埋点；对晋级、奖励、最终排名使用服务端值。
+
+\begin{center}
+\begin{tabularx}{\textwidth}{p{0.2\textwidth} X X X}
+\toprule
+策略 & 体验 & 正确性 & 推荐场景 \\
+\midrule
+Never & 最顺 & 最差 & 几乎不用，除非纯装饰数字 \\
+Immediate & 数据可信 & 同屏打架 & 调试工具或低风险内部 UI \\
+Deferred & 连续性好 & 需上限与标记 & session XP、短期 leaderboard 展示 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsubsection{为什么晋级必须等后端}
+
+\srcofficial 官方明确把 leaderboard promotion 列为 prediction non-goal。原因是公平性：晋级影响用户之间的相对结果，不能由每台客户端各自猜。即使客户端预测“你将晋级”，也只能写成“当前看来在晋级区，等待确认”，不能发放奖励或展示最终晋级动画。
+
+\subsubsection{列表实现与刷新策略}
+
+同 tier 数十人规模简化了设计：不需要复杂无限滚动，但仍可用 Paging 3 或一次拉取加 LazyColumn。当前用户即使不在当前可见区域，也应该 pin 一行在顶部或底部，帮助用户理解自己距离上一名多少 XP。滚动定位到自己要等数据加载后执行，避免 Compose 首帧阻塞。
+
+刷新策略上，我不会用 WebSocket 常连。排行榜不是聊天，实时性要求没有高到值得牺牲电量。更合理的是：进入 tab 刷新、下拉刷新、完成 lesson 后触发一次刷新、后台按较低频率轮询或由 push 提示重大变化。头像加载用 Coil 一类图片库\srcinferred，内存和磁盘缓存即可；不要把头像二进制塞进 Room。
+
+\subsection{边界情况}
+
+\begin{itemize}
+  \item XP 相同：服务端定义 tie-breaker，例如先达到该 XP 的时间更靠前；客户端只展示服务端 rank。
+  \item 飞行模式完成课程：本地显示 pending XP；恢复网络后上传 session，leaderboard 刷新真实值。
+  \item boost 过期边界：客户端预测必须带 ruleVersion 与 observed boost 状态；服务端返回差异后埋点分析。
+  \item 当前用户不在第一页：pin my rank；拉取 \code{me} 周围窗口。
+\end{itemize}
+
+\begin{followup}[“两个用户 XP 相同怎么排？”]
+客户端不自行决定。服务端返回 rank 和 tie-breaker 解释字段，例如 lastXpAt 或 joinedLeagueAt。客户端最多在 UI 上显示“同分按先达到排序”。因为任何客户端本地排序都可能和其他设备不一致。
+\end{followup}
+
+\begin{followup}[“用户飞行模式下完成课程，回来后排行榜怎么补？”]
+完成时生成 session UUID，保存 pending operation 和 predicted XP。leaderboard tab 可以显示“+X pending”或把自己的行临时上移但标记 syncing。恢复网络后上传；服务端 ACK 后用真实 XP 替换。晋级与奖励等到真实榜单确认。
+\end{followup}
+
+\begin{followup}[“如何避免短暂看到自己第一名然后掉下去？”]
+不要对高影响排名文案做强断言。预测阶段可以说“你可能上升到第 1，正在同步”，或在 leaderboard tab 中只显示 pending delta，不触发“你是第一名”的庆祝。对最终第一名、晋级区、奖励动画，等后端确认。
+\end{followup}
+
+\begin{idea}[可迁移心法]
+同一个数字在不同 UI 里的可信等级可以不同。session card 要快，可以预测；leaderboard 要可信，要校准；晋级要公平，必须权威。设计时先给数据标注 source，再决定 UI 文案。
+\end{idea}
+
+\begin{pitfall}[把预测值当作真值写进全局状态]
+如果 predicted XP 直接覆盖全局 user profile，后续所有页面都会把它当真，回滚范围不可控。预测值应带 source、sessionUuid、过期时间，并限制在需要它的 UI 域内。
+\end{pitfall}
+
+\designq{4}{客户端 A/B 实验 SDK}{Hard}
+
+\srcinferred 这题没有官方题面，但 \srcofficial Duolingo 相关 JD 强调跨 iOS、Android、backend、web 持续 A/B tests、reactive Android apps、clean APIs、unit tests；\srcofficial 公司公开文化也高度重视实验。因此客户端实验 SDK 是高置信设计方向。
+
+\subsection{题面与常见变体}
+
+设计 Android A/B 实验 SDK：业务方可以读取实验 variant，Compose UI 根据 variant 渲染；assignment 稳定、可离线；曝光准确上报；实验定义变更后能失效。变体包括：
+
+\begin{itemize}
+  \item “客户端自己哈希分桶，还是服务端下发 assignment？”
+  \item “如何避免冷启动先显示 control 又闪成 treatment？”
+  \item “曝光什么时候上报，如何离线去重？”
+\end{itemize}
+
+\subsection{需求澄清：你该问什么}
+
+\begin{itemize}
+  \item 问：实验是否需要跨平台一致？答：有些需要，例如订阅 paywall；有些只在 Android 内部。
+  \item 问：离线时是否要能读取实验？答：要，至少使用最近缓存的 assignment 或默认 control。
+  \item 问：实验读取是否在冷启动关键路径？答：是，不能明显拖慢首帧。
+  \item 问：曝光定义是什么？答：用户真正看到 treatment UI，而不是代码读取了 variant。
+\end{itemize}
+
+\subsection{架构总览}
+
+\begin{lstlisting}
+          app start
+             |
+             v
++----------------------+       snapshot       +---------------------+
+| ExperimentStore      | -------------------> | ExperimentSdk       |
+| Proto DataStore      |                      | isEnabled/variant   |
++----------+-----------+                      +----------+----------+
+           ^                                             |
+           | prefetch / refresh                           | read in VM/Compose
+           |                                             v
++----------+-----------+                      +---------------------+
+| Experiment API       |                      | Feature UI          |
+| definitions + assign |                      | render variant      |
++----------+-----------+                      +----------+----------+
+           ^                                             |
+           | batched exposure                            | seen on screen
+           |                                             v
++----------+----------------------------------------------+----------+
+| ExposureQueue in Room/DataStore + WorkManager retry                |
++--------------------------------------------------------------------+
+\end{lstlisting}
+
+SDK 的难点不是 \code{if (enabled)}，而是稳定 assignment、冷启动无闪烁、准确曝光、类型安全和可测试。
+
+\subsection{数据模型与 API}
+
+\begin{kotlin}
+sealed interface Experiment<T> {
+    val name: String
+    val default: T
+}
+
+object NewPaywallExperiment : Experiment<PaywallVariant> {
+    override val name = "new_paywall"
+    override val default = PaywallVariant.Control
+}
+
+enum class PaywallVariant { Control, ShortTrial, AnnualFirst }
+
+interface ExperimentSdk {
+    fun <T> getVariant(experiment: Experiment<T>): T
+    fun isEnabled(experiment: Experiment<Boolean>): Boolean
+    fun recordExposure(experimentName: String, variant: String, surface: String)
+}
+
+@Serializable
+data class AssignmentSnapshot(
+    val userId: String,
+    val definitionsVersion: Long,
+    val assignments: Map<String, String>,
+    val fetchedAtMillis: Long,
+)
+\end{kotlin}
+
+默认值就是 control。这样离线、未命中、解析失败时都有安全回退。业务代码依赖接口，测试中注入 fake assignment。
+
+\subsection{关键机制逐个击破}
+
+\subsubsection{分配：服务端下发 vs 客户端哈希}
+
+客户端哈希分桶的优点是稳定、离线可用、无需等待网络。规则可以是 \code{hash(userId + experimentName) mod 10000} 落入区间。只要 userId 不变，同一用户跨会话稳定。
+
+但不是所有实验都适合客户端分配。涉及跨平台一致、后端逻辑、付费、风控、互斥层、复杂受众过滤的实验，应由服务端下发 assignment。服务端能保证同一用户在 Android、iOS、web、backend 拿到一致 variant，也能即时停实验。我的推荐是混合：SDK 支持本地哈希作为 fallback 和 Android-only 实验；权威 assignment 由服务端快照覆盖。
+
+\subsubsection{本地缓存与冷启动首帧}
+
+实验读取很容易制造闪烁：首帧用默认 control，DataStore 异步读完后变 treatment，UI 突然换。解决有两种。
+
+第一，启动 splash 期间预取 assignment snapshot，设置一个很短预算，例如几十毫秒；读到就进入主界面，读不到用上次内存快照或默认值。第二，把实验读取做成同步内存快照：Application 启动时尽早异步加载 DataStore，一旦进入业务 UI，SDK 的 \code{getVariant} 只读 immutable map，不做 IO。这样业务方不会在 Compose recomposition 中触发磁盘读取。
+
+\begin{pitfall}[在 Composable 里 suspend 读取实验]
+如果每个 Composable 自己从 DataStore collect variant，首帧、重组、闪烁和测试都会变复杂。实验 SDK 应该向 UI 暴露稳定快照；需要动态变更的远程配置另说。
+\end{pitfall}
+
+\subsubsection{类型安全 API 与线程安全}
+
+字符串 API 容易拼错实验名，也容易把 variant 当 Boolean。用 typed experiment definition 可以让默认值、variant 类型和解析逻辑集中。SDK 内部持有 \code{AtomicReference<AssignmentSnapshot>} 或 immutable StateFlow；读取无锁或轻锁，刷新在后台替换整份 snapshot。业务代码只看到稳定接口。
+
+\subsubsection{曝光上报：看到才算}
+
+曝光不能在 \code{getVariant} 时自动上报，因为很多代码会提前读取但用户未看到。曝光应该由 UI 在变体真正进入屏幕时记录，例如 Compose 的 \code{LaunchedEffect(variant, surface)} 配合可见性判断。事件写入本地队列，批量上报，离线暂存。去重 key 至少包含 \code{userId + experimentName + variant + surface + assignmentVersion}，避免旋转屏幕重复曝光。
+
+\subsubsection{实验定义变更与过期}
+
+服务端返回 definitionsVersion、实验状态、过期时间、互斥层。客户端刷新后，如果某 assignment 对应实验已结束或 variant 不再存在，就失效并回到默认 control，同时上报一次配置解析错误。过期实验不能永远躺在 DataStore 里，否则老用户会长期停留在不存在的 treatment。
+
+\subsubsection{与 Compose 集成}
+
+ViewModel 读取 SDK，产出普通 UiState；Composable 只渲染 UiState。对于纯 UI 实验，也可以在 Composable 读取稳定 snapshot，但仍要避免 IO。曝光用生命周期感知方式：页面可见且 variant 实际渲染后记录一次。测试中用 fake SDK 固定 variant，截图测试覆盖各分支。
+
+\subsection{边界情况}
+
+\begin{itemize}
+  \item 用户登出/切换账号：清掉 user-scoped assignment，回到 anonymous 或默认 control。
+  \item 设备离线很久：使用缓存但检查 ttl；过期后对高风险实验回 control。
+  \item 同一实验跨平台：服务端 assignment 为准，客户端哈希只做 fallback。
+  \item 曝光队列满：按时间批量上传；超限时丢弃低价值曝光并记录计数，不阻塞 UI。
+\end{itemize}
+
+\begin{followup}[“实验读取在冷启动关键路径上，如何不拖慢启动？”]
+不在业务 UI 里做磁盘或网络读取。Application 阶段异步加载上次 snapshot；Splash 给一个很小预算尝试预取；SDK 对外是同步内存 map。网络刷新放后台，刷新后是否立即影响当前页面要由产品决定，通常下一次进入页面生效以避免闪烁。
+\end{followup}
+
+\begin{followup}[“同一用户多设备必须拿到同一个变体吗？”]
+如果实验影响订阅、价格、后端行为或跨平台漏斗，必须一致，服务端 assignment。纯 Android UI copy、布局、动画实验，可以客户端哈希，只要同一设备和同一用户稳定即可。面试里要按实验风险分层，而不是绝对回答。
+\end{followup}
+
+\begin{followup}[“实验与 SDUI/远程配置的边界在哪里？”]
+实验回答“谁看到哪个 variant，并如何上报效果”；远程配置回答“某个参数当前值是多少”；SDUI 回答“界面结构由服务端如何描述”。三者可以组合：实验决定使用哪套 SDUI schema 或 config key，但曝光、assignment、互斥和统计仍属于实验 SDK。
+\end{followup}
+
+\begin{idea}[可迁移心法]
+实验 SDK 的核心不是随机数，而是“稳定分配 + 无闪烁读取 + 准确曝光 + 可测试默认值”。任何增长团队、订阅团队、推荐团队都会问这四件事。
+\end{idea}
+
+\begin{keypoint}[面试收束]
+最后主动总结：assignment 要稳定，读取不能拖慢首帧，曝光要在真正可见时上报，离线要排队，默认 control 要安全，测试要能注入 fake variant。这六句话基本覆盖客户端实验 SDK 的评分点。
+\end{keypoint}

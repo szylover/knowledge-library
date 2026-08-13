@@ -1,0 +1,605 @@
+\chapter{查错题集 A：协程、Flow 与并发}
+
+在 Duolingo Android 面试的查错轮里，协程、Flow 与并发几乎是绕不开的核心区。原因很直接：\srcofficial\footnote{\url{https://blog.duolingo.com/migrating-duolingos-android-app-to-100-kotlin/}} Duolingo Android 已经迁移到 100\% Kotlin；\srcofficial\footnote{\url{https://android-developers.googleblog.com/2021/08/android-app-excellence-duolingo.html}} Android Reboot 之后的架构强调 MVVM、Repository、Dagger/Hilt 与模块化；而 \srccommunity 面经里也反复出现 \code{GlobalScope}、Fragment 中启动协程、Flow 收集和列表更新这类题。换句话说，这一章不是“并发语法大全”，而是面试官最可能用来判断你是否真写过大型 Android Kotlin 代码的故障样本。
+
+% ============================================================================
+\bugcase{1}{在 GlobalScope 里发起网络请求}{协程 Scope}
+
+\textbf{场景}：用户完成一节课程后，客户端要上报 session 结果、刷新 XP 和连胜，再把结果展示在完成页。\srccommunity 候选人报告过类似模式：代码里用 \code{GlobalScope} 发起网络请求，然后在响应后写回 UI 状态。
+
+\begin{ktbug}
+data class LessonResultUi(
+    val xp: Int,
+    val streakDays: Int,
+    val isSynced: Boolean
+)
+
+class LessonViewModel(
+    private val sessionRepository: SessionRepository,
+    private val streakRepository: StreakRepository
+) : ViewModel() {
+
+    private val _result = MutableStateFlow<LessonResultUi?>(null)
+    val result: StateFlow<LessonResultUi?> = _result
+
+    fun onLessonFinished(sessionId: String, answers: List<Answer>) {
+        _result.value = LessonResultUi(xp = 0, streakDays = 0, isSynced = false)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val submission = sessionRepository.submitSession(sessionId, answers)
+            val streak = streakRepository.refreshStreak()
+
+            _result.value = LessonResultUi(
+                xp = submission.xpEarned,
+                streakDays = streak.days,
+                isSynced = true
+            )
+        }
+    }
+}
+\end{ktbug}
+
+\textbf{你在面试中该怎么说}
+\begin{sayit}[影响先行]
+I would flag this as a lifecycle and crash risk. The work is launched in \code{GlobalScope}, so it can outlive the \code{LessonViewModel}; after the screen is gone it may still write UI state, and any uncaught exception is no longer tied to the screen's structured concurrency. I would use \code{viewModelScope} for screen-owned work, or move must-finish uploads to WorkManager or an injected application scope.
+\end{sayit}
+
+\textbf{根因分析}：\code{GlobalScope} 的问题不是“看起来不优雅”，而是它绕开了结构化并发。用户提交课程后立刻退出、旋屏或系统回收页面时，\code{viewModelScope} 会随 ViewModel 清理而取消；\code{GlobalScope} 不会。它还让异常脱离父作用域：网络失败、解析失败、服务器返回异常状态，如果没有局部捕获，就可能走到全局异常处理，表现为进程崩溃或不可预测日志。更隐蔽的是幽灵更新：旧页面发出的请求晚于新页面返回，把旧 session 的 XP 写进新状态。 \srcinferred
+
+\begin{ktfix}
+data class LessonResultUi(
+    val xp: Int,
+    val streakDays: Int,
+    val isSynced: Boolean
+)
+
+class LessonViewModel(
+    private val sessionRepository: SessionRepository,
+    private val streakRepository: StreakRepository
+) : ViewModel() {
+
+    private val _result = MutableStateFlow<LessonResultUi?>(null)
+    val result: StateFlow<LessonResultUi?> = _result
+
+    fun onLessonFinished(sessionId: String, answers: List<Answer>) {
+        _result.value = LessonResultUi(xp = 0, streakDays = 0, isSynced = false)
+
+        viewModelScope.launch {
+            val ui = runCatching {
+                val submission = sessionRepository.submitSession(sessionId, answers)
+                val streak = streakRepository.refreshStreak()
+                LessonResultUi(
+                    xp = submission.xpEarned,
+                    streakDays = streak.days,
+                    isSynced = true
+                )
+            }.getOrElse {
+                LessonResultUi(xp = 0, streakDays = 0, isSynced = false)
+            }
+            _result.value = ui
+        }
+    }
+}
+\end{ktfix}
+
+\begin{idea}[Scope 表达所有权]
+协程 scope 的第一含义不是“在哪个线程跑”，而是“谁拥有这段工作”。页面拥有的工作用 \code{viewModelScope} 或 \code{viewLifecycleOwner.lifecycleScope}；应用级工作要由应用级组件拥有；必须可靠完成的延迟工作交给 WorkManager。把所有权说清楚，dispatcher 才有意义。
+\end{idea}
+
+\begin{followup}[“但这个上报就是希望用户退出后也要完成，怎么办？”]
+这正是区分中级和高级候选人的追问。答案不是“那就 \code{GlobalScope}”，而是重新定义工作类型。如果上报必须在用户离开后继续、需要重试、需要网络约束、需要进程死亡后恢复，应使用 WorkManager，把 \code{sessionId} 与幂等 key 写入任务输入，服务端也要能安全处理重复提交。如果它只需要在应用进程内尽量完成，可以通过 DI 注入一个 application-scoped \code{CoroutineScope(SupervisorJob() + Dispatchers.IO)}，由 Application 或单例组件持有，并且仍要有错误记录、重试策略和幂等设计。\code{GlobalScope} 最大的问题是没有可测试、可取消、可观察的所有者。
+\end{followup}
+
+\begin{pitfall}[把 Dispatchers.IO 当成所有权]
+\code{GlobalScope.launch(Dispatchers.IO)} 只说明线程池，不说明生命周期。IO dispatcher 不能帮你取消旧页面请求，也不能帮你把异常归属到正确的业务失败域。
+\end{pitfall}
+
+% ============================================================================
+\bugcase{2}{在主线程上做 Room 查询与磁盘 IO}{Dispatcher}
+
+\textbf{场景}：用户打开排行榜页时，产品希望先展示本地缓存，再异步刷新远端排名。为了让首屏快，开发者写了一个“同步读缓存”的路径。
+
+\begin{ktbug}
+data class LeaderboardUi(
+    val rows: List<LeaderboardRow>,
+    val fromCache: Boolean
+)
+
+class LeaderboardViewModel(
+    private val repository: LeaderboardRepository
+) : ViewModel() {
+
+    private val _ui = MutableStateFlow(LeaderboardUi(emptyList(), fromCache = true))
+    val ui: StateFlow<LeaderboardUi> = _ui
+
+    fun load(courseId: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            val cached = repository.loadCachedLeaderboard(courseId)
+            _ui.value = LeaderboardUi(cached, fromCache = true)
+
+            val fresh = repository.refreshLeaderboard(courseId)
+            _ui.value = LeaderboardUi(fresh, fromCache = false)
+        }
+    }
+}
+
+class LeaderboardRepository(
+    private val dao: LeaderboardDao,
+    private val api: LeaderboardApi
+) {
+    suspend fun loadCachedLeaderboard(courseId: String): List<LeaderboardRow> {
+        return dao.selectRowsForCourse(courseId)
+    }
+
+    suspend fun refreshLeaderboard(courseId: String): List<LeaderboardRow> {
+        val rows = api.fetchLeaderboard(courseId)
+        dao.replaceRows(courseId, rows)
+        return rows
+    }
+}
+\end{ktbug}
+
+\textbf{你在面试中该怎么说}
+\begin{sayit}[线程契约]
+I would flag this as an ANR risk. The ViewModel launches on Main and the repository does not enforce an IO boundary around the database read or write. Even if some DAO methods are suspend, I do not want every caller to remember the threading rule; the repository should own its dispatcher contract and inject the dispatcher for tests.
+\end{sayit}
+
+\textbf{根因分析}：Android 主线程负责输入、绘制和生命周期分发。排行榜首屏看似只是“读一下缓存”，但磁盘 IO、Cursor 读取、反序列化、批量写库都可能在低端设备上卡住 UI。\srcofficial\footnote{\url{https://android-developers.googleblog.com/2021/08/android-app-excellence-duolingo.html}} Duolingo Android Reboot 的官方案例里，ANR 曾经每月恶化 5--10\%，重构后 ANR 下降 41\%；这类数字说明主线程重活不是小洁癖，而是会被用户真实感知的稳定性问题。\srcinferred 在评审里，最好的原则是：\textbf{由被调用方保证自己的线程约束}。调用方可以在主线程启动协程，但 Repository 的 suspend 函数应该自己把阻塞或重 IO 部分切到 \code{Dispatchers.IO}。
+
+\begin{ktfix}
+class LeaderboardViewModel(
+    private val repository: LeaderboardRepository
+) : ViewModel() {
+
+    private val _ui = MutableStateFlow(LeaderboardUi(emptyList(), fromCache = true))
+    val ui: StateFlow<LeaderboardUi> = _ui
+
+    fun load(courseId: String) {
+        viewModelScope.launch {
+            val cached = repository.loadCachedLeaderboard(courseId)
+            _ui.value = LeaderboardUi(cached, fromCache = true)
+
+            val fresh = repository.refreshLeaderboard(courseId)
+            _ui.value = LeaderboardUi(fresh, fromCache = false)
+        }
+    }
+}
+
+class LeaderboardRepository(
+    private val dao: LeaderboardDao,
+    private val api: LeaderboardApi,
+    private val ioDispatcher: CoroutineDispatcher
+) {
+    suspend fun loadCachedLeaderboard(courseId: String): List<LeaderboardRow> =
+        withContext(ioDispatcher) {
+            dao.selectRowsForCourse(courseId)
+        }
+
+    suspend fun refreshLeaderboard(courseId: String): List<LeaderboardRow> =
+        withContext(ioDispatcher) {
+            val rows = api.fetchLeaderboard(courseId)
+            dao.replaceRows(courseId, rows)
+            rows
+        }
+}
+\end{ktfix}
+
+\begin{idea}[线程约束属于 API 契约]
+如果一个 suspend 函数只能在后台线程安全调用，它就应该在内部切线程，或者在名字和文档中非常明确地表达限制。Android 项目里更常见的好选择是注入 \code{CoroutineDispatcher}，让生产环境用 IO，测试环境用 test dispatcher。
+\end{idea}
+
+\begin{pitfall}[IO 与 Default 不是“后台线程”的同义词]
+\code{Dispatchers.IO} 适合阻塞 IO：磁盘、网络库阻塞调用、文件读写。\code{Dispatchers.Default} 适合 CPU 密集计算：排序、大 JSON 纯计算转换、diff 计算。把 CPU 重活扔进 IO 会挤占 IO 线程；把阻塞 IO 扔进 Default 会饿死计算任务。面试里能说出这个差别，是比“不要在主线程”更强的信号。
+\end{pitfall}
+
+\begin{followup}[“Room 的 suspend DAO 不是已经异步了吗？”]
+可以回答：很多 Room suspend 查询会在 Room 自己的 executor 上运行，但评审代码时不能把所有封装都假设为理想状态。Repository 里可能还包含文件读写、缓存解析、加密、同步 DAO 或第三方 SDK。把 dispatcher 边界放在 Repository 仍然能表达契约，并让测试更可控。
+\end{followup}
+
+% ============================================================================
+\bugcase{3}{不可取消的轮询循环}{协作式取消}
+
+\textbf{场景}：排行榜页打开后每 5 秒刷新一次，用户可以一边做题一边看排名变化。开发者为了快速实现，在 ViewModel 里写了一个轮询 job。
+
+\begin{ktbug}
+class LeaderboardViewModel(
+    private val repository: LeaderboardRepository
+) : ViewModel() {
+
+    private val _rows = MutableStateFlow<List<LeaderboardRow>>(emptyList())
+    val rows: StateFlow<List<LeaderboardRow>> = _rows
+
+    private var pollingJob: Job? = null
+
+    fun startPolling(leagueId: String) {
+        pollingJob?.cancel()
+        pollingJob = viewModelScope.launch(Dispatchers.IO) {
+            while (true) {
+                try {
+                    val latest = repository.fetchLeagueRows(leagueId)
+                    _rows.value = latest
+                    Thread.sleep(5_000)
+                } catch (e: Exception) {
+                    logger.warn("leaderboard polling failed", e)
+                }
+            }
+        }
+    }
+
+    fun stopPolling() {
+        pollingJob?.cancel()
+    }
+}
+\end{ktbug}
+
+\textbf{你在面试中该怎么说}
+\begin{sayit}[取消语义]
+I would flag this as a cancellation bug and a thread waste. The coroutine uses \code{while (true)} plus \code{Thread.sleep}, and it catches \code{Exception}, so cancellation can be delayed or swallowed. I would make the loop cooperative with \code{isActive} and \code{delay}, and avoid catching \code{CancellationException} as a normal failure.
+\end{sayit}
+
+\textbf{根因分析}：Kotlin 协程取消是协作式的。调用 \code{cancel()} 只是把 Job 标记为取消；协程要在挂起点、\code{isActive}、\code{ensureActive()} 或 \code{yield()} 处观察到取消。\code{Thread.sleep} 会阻塞真实线程，不是可取消挂起点；\code{while (true)} 没有检查 Job 状态；\code{catch (Exception)} 又可能把 \code{CancellationException} 当成普通错误吞掉。用户离开排行榜页后，轮询可能继续占着 IO 线程、继续打网络、继续写状态，表现为电量消耗、重复请求或页面回来后看到旧数据闪动。 \srcinferred
+
+\begin{ktfix}
+class LeaderboardViewModel(
+    private val repository: LeaderboardRepository
+) : ViewModel() {
+
+    private val _rows = MutableStateFlow<List<LeaderboardRow>>(emptyList())
+    val rows: StateFlow<List<LeaderboardRow>> = _rows
+
+    private var pollingJob: Job? = null
+
+    fun startPolling(leagueId: String) {
+        pollingJob?.cancel()
+        pollingJob = viewModelScope.launch {
+            while (isActive) {
+                try {
+                    _rows.value = repository.fetchLeagueRows(leagueId)
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: IOException) {
+                    logger.warn("leaderboard polling failed", e)
+                }
+                delay(5_000)
+            }
+        }
+    }
+
+    fun stopPolling() {
+        pollingJob?.cancel()
+        pollingJob = null
+    }
+}
+
+class LeaderboardRepository(
+    private val api: LeaderboardApi
+) {
+    fun leagueRows(leagueId: String): Flow<List<LeaderboardRow>> = flow {
+        while (true) {
+            emit(api.fetchLeagueRows(leagueId))
+            delay(5_000)
+        }
+    }
+}
+\end{ktfix}
+
+\begin{idea}[取消点要出现在循环里]
+长循环有三件套：循环条件用 \code{isActive}，等待用 \code{delay} 而不是 \code{Thread.sleep}，CPU 密集循环中用 \code{ensureActive()} 或 \code{yield()} 给取消机会。否则 \code{cancel()} 只是一个愿望。
+\end{idea}
+
+\begin{pitfall}[catch Exception 吞掉 CancellationException]
+\code{CancellationException} 继承自 \code{Exception}。如果你写 \code{catch (e: Exception)} 后只打日志不重新抛出，父 scope 会以为子任务已经“正常处理失败”，取消传播被破坏。高级评审应主动指出：要么先 \code{catch (e: CancellationException) { throw e }}，要么只捕获你真正能恢复的异常类型。
+\end{pitfall}
+
+\begin{followup}[“用 Flow 轮询是不是就自动生命周期安全？”]
+不是。\code{flow { while (true) ... }} 只是把轮询变成 cold stream；它仍然需要在正确 scope 中收集。Fragment 应结合 \code{repeatOnLifecycle}，ViewModel 可以用 \code{stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), initial)} 控制上游何时启动和停止。
+\end{followup}
+
+% ============================================================================
+\bugcase{4}{async 的异常击穿了父作用域}{结构化并发}
+
+\textbf{场景}：课程加载页希望并行拉取课程内容、用户进度和发音音频清单。内容是必需的；音频清单可以稍后补；进度失败时可以用本地默认值。
+
+\begin{ktbug}
+data class LessonBundle(
+    val lesson: LessonContent,
+    val progress: UserProgress,
+    val audio: List<AudioClip>
+)
+
+class LessonLoader(
+    private val lessonRepository: LessonRepository,
+    private val progressRepository: ProgressRepository,
+    private val audioRepository: AudioRepository
+) {
+    suspend fun load(lessonId: String): LessonBundle = coroutineScope {
+        val lesson = async { lessonRepository.fetchLesson(lessonId) }
+        val progress = async { progressRepository.fetchProgress(lessonId) }
+        val audio = async { audioRepository.prefetchAudioList(lessonId) }
+
+        LessonBundle(
+            lesson = lesson.await(),
+            progress = progress.await(),
+            audio = audio.await()
+        )
+    }
+}
+\end{ktbug}
+
+\textbf{你在面试中该怎么说}
+\begin{sayit}[失败域]
+I would flag this as a failure-domain issue. All three async children are in the same \code{coroutineScope}, so if optional audio prefetch fails, it cancels the whole load and the lesson may not open. I would separate required data from degradable data, using \code{supervisorScope} and per-branch error handling.
+\end{sayit}
+
+\textbf{根因分析}：\code{coroutineScope} 的语义是结构化并发：任何子协程失败，父 scope 失败，兄弟协程被取消。这对“任一失败就整体失败”的事务很好，但课程加载不是纯事务。课程内容失败当然不能继续；音频预加载失败却不应该让整节课打不开；进度失败也许可以使用默认进度或缓存。原始代码把三个任务放在同一个失败域里，导致最不重要的分支拥有了杀死整个页面的权力。另一个常见变体是创建 \code{async} 后不 \code{await()}，异常会在结构化边界或父 job 上以不直观的方式出现，让排查更困难。 \srcinferred
+
+\begin{ktfix}
+class LessonLoader(
+    private val lessonRepository: LessonRepository,
+    private val progressRepository: ProgressRepository,
+    private val audioRepository: AudioRepository
+) {
+    suspend fun load(lessonId: String): LessonBundle = supervisorScope {
+        val lessonDeferred = async { lessonRepository.fetchLesson(lessonId) }
+        val progressDeferred = async {
+            runCatching { progressRepository.fetchProgress(lessonId) }
+                .getOrElse { UserProgress.empty(lessonId) }
+        }
+        val audioDeferred = async {
+            runCatching { audioRepository.prefetchAudioList(lessonId) }
+                .getOrElse { emptyList() }
+        }
+
+        val lesson = lessonDeferred.await()
+        LessonBundle(
+            lesson = lesson,
+            progress = progressDeferred.await(),
+            audio = audioDeferred.await()
+        )
+    }
+}
+\end{ktfix}
+
+\begin{idea}[失败域的划分]
+并行任务里哪些是必需的、哪些是可降级的，这是设计判断，不是语法问题。一个好的 reviewer 会先问业务语义：没有课程内容能不能显示？没有音频能不能先进入？没有进度能不能用默认值？然后再选择 \code{coroutineScope}、\code{supervisorScope} 或显式 try-catch。
+\end{idea}
+
+\begin{pitfall}[async 不是“更高级的 launch”]
+\code{async} 代表“我要一个结果”，所以结果必须被 \code{await()}，异常也通常在 \code{await()} 处处理。只为了并发执行副作用而用 \code{async}，然后不等待，是代码味道。没有返回值的工作优先用 \code{launch}，并明确它的异常处理和所有权。
+\end{pitfall}
+
+\begin{followup}[“launch、async 和 CoroutineExceptionHandler 有什么差异？”]
+\code{launch} 的未捕获异常会立即向父 job 传播；\code{async} 的异常保存在 \code{Deferred} 中，但仍然受结构化并发约束，父子关系会影响取消。\code{CoroutineExceptionHandler} 主要处理 root coroutine 的未捕获异常；它不是给普通子协程做业务恢复的万能 catch。面试里应强调：业务可恢复错误要在对应分支处理，handler 只适合作为最后的日志或崩溃边界。
+\end{followup}
+
+% ============================================================================
+\bugcase{5}{在 Fragment 里收集 Flow 却没有绑定生命周期}{Flow 收集}
+
+\textbf{场景}：课程列表页订阅 ViewModel 的 \code{StateFlow}，渲染课程卡片、下载状态和继续学习按钮。\srccommunity 面经报告过类似 Fragment 中启动协程处理网络响应、但没有正确绑定生命周期的代码。
+
+\begin{ktbug}
+class CourseListFragment : Fragment(R.layout.fragment_course_list) {
+
+    private val viewModel: CourseListViewModel by viewModels()
+    private var binding: FragmentCourseListBinding? = null
+    private val adapter = CourseAdapter()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentCourseListBinding.inflate(inflater, container, false)
+        return binding!!.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding!!.courseList.adapter = adapter
+
+        lifecycleScope.launch {
+            viewModel.state.collect { state ->
+                binding!!.progress.isVisible = state.loading
+                adapter.submitList(state.courses)
+                if (state.navigateToLessonId != null) {
+                    findNavController().navigate(
+                        CourseListFragmentDirections.openLesson(state.navigateToLessonId)
+                    )
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
+    }
+}
+\end{ktbug}
+
+\textbf{你在面试中该怎么说}
+\begin{sayit}[生命周期绑定]
+I would flag this as a lifecycle collection bug. The coroutine is launched in the Fragment's \code{lifecycleScope}, not the view lifecycle, so it can keep collecting after \code{onDestroyView} and touch a null or stale binding. I would collect from \code{viewLifecycleOwner.lifecycleScope} with \code{repeatOnLifecycle(STARTED)}.
+\end{sayit}
+
+\textbf{根因分析}：Fragment 的生命周期和它的 view 生命周期不是同一个东西。旋屏或导航时，Fragment 实例可能还活着，但 view 已经销毁并重建。原始代码用 \code{lifecycleScope}，协程绑定到 Fragment，而不是 view；\code{binding} 在 \code{onDestroyView} 置空后，collector 仍可能收到 StateFlow 更新并触碰 \code{binding!!}，导致 crash。即使不 crash，也可能在 view 重建后重复订阅，老 collector 和新 collector 同时处理同一个 state，出现一次导航触发两次、Toast 重复、adapter 收到交错列表等问题。 \srcinferred
+
+\begin{ktfix}
+class CourseListFragment : Fragment(R.layout.fragment_course_list) {
+
+    private val viewModel: CourseListViewModel by viewModels()
+    private var binding: FragmentCourseListBinding? = null
+    private val adapter = CourseAdapter()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentCourseListBinding.inflate(inflater, container, false)
+        return requireNotNull(binding).root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val currentBinding = requireNotNull(binding)
+        currentBinding.courseList.adapter = adapter
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    val activeBinding = binding ?: return@collect
+                    activeBinding.progress.isVisible = state.loading
+                    adapter.submitList(state.courses)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        is CourseListEvent.OpenLesson -> findNavController().navigate(
+                            CourseListFragmentDirections.openLesson(event.lessonId)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        binding?.courseList?.adapter = null
+        binding = null
+        super.onDestroyView()
+    }
+}
+\end{ktfix}
+
+\begin{idea}[repeatOnLifecycle 是取消并重启]
+\code{repeatOnLifecycle(STARTED)} 不是简单“暂停回调”。当生命周期低于 STARTED，它会取消内部收集；回到 STARTED，再重新启动收集。这能释放上游资源，也能避免后台页面继续渲染。课程列表这类可见 UI 通常用 STARTED：可见时收集，不可见时停止。
+\end{idea}
+
+\begin{pitfall}[StateFlow 不适合一次性导航事件]
+\code{StateFlow} 表达“当前状态”，新 collector 会立刻收到最新值。如果把 \code{navigateToLessonId} 放在 state 里，旋屏后新 collector 可能再次导航。一次性事件更适合 \code{Channel} 或配置合理的 \code{SharedFlow}，并且事件消费要和生命周期配合。
+\end{pitfall}
+
+\begin{followup}[“stateIn 的 WhileSubscribed(5000) 是干什么的？”]
+\code{stateIn(scope, SharingStarted.WhileSubscribed(5000), initial)} 里的 5000ms 是停止上游前的宽限期。旋屏时旧 collector 取消、新 collector 很快创建；宽限期可以避免上游冷 Flow 立刻停掉又重启，减少重复网络请求或数据库订阅抖动。它不是魔法数字，应该按上游成本和页面切换习惯设置。
+\end{followup}
+
+% ============================================================================
+\bugcase{6}{被多个协程并发修改的共享可变状态}{竞态与可见性}
+
+\textbf{场景}：一个用户状态对象同时被 XP 上报、连胜同步和课程进度更新读写。\srcofficial\footnote{\url{https://android-developers.googleblog.com/2021/08/android-app-excellence-duolingo.html}} 这正是官方 Android Reboot 故事里 \code{DuoState} 反模式的缩影：多个产品域共享巨大可变状态，最终带来稳定性和性能代价。
+
+\begin{ktbug}
+data class UserState(
+    val xp: Int,
+    val streakDays: Int,
+    val completedLessons: Set<String>
+)
+
+class UserStateStore(
+    private val api: UserApi,
+    private val dao: UserStateDao
+) {
+    private val _state = MutableStateFlow(
+        UserState(xp = 0, streakDays = 0, completedLessons = emptySet())
+    )
+    val state: StateFlow<UserState> = _state
+
+    suspend fun applyLessonResult(result: LessonResult) = coroutineScope {
+        launch(Dispatchers.IO) {
+            api.reportXp(result.sessionId, result.xpEarned)
+            _state.value = _state.value.copy(
+                xp = _state.value.xp + result.xpEarned
+            )
+        }
+
+        launch(Dispatchers.Default) {
+            _state.value = _state.value.copy(
+                completedLessons = _state.value.completedLessons + result.lessonId
+            )
+        }
+
+        launch(Dispatchers.IO) {
+            val streak = api.refreshStreak()
+            _state.value = _state.value.copy(streakDays = streak.days)
+            dao.save(_state.value)
+        }
+    }
+}
+\end{ktbug}
+
+\textbf{你在面试中该怎么说}
+\begin{sayit}[共享可变状态]
+I would flag this as a race on shared mutable state. \code{MutableStateFlow.value = value.copy(...)} is a read-modify-write sequence, and three coroutines on different dispatchers can overwrite each other's updates. I would use atomic \code{update}, immutable snapshots, or confine all mutation to one owner.
+\end{sayit}
+
+\textbf{根因分析}：\code{MutableStateFlow.value} 的单次读取和单次写入是线程安全的，但“读旧值、基于旧值 copy、再写回”这一串不是自动原子的。三个协程各自从 \code{\_state.value} 读到旧快照，再写回自己的字段更新，后写的人会覆盖先写的人。用户看到的现象可能是：课程完成了但 XP 少加一次；连胜更新后完成课程集合回滚；本地保存的状态和 UI 显示不一致。 \srcinferred 这类问题难复现，因为它依赖网络时序、dispatcher 调度和设备性能。
+
+\begin{lstlisting}
+初始 state = { xp=100, streak=7, completed=[] }
+
+协程 A 读到 old = { xp=100, streak=7, completed=[] }
+协程 B 读到 old = { xp=100, streak=7, completed=[] }
+A 写回 { xp=115, streak=7, completed=[] }
+B 写回 { xp=100, streak=7, completed=[lesson-3] }
+
+结果：lesson 完成被记录了，但 XP 更新丢失。
+\end{lstlisting}
+
+\begin{ktfix}
+data class UserState(
+    val xp: Int,
+    val streakDays: Int,
+    val completedLessons: Set<String>
+)
+
+class UserStateStore(
+    private val api: UserApi,
+    private val dao: UserStateDao,
+    private val ioDispatcher: CoroutineDispatcher
+) {
+    private val _state = MutableStateFlow(
+        UserState(xp = 0, streakDays = 0, completedLessons = emptySet())
+    )
+    val state: StateFlow<UserState> = _state
+
+    suspend fun applyLessonResult(result: LessonResult) = supervisorScope {
+        val xpDeferred = async(ioDispatcher) {
+            api.reportXp(result.sessionId, result.xpEarned)
+            result.xpEarned
+        }
+        val streakDeferred = async(ioDispatcher) {
+            runCatching { api.refreshStreak().days }.getOrNull()
+        }
+
+        val earnedXp = xpDeferred.await()
+        val streakDays = streakDeferred.await()
+
+        _state.update { current ->
+            current.copy(
+                xp = current.xp + earnedXp,
+                streakDays = streakDays ?: current.streakDays,
+                completedLessons = current.completedLessons + result.lessonId
+            )
+        }
+
+        withContext(ioDispatcher) {
+            dao.save(_state.value)
+        }
+    }
+}
+\end{ktfix}
+
+\begin{idea}[把“谁能改这个状态”收敛到一个地方]
+Duolingo 用 8 周停更换来的教训之一，就是巨大共享可变状态会让产品域互相踩踏。\srcofficial\footnote{\url{https://android-developers.googleblog.com/2021/08/android-app-excellence-duolingo.html}} 面试里你要把这个原则说出来：状态可以被很多地方观察，但修改入口要少、要有所有者、要用不可变快照或原子更新表达。
+\end{idea}
+
+\begin{pitfall}[\code{\_state.value = \_state.value.copy(...)} 不等于原子更新]
+这行看起来很 Kotlin，但本质是 read-modify-write。\code{MutableStateFlow.update { ... }} 会基于 CAS 循环重试，让转换函数应用到最新值上。它解决的是同一个 StateFlow 上的丢失更新，不等于解决所有业务事务；跨数据库、网络和内存状态的一致性仍需要事务或单一写入者设计。
+\end{pitfall}
+
+\begin{followup}[“为什么 @Volatile 不够？AtomicReference 和 update 又是什么关系？”]
+\code{@Volatile} 只保证可见性：一个线程写入后，另一个线程能看到较新的值。它不保证 \code{x = x + 1} 这种复合操作的原子性。\code{AtomicReference.compareAndSet} 可以把“如果当前还是我读到的旧值，就写入新值”做成原子条件写；\code{MutableStateFlow.update} 的思想类似，会在竞争失败时用最新值重新计算。因此它比 volatile 更适合状态快照的并发更新。
+\end{followup}

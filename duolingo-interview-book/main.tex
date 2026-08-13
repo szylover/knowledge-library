@@ -1,0 +1,81 @@
+% ============================================================================
+% main.tex — 《多邻国 Android 面试通关手册》
+% 编译：xelatex（两遍，生成目录与书签）；或 tectonic -X compile main.tex
+% ============================================================================
+\documentclass[11pt, a4paper, openany]{book}
+
+\input{preamble}
+
+\begin{document}
+
+\raggedbottom
+
+% --------------------------------------------------------------------------
+% 封面
+% --------------------------------------------------------------------------
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[duogreen] (current page.north west) rectangle
+      ([yshift=-0.6cm]current page.north east);
+    \fill[duogreen!88!black] ([yshift=-2.5cm]current page.north west) rectangle
+      ([yshift=-8.0cm]current page.north east);
+    \fill[abdark] ([yshift=1.6cm]current page.south west) rectangle
+      ([yshift=2.0cm]current page.south east);
+  \end{tikzpicture}
+
+  \centering
+  \vspace*{2.0cm}
+
+  {\color{white}\fontsize{36}{44}\selectfont\bfseries 多邻国 Android\par}
+  \vspace{0.2cm}
+  {\color{white}\fontsize{36}{44}\selectfont\bfseries 面试通关手册\par}
+  \vspace{0.6cm}
+  {\color{white!92}\Large Code Review \;·\; 架构设计 \;·\; 结对编程 \;·\; Kotlin 算法\par}
+
+  \vspace{3.0cm}
+
+  {\large\itshape 一本按 Duolingo 真实轮次组织的面经\par}
+  \vspace{0.3cm}
+  {\normalsize 重点在“查错”与“设计”：17 道查错题 + 9 道架构设计题\par}
+
+  \vfill
+
+  {\Large\bfseries SZY\par}
+  \vspace{0.3cm}
+  {\normalsize \today\par}
+  \vspace{2.2cm}
+\end{titlepage}
+
+% --------------------------------------------------------------------------
+\frontmatter
+\input{chapters/preface}
+\tableofcontents
+\newpage
+
+% --------------------------------------------------------------------------
+\mainmatter
+
+\part{面试全景}
+\include{chapters/ch00-overview}
+
+\part{编码轮：算法与结对编程}
+\include{chapters/ch01-kotlin-coding}
+\include{chapters/ch02-pair-programming}
+
+\part{查错轮：Code Review}
+\include{chapters/ch03-review-method}
+\include{chapters/ch04-review-concurrency}
+\include{chapters/ch05-review-lifecycle}
+\include{chapters/ch06-review-compose-idiom}
+
+\part{设计轮：Android 架构设计}
+\include{chapters/ch07-design-method}
+\include{chapters/ch08-design-core}
+\include{chapters/ch09-design-advanced}
+
+\part{项目、行为面与冲刺}
+\include{chapters/ch10-behavioral-plan}
+
+\end{document}
+
+

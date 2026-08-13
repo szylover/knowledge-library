@@ -1,0 +1,239 @@
+% ============================================================================
+% preamble.tex — 包、字体、排版、代码环境、自定义彩框
+% 《多邻国 Android 面试通关手册》
+% ============================================================================
+
+% --- 中文支持 (XeLaTeX) ---
+\usepackage{ctex}
+\usepackage{fontspec}
+
+% 等宽字体：DejaVu Sans Mono（渲染代码 / 框图制表符；需安装到系统字体）
+\setmonofont{DejaVu Sans Mono}[Scale=0.92]
+
+% --- 页面布局 ---
+\usepackage[
+  a4paper,
+  top=2.4cm, bottom=2.4cm,
+  left=2.3cm, right=2.3cm
+]{geometry}
+
+% --- 数学 ---
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+
+% --- 图表 ---
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+
+% --- 绘图 ---
+\usepackage{tikz}
+\usetikzlibrary{positioning, calc, arrows.meta, fit, backgrounds, shapes.geometric}
+
+% --- 颜色 ---
+\usepackage{xcolor}
+\definecolor{duogreen}{HTML}{58CC02}  % Duolingo 品牌绿
+\definecolor{duoblue}{HTML}{1CB0F6}   % Duolingo 辅助蓝
+\definecolor{duoorange}{HTML}{FF9600} % Duolingo streak 橙
+\definecolor{duored}{HTML}{FF4B4B}    % Duolingo hearts 红
+\definecolor{abred}{HTML}{58CC02}     % 兼容别名 -> 品牌主色
+\definecolor{abdark}{HTML}{4B4B4B}
+\definecolor{abgray}{HTML}{777777}
+\definecolor{codebg}{HTML}{F7F7F9}
+\definecolor{codekw}{HTML}{0033B3}
+\definecolor{codestr}{HTML}{067D17}
+\definecolor{codecmt}{HTML}{8C8C8C}
+\definecolor{codetype}{HTML}{8000A0}
+
+% --- 超链接与交叉引用 ---
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=abred!70!black,
+  citecolor=green!40!black,
+  urlcolor=cyan!55!black,
+  bookmarksnumbered=true,
+}
+\usepackage[nameinlink]{cleveref}
+
+% --- 代码高亮 (listings, 纯 LaTeX, 无需 python) ---
+\usepackage{xstring}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codebg},
+  keywordstyle=\color{codekw}\bfseries,
+  stringstyle=\color{codestr},
+  commentstyle=\color{codecmt}\itshape,
+  numberstyle=\tiny\color{abgray},
+  numbers=left, numbersep=8pt,
+  frame=single, framesep=5pt, rulecolor=\color{gray!30},
+  breaklines=true, breakatwhitespace=false,
+  showstringspaces=false,
+  tabsize=2,
+  columns=fullflexible,
+  keepspaces=true,
+  xleftmargin=14pt, xrightmargin=4pt,
+  aboveskip=8pt, belowskip=8pt,
+}
+% Kotlin 语言定义（listings 内置 Kotlin 支持不完整，这里自定义）
+\lstdefinelanguage{Kotlin}{
+  keywords={
+    package, import, class, interface, object, data, sealed, enum, annotation,
+    fun, val, var, const, lateinit, by, lazy, init, constructor, companion,
+    override, open, abstract, final, private, protected, public, internal,
+    suspend, inline, noinline, crossinline, reified, operator, infix, tailrec,
+    vararg, out, in, where, typealias, actual, expect,
+    if, else, when, for, while, do, return, break, continue, throw, try, catch,
+    finally, is, as, this, super, null, true, false, it, typeof
+  },
+  morekeywords=[2]{
+    launch, async, await, runBlocking, withContext, coroutineScope,
+    supervisorScope, delay, flow, collect, collectLatest, emit, cancel,
+    ensureActive, yield, remember, mutableStateOf, LaunchedEffect,
+    DisposableEffect, SideEffect, rememberCoroutineScope,
+    collectAsState, collectAsStateWithLifecycle, repeatOnLifecycle,
+    stateIn, shareIn, flowOn, distinctUntilChanged, debounce, flatMapLatest,
+    combine, map, filter, forEach, let, apply, run, also, takeIf, require
+  },
+  morekeywords=[3]{
+    Int, Long, Double, Float, Boolean, String, Char, Unit, Any, Nothing,
+    List, MutableList, Map, MutableMap, Set, MutableSet, Array, Result,
+    Flow, StateFlow, MutableStateFlow, SharedFlow, MutableSharedFlow, Channel,
+    LiveData, MutableLiveData, ViewModel, Job, Deferred, CoroutineScope,
+    Dispatchers, GlobalScope, viewModelScope, lifecycleScope, WorkManager,
+    Context, Activity, Fragment, RecyclerView, ViewHolder, Composable
+  },
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+}
+
+\lstdefinestyle{kt}{
+  language=Kotlin,
+  keywordstyle=\color{codekw}\bfseries,
+  keywordstyle=[2]\color{duoblue!75!black},
+  keywordstyle=[3]\color{codetype},
+}
+\lstnewenvironment{kotlin}{\lstset{style=kt}}{}
+% 带 bug 的代码（红色边框，视觉上与正确代码区分）
+\lstnewenvironment{ktbug}{%
+  \lstset{style=kt, rulecolor=\color{duored!60}, backgroundcolor=\color{duored!4}}%
+}{}
+% 修正后的代码（绿色边框）
+\lstnewenvironment{ktfix}{%
+  \lstset{style=kt, rulecolor=\color{duogreen!70!black}, backgroundcolor=\color{duogreen!5}}%
+}{}
+
+% C++ 别名（保留，个别对照场景使用）
+\lstdefinestyle{cpp}{
+  language=C++,
+  morekeywords={auto, vector, string, unordered_map, unordered_set, map, set,
+    priority_queue, queue, deque, pair, size_t, int64_t, nullptr, override,
+    constexpr, string_view},
+  emph={int, long, bool, char, double, void, struct, class},
+  emphstyle=\color{codetype},
+}
+\lstnewenvironment{cpp}{\lstset{style=cpp}}{}
+
+% --- 彩色定理框 ---
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable, skins}
+
+% ============================================================================
+% 自定义结构化彩框：本书面经的核心“设计思想”载体
+% ============================================================================
+
+% 设计思想 / 核心心法（红框）
+\newtcolorbox{idea}[1][核心思想]{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=abred!5, colframe=abred!80!black,
+  boxrule=0.8pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries, title={【设计思想】#1},
+}
+
+% 陷阱 / 易错点（橙框）
+\newtcolorbox{pitfall}[1][常见陷阱]{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=orange!6, colframe=orange!70!black,
+  boxrule=0.7pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries, title={【陷阱】#1},
+}
+% 追问 / Follow-up（蓝框）
+\newtcolorbox{followup}[1][面试官追问]{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=blue!4, colframe=blue!55!black,
+  boxrule=0.7pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries, title={【追问】#1},
+}
+% 复杂度 / 要点速记（绿框）
+\newtcolorbox{keypoint}[1][要点]{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=green!4, colframe=green!45!black,
+  boxrule=0.7pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries, title={【要点】#1},
+}
+% 面试话术：Code Review / 设计轮中"该怎么说出口"（紫框）
+\newtcolorbox{sayit}[1][面试中这样说]{
+  enhanced, breakable, arc=3pt,
+  before skip=10pt, after skip=10pt,
+  colback=violet!4, colframe=violet!60!black,
+  boxrule=0.7pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries, title={【话术】#1},
+}
+
+% ============================================================================
+% 题目标题命令
+% ============================================================================
+\newcommand{\difficulty}[1]{%
+  \IfStrEqCase{#1}{%
+    {Easy}{\textcolor{duogreen!70!black}{\textbf{Easy}}}%
+    {Medium}{\textcolor{duoorange!85!black}{\textbf{Medium}}}%
+    {Hard}{\textcolor{duored!80!black}{\textbf{Hard}}}%
+  }[\textbf{#1}]%
+}
+
+% 算法题：\problem{编号}{标题}{难度}
+\newcommand{\problem}[3]{%
+  \section{#2}%
+  \noindent{\small\textcolor{abgray}{#1 \quad|\quad 难度：}\difficulty{#3}}\par
+  \vspace{4pt}\hrule height 0.4pt \vspace{8pt}%
+}
+
+% 查错题：\bugcase{编号}{标题}{类别}
+\newcommand{\bugcase}[3]{%
+  \section{#2}%
+  \noindent{\small\textcolor{abgray}{查错 \##1 \quad|\quad 类别：}\textcolor{duored!80!black}{\textbf{#3}}}\par
+  \vspace{4pt}\hrule height 0.4pt \vspace{8pt}%
+}
+
+% 设计题：\designq{编号}{标题}{难度}
+\newcommand{\designq}[3]{%
+  \section{#2}%
+  \noindent{\small\textcolor{abgray}{设计题 \##1 \quad|\quad 难度：}\difficulty{#3}}\par
+  \vspace{4pt}\hrule height 0.4pt \vspace{8pt}%
+}
+
+% ============================================================================
+% 信息可靠性标记：区分「官方」「社区面经」「高置信推断」
+% ============================================================================
+\newcommand{\srcofficial}{%
+  \textcolor{duogreen!65!black}{\small\textbf{[官方]}}\ }
+\newcommand{\srccommunity}{%
+  \textcolor{duoorange!85!black}{\small\textbf{[面经报告]}}\ }
+\newcommand{\srcinferred}{%
+  \textcolor{duoblue!70!black}{\small\textbf{[高置信推断]}}\ }
+
+% 常用记号
+\newcommand{\bigO}[1]{\ensuremath{O(#1)}}
+\newcommand{\code}[1]{\texttt{#1}}

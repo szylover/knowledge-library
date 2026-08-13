@@ -1,0 +1,223 @@
+\chapter{项目深挖、行为面与两周冲刺}
+
+本章把技术准备收束到面试当天：项目深挖怎么讲，行为面如何贴合 Duolingo 的官方 Operating Principles，两周内怎样把 Code Review 与 Design 练到可上场。\srcofficial 官方建议候选人 think out loud、先给实用的最简方案、与面试官协作、准备反问问题。\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}}
+
+\section{项目深挖轮}
+
+\srccommunity/\srcinferred 项目深挖通常由 manager 或资深工程师主导，从你简历上的一个 Android 项目切入，逐层下钻到技术决策、权衡、影响和复盘。它不是“背项目介绍”，而是验证你是否真正在关键处做过判断。
+
+常见下钻问题链如下：
+
+\begin{itemize}
+  \item 为什么当时这么设计？
+  \item 有哪些替代方案？为什么没选？
+  \item 你如何衡量它成功了？指标是什么？
+  \item 如果规模再大 10 倍，瓶颈会在哪里？
+  \item 今天让你重做，你会改什么？
+\end{itemize}
+
+建议每个项目都按同一个骨架准备：
+
+\begin{enumerate}
+  \item \textbf{背景与约束}：业务目标、用户痛点、时间、人力、遗留系统。
+  \item \textbf{我的具体角色}：说“我负责设计离线队列与冲突处理”，不要只说“我们做了一个功能”。
+  \item \textbf{关键技术决策}：方案 A、B、C 的取舍，尤其要说被否决的选项。
+  \item \textbf{量化结果}：崩溃率、ANR、启动时间、转化率、实验指标、开发效率。
+  \item \textbf{事后反思}：如果重做，会怎样降低复杂度或更早验证风险。
+\end{enumerate}
+
+\begin{keypoint}[Duolingo 特别吃数据与实验]
+\srcofficial Duolingo 公开强调 Test It First、Learners First 与工程实验文化。你的每个项目最好能说出一个指标：不是“用户反馈不错”，而是“p95 启动时间下降 X\%”“实验保留率无显著提升所以 kill”“离线失败率下降到 Y\%”。没有指标的项目，也要补一个当时应该如何衡量的反思。
+\end{keypoint}
+
+\subsection{Android 项目示范讲法骨架}
+
+\paragraph{示例一：离线同步。} 背景：弱网下课程结果丢失。我的角色：设计本地 pending queue、幂等 ID、重试和冲突处理。否决方案：直接依赖内存重试，因为进程被杀会丢；全量双向合并，因为课程完成是用户资产但某些推荐状态不是资产。结果：失败率、客服工单或重试成功率改善。反思：更早加入可观测性和回放测试。
+
+\paragraph{示例二：性能重构。} 背景：首页滚动掉帧或课程启动慢。我的角色：用 Perfetto/FrameMetrics 建基线，定位主线程 JSON 解析或 Bitmap 解码。否决方案：只加缓存掩盖问题；最终把数据准备移到 Repository 和后台线程。结果：慢帧、冷启动、ANR 指标变化。反思：建立性能预算和 CI 基准。
+
+\paragraph{示例三：A/B 实验基础设施。} 背景：移动端实验配置分散，曝光埋点不可信。我的角色：定义 assignment、exposure、local cache 与 kill switch。否决方案：每个 feature 自己拉实验配置，因为会造成口径不一致。结果：实验接入时间下降，曝光丢失率下降。反思：更早统一指标字典。
+
+\begin{pitfall}[项目深挖两个致命伤]
+第一，把团队成果全部说成个人成果，会被追问击穿；第二，说不出任何被否决的方案，意味着你可能只是执行者，没有真正做技术决策。好的回答既诚实说明“我做了什么”，也能解释“为什么不是另一种做法”。
+\end{pitfall}
+
+\section{12 条 Operating Principles 与 STAR 故事}
+
+\srcofficial Duolingo 官方 Operating Principles 有 12 条。\footnote{\url{https://blog.duolingo.com/operating-principles/}} 面试准备不需要为每条写一个独立故事，而是准备 6--8 个真实、可追问的故事，让一个故事覆盖多条原则。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+\toprule
+\textbf{原则} & \textbf{一句解读} & \textbf{该准备的故事} \\
+\midrule
+Learners First & 用户学习价值高于短期指标 & 为用户利益反对某个指标或截止日期 \\
+Prioritize Ruthlessly & 聚焦最重要的问题 & 主动砍 scope、保住核心路径 \\
+Take the Long View & 为长期质量和学习效果投资 & 还技术债、改善架构或实验长期指标 \\
+Test It First & 用实验验证假设 & A/B 测试、灰度或失败实验复盘 \\
+Reduce Complexity & 少做复杂系统，多做清晰边界 & 删除代码、合并流程、简化状态 \\
+Ship It & 在不完美中交付价值 & 分阶段上线、用 feature flag 控风险 \\
+Strive for Excellence & 对质量与细节较真 & 性能、无障碍、崩溃或体验打磨 \\
+Be Candid and Kind & 诚实直接且尊重人 & code review 或跨职能分歧 \\
+Explain Why & 不只给结论，还解释理由 & 说服 PM/设计/团队接受取舍 \\
+Embrace Challenges & 接下困难问题并成长 & 陌生技术、线上事故、复杂迁移 \\
+Never Settle on Talent & 对团队能力有高标准 & 面试、带人、提升评审标准 \\
+All for One, and One for All & 团队目标高于个人边界 & 跨团队救火、补位、共享工具 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{pitfall}[不要引用不存在的价值观]
+\srcofficial “Show, Don't Tell” 不在 Duolingo 官方 12 条 Operating Principles 中。网上备考站常把它混进去；在面试中引用不存在的价值观是负向信号，说明你没有读官方材料。
+\end{pitfall}
+
+\subsection{故事矩阵}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+\toprule
+\textbf{故事} & \textbf{可覆盖原则} & \textbf{必须准备的追问} \\
+\midrule
+性能重构 & Take the Long View、Strive for Excellence、Explain Why & 如何量化？如何说服 PM？ \\
+失败实验 & Test It First、Learners First、Prioritize Ruthlessly & 多快发现？kill 还是迭代？ \\
+离线同步事故 & Embrace Challenges、Reduce Complexity、Ship It & 如何回滚？如何防复发？ \\
+跨团队分歧 & Be Candid and Kind、All for One、Explain Why & 对方为什么反对？你让步了什么？ \\
+Code Review 发现重大 bug & Strive for Excellence、Never Settle on Talent & bug 如何证明？如何不伤人？ \\
+AI 工具质量问题 & Embrace Challenges、Reduce Complexity、Strive for Excellence & 你如何验证 AI 代码？流程怎么改？ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{STAR 范例骨架}
+
+\begin{followup}[模板：失败实验]
+S：我们为了提升【指标】上线了【实验】。T：我负责【Android 端实现/指标口径/灰度】。A：我先定义 success metric 与 guardrail metric；上线后第【N】天发现【代理指标】上升但【真实学习/留存/错误率】没有改善或变差；我推动 kill/迭代，并补上【流程改进】。R：避免了【负面影响】，沉淀了【实验检查清单】。这类故事可对应 Test It First、Learners First、Take the Long View。
+\end{followup}
+
+\begin{followup}[模板：与 PM 或 Designer 分歧]
+S：某功能在截止日前还有【性能/无障碍/离线】风险。T：我需要既保护用户体验又不无限延期。A：我把风险转成数据或 demo，提出方案 A 立即 ship、方案 B 延后、方案 C flag 灰度；我明确解释为什么。R：团队选择【方案】，结果【指标】。注意用“我如何让讨论更清晰”，而不是“我赢了争论”。
+\end{followup}
+
+\begin{followup}[示例：Android Code Review 重大 bug]
+S：同事提交一个 streak 更新 PR，正常路径测试通过。T：我负责 review 状态一致性。A：我发现进程被杀后 pending update 只在内存里，可能导致 UI 显示已保住连胜但服务端未确认；我写了一个重现步骤和小测试，建议把事件持久化并加幂等 ID。R：上线前避免了错误 streak 展示，并把“进程死亡恢复”加入 review checklist。该示例是场景示范，不要照抄成自己的经历。
+\end{followup}
+
+\section{高频行为问题与答法}
+
+\subsection{Learners First 类}
+
+\begin{itemize}
+  \item \textbf{讲一个你为用户利益反对某个指标或截止日期的案例。} 考点：你是否敢于区分短期业务指标与真实用户价值；答案必须有数据、替代方案和沟通方式。
+  \item \textbf{讲一个你用数据影响产品决策的案例。} 考点：不是只会写代码，而是能定义指标、解释结果、推动决策。
+  \item \textbf{Duolingo 什么做对了、什么你会改。} 考点：是否真的用过产品；建议结合 Android 体验，如提醒、课程流畅度、离线、无障碍，不要泛泛夸游戏化。
+\end{itemize}
+
+\subsection{实验文化类}
+
+\begin{itemize}
+  \item \textbf{讲一个失败的实验。} 必须说清：多快发现，用什么指标发现，之后是 kill 还是迭代，以及你从中改了什么流程。Duolingo 重视 Test It First，失败实验不是丢脸，不能复盘才丢脸。
+  \item \textbf{指标提升了但你怀疑用户其实没获益。} 这题在考代理指标与真实价值的区分。例：点击率涨了但学习完成率或长期留存没涨；短期 XP 增加但错误率上升。回答要落到 Learners First 与 Take the Long View。
+  \item \textbf{如何决定哪些要 A/B 测试、哪些直接 ship？} 高风险行为改变、学习效果、付费和通知策略要测；明显 bug fix、崩溃修复、安全修复可直接 ship，但仍要监控。
+\end{itemize}
+
+\subsection{协作类}
+
+\begin{itemize}
+  \item \textbf{讲你最好的结对编程经历。} 重点是你如何拆任务、共享上下文、让对方更强。
+  \item \textbf{与 Designer 或 PM 的分歧如何解决？} 必须出现：先复述对方目标，再用数据/原型/用户影响比较方案。
+  \item \textbf{一次改变你写代码方式的反馈。} 不要讲空泛“我更注重质量了”，要讲具体习惯如何改变，如更早写测试、更小 PR、更明确 owner。
+\end{itemize}
+
+\subsection{AI 成熟度类}
+
+\srccommunity 2025 年新增高频问题包括：你如何在工作中使用 AI 工具？讲一次 AI 生成代码出质量问题、你发现并修复的经历。另有报告称出现实验性的 AI-Assisted Assessment 轮，约 1 小时。回答重点不是“我会用 AI 提效”，而是“我知道如何验证 AI 输出”。
+
+\begin{itemize}
+  \item \textbf{你如何使用 AI 工具？} 说清边界：生成样板、测试草稿、解释陌生 API；敏感代码和架构决策仍由你负责。
+  \item \textbf{AI 代码出质量问题怎么办？} 必须有具体 bug 类型、你如何通过测试/review/trace 发现、之后如何改 prompt 或流程。
+\end{itemize}
+
+\subsection{Android 专项}
+
+\begin{itemize}
+  \item \textbf{你做过哪些影响整个 Android 团队技术方向的决策？} Senior 以上要讲技术领导力，不只是个人模块。
+  \item \textbf{如何决定 MVVM 还是 MVI？} 回答应围绕状态复杂度、单向数据流、团队熟悉度、测试成本，不要站队宗教。
+  \item \textbf{如何在 shipping velocity 与代码质量间平衡？} 直接对应 Ship It：用分阶段、feature flag、监控和明确的后续清债日期。
+  \item \textbf{你用过 Duolingo 吗，哪个 Android 功能实现得最好/最差？} 结合真实体验和技术推断，如课程流畅度、通知权限、动画、离线。
+  \item \textbf{如果设计 Duo 猫头鹰动画系统？} 讲资源缓存、状态机、降级、低端设备和实验配置。
+  \item \textbf{如何确保移动端实验结果可信？} 讲 assignment 持久化、曝光时机、离线事件队列、版本过滤、guardrail 指标。
+\end{itemize}
+
+\section{反问环节}
+
+\srcofficial 官方建议准备问面试官的问题。好的反问不是“你们文化好吗”，而是显示你理解 Android 团队的真实约束。
+
+\begin{enumerate}
+  \item Compose 迁移到什么阶段？遗留 View 与 Compose 如何共存？这显示你懂 Android 架构迁移。
+  \item SDUI 目前的边界在哪里，哪些页面坚持原生？这连接官方 SDUI 博文与移动端取舍。
+  \item 实验数量如何影响移动端发版节奏和配置治理？这显示你关心实验可信度。
+  \item Android 团队如何度量 ANR、慢帧、启动和课程启动性能？这呼应 Android Reboot。
+  \item Code Review 更看重 bug、架构还是 Kotlin 惯用性？这帮助你理解质量文化。
+  \item On-call 或移动端线上事故如何分工？这显示你理解客户端也有生产责任。
+  \item Kotlin 100\% 迁移后，detekt、ktlint、Android Lint 和自研规则如何协作？这引用官方 Kotlin 迁移材料。\srcofficial\footnote{\url{https://blog.duolingo.com/migrating-duolingos-android-app-to-100-kotlin/}}
+  \item 对新入职 Android 工程师，前三个月最希望补上的产品或技术上下文是什么？这显示你想快速产生影响。
+  \item 移动端与 Learning/ML 团队如何定义客户端和服务端的边界？这适合 Birdbrain、个性化练习话题。
+  \item 团队如何处理技术债优先级，什么情况下会像 Android Reboot 那样集中投入？这显示你理解长期主义。
+\end{enumerate}
+
+\section{两周冲刺计划}
+
+假设每天 2--4 小时，本计划按读者优先级偏向 Code Review 与 Design。每天都必须有可验收产出，而不是“看了资料”。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+\toprule
+\textbf{天} & \textbf{任务} & \textbf{可验收产出} \\
+\midrule
+Day 1 & 全景浏览本书，精读官方面试博文 & 写出流程、轮次、移动端 design 评价轴一页纸 \\
+Day 2 & 精读 Frontend Prediction、SDUI、Android Reboot & 各写 5 条可在面试引用的官方事实 \\
+Day 3 & 查错专项 ch04 5--6 题 & 每题写英文 review comment 与修复原则 \\
+Day 4 & 查错专项 ch05 5--6 题 & 建立 Kotlin 并发/生命周期错题表 \\
+Day 5 & 查错专项 ch06 5--6 题，并找真实 Kotlin PR 练习 & 完成 2 个 GitHub PR 的英文 review 草稿 \\
+Day 6 & Kotlin 惯用性：Flow、coroutine、sealed class、Result & 写 20 条 Kotlin review checklist \\
+Day 7 & 算法轮复习：数组、哈希、堆、图、DP 各一题 & 每题 25 分钟限时并复盘复杂度 \\
+Day 8 & 设计题 ch08 前三题计时口述 & 每题手画架构图，录音 8--10 分钟 \\
+Day 9 & 设计题 ch08 第四题 + ch09 第五、第六题 & 写出 SDUI 与缓存的关键 trade-off 清单 \\
+Day 10 & 设计题 ch09 第七到第九题 & 每题准备 3 个 follow-up 答案 \\
+Day 11 & 结对编程环境演练：VS Code + Live Share，陌生 Kotlin 仓库限时加功能 & 60 分钟完成一个小改动并写复盘 \\
+Day 12 & 行为故事成稿 & 6--8 张 STAR 卡片，每张覆盖原则和追问 \\
+Day 13 & 全流程模拟：Code Review + Design + Behavioral & 录屏或找人 mock，列出 10 个改进点 \\
+Day 14 & 复盘与休息 & 只看错题和卡片，整理面试反问，保证睡眠 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{idea}[冲刺期的验收标准]
+不要用“我复习了”作为完成标准。每一天都要产出可检查物：架构图、英文 review comment、STAR 卡片、录音、错题表。面试表现来自可复述、可追问、可迁移的材料。
+\end{idea}
+
+\clearpage
+\section{资源清单}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.48\linewidth} l X@{}}
+\toprule
+\textbf{资源} & \textbf{来源} & \textbf{为什么值得读} \\
+\midrule
+\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/} & 官方 & 面试流程、Design 轮定位与备考建议 \\
+\url{https://blog.duolingo.com/operating-principles/} & 官方 & 12 条价值观，行为面必须以此为准 \\
+\url{https://blog.duolingo.com/frontend-prediction/} & 官方 & 乐观更新与三种回滚策略，移动端设计高频素材 \\
+\url{https://blog.duolingo.com/server-driven-ui/} & 官方 & SDUI 的响应结构、Actions、Conditions 与版本策略 \\
+\url{https://android-developers.googleblog.com/2021/08/android-app-excellence-duolingo.html} & 官方/Google & Android Reboot、MVVM、Hilt、模块化和性能指标 \\
+\url{https://blog.duolingo.com/migrating-duolingos-android-app-to-100-kotlin/} & 官方 & Kotlin 迁移、lint 链与工程文化 \\
+\url{https://developer.android.com/topic/architecture} & 官方 & Android 架构指南，MVVM/Repository/状态持有基础 \\
+\url{https://developer.android.com/develop/ui/compose/side-effects} & 官方 & Compose 副作用，回答状态与生命周期问题很有用 \\
+\url{https://interviewing.io/companies/duolingo} & 社区 & 面试轮次和体验参考，需与官方信息交叉验证 \\
+\url{https://www.programhelp.net/interview/duolingo-android-interview} & 社区 & 面经问题线索，不能当官方事实使用 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section*{结语}
+
+Duolingo Android 面试的核心不是背框架名，而是把“学习者价值、实验文化、移动端约束、工程质量”放进同一套叙事里。设计题要讲取舍，行为题要讲证据，项目深挖要讲你真实做过的决定。祝你把这些材料练到可以自然说出口。

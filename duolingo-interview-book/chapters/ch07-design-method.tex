@@ -1,0 +1,258 @@
+\chapter{Android 架构设计方法论}
+
+\srcofficial Duolingo 官方工程面试博客明确写到：Design Interview 是 60 分钟、无需写代码；对 iOS/Android 岗位，它考的是移动端架构设计，而不是后端分布式系统设计\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}}。这句话要先刻进脑子里。后端 System Design 常问的是“你怎么扛住流量”：分片、缓存、复制、一致性、QPS、热点。Android 架构设计问的是另一件事：\textbf{你怎么在一台随时会断网、随时会被系统杀掉、存储与电量都受限的设备上，保证用户看到的东西是对的}。
+
+这不是难度降低，而是坐标轴换了。你仍然要谈一致性，但一致性不再只是数据库副本之间的一致；它变成了 UI 状态、本地数据库、内存缓存、离线队列、服务端状态之间的一致。你仍然要谈可用性，但可用性不再只是服务 99.9\% 在线；它变成了用户在地铁里学完一课、重启 App 后进度不能丢。你仍然要谈性能，但性能不再只是 p99 API 延迟；它变成了入门级 Android 设备上首帧、滚动、Lesson start 的体感。
+
+\srcofficial Duolingo 公开复盘过一次 Android 重构：巨大的全局可变 \code{DuoState} 被 XP、streak、lessons 等模块共享，ANR 每月恶化 5--10\%；某次发布让 crash 增加 10\%、帧渲染慢 25\%、入门级设备 lesson start 慢 70\%。他们用 8 周 feature freeze 推进 MVVM、Dagger/Hilt、Repository 与模块化，换来 ANR 下降 41\%、missed frame 下降 28\%、滚动提升 40\%\footnote{\url{https://android-developers.googleblog.com/2021/08/android-app-excellence-duolingo.html}}。这段材料几乎就是 Android 设计轮的评分 rubrics：状态边界、依赖边界、生命周期、低端设备、可测试性。
+
+\begin{center}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{0.24\textwidth} X X}
+\toprule
+维度 & 后端 System Design & Android 架构设计 \\
+\midrule
+核心问题 & 如何承载海量请求与数据 & 如何在不可靠设备上保持正确体验 \\
+扩展性 & 分库分表、缓存、队列、读写分离 & 分层、模块化、状态隔离、可测试 ViewModel \\
+一致性 & 副本一致、事务、CAP、最终一致 & UI/内存/Room/DataStore/服务端之间的收敛 \\
+失败模式 & 节点宕机、网络分区、热点、消息重复 & 断网、进程被杀、低内存、磁盘满、电量限制 \\
+性能指标 & QPS、p95/p99、吞吐、容量 & 首帧、滚动掉帧、ANR、启动耗时、流量与电量 \\
+写路径 & 幂等 API、事务、消息队列 & 乐观更新、离线队列、WorkManager、回滚策略 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{idea}[移动端设计轮的主语]
+不要把 Android 设计题讲成“客户端只是调 API”。移动端的主语是\textbf{本地状态机}：用户动作先进本地状态机，状态机决定 UI、持久化、网络同步、失败回滚。服务端是权威来源，但用户体验发生在设备上。
+\end{idea}
+
+\section{六步答题框架}
+
+下面这套六步法，是本书后面所有 Duolingo Android 设计题的骨架。你不需要机械背诵每一句，但要形成固定顺序：先定边界，再画数据流，再选存储，再讲写路径，再讲状态与乐观更新，最后主动打失败场景。
+
+\subsection{第一步：澄清需求（5 分钟）}
+
+开场不要急着画 Repository。先问四类问题。
+
+\begin{itemize}
+  \item \textbf{功能边界}：用户要完成哪一个主路径？是只展示，还是要写入？要不要支持取消、撤销、重试？
+  \item \textbf{离线要求}：断网时是只读旧数据，还是允许继续学习并稍后同步？如果离线写入失败，用户是否已经看到成功 UI？
+  \item \textbf{实时性与一致性}：这个数据错 5 秒会怎样？错一天会怎样？是否涉及钱、排名晋级、公平性、不可逆资源？
+  \item \textbf{设备档位}：目标设备是否包括低内存、慢存储、弱网络的入门级 Android？\srcofficial Duolingo 明确关注入门级设备体验。
+\end{itemize}
+
+好的澄清不是“我问完了”，而是“我把后面的复杂度裁剪出来”。如果面试官说 leaderboard 晋级必须公平，你就不能用纯乐观更新；如果面试官说课程包必须离线可学，你就必须谈内容版本、断点续传、校验和磁盘配额。
+
+\subsection{第二步：分层与数据流（8 分钟）}
+
+\srcofficial Duolingo 公开技术栈包含 Kotlin、MVVM、Dagger/Hilt、Repository，并在推进 Compose；\srcinferred 标准 Jetpack 组件通常会包括 Room、DataStore、WorkManager、Retrofit/OkHttp 等。面试里不要堆名词，要把箭头画清楚：UI 不直接碰网络，ViewModel 不直接碰数据库细节，Repository 负责把 Local 与 Remote 收敛成一个可观察的数据源。
+
+\begin{lstlisting}
++----------------------+        StateFlow<UiState>
+| Compose / Fragment   | <---------------------------+
+| render + user events |                             |
++----------+-----------+                             |
+           | user intent                              |
+           v                                          |
++----------------------+                              |
+| ViewModel            | -- viewModelScope ----------+
+| reduce state         |
++----------+-----------+
+           |
+           v
++----------------------+      +----------------------+
+| UseCase (optional)   | ---> | Repository           |
+| business decision    |      | merge local/remote   |
++----------------------+      +----------+-----------+
+                                      /   \
+                                     /     \
+                                    v       v
+                         +-------------+  +----------------+
+                         | Room /      |  | Retrofit/OkHttp|
+                         | DataStore   |  | Remote API     |
+                         +-------------+  +----------------+
+                              ^                 |
+                              |                 v
+                         WorkManager <--- offline queue
+\end{lstlisting}
+
+这张图有三个暗含约束。第一，数据流尽量单向：UI 发 intent，ViewModel 变更状态，UI 观察状态。第二，本地存储不是缓存的代名词；在离线题里它是写路径的一部分。第三，WorkManager 与离线队列不是“补充组件”，而是进程死亡后的持久化执行边界。
+
+\subsection{第三步：本地存储选型（5 分钟）}
+
+移动端设计题很爱看你是否知道“该把什么放哪里”。不要说“都放 SQLite”。用下面这张表。
+
+\begin{center}
+\begin{tabularx}{\textwidth}{p{0.2\textwidth} X X}
+\toprule
+选项 & 适合什么 & 不适合什么 \\
+\midrule
+Room & 结构化数据、需要查询、需要关系、需要 Flow 观察；如课程、进度、离线队列 & 大文件、极少量偏好开关 \\
+DataStore & 少量键值、用户偏好、实验 assignment、streak 快照；异步且类型安全 & 复杂查询、大量列表、频繁分页 \\
+SharedPreferences & 维护遗留代码时遇到；简单同步读取 & 新代码首选；同步 IO 与一致性风险较高 \\
+文件与目录 & 音频、图片、课程包、可校验资源；便于 LRU 清理 & 需要 SQL 查询的业务实体 \\
+内存缓存 & 当前会话内的热数据、解码后对象、图片内存层 & 进程被杀后必须保留的数据 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\srcinferred 对 Duolingo 这类学习产品，课程内容、题目、进度、pending operations 通常适合 Room；streak 当前值、提醒时间、实验 assignment 适合 DataStore；音频与图片适合文件缓存加索引。
+
+\subsection{第四步：同步与写路径（10 分钟）}
+
+写路径是移动端设计轮的分水岭。只会说“调用 API，失败 toast”是不够的。你要回答：用户点按钮后，UI 何时变？本地何时落盘？网络何时发？失败时怎么重试？重复请求怎么去重？
+
+\begin{lstlisting}
+用户动作
+  |
+  +-- 是否必须马上得到服务端确认？
+       |
+       +-- 是：直接 suspend 调 API，显示 loading，失败不落最终状态
+       |       例：购买 gems、排行榜晋级确认
+       |
+       +-- 否：先写本地事务 + pending operation
+               |
+               +-- UI 从 Room/StateFlow 立刻看到新状态
+               +-- WorkManager 在网络可用时上传
+               +-- 服务端用 idempotency key 去重
+               +-- ACK 后删除 pending operation
+\end{lstlisting}
+
+WorkManager、前台 Service、裸协程的选择可以用一句话定调：
+
+\begin{itemize}
+  \item \textbf{裸协程}：用户还停留在当前页面，任务短、可丢弃或可由本地状态恢复。
+  \item \textbf{WorkManager}：需要保证“最终会执行”，可延迟，受网络/电量约束，进程被杀后仍要续跑。
+  \item \textbf{前台 Service}：用户明确知道有一个长任务正在进行，必须持续执行并展示通知，例如大课程包下载。
+\end{itemize}
+
+幂等要主动说。客户端为每次逻辑写操作生成 UUID：lesson session、follow action、streak freeze consume 都有自己的 idempotency key。服务端看到重复 key 返回同一结果，而不是重复加 XP 或重复消耗资源。
+
+\subsection{第五步：状态管理与乐观更新（10 分钟）}
+
+UI 状态不要只写 \\code{Loading/Success/Error} 三态。真实业务常见第四态：\textbf{有旧数据的 Loading}。例如排行榜 tab 上次有数据，这次进入页面刷新中；如果你清空列表显示 spinner，体验会抖。更好的状态是旧列表继续显示，顶部或下拉区域显示 refreshing。
+
+\begin{kotlin}
+sealed interface LessonUiState {
+    data object EmptyLoading : LessonUiState
+    data class Data(
+        val lesson: Lesson,
+        val isRefreshing: Boolean = false,
+        val pendingSync: Boolean = false,
+        val errorMessage: String? = null,
+    ) : LessonUiState
+    data class FatalError(val message: String) : LessonUiState
+}
+\end{kotlin}
+
+乐观更新是 Duolingo 设计题里最高信号的话题。\srcofficial 官方 frontend prediction 文章定义了这个模式：客户端在网络返回前，基于预期结果先更新 UI；真实请求在后台发送；如果结果不一致，再协调\footnote{\url{https://blog.duolingo.com/frontend-prediction/}}。课程进度、排行榜 XP、Follow 按钮都是官方讨论过的例子。
+
+但乐观更新不是免费午餐。官方文章点出了两个成本：\textbf{状态重复}，因为前后端各维护一份看起来相同的状态；\textbf{逻辑重复}，因为 increment、XP 计算、boost 判断等规则要在两侧实现，业务变更时容易漂移。面试官真正想听的不是“我会 optimistic UI”，而是“我知道这笔交易何时划算”。
+
+\subsection{第六步：边界与失败（10 分钟）}
+
+最后十分钟主动扫失败场景。不要等面试官问。
+
+\begin{itemize}
+  \item \textbf{断网}：哪些操作允许排队？哪些必须失败？网络恢复由 \code{ConnectivityManager.NetworkCallback} 触发同步，真正执行交给 WorkManager。
+  \item \textbf{进程被杀}：ViewModel 状态会丢，Room/DataStore 与 WorkManager request 不会丢；临时表单用 \code{SavedStateHandle}。
+  \item \textbf{多设备冲突}：服务端是 source of truth；客户端用保守合并，学习进度一般不 downgrade。
+  \item \textbf{时区}：streak、每日目标、提醒都不能只信设备时间；用服务端返回的账号时区定义 day boundary。
+  \item \textbf{存储配额}：课程包、音频、图片必须有大小上限、LRU、校验与重新下载策略。
+  \item \textbf{低内存}：列表分页、图片解码尺寸、避免把大课程包全读进内存。
+  \item \textbf{版本兼容与迁移}：Room migration、DataStore schema 演进、老客户端与新服务端字段兼容。
+\end{itemize}
+
+\section{什么时候该用乐观更新}
+
+\srcofficial Duolingo 把 frontend prediction 用在三类场景：课程进度离线递增、排行榜 XP 预测、Follow 按钮即时反馈。机制很简单：先把 UI 改成“我们预计会成功的样子”，再发请求，最后对账。但决定是否使用它，必须同时看用户心理、可逆性、成本和公平性。
+
+\begin{idea}[乐观更新的本质]
+乐观更新是把“延迟”换成“不一致的风险”。你必须能说出这笔交易在这个场景下划不划算：用户是否强烈期待立刻反馈？错误是否可逆？短暂不一致是否会伤害信任、公平或金钱？
+\end{idea}
+
+官方课程进度例子里，离线时无法访问服务器，客户端先把本地 counter 加一，等恢复网络再同步。这里的产品判断是：用户学完课，进度条立刻前进比“等网络确认”更重要；即使最后服务端发现细节不一致，也可以保守合并。代价是状态重复与逻辑重复：前端和后端都知道如何 increment，规则一改就可能漂移。
+
+排行榜 XP 更复杂。\srcofficial 官方文章说，等待后端计算 XP 会让 session end card 变慢，因为 XP 可能受 bonus、boost、accuracy 等因素影响。客户端可以预测并立即展示，但不一致来源很多：前端和后端对“答对题数”的口径不同；前端认为 XP boost 生效，后端却不认。于是回滚策略成为核心。
+
+\begin{center}
+\begin{tabularx}{\textwidth}{p{0.22\textwidth} X X}
+\toprule
+策略 & 用户可见结果 & 风险与成本 \\
+\midrule
+Never roll back & 用户一直看到预测值；体验最顺 & 风险最高。用户可能看到“你是第一名”，真实服务端却不是，信任与公平受损 \\
+Immediate rollback & session end card 先显示预测；leaderboard tab 立刻显示真实 & 同一时间两处 UI 不一致，用户困惑：“刚才不是加了 20 XP 吗？” \\
+Deferred rollback & 本次会话内都显示预测；App 重启或下次冷启动后替换为真实 & 体验连续，但调试困难；bug 可能只在重启后显现 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+我的面试答案通常是：\textbf{对 session end card 可以预测；对 leaderboard tab 可短时间采用 deferred rollback；对晋级、奖励发放、结算必须等后端确认}。原因是 card 是即时反馈，预测错误的心理成本较低；leaderboard 排名牵涉社交比较，不能让用户短暂看到极端错误；晋级涉及公平性，官方明确说不适合 prediction。
+
+\srcofficial 官方也给了反例：购买 gems 等 monetized resources 不适合预测，因为用户期望精确；排行榜晋级不适合预测，因为公平性必须由后端确认。
+
+\begin{followup}[“前后端算出来的 XP 不一样怎么办？”]
+先承认这是 prediction 的核心风险，而不是甩锅给后端。可选解法有三层：第一，把计算规则收敛到一处，例如服务端返回可配置规则或共享规则版本，客户端只预测能完整复现的部分；第二，服务端为准，但延迟替换，避免同屏立即打脸；第三，只预测低风险量，例如 session card 上的临时 XP，不预测晋级和奖励发放。面试里要明确说：如果规则复杂到客户端无法可靠复现，就缩小预测范围。
+\end{followup}
+
+\begin{keypoint}[乐观更新决策规则]
+可逆、低代价、用户心理预期“立刻发生”的操作，可以乐观：Follow、点赞、课程完成后的本地进度。涉及钱、涉及公平排名、涉及不可逆资源、涉及风控的操作，不乐观：购买 gems、排行榜晋级、订阅权限生效。
+\end{keypoint}
+
+\section{画图与表达}
+
+移动端架构图要比后端图多标三件事：线程边界、持久化边界、进程死亡边界。面试官很吃这一套，因为它说明你真的在 Android 上踩过坑。
+
+\begin{lstlisting}
+[Main thread]
++--------------------+     StateFlow      +--------------------+
+| Compose Screen     | <----------------- | ViewModel          |
+| render UiState     |                    | reduce intents     |
++---------+----------+                    +---------+----------+
+          | user intent                              |
+          |                                          | suspend / Flow
+          v                                          v
++--------------------+                    +--------------------+
+| UI event handler   |                    | Repository         |
++--------------------+                    | single write gate  |
+                                              +---+----------+---+
+                                                  |          |
+                         process survives?        |          | network may fail
+                                                  v          v
+                                      +--------------+  +--------------+
+                                      | Room/DataStore| | Remote API   |
+                                      | durable state | | server truth |
+                                      +------+-------+  +------+-------+
+                                             ^                 |
+                                             | async retry     |
+                                      +------+-----------------v+
+                                      | WorkManager + queue     |
+                                      | survives process death  |
+                                      +-------------------------+
+\end{lstlisting}
+
+每条边最好标同步还是异步。UI 到 ViewModel 是同步 intent；ViewModel 到 Repository 可能是 suspend；Repository 到 Room 是本地事务；Repository 到 Remote 是网络；WorkManager 到 Remote 是异步重试。再用虚线或文字标出“进程被杀后还在”的组件：Room、DataStore、WorkManager request、文件缓存。
+
+\begin{sayit}[60 分钟开场话术]
+“我先按 Android 架构题来回答，而不是后端分布式系统题。我的重点会放在本地数据源、离线写路径、状态一致性、进程被杀后的恢复，以及哪些地方可以乐观更新。最后我会扫一遍低端设备、存储、电量和迁移边界。”
+\end{sayit}
+
+\begin{sayit}[从高层图切到深挖]
+“高层图到这里能跑通主路径。接下来我会深挖两个最容易出错的点：第一是写路径如何在断网和重复提交下保持幂等；第二是 UI 先更新后回滚时，用户会看到什么。”
+\end{sayit}
+
+\section{自查表}
+
+拿到任何移动端设计题，都用这张表检查自己的答案是否完整。
+
+\begin{itemize}
+  \item 我是否先澄清了离线、实时性、一致性、设备档位？
+  \item 图里是否有 UI、ViewModel、Repository、Local、Remote、WorkManager？箭头是否单向？
+  \item 我是否说明了 Room、DataStore、文件、内存缓存各放什么？
+  \item 写操作是否有 idempotency key？失败是否可重试？重复请求是否安全？
+  \item UI 状态是否区分 empty loading、data refreshing、error with old data？
+  \item 如果用了乐观更新，我是否说清了状态重复、逻辑重复、回滚策略？
+  \item 进程被杀后，哪些状态仍然存在？哪些需要从 \code{SavedStateHandle} 或 Room 恢复？
+  \item 多设备冲突时，服务端是否是 source of truth？客户端是否避免 downgrade？
+  \item 是否考虑了时区、磁盘配额、低内存、电量、Doze、版本迁移？
+  \item 我是否明确指出哪些场景\textbf{不能}乐观：钱、公平晋级、不可逆资源？
+\end{itemize}

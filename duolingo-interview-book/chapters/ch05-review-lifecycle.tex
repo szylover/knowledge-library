@@ -1,0 +1,658 @@
+\chapter{查错题集 B：生命周期、泄漏与列表}
+
+生命周期类查错题，在 Android 评审里权重极高。它们不像语法错误那样立刻炸在开发机上，而是潜伏在“用户反复进出页面、低端机内存紧张、长时间学习会话、网络抖动、快速滚动”这些真实条件里。Duolingo 曾公开复盘 Android Reboot：巨型全局可变状态让 ANR 每月恶化，某次发布还带来崩溃率、慢帧和课程启动速度的明显退化；后来团队停更数周，把架构拉回 MVVM、Repository、依赖注入和模块化，才换来 ANR 与掉帧的下降 \srcofficial\footnote{\url{https://android-developers.googleblog.com/2021/08/android-app-excellence-duolingo.html}}。所以查错题里看到生命周期、泄漏、列表刷新，不要把它当“小洁癖”，它常常就是用户体验事故的早期形态。
+
+% ===========================================================================
+\bugcase{7}{Fragment 的 binding 没有在 onDestroyView 置空}{内存泄漏}
+
+\subsection*{场景}
+课程详情页 \code{LessonDetailFragment} 展示课程标题、技能树入口、单词复习提醒和一个底部开始按钮。这个页面常被压入回退栈：用户从课程列表点进详情，返回列表，再点另一个课程。看起来只是一个普通 ViewBinding 写法，但如果 Fragment 实例活着而它的 View 已经销毁，旧的整棵 View 树就会被 binding 悄悄拴住。
+
+\begin{ktbug}
+class LessonDetailFragment : Fragment(R.layout.fragment_lesson_detail) {
+    private var _binding: FragmentLessonDetailBinding? = null
+    private val binding: FragmentLessonDetailBinding
+        get() = requireNotNull(_binding)
+
+    private val viewModel: LessonDetailViewModel by viewModels()
+    private val args: LessonDetailFragmentArgs by navArgs()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentLessonDetailBinding.bind(view)
+
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+        binding.startLessonButton.setOnClickListener {
+            viewModel.startLesson(args.lessonId)
+        }
+
+        viewModel.lesson.observe(viewLifecycleOwner) { lesson ->
+            binding.title.text = lesson.title
+            binding.description.text = lesson.description
+            binding.xpReward.text = getString(R.string.xp_reward, lesson.xp)
+            binding.reviewBadge.isVisible = lesson.hasDueReview
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.startLessonButton.setOnClickListener(null)
+        // BUG: _binding 仍然引用已经销毁的 View tree
+    }
+}
+\end{ktbug}
+
+\begin{sayit}[面试里怎么说]
+我会先说影响：这个 Fragment 放进 back stack 后，Fragment 实例可能继续存活，但它的 View 已经销毁；binding 继续持有旧 View，会泄漏整个课程详情页面。Then I would say: ``The lifetime of the Fragment is longer than the lifetime of its view. The fix is to clear the binding in onDestroyView, or better, use a view-binding delegate so the rule is enforced structurally.''
+\end{sayit}
+
+\subsection*{根因分析}
+Fragment 有两条生命周期：Fragment 自己的生命周期，和它所创建的 View 的生命周期。进入回退栈时，Fragment 对象可能还在，因为导航组件需要保留它的状态；但 \code{onDestroyView} 已经运行，原来的 root view、子 View、drawable、adapter、listener 都应该被释放。\code{\_binding} 是一个强引用，只要它不被置空，旧 View 树就无法被 GC。开发机上单次打开页面通常看不出问题；真实用户连续学习几十分钟、在课程列表和详情间反复切换时，泄漏会逐步累积，低端设备先表现为卡顿，再表现为 OOM 或后台进程频繁被杀。
+
+这里的危险不只在内存。代码在 \code{onDestroyView} 里还通过 binding 访问旧 View；如果之后某个异步回调继续使用这个 getter，就会把“已销毁的 UI”伪装成“仍可操作的 UI”。评审时要抓住本质：不是少写一行 \code{\_binding = null}，而是所有引用 View 的对象都必须跟 View 生命周期同生共死。
+
+\begin{ktfix}
+class LessonDetailFragment : Fragment(R.layout.fragment_lesson_detail) {
+    private var _binding: FragmentLessonDetailBinding? = null
+    private val binding: FragmentLessonDetailBinding
+        get() = requireNotNull(_binding) { "View binding is only valid between onViewCreated and onDestroyView." }
+
+    private val viewModel: LessonDetailViewModel by viewModels()
+    private val args: LessonDetailFragmentArgs by navArgs()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentLessonDetailBinding.bind(view)
+
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+        binding.startLessonButton.setOnClickListener {
+            viewModel.startLesson(args.lessonId)
+        }
+
+        viewModel.lesson.observe(viewLifecycleOwner) { lesson ->
+            binding.title.text = lesson.title
+            binding.description.text = lesson.description
+            binding.xpReward.text = getString(R.string.xp_reward, lesson.xp)
+            binding.reviewBadge.isVisible = lesson.hasDueReview
+        }
+    }
+
+    override fun onDestroyView() {
+        binding.startLessonButton.setOnClickListener(null)
+        _binding = null
+        super.onDestroyView()
+    }
+}
+\end{ktfix}
+
+\begin{idea}[把纪律性问题变成结构性问题]
+手写 \code{\_binding = null} 靠记性，项目大了总会漏。更好的团队级修法，是引入只在 \code{viewLifecycleOwner} 活跃期可访问的 \code{viewBinding()} 属性委托：View 销毁时委托自动清空引用，View 不存在时访问直接抛出带信息的异常。面试里这样讲，会让你从“我知道这一行怎么补”上升到“我知道怎样让整个代码库不再反复犯”。
+\end{idea}
+
+\begin{followup}[“\code{lateinit} 在这里会怎样？”]
+\code{lateinit var binding} 避免了可空写法，却隐藏了释放时机。它既不能表达“View 销毁后不可访问”，也不会自动清空旧 View；除非你在 \code{onDestroyView} 里重新赋一个哨兵值，但 Kotlin 没有“unset lateinit”的正式 API。因此在 Fragment binding 上，\code{lateinit} 往往比可空 backing property 更容易泄漏。
+\end{followup}
+
+\begin{followup}[“为什么 LeakCanary 能抓到它？”]
+LeakCanary 会在 \code{onDestroyView} 后观察被销毁的 root View 是否还能被强引用到。如果引用链显示 \code{LessonDetailFragment -> \_binding -> root}，它就能指出 Fragment 字段保留了本应回收的 View 树。这个工具抓到的是症状；根治仍是明确所有权边界。
+\end{followup}
+
+% ===========================================================================
+\bugcase{8}{observe 用了 this 而不是 viewLifecycleOwner}{重复订阅}
+
+\subsection*{场景}
+连胜卡片 \code{StreakCardView} 在课程详情页顶部展示用户今天是否已经完成练习。产品上它很显眼：用户从课程列表进入详情，返回，再进入另一个课程，如果连胜状态更新时卡片闪两次、弹两次动效，用户会以为奖励系统出了问题。这个 bug 的代码在首次进入时完全正常，因此特别像真实面试题。
+
+\begin{ktbug}
+class StreakDetailFragment : Fragment(R.layout.fragment_streak_detail) {
+    private var _binding: FragmentStreakDetailBinding? = null
+    private val binding get() = requireNotNull(_binding)
+    private val viewModel: StreakViewModel by viewModels()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentStreakDetailBinding.bind(view)
+
+        viewModel.streak.observe(this) { streak ->
+            binding.streakCard.setDayCount(streak.days)
+            binding.streakCard.setFrozen(streak.isFrozen)
+            if (streak.extendedToday) {
+                binding.streakCard.playCelebration()
+            }
+        }
+
+        viewModel.loading.observe(this) { loading ->
+            binding.progressBar.isVisible = loading
+            binding.practiceButton.isEnabled = !loading
+        }
+
+        binding.practiceButton.setOnClickListener {
+            viewModel.practiceToday()
+        }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+}
+\end{ktbug}
+
+\begin{sayit}[面试里怎么说]
+我会先讲用户影响：从回退栈回来后，这段代码会累计 observer，一次 streak 更新可能触发多次 UI 更新和多次庆祝动画，甚至访问已经销毁的 binding。Then: ``The observer is attached to the Fragment lifecycle, not the view lifecycle. In a Fragment, UI observers should be scoped to viewLifecycleOwner.''
+\end{sayit}
+
+\subsection*{根因分析}
+\code{this} 在 Fragment 里代表 Fragment 的生命周期，而不是 Fragment 的 View 生命周期。Fragment 进回退栈时 View 被销毁，Fragment 本体仍可能处于未销毁状态；下一次 \code{onViewCreated} 会创建新 View，同时又注册一组新的 observer。旧 observer 没死，新 observer 又来了，于是同一份 LiveData 变化会驱动多份回调。
+
+这类 bug 的触发条件很产品化：单次进入页面没问题；“进入详情、返回列表、再进入详情、网络刷新连胜状态”才复现。用户看到的是卡片闪烁、按钮状态跳动、动画重复播放。如果旧回调捕获了旧 binding，还可能在 \code{\_binding} 已经为 null 时崩溃。它的评分价值在于考你是否把“观察 UI 状态”理解成 View 的资源，而不是 Fragment 的资源。
+
+\begin{ktfix}
+class StreakDetailFragment : Fragment(R.layout.fragment_streak_detail) {
+    private var _binding: FragmentStreakDetailBinding? = null
+    private val binding get() = requireNotNull(_binding)
+    private val viewModel: StreakViewModel by viewModels()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentStreakDetailBinding.bind(view)
+
+        viewModel.streak.observe(viewLifecycleOwner) { streak ->
+            binding.streakCard.setDayCount(streak.days)
+            binding.streakCard.setFrozen(streak.isFrozen)
+            if (streak.extendedToday) {
+                binding.streakCard.playCelebration()
+            }
+        }
+
+        viewModel.loading.observe(viewLifecycleOwner) { loading ->
+            binding.progressBar.isVisible = loading
+            binding.practiceButton.isEnabled = !loading
+        }
+
+        binding.practiceButton.setOnClickListener {
+            viewModel.practiceToday()
+        }
+    }
+
+    override fun onDestroyView() {
+        binding.practiceButton.setOnClickListener(null)
+        _binding = null
+        super.onDestroyView()
+    }
+}
+\end{ktfix}
+
+\begin{pitfall}[单次路径测不出来]
+这个 bug 在本地最容易漏，因为“打开一次、数据回来、UI 更新”全是对的。必须测试“打开 A、返回、打开 B、触发同一个 LiveData 更新”，才会看到 observer 累积。查错题里凡是 Fragment 注册观察者、callback、adapter listener，都要主动问一句：它跟 View 还是 Fragment 同寿命？
+\end{pitfall}
+
+\begin{idea}[UI 订阅属于 View]
+只要回调里直接读写 View，它就应该绑定到 \code{viewLifecycleOwner}。这条规则比“LiveData 用哪个 owner”更广：Flow 的收集、menu provider、back callback、文本监听器，本质上都要问同一个问题：谁拥有这个 UI 副作用，谁负责释放它？
+\end{idea}
+
+\begin{followup}[“如果改用 StateFlow 呢？”]
+StateFlow 不会自动解决生命周期问题。Fragment 里应该在 \code{viewLifecycleOwner.lifecycleScope} 中配合 \code{repeatOnLifecycle(Lifecycle.State.STARTED)} 收集，让 View 停止时取消收集、重启时重新收集。协程版细节在前一章已经展开；这里的对照点是：API 变了，所有权规则没变。
+\end{followup}
+
+% ===========================================================================
+\bugcase{9}{ViewModel 持有 Activity Context}{泄漏与可测试性}
+
+\subsection*{场景}
+个人主页展示本周 XP、连续学习天数和下一枚成就徽章。\code{ProfileViewModel} 为了拼出 “本周获得 120 XP” 这类文案，构造函数里直接拿了 \code{Activity} 的 \code{Context}。这在功能上很顺手，却把 ViewModel 的长生命周期和 Activity 的短生命周期绑到了一起。
+
+\begin{ktbug}
+class ProfileViewModel(
+    private val context: Context,
+    private val userRepository: UserRepository
+) : ViewModel() {
+    private val _profile = MutableLiveData<ProfileUiModel>()
+    val profile: LiveData<ProfileUiModel> = _profile
+
+    fun loadProfile(userId: String) {
+        viewModelScope.launch {
+            val user = userRepository.getUser(userId)
+            val weeklyXp = userRepository.getWeeklyXp(userId)
+            val nextBadge = userRepository.getNextBadge(userId)
+
+            _profile.value = ProfileUiModel(
+                name = user.displayName,
+                avatarUrl = user.avatarUrl,
+                weeklyXpText = context.getString(R.string.weekly_xp_format, weeklyXp),
+                streakText = context.getString(R.string.streak_days_format, user.streakDays),
+                badgeText = context.getString(R.string.next_badge_format, nextBadge.title)
+            )
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        userRepository.cancelUserRequests()
+    }
+}
+\end{ktbug}
+
+\begin{sayit}[面试里怎么说]
+我会先说影响：ViewModel 会跨旋屏存活，如果这里传进来的是 Activity context，旋屏后旧 Activity 不能被回收。Then: ``This is not only a leak; it is a layering smell. The ViewModel is formatting UI copy instead of exposing state. I would either use Application context for pure resources, or preferably move string resolution to the UI layer.''
+\end{sayit}
+
+\subsection*{根因分析}
+ViewModel 的设计目标就是跨配置变更保留状态。Activity 旋转后旧实例应被销毁，新实例重新观察同一个 ViewModel。如果 ViewModel 持有旧 Activity context，旧 Activity 连同它的 Window、View、资源引用都可能被保留下来。这个问题不像空指针那样立刻崩；它常在多次旋屏、分屏、语言切换或低内存回收后放大。
+
+更深一层，它暴露的是分层错误：ViewModel 为了 \code{getString} 了解了“文案长什么样”。一旦要做复数、A/B 文案、可访问性描述或 Compose \code{stringResource}，测试就变得笨重。评审时可以给三条路：一是 \code{AndroidViewModel} 拿 Application context，只适合非常纯的资源访问；二是 ViewModel 暴露资源 ID 与参数，让 UI 解析；三是注入 \code{StringProvider} 抽象。面试中我会偏向第二条，因为它让 ViewModel 表达“状态是什么”，让 UI 决定“状态如何说给用户听”。
+
+\begin{ktfix}
+data class ProfileUiState(
+    val name: String,
+    val avatarUrl: String?,
+    val weeklyXp: Int,
+    val streakDays: Int,
+    val nextBadgeTitle: String
+)
+
+class ProfileViewModel(
+    private val userRepository: UserRepository
+) : ViewModel() {
+    private val _profile = MutableLiveData<ProfileUiState>()
+    val profile: LiveData<ProfileUiState> = _profile
+
+    fun loadProfile(userId: String) {
+        viewModelScope.launch {
+            val user = userRepository.getUser(userId)
+            val weeklyXp = userRepository.getWeeklyXp(userId)
+            val nextBadge = userRepository.getNextBadge(userId)
+
+            _profile.value = ProfileUiState(
+                name = user.displayName,
+                avatarUrl = user.avatarUrl,
+                weeklyXp = weeklyXp,
+                streakDays = user.streakDays,
+                nextBadgeTitle = nextBadge.title
+            )
+        }
+    }
+}
+
+class ProfileFragment : Fragment(R.layout.fragment_profile) {
+    private val viewModel: ProfileViewModel by viewModels()
+
+    private fun render(state: ProfileUiState, binding: FragmentProfileBinding) {
+        binding.name.text = state.name
+        binding.weeklyXp.text = getString(R.string.weekly_xp_format, state.weeklyXp)
+        binding.streak.text = getString(R.string.streak_days_format, state.streakDays)
+        binding.nextBadge.text = getString(R.string.next_badge_format, state.nextBadgeTitle)
+    }
+}
+\end{ktfix}
+
+\begin{idea}[泄漏常常是分层问题的症状]
+如果一个长生命周期对象持有短生命周期对象，先别急着问“换成 Application 行不行”，要追问“它为什么需要这个对象”。很多泄漏修到最后不是加 weak reference，而是重新划分责任：ViewModel 管状态，UI 管资源与渲染，Repository 管数据。
+\end{idea}
+
+\begin{pitfall}[Application context 不是万能止痛药]
+把 Activity context 换成 Application context 可以消除这条泄漏链，但不一定消除设计味道。Application context 不能弹主题化 dialog，不能拿 Activity 级样式，也让 ViewModel 更难做纯 JVM 单元测试。只有当资源解析确实是平台无关的基础能力时，才考虑包一层 \code{StringProvider}。
+\end{pitfall}
+
+\begin{followup}[“那 ViewModel 暴露资源 ID 会不会让 UI 变笨？”]
+可以用 sealed class 或小型 copy model 把 UI 文案表达成结构化值，例如 \code{TextSpec.Resource(id, args)} 与 \code{TextSpec.Raw(value)}。这样 ViewModel 仍不持有 Context，UI 只做一次统一解析，测试也能断言资源 ID 和参数。
+\end{followup}
+
+% ===========================================================================
+\bugcase{10}{ViewHolder 在 bind 里起协程却不在回收时取消}{列表与协程}
+
+\subsection*{场景}
+排行榜每行展示头像、昵称、本周 XP 和升降名次。为了让列表先出现文字，再异步补头像与 XP，\code{LeaderboardViewHolder.bind} 里直接起协程加载。快速滚动时，RecyclerView 会复用 ViewHolder；如果旧请求回来后写进新位置，用户就会看到头像错位、XP 串行，像列表里出现了“鬼影”。
+
+\begin{ktbug}
+class LeaderboardAdapter(
+    private val repository: LeaderboardRepository,
+    private val scope: CoroutineScope
+) : RecyclerView.Adapter<LeaderboardViewHolder>() {
+    private val players = mutableListOf<LeaderboardRow>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LeaderboardViewHolder {
+        val binding = RowLeaderboardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return LeaderboardViewHolder(binding, repository, scope)
+    }
+
+    override fun onBindViewHolder(holder: LeaderboardViewHolder, position: Int) {
+        holder.bind(players[position])
+    }
+
+    override fun getItemCount(): Int = players.size
+}
+
+class LeaderboardViewHolder(
+    private val binding: RowLeaderboardBinding,
+    private val repository: LeaderboardRepository,
+    private val scope: CoroutineScope
+) : RecyclerView.ViewHolder(binding.root) {
+
+    fun bind(row: LeaderboardRow) {
+        binding.rank.text = row.rank.toString()
+        binding.name.text = row.displayName
+        binding.avatar.setImageResource(R.drawable.avatar_placeholder)
+        binding.weeklyXp.text = binding.root.context.getString(R.string.loading_xp)
+
+        scope.launch {
+            val avatar = repository.loadAvatar(row.userId)
+            val xp = repository.loadWeeklyXp(row.userId)
+            binding.avatar.setImageBitmap(avatar)
+            binding.weeklyXp.text = binding.root.context.getString(R.string.xp_amount, xp)
+        }
+    }
+}
+\end{ktbug}
+
+\begin{sayit}[面试里怎么说]
+我会先说用户现象：快速滚动后，旧用户的头像或 XP 可能写到新用户行上。Then: ``A ViewHolder is reusable, but the coroutine launched from bind outlives that binding operation. We need to cancel work when the holder is rebound or recycled, or move the async ownership out of the item.''
+\end{sayit}
+
+\subsection*{根因分析}
+RecyclerView 的核心优化就是复用 ViewHolder：第 3 行滚出屏幕后，同一个 holder 可能立刻拿去显示第 30 行。\code{bind} 不是构造函数，它会被调用很多次。上面的协程捕获了 binding 和旧的 \code{row.userId}，但没有任何机制说明“这次绑定已经过期”。当网络慢、磁盘缓存 miss、用户快速滑动时，旧协程晚回来，就把旧头像写到当前 holder 上。
+
+这个 bug 的可怕之处在于它不一定崩溃，而是造成可见但间歇性的错行：排行榜头像错、XP 错、名次动效错。用户很难描述，日志也未必有异常。评审时要指出两个层次：最低限度是在 holder 里保存 Job，重新 bind 和回收时取消；更好的架构是头像加载交给 Coil 这类知道 ImageView 生命周期的库，XP 数据在 ViewModel 或 Repository 层合并好，Adapter 只负责渲染不可变行模型。
+
+\begin{ktfix}
+class LeaderboardAdapter(
+    private val repository: LeaderboardRepository,
+    private val scope: CoroutineScope
+) : RecyclerView.Adapter<LeaderboardViewHolder>() {
+    private val players = mutableListOf<LeaderboardRow>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LeaderboardViewHolder {
+        val binding = RowLeaderboardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return LeaderboardViewHolder(binding, repository, scope)
+    }
+
+    override fun onBindViewHolder(holder: LeaderboardViewHolder, position: Int) {
+        holder.bind(players[position])
+    }
+
+    override fun onViewRecycled(holder: LeaderboardViewHolder) {
+        holder.clear()
+        super.onViewRecycled(holder)
+    }
+
+    override fun getItemCount(): Int = players.size
+}
+
+class LeaderboardViewHolder(
+    private val binding: RowLeaderboardBinding,
+    private val repository: LeaderboardRepository,
+    private val scope: CoroutineScope
+) : RecyclerView.ViewHolder(binding.root) {
+    private var bindJob: Job? = null
+    private var boundUserId: String? = null
+
+    fun bind(row: LeaderboardRow) {
+        bindJob?.cancel()
+        boundUserId = row.userId
+        binding.rank.text = row.rank.toString()
+        binding.name.text = row.displayName
+        binding.avatar.setImageResource(R.drawable.avatar_placeholder)
+        binding.weeklyXp.text = binding.root.context.getString(R.string.loading_xp)
+
+        bindJob = scope.launch {
+            val avatar = repository.loadAvatar(row.userId)
+            val xp = repository.loadWeeklyXp(row.userId)
+            if (boundUserId == row.userId && bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                binding.avatar.setImageBitmap(avatar)
+                binding.weeklyXp.text = binding.root.context.getString(R.string.xp_amount, xp)
+            }
+        }
+    }
+
+    fun clear() {
+        bindJob?.cancel()
+        bindJob = null
+        boundUserId = null
+        binding.avatar.setImageDrawable(null)
+    }
+}
+\end{ktfix}
+
+\begin{idea}[列表项不该拥有异步任务的所有权]
+ViewHolder 是渲染缓存，不是业务任务 owner。它的生命周期由 RecyclerView 为性能而频繁复用，天然不适合持有长任务。能在 ViewModel 里把行模型准备好，就不要在 item 里发请求；能交给图片库管理请求取消，就不要手写头像协程。
+\end{idea}
+
+\begin{pitfall}[取消不等于校验可以省略]
+即使保存 Job 并取消，也建议在写回前比对 \code{boundUserId} 或请求 tag。取消是协作式的，某些库调用不可取消，或者在取消发生前已经拿到结果。写 UI 前再确认“我还是为同一个 userId 服务”，是防止错行的最后一道闸。
+\end{pitfall}
+
+\begin{followup}[“如果必须在 item 里发请求呢？”]
+把请求和绑定令牌绑定起来：\code{bind} 时记录 userId 或递增 token，返回时比对；回收时取消 Job；写回前检查 \code{bindingAdapterPosition != NO\_POSITION}。如果是图片，优先用 Coil 的 \code{ImageView.load(url)}，让库在新请求覆盖旧请求时自动取消。
+\end{followup}
+
+% ===========================================================================
+\bugcase{11}{每次数据变化都 notifyDataSetChanged，且 stable ID 不稳定}{列表性能}
+
+\subsection*{场景}
+排行榜是 Duolingo 产品里极适合查错的列表：实时刷新、排名变化、用户头像、徽章、滚动位置、动画全都在同一屏。社区里明确有人报告过类似真题：“Review this code that handles list updates in a RecyclerView — any performance or crash risks you'd improve?” \srccommunity。下面这段代码正是那类题的核心：看似只是刷新列表，实则同时破坏性能、动画和身份语义。
+
+\begin{ktbug}
+class LeaderboardAdapter : RecyclerView.Adapter<LeaderboardAdapter.RowViewHolder>() {
+    private val rows = mutableListOf<LeaderboardRow>()
+
+    init {
+        setHasStableIds(true)
+    }
+
+    fun updateRows(newRows: List<LeaderboardRow>) {
+        rows.clear()
+        rows.addAll(newRows)
+        notifyDataSetChanged()
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowViewHolder {
+        val binding = RowLeaderboardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return RowViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: RowViewHolder, position: Int) {
+        holder.bind(rows[position])
+    }
+
+    override fun getItemCount(): Int = rows.size
+
+    class RowViewHolder(private val binding: RowLeaderboardBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(row: LeaderboardRow) {
+            binding.rank.text = row.rank.toString()
+            binding.name.text = row.displayName
+            binding.weeklyXp.text = binding.root.context.getString(R.string.xp_amount, row.weeklyXp)
+            binding.badge.isVisible = row.isInPromotionZone
+        }
+    }
+}
+\end{ktbug}
+
+\begin{sayit}[面试里怎么说]
+我会先说影响：实时榜单每次更新都全量重绑，会造成闪烁、掉帧和滚动位置不稳定；更严重的是 stable ID 返回 position，排名一变，同一个人就变成了另一个 ID。Then: ``This code confuses position with identity. I would use ListAdapter and DiffUtil, with areItemsTheSame based on a stable business id and areContentsTheSame based on value equality.''
+\end{sayit}
+
+\subsection*{根因分析}
+\code{notifyDataSetChanged()} 等于告诉 RecyclerView：“我不知道哪里变了，你全重来吧。”结果是所有可见行重新绑定，默认动画失去增量信息，图片可能重新加载，TalkBack 的焦点也更容易跳。排行榜每秒或每几秒更新时，这会直接变成慢帧和闪烁。Duolingo 的 Android Reboot 复盘里，慢帧和滚动性能曾是官方点名的用户体验问题 \srcofficial\footnote{\url{https://android-developers.googleblog.com/2021/08/android-app-excellence-duolingo.html}}，所以在它的 Android 查错轮里，列表刷新绝不是小题。
+
+\code{setHasStableIds(true)} 本来是告诉 RecyclerView：每个 item 有跨位置、跨刷新都稳定的身份。但 \code{getItemId} 返回 position，恰好违背这个承诺。排行榜里用户从第 10 名升到第 3 名，业务身份没变，position 变了；另一个用户补到第 10 名，position 一样但身份变了。RecyclerView 会基于错误身份复用 holder 或运行动画，于是出现动画错乱、内容闪烁、滚动锚点漂移。
+
+DiffUtil 的两个方法也常被写反。\code{areItemsTheSame} 问“是不是同一个实体”，应该看 \code{userId}、lessonId、orderId 这类稳定业务 ID；\code{areContentsTheSame} 问“同一个实体显示内容有没有变”，可以用 data class 的 \code{equals}。如果把内容相等当身份，昵称或 XP 一变就被当成新用户；如果把 userId 当内容，XP 变化又不会刷新。
+
+\begin{ktfix}
+data class LeaderboardRow(
+    val userId: String,
+    val rank: Int,
+    val displayName: String,
+    val weeklyXp: Int,
+    val isInPromotionZone: Boolean
+)
+
+class LeaderboardAdapter : ListAdapter<LeaderboardRow, LeaderboardAdapter.RowViewHolder>(DIFF) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowViewHolder {
+        val binding = RowLeaderboardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return RowViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: RowViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    override fun getItemId(position: Int): Long {
+        return getItem(position).userId.hashCode().toLong()
+    }
+
+    class RowViewHolder(private val binding: RowLeaderboardBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(row: LeaderboardRow) {
+            binding.rank.text = row.rank.toString()
+            binding.name.text = row.displayName
+            binding.weeklyXp.text = binding.root.context.getString(R.string.xp_amount, row.weeklyXp)
+            binding.badge.isVisible = row.isInPromotionZone
+        }
+    }
+
+    companion object {
+        private val DIFF = object : DiffUtil.ItemCallback<LeaderboardRow>() {
+            override fun areItemsTheSame(oldItem: LeaderboardRow, newItem: LeaderboardRow): Boolean {
+                return oldItem.userId == newItem.userId
+            }
+
+            override fun areContentsTheSame(oldItem: LeaderboardRow, newItem: LeaderboardRow): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
+}
+
+fun LeaderboardAdapter.render(rows: List<LeaderboardRow>) {
+    submitList(rows)
+}
+\end{ktfix}
+
+\begin{pitfall}[“data class equals” 也可能让 Diff 退化]
+如果 \code{LeaderboardRow} 里塞了可变引用、每次刷新都更新的 \code{fetchedAt} 时间戳，或一个不参与 UI 的 debug 字段，\code{areContentsTheSame} 会永远 false，DiffUtil 表面存在，效果却接近全量刷新。行模型应尽量不可变，只包含真正影响渲染的字段；非 UI 元数据不要混进 item equality。
+\end{pitfall}
+
+\begin{idea}[身份、内容、位置三件事要分开]
+列表 bug 的总开关，是把 position 当 identity。position 只是当前排序下的坐标，内容是用户看到的字段，身份是业务实体本身。查错时先问：这个 item 的稳定业务 ID 是什么？如果答不出来，后面的动画、缓存、局部刷新都会摇晃。
+\end{idea}
+
+\begin{followup}[“如果排行榜是每秒都在变的实时数据呢？”]
+第一，节流或合并上游更新，例如 500ms 或一屏刷新一次，不要让 UI 承担服务端推送频率。第二，只刷新变化字段，可用 payload 让 XP 文本局部更新，而不是整行重绑头像。第三，用户正在快速滚动时可以延后非关键刷新，等 idle 再提交；这是产品取舍，不是纯技术题。DiffUtil 默认由 \code{AsyncListDiffer} 在后台算 diff，但你仍要控制提交频率。
+\end{followup}
+
+% ===========================================================================
+\bugcase{12}{注册了监听器却没有解注册}{资源泄漏}
+
+\subsection*{场景}
+单词复习模块有离线队列：用户在地铁里完成练习，网络恢复时自动同步。\code{WordReviewActivity} 注册了 \code{ConnectivityManager.NetworkCallback}，一旦可用网络出现就触发 sync。代码能工作，但注册和释放不配对，长会话后同一个同步动作可能被触发多次，Activity 也可能被系统 callback 持有。
+
+\begin{ktbug}
+class WordReviewActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityWordReviewBinding
+    private val syncRepository: WordReviewRepository by lazy { WordReviewRepository.getInstance(this) }
+    private lateinit var connectivityManager: ConnectivityManager
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            lifecycleScope.launch {
+                syncRepository.syncOfflineQueue()
+                binding.syncStatus.text = getString(R.string.synced)
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityWordReviewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        connectivityManager = getSystemService(ConnectivityManager::class.java)
+        connectivityManager.registerDefaultNetworkCallback(networkCallback)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.reviewCard.startListening()
+    }
+
+    override fun onDestroy() {
+        binding.reviewCard.stopListening()
+        super.onDestroy()
+    }
+}
+\end{ktbug}
+
+\begin{sayit}[面试里怎么说]
+我会先说影响：系统服务持有 callback，Activity 退出后仍可能被引用；如果注册路径重复，还会导致一次网络恢复触发多次 sync。Then: ``Registration and unregistration must be paired at the same lifecycle level. I would register in onStart and unregister in onStop, or wrap it in a lifecycle observer so acquire and release stay together.''
+\end{sayit}
+
+\subsection*{根因分析}
+系统服务、广播、传感器、全局布局监听器都有共同点：注册后，外部对象会保存你的 callback。这个 callback 是匿名内部类，隐式持有 \code{WordReviewActivity}，又访问 binding 和 repository。只要不解注册，Activity 就可能在销毁后仍被系统服务引用。更糟的是，如果代码后来搬到 \code{onResume} 注册、仍在 \code{onDestroy} 解注册，暂停再恢复多次就会重复注册，网络恢复时重复同步，服务端看到重复请求，用户看到状态文案跳动。
+
+生命周期配对的关键是“在哪个回调获取，就在哪个对称回调释放”。可见期间需要网络监听，就用 \code{onStart/onStop}；前台交互期间需要传感器，就用 \code{onResume/onPause}；整个进程级能力，则不该挂在 Activity 上，而应挂在 Application 或专门 manager 上。
+
+\begin{ktfix}
+class WordReviewActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityWordReviewBinding
+    private val syncRepository: WordReviewRepository by lazy { WordReviewRepository.getInstance(applicationContext) }
+    private lateinit var connectivityManager: ConnectivityManager
+    private var networkCallbackRegistered = false
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            lifecycleScope.launchWhenStarted {
+                syncRepository.syncOfflineQueue()
+                binding.syncStatus.text = getString(R.string.synced)
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityWordReviewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        connectivityManager = getSystemService(ConnectivityManager::class.java)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (!networkCallbackRegistered) {
+            connectivityManager.registerDefaultNetworkCallback(networkCallback)
+            networkCallbackRegistered = true
+        }
+        binding.reviewCard.startListening()
+    }
+
+    override fun onStop() {
+        if (networkCallbackRegistered) {
+            connectivityManager.unregisterNetworkCallback(networkCallback)
+            networkCallbackRegistered = false
+        }
+        binding.reviewCard.stopListening()
+        super.onStop()
+    }
+}
+\end{ktfix}
+
+\begin{idea}[获取与释放要在语法上相邻]
+资源类 bug 的通用解法，是让 acquire 和 release 靠近：\code{onStart/onStop} 成对出现，\code{DefaultLifecycleObserver} 把注册与解注册封在一个类里，Compose 用 \code{DisposableEffect} 在同一个代码块里返回 \code{onDispose}。当释放逻辑离获取逻辑很远，评审时就该提高警惕。
+\end{idea}
+
+\begin{pitfall}[生命周期不配对比完全不释放更隐蔽]
+\code{onResume} 注册、\code{onDestroy} 解注册，看起来“最终会释放”，但中间每次暂停恢复都会多注册一份。查错题里不要只搜索有没有 unregister，还要检查 register 与 unregister 是否在同一层级配对。
+\end{pitfall}
+
+\begin{followup}[“用 DefaultLifecycleObserver 怎么写？”]
+可以把网络监听封成 \code{OfflineSyncObserver}，在 \code{onStart(owner)} 注册，在 \code{onStop(owner)} 解注册，然后由 Activity \code{lifecycle.addObserver(observer)}。这样 Activity 不再散落资源管理细节，测试也能单独验证 observer 的配对行为。
+\end{followup}
+
+\begin{keypoint}[生命周期所有权口诀]
+谁创建，谁释放；谁读取 View，谁跟 View 同寿命；谁注册外部 callback，谁在对称生命周期解注册；谁启动异步任务，谁负责取消。查错时不要被 API 名字带着走，先画出对象之间的强引用和生命周期长短，答案通常就浮出来了。
+\end{keypoint}

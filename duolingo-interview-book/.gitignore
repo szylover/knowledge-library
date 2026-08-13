@@ -1,0 +1,16 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.toc
+*.out
+*.lof
+*.lot
+*.idx
+*.ilg
+*.ind
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+build*.log
+chapters/*.aux
+main.pdf

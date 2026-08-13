@@ -1,0 +1,599 @@
+\chapter{设计题精讲（下）：SDUI、资产、通知与状态重构}
+
+本章继续第七章的方法论与第八章的前四道设计题。请记住一个定调：\srcofficial Duolingo 官方面试博文说明，移动端 Design Interview 是 60 分钟、无需写代码的 Android/iOS 架构设计轮，重点不是后端分布式系统，而是本地存储、离线与同步、乐观更新与回滚、状态管理、进程被杀、设备约束。\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}} 所以下面每道题都从客户端边界出发：你要能画清楚模块、状态、缓存、降级和测试，而不是把所有难点推给服务器。
+
+\designq{5}{Server-Driven UI 客户端解析与渲染框架}{Hard}
+
+\srcofficial Duolingo 已公开介绍其 Server-Driven UI：响应包含 \code{screens}、\code{stylesheet} 与 \code{data\_model}，并已用于 Shop 与 Purchase Flow。\footnote{\url{https://blog.duolingo.com/server-driven-ui/}} \srcinferred 因为这是官方上线且公开撰文的移动端架构系统，本题是本书里“推断题中概率最高的一道”。
+
+\subsection{题面与常见变体}
+
+\begin{itemize}
+  \item 设计一个 Android 客户端 SDUI 框架，可以解析服务端下发的页面描述并渲染成原生 UI。
+  \item 如果服务端想免发版改 Shop 或购买流程，客户端要提供哪些能力集、缓存和版本兼容策略？
+  \item 旧客户端不认识新组件时怎么办？如果响应有条件展示、点击动作和样式系统，又该如何测试？
+\end{itemize}
+
+\subsection{需求澄清：你该问什么}
+
+\begin{itemize}
+  \item “范围是全 App SDUI，还是只覆盖 Shop、订阅、活动页这类业务页面？”面试官常会回答：先覆盖低风险、高迭代页面，课程主流程和复杂动画仍保持原生。
+  \item “响应是否包含行为，还是只包含布局？”合理回答：包含 tap/show/dismiss 等 Actions，可触发后端调用或本地操作，但能力由客户端白名单控制。
+  \item “是否要求离线可用？”通常不要求完整离线编辑，但至少要缓存上一次可渲染的 UI config 与 \code{data\_model}，网络失败时能展示降级页。
+  \item “如何处理旧版本？”官方策略是新客户端拿完整 \code{SDUIResponse}，旧客户端拿 Partial Response：只更新 \code{data\_model}，UI config 用本地缓存的版本。\srcofficial
+\end{itemize}
+
+\subsection{架构总览}
+
+\begin{lstlisting}
++---------------------+        +----------------------+        +-------------------+
+| SDUI API / CDN      | -----> | SduiRepository       | -----> | SduiViewModel     |
+| full / partial resp |        | cache + validation   |        | UiState snapshot  |
++---------------------+        +----------+-----------+        +---------+---------+
+                                      |                              |
+                                      v                              v
+                         +-------------------------+      +-----------------------+
+                         | Response Store          |      | Compose Renderer      |
+                         | screens/stylesheet/data |      | recursive components  |
+                         +-----------+-------------+      +-----------+-----------+
+                                     |                                |
+                                     v                                v
+                         +-------------------------+      +-----------------------+
+                         | Condition Engine        | <--> | Action Dispatcher     |
+                         | user state + data model |      | local / remote effect |
+                         +-------------------------+      +-----------------------+
+\end{lstlisting}
+
+\subsection{数据模型 / 关键接口}
+
+\begin{kotlin}
+@Serializable
+sealed interface Component {
+    val id: String
+    val children: List<Component>
+}
+
+@Serializable @SerialName("label")
+data class Label(
+    override val id: String,
+    val textKey: String,
+    val styleId: String? = null,
+    override val children: List<Component> = emptyList()
+) : Component
+
+@Serializable @SerialName("stack")
+data class Stack(
+    override val id: String,
+    val axis: Axis,
+    override val children: List<Component>
+) : Component
+
+@Serializable @SerialName("unknown")
+data class UnknownComponent(
+    override val id: String,
+    val rawType: String,
+    override val children: List<Component> = emptyList()
+) : Component
+
+data class SduiResponse(
+    val screens: List<Screen>,
+    val stylesheet: Map<String, StyleSpec>,
+    val dataModel: Map<String, JsonElement>,
+    val uiConfigVersion: String
+)
+\end{kotlin}
+
+\subsection{关键机制逐个击破}
+
+\paragraph{组件树建模与多态反序列化。} \srcofficial 官方文章提到 Duolingo 的 SDUI 使用约十二种基础组件，如 labels、images、stacks、buttons、carousels，由服务端组合。客户端不应该把 JSON 当成随手解析的 \code{Map<String, Any>}，而应建模成一个小而稳定的 \code{sealed interface Component} 能力集。\srcinferred 在 Kotlin 中可以用 \code{kotlinx.serialization} 的多态反序列化，或 Moshi 的 polymorphic adapter，以 \code{type} 字段判别具体组件。这样做的收益是：渲染器只处理强类型组件；测试 fixture 可以直接覆盖每个类型；新增组件需要显式注册，评审时更容易发现兼容性风险。
+
+\paragraph{未知组件必须优雅降级。} 这是评分关键点。服务端配置比客户端发布快，旧客户端迟早会遇到未知 \code{type}。正确策略不是崩溃，也不是静默吞掉整页，而是分层降级：第一，低价值装饰组件可以跳过，但保留兄弟节点；第二，影响布局的容器可渲染为保守占位并继续遍历已知子节点；第三，关键业务入口如购买按钮不能被未知组件承载，必须有 data model 驱动的本地兜底实现。\srcinferred 如果未知组件出现在结账确认页的核心路径，宁可显示“请更新 App”或回退到原生购买流程，也不能展示半个不可用页面。
+
+\begin{pitfall}[未知组件导致整页崩溃]
+SDUI 的价值是免发版迭代，但它也把“服务端配置错误”变成了“所有客户端同时收到坏 UI”的风险。面试时一定要主动说：解析层用 \code{UnknownComponent} 承接未知类型，渲染层按组件重要性跳过、占位或回退，监控层上报 raw type 与 config version。只说“我们会和后端约定好”是不够的。
+\end{pitfall}
+
+\paragraph{递归渲染与 Compose。} \srcinferred Compose 很适合递归组件树：\code{Render(component)} 根据类型分派，再对子组件递归。真正的难点是边界控制。第一，\code{key} 不能只用列表下标，应该优先用服务端稳定 \code{id}，否则 carousel 插入一个元素会导致状态错位。第二，要设置最大深度与最大节点数，例如深度 30、节点 1000，超过即拒绝渲染并展示降级页。第三，递归函数不能把 data model 读取散落在每个 Composable 中，最好先由 ViewModel 计算出可渲染快照，避免每次 recomposition 都重复求值复杂条件。
+
+\begin{kotlin}
+@Composable
+fun RenderComponent(node: Component, ctx: RenderContext, depth: Int = 0) {
+    if (depth > ctx.maxDepth) return ctx.RenderFallback("too_deep")
+    key(node.id) {
+        when (node) {
+            is Label -> DuoLabel(ctx.text(node.textKey), ctx.style(node.styleId))
+            is Stack -> DuoStack(node.axis) {
+                node.children.forEach { RenderComponent(it, ctx, depth + 1) }
+            }
+            is UnknownComponent -> ctx.RenderUnknown(node)
+        }
+    }
+}
+\end{kotlin}
+
+\paragraph{stylesheet 的解析、缓存与主题切换。} \srcofficial 官方响应把 \code{stylesheet} 与组件树分开。客户端应把样式看成“组件 ID 或 style ID 到 StyleSpec 的映射”，渲染时只解析一次成内部类型，例如 spacing token、字体 token、颜色 token。\srcinferred 不建议让服务端直接下发任意像素、任意字体或任意颜色；更稳妥的是服务端选择客户端内置 token，如 \code{duo.primary.button}、\code{spacing.md}。这样暗色模式、无障碍字体缩放、品牌色更新都仍由客户端统一控制。缓存上，UI config 与 stylesheet 绑定版本号，按页面或 flow 存储；主题切换时不需要重新拉网络，只需要把 token 重新映射到当前主题。
+
+\paragraph{data model 与 Conditions。} \srcofficial \code{data\_model} 是动态数据，可本地缓存；Conditions 可基于用户状态决定组件是否显示，例如 hearts 数量。客户端可以把 data model 暴露成受控 key-value store，再实现一个小型表达式求值器：支持比较、布尔组合、存在性检查，禁止任意脚本。\srcinferred 例如 \code{hearts < maxHearts} 可以决定是否展示“购买 hearts”模块。关键是表达式求值必须纯函数、可测试、可限制复杂度；不要在 condition 中发网络请求，也不要允许服务端下发可执行 Kotlin/JS。
+
+\paragraph{Versioning 与 Partial Response。} \srcofficial 官方策略的精妙处在于：新客户端拿完整 \code{SDUIResponse} 并缓存 UI config；旧客户端只拿 Partial Response，也就是只发新的 \code{data\_model}，让它继续用本地缓存的 UI config 渲染。因此服务端不必硬编码判断“客户端版本 X 支持组件 Y”。本质上，客户端缓存的 UI config 就是旧客户端已知能力集下的最后安全布局。
+
+追问会落在三个细节：第一，本地缓存从哪来？可以在 App 包内预置一个默认 config，同时首次成功拉取完整响应后覆盖。第二，首次安装且没有网络怎么办？展示预置原生兜底或包内默认 config，不能白屏。第三，缓存与 App 版本如何绑定？缓存 key 应包含 \code{screenId + appMajorVersion + schemaVersion + uiConfigVersion}；升级后如果能力集改变，可以迁移或丢弃旧 config，避免新渲染器解释旧语义。
+
+\paragraph{Actions 分发。} \srcofficial Actions 由 tap/show/dismiss 等事件触发后端调用或本地操作。\srcinferred 客户端应使用 \code{ActionDispatcher} 白名单：\code{Navigate}、\code{OpenUrl}、\code{PostEvent}、\code{UpdateLocalData} 等。所有远程副作用都要有幂等键、loading 状态和失败回滚；所有本地副作用都要经过 ViewModel，而不是让 Composable 直接改全局状态。购买 gems 等 monetized 资源不适合随意乐观更新，这一点可引用第七章的 frontend prediction 边界。
+
+\paragraph{可测试性。} SDUI 的测试核心是 JSON fixture。每个页面保留一组完整响应、partial 响应、未知组件响应、坏 condition 响应。解析层做 schema test，渲染层做 screenshot 或 semantics snapshot test，Action 层用 fake dispatcher 验证点击后发出的意图。\srcinferred 真正上线前还要有 config linter：服务端配置提交时就检查未知 style、循环引用、节点数上限和必填 action。
+
+\subsection{边界情况}
+
+\begin{itemize}
+  \item 本地只有旧 config，服务端 data model 缺字段：使用默认值并上报，关键字段缺失则降级。
+  \item 组件树过深、节点过多或 condition 循环引用：拒绝渲染该 screen，展示 fallback。
+  \item Action 重复点击：按钮本地去抖，远程请求带幂等键。
+  \item 进程被杀后恢复：ViewModel 状态可丢，但 Repository 中的 cached response 与 pending action 结果必须能重建 UI。
+\end{itemize}
+
+\begin{followup}[“SDUI 与原生实现的边界该划在哪？”]
+适合 SDUI 的是内容和布局迭代快、逻辑可枚举、失败可降级的页面：Shop、活动页、购买引导、设置页局部模块。\srcofficial Duolingo 已用于 Shop 与 Purchase Flow。\srcinferred 不适合 SDUI 的是高性能动画、课程答题核心交互、复杂离线编辑、强安全或强一致交易。回答要体现“能力集固定在客户端”，不是把 App 变成浏览器。
+\end{followup}
+
+\begin{followup}[“SDUI 如何配合 A/B 实验免发版？”]
+服务端按实验分桶下发不同 screen tree 或 stylesheet，客户端只负责渲染已支持能力集，并把曝光、点击、转化事件带上 experiment id。优势是实验启动不用发版；风险是同一客户端版本承载太多配置，所以必须有 config lint、灰度、kill switch 和 snapshot test。A/B SDK 本身见第八章。
+\end{followup}
+
+\begin{followup}[“如果服务端下发会导致布局无限递归的响应怎么办？”]
+不要尝试“相信服务端不会”。客户端用解析时的节点数上限、渲染时的深度上限、引用解析的 visited set 三层保护。超过限制就停止渲染该子树并上报 config version。性能上可以缓存解析后的组件树，但缓存前必须先通过这些校验。
+\end{followup}
+
+\begin{idea}[能力集与决策的分离]
+把“能显示什么”的能力集固化在客户端，把“显示什么”的决策交给服务端。版本兼容问题的本质是能力集协商：服务端只能组合客户端承诺支持的积木，客户端必须在遇到未知积木时安全降级。
+\end{idea}
+
+\designq{6}{图片与音频资产的缓存系统}{Medium}
+
+\srcinferred Duolingo 是重资产 App：每个词的发音音频、大量插画、角色动画和课程图片都会影响首屏、课程启动与离线体验，因此资产缓存是高概率 Android 设计题。
+
+\subsection{题面与常见变体}
+
+\begin{itemize}
+  \item 设计一个图片与音频缓存系统，支持课程中高频播放单词发音。
+  \item 用户进入一节课前如何预取本节音频，同时不拖慢前台交互？
+  \item 课程内容更新后，如何避免播放旧音频或错口音音频？
+\end{itemize}
+
+\subsection{需求澄清：你该问什么}
+
+\begin{itemize}
+  \item “资产有哪些类型？”回答可假设：短音频、图片、轻量动画、少量视频；本题重点短音频和图片。
+  \item “是否支持离线课程包？”如果支持，课程包是用户显式下载内容，不能放在系统可清理的 \code{cacheDir}。
+  \item “缓存一致性要求多强？”音频和图片通常最终一致即可，但不能串语言、串词条、串说话人。
+  \item “低端设备是否重点考虑？”Duolingo 官方 Android Reboot 提到入门设备课程启动曾慢 70\%，因此必须考虑内存与主线程。\srcofficial\footnote{\url{https://android-developers.googleblog.com/2021/08/android-app-excellence-duolingo.html}}
+\end{itemize}
+
+\subsection{架构总览}
+
+\begin{lstlisting}
+Lesson screen
+   |
+   v
+AssetRepository ------------------------------+
+   |                                           |
+   v                                           v
+Memory LruCache                         Prefetch Scheduler
+   | miss                                      |
+   v                                           v
+Disk Cache / Offline Pack Store          bounded coroutines / WorkManager
+   | miss                                      |
+   v                                           v
+OkHttp Cache  <---- ETag / Cache-Control ---- CDN / Asset API
+   |
+   v
+Decoder / Player: Coil for images, short-audio player or ExoPlayer
+\end{lstlisting}
+
+\subsection{数据模型 / 关键接口}
+
+\begin{kotlin}
+data class AssetKey(
+    val language: String,
+    val entryId: String,
+    val voice: String,
+    val assetType: AssetType,
+    val contentVersion: String
+)
+
+interface AssetRepository {
+    suspend fun getAudio(key: AssetKey): Result<LocalAsset>
+    suspend fun getImage(key: AssetKey): Result<LocalAsset>
+    fun prefetch(keys: List<AssetKey>, priority: PrefetchPriority)
+}
+\end{kotlin}
+
+\subsection{关键机制逐个击破}
+
+\paragraph{三级缓存。} \srcinferred 标准链路是内存 \code{LruCache ->} 磁盘 \code{DiskLruCache ->} 网络。内存层服务于一节课内反复播放或反复展示，命中必须很快；磁盘层服务于跨进程、跨启动复用；网络层依赖 CDN 与 OkHttp 缓存。图片可以直接使用 Coil，因为它 Kotlin/协程友好、生命周期感知、内置内存与磁盘缓存；音频则需要自建 key 与预取策略，因为“同一词条不同语言或口音”是业务语义，不是 URL 字符串能自然表达的。
+
+\paragraph{复合 cache key。} 资产 key 必须至少包含语言、词条、口音或说话人、资产版本。少一维就会出错：少语言，英语 course 与西语 course 可能共用同一个 surface form；少口音，拉美西语与西班牙西语会串音；少版本，课程内容更新后仍播放旧发音；少资产类型，图片和音频可能在路径归一化后冲突。\srcinferred 面试中说出“复合 key 防串音”非常加分，因为它显示你理解语言学习 App 的业务约束。
+
+\paragraph{版本化 key 优于失效通知。} 课程内容更新时，不要依赖“服务端发一个 invalidate 消息让客户端删旧文件”。移动端可能离线、进程被杀、通知丢失。更稳的方式是让 \code{contentVersion} 或 \code{assetVersion} 参与 key：新课程引用新 key，自然下载新资产；旧资产由磁盘 LRU 慢慢淘汰。\srcinferred 这是典型的 immutable asset 思路，牺牲一点磁盘空间，换来简单可靠的一致性。
+
+\paragraph{HTTP 缓存与业务缓存的关系。} OkHttp 的 ETag 和 \code{Cache-Control} 解决的是“同一个 URL 的网络再验证”；业务缓存解决的是“这个词条、这个说话人、这个版本对应哪个本地文件”。两层不冲突。\srcinferred 如果资产 URL 已经带内容哈希，可以设置很长的 max-age；如果 URL 稳定但内容可能变，用 ETag 做 revalidation。业务层仍要记录 \code{AssetKey -> file}，不能把整个系统建立在 URL 字符串拼接上。
+
+\paragraph{音频播放器选择。} 短发音音频高频、低延迟、文件小，优先考虑轻量播放器池或平台音频 API；如果涉及流式长音频、可变速、缓存分段、复杂音轨，再用 ExoPlayer/Media3。\srcinferred 一句好的面试话术是：课程内单词发音更像 sound effect，不像视频流；我会避免为每个 300ms 音频创建重量级播放器，但如果产品后来加入长听力材料，我会把接口抽象好，底层切到 ExoPlayer。
+
+\paragraph{预加载策略。} 进入一节课前，客户端知道本节 lesson 的 challenge 列表，就可以预取全部短音频和首屏图片。预取应使用受限并发的协程，例如 2--4 个并发，并且只在 Wi-Fi 或网络良好时扩大窗口。后台大批量预取可交给 WorkManager，但前台 lesson 预取更适合 ViewModel scope 下的短任务。\srcinferred 关键原则：预取不能抢占用户正在答题的前台带宽；预取失败不应阻塞开课，只标记哪些资产需要 lazy fetch。
+
+\paragraph{低端设备内存。} \srcofficial Android Reboot 把入门设备性能作为重要背景。\srcinferred 内存 LRU 大小应按 \code{ActivityManager.memoryClass} 动态计算，例如取可用堆的 1/8 或更保守比例，并根据低内存回调裁剪。图片解码要按目标尺寸采样，不要把 4K 图解码成全尺寸 Bitmap 再缩小。音频内存缓存只适合极短片段，更多时候缓存的是文件路径和已准备好的播放器状态。
+
+\paragraph{磁盘配额与目录语义。} \code{cacheDir} 表示系统可在空间紧张时清理，适合可重新下载的普通缓存；\code{filesDir} 或应用管理的持久目录适合用户显式下载的离线课程包。\srcinferred 这是加分点：如果用户点了“下载课程离线学习”，系统偷偷清理后地铁里打不开，会被视为产品 bug。因此普通图片和音频缓存放 \code{cacheDir}，离线包放持久目录并在 UI 中显示占用空间、允许用户手动删除。
+
+\subsection{边界情况}
+
+\begin{itemize}
+  \item 磁盘满：停止预取，保留当前 lesson 必需资产，淘汰最久未使用普通缓存。
+  \item 用户切换账号或课程：按 user/course 维度清理离线包元数据，公共资产可按 key 复用。
+  \item CDN 返回 404：记录 manifest 错误，跳过该音频并在 UI 提供重试，不能卡死课程。
+  \item 进程被杀：预取任务可丢，已写入磁盘的完整文件保留；写文件采用临时名完成后原子 rename。
+\end{itemize}
+
+\begin{followup}[“用户在地铁里断网，预取到一半怎么办？”]
+已经完整下载并校验的资产可用；未完成文件不进入索引。课程开始时按 challenge 检查缺失资产：短音频可在 UI 上允许静音降级或提示稍后重试，核心答题文本仍可继续。若是用户显式离线包，下载状态必须是 partial，不能显示为已完成。
+\end{followup}
+
+\begin{followup}[“同一个词在两门课程里复用，如何避免重复下载？”]
+把 \code{AssetKey} 设计成内容语义 key，而不是 course-local path。相同语言、词条、说话人、版本的音频只存一份；课程 manifest 引用同一个 key。离线包只增加引用计数或 manifest 关系，删除某课程时不立即删除仍被其他课程引用的资产。
+\end{followup}
+
+\begin{followup}[“如何度量缓存命中率并定位每次都走网络的 bug？”]
+在 Repository 层打点：memory hit、disk hit、HTTP 304、HTTP 200、decode failure、eviction reason，并按 asset type、course、app version 聚合。若每次都走网络，优先查 key 是否包含不稳定字段、HTTP header 是否禁止缓存、文件是否写到 \code{cacheDir} 后被频繁清理、或 URL 是否每次带随机 query。
+\end{followup}
+
+\begin{idea}[缓存首先是命名问题]
+缓存系统最难的不是 LRU，而是“什么东西算同一个资产”。语言学习 App 的资产 key 必须携带业务语义；只用 URL 或词面文本做 key，迟早会串音、串图或版本错乱。
+\end{idea}
+
+\begin{keypoint}[目录选择]
+普通可再下载缓存放 \code{cacheDir}；用户显式下载、离线承诺的一整包课程放持久目录。系统可能清理 \code{cacheDir}，所以不能把“离线可用”的产品承诺建立在它上面。
+\end{keypoint}
+
+\designq{7}{推送通知的客户端接收、调度与落地}{Medium}
+
+\srccommunity 多个面经汇总提到通知、提醒与 Android 生命周期问题；\srcinferred 对 Duolingo 这种依赖每日学习习惯和连胜提醒的产品，推送通知设计非常自然。
+
+\subsection{题面与常见变体}
+
+\begin{itemize}
+  \item 设计 Duolingo Android 的学习提醒、连胜挽救和营销通知系统。
+  \item FCM 消息到达后，客户端如何决定展示、去重、落地到具体课程？
+  \item Android 13 通知权限、Android 12 精确闹钟和 Doze 会如何影响设计？
+\end{itemize}
+
+\subsection{需求澄清：你该问什么}
+
+\begin{itemize}
+  \item “通知类型有哪些？”学习提醒、连胜挽救、排行榜、好友互动、营销活动，应分渠道和优先级。
+  \item “哪些由服务端推，哪些本地调度？”服务端适合跨设备一致和大规模策略；本地适合用户本机每日固定提醒。
+  \item “是否需要精确到分钟？”每日提醒通常不需要；连胜截止前最后提醒可能更接近精确，但仍要尊重权限和电量策略。
+  \item “点击后落到哪里？”可能是课程、排行榜、商店或登录页；必须校验参数和登录态。
+\end{itemize}
+
+\subsection{架构总览}
+
+\begin{lstlisting}
+FCM / Local Alarm
+      |
+      v
+FirebaseMessagingService / ReminderReceiver
+      |
+      v
+NotificationRouter -----> UserStateRepository -----> should show?
+      |                         |
+      v                         v
+NotificationStore        TokenRegistry
+      |
+      v
+NotificationManager + Channels
+      |
+      v
+DeepLinkRouter -> Auth gate -> Destination screen
+\end{lstlisting}
+
+\subsection{数据模型 / 关键接口}
+
+\begin{kotlin}
+data class PushPayload(
+    val messageId: String,
+    val type: NotificationType,
+    val userId: String,
+    val deepLink: String,
+    val expiresAt: Instant?,
+    val dedupeKey: String
+)
+
+interface NotificationDecider {
+    suspend fun shouldShow(payload: PushPayload): Decision
+}
+
+interface TokenRegistry {
+    suspend fun bindToken(userId: String, token: String)
+    suspend fun unbindToken(userId: String, token: String)
+}
+\end{kotlin}
+
+\subsection{关键机制逐个击破}
+
+\paragraph{FCM 的 notification payload 与 data payload。} \srcinferred 这是最常被问倒的点。notification payload 在 App 后台时可能由系统直接展示，客户端拿不到完整回调，因此无法做复杂去重、登录态判断和本地状态检查。data payload 才会进入 \code{FirebaseMessagingService.onMessageReceived}，客户端能自己建通知。对于“用户已经学过就不要再提醒”“点击要落到指定课程”这类需求，应优先使用 data payload 或混合策略，并接受系统限制：后台执行时间短，不能在回调里做长任务。
+
+\paragraph{Token 注册、刷新与账号绑定。} FCM token 不是账号，必须绑定到当前登录 user。\srcinferred 登录后上传 token 与 userId，token 刷新时重新绑定；登出时解绑，否则下一个使用这台设备的人可能收到前一个账号的连胜提醒。多账号切换时，客户端本地只允许当前 active user 接收可展示通知；服务端也要维护 token-user 关系的有效期和最后登录设备。
+
+\paragraph{Notification Channel。} Android 8+ 要按类型建 Channel。\srcinferred 连胜挽救可放高重要度，普通学习提醒中等，营销低重要度。关键细节：Channel 一旦创建，重要度由用户掌控，App 不能强行改高；如果产品确实需要新的默认重要度，只能创建新 channel id，并清楚说明原因。不要把所有通知塞进一个 channel，否则用户只能一刀切关闭。
+
+\paragraph{本地提醒调度。} 用户设置“每天晚上 8 点提醒我”时，本地调度能更贴近设备时区和用户偏好。\srcinferred WorkManager 适合不精确、可延迟、带约束的任务；它不能保证精确到 20:00。AlarmManager 的 \code{setExactAndAllowWhileIdle} 更精确，但 Android 12+ 对精确闹钟权限更严格，且 Doze/App Standby 仍会影响执行。我的决策：普通每日提醒用 WorkManager 或非精确 Alarm，允许一定窗口；连胜即将过期这类高价值提醒优先由服务端推送，并在客户端有权限时设置一个本地兜底 alarm；没有精确权限就降级为非精确提醒，不用为了学习提醒强迫用户授权。
+
+\paragraph{Android 13 通知权限。} Android 13+ \code{POST\_NOTIFICATIONS} 是运行时权限。\srcinferred 不要冷启动就弹权限框；最佳时机是在用户完成第一节课、设置每日目标、或主动打开提醒设置时解释价值再请求。被拒后不要反复打扰，可以在提醒设置页给出开启入口和系统设置 deep link。
+
+\paragraph{Deep Link 落地。} 点击通知时 App 可能冷启动、已在后台、或任务栈中已有多个 Activity。\srcinferred 推荐统一 \code{DeepLinkRouter}：解析 URI，校验参数，检查登录态，拉取必要数据，最后导航到课程或排行榜。返回键行为要符合用户预期：从通知打开课程，返回可回到 Home，而不是退出到空白任务。所有 deep link 参数都视为不可信，尤其是 courseId、lessonId、userId 必须和当前账号匹配。
+
+\paragraph{去重与时序。} “用户已经学过了就不要再提醒”可能发生竞态：服务端在 19:55 生成提醒，用户 19:58 完成课程，20:00 推送到达。\srcinferred 分工是：服务端尽量基于最新状态调度，客户端到达时再做最后一跳判断。payload 带 \code{expiresAt} 与 \code{dedupeKey}；客户端查本地 today learned 状态，若已完成则丢弃。这样即使服务端旧消息到达，也不会打扰用户。
+
+\subsection{边界情况}
+
+\begin{itemize}
+  \item 用户关闭 channel：App 不绕过，只在设置页解释影响。
+  \item token 刷新失败：本地重试并让服务端 token 过期机制兜底。
+  \item payload 过期或账号不匹配：丢弃并上报。
+  \item App 被强制停止：本地 alarm 可能失效，服务端推送仍是主要兜底。
+\end{itemize}
+
+\begin{followup}[“服务端调度和客户端本地调度各自优缺点是什么？”]
+服务端调度适合跨设备、全局频控、实验策略和时区批量计算；缺点是可能不了解设备权限和最新本地行为。客户端本地调度适合用户个人固定提醒和离线兜底；缺点是受 Doze、权限、进程状态影响。Duolingo 这种固定时区提醒可服务端主导、本地补充：服务端负责策略，客户端负责最后判断与用户偏好。
+\end{followup}
+
+\begin{followup}[“用户关闭通知权限后如何优雅降级？”]
+不要用弹窗轰炸。产品上可在 Home 用非侵入卡片提示“开启提醒可保护连胜”，允许设置日历提醒或邮件提醒；技术上继续维护本地状态和 in-app banner。行为上尊重用户选择，这也符合 Learners First。
+\end{followup}
+
+\begin{followup}[“如何避免同一时刻推送风暴？”]
+服务端按时区、用户活跃窗口和随机 jitter 分散；客户端对同类型通知做本地频控和 dedupe。Channel 分级也很重要：营销低重要度不能和连胜挽救抢同一优先级。监控上看送达、展示、点击、关闭和卸载率，而不是只看发送量。
+\end{followup}
+
+\begin{idea}[通知是产品承诺，不是单纯技术通道]
+通知系统的核心不是“能发出去”，而是“在正确时间、以正确重要度、落到正确页面”。Android 的权限、Channel、Doze 和任务栈都会改变用户体验，客户端工程师必须把这些约束讲清楚。
+\end{idea}
+
+\begin{pitfall}[把 notification payload 当成万能方案]
+如果你说“FCM 到了就在 \code{onMessageReceived} 里处理”，面试官很可能追问后台 notification payload。后台由系统直接展示时，App 不一定有机会做去重和本地判断。需要完整控制权的通知，应设计为 data payload 驱动的客户端展示。
+\end{pitfall}
+
+\designq{8}{间隔重复练习的客户端存储与调度}{Medium}
+
+\srcofficial/\srccommunity Birdbrain 是 Duolingo 自研个性化选题系统，在服务端计算 proficiency 并决定给用户出哪些题；\srcinferred 因此客户端设计的核心不是本地跑 ML，而是存储、展示、同步和离线降级。
+
+\subsection{题面与常见变体}
+
+\begin{itemize}
+  \item 设计一个“今天该复习哪些词”的 Android 客户端模块。
+  \item 离线时如何继续练习，联网后又如何接受服务端 schedule？
+  \item 如果客户端本地算法和服务端 Birdbrain 给出的复习计划不同，谁说了算？
+\end{itemize}
+
+\subsection{需求澄清：你该问什么}
+
+\begin{itemize}
+  \item “客户端是否要实现个性化模型？”回答应是：不跑 Birdbrain，服务端是权威；客户端只做离线兜底。
+  \item “复习对象是词、句子还是技能？”先以 WordCard 建模，但接口应允许 challengeId 或 skillId 扩展。
+  \item “离线练习结果是否算用户资产？”答题记录和课程进度是资产，要保守同步；review schedule 是系统建议，可被服务端覆盖。
+  \item “是否需要实时 UI 更新？”Room + Flow 观察今天 due 的卡片即可。
+\end{itemize}
+
+\subsection{架构总览}
+
+\begin{lstlisting}
+Lesson result
+    |
+    v
+ChallengeResponseUploader -----> Server / Birdbrain
+    |                                  |
+    |                                  v
+    |                         Review schedule API
+    v                                  |
+Local Pending Queue                    v
+    |                         ReviewRepository
+    +-------------------------------> Room DB
+                                       |
+                                       v
+                                 Flow<List<WordCard>>
+                                       |
+                                       v
+                                 Review UI / Practice
+\end{lstlisting}
+
+\subsection{数据模型 / 关键接口}
+
+\begin{kotlin}
+@Entity(
+    tableName = "word_cards",
+    indices = [Index(value = ["userId", "nextReviewAt"])]
+)
+data class WordCard(
+    @PrimaryKey val id: String,
+    val userId: String,
+    val wordId: String,
+    val nextReviewAt: Instant,
+    val easeFactor: Double,
+    val intervalDays: Int,
+    val lastResult: ReviewResult,
+    val source: ScheduleSource
+)
+
+@Dao
+interface WordCardDao {
+    @Query("SELECT * FROM word_cards WHERE userId = :userId AND nextReviewAt <= :now ORDER BY nextReviewAt LIMIT :limit")
+    fun dueCards(userId: String, now: Instant, limit: Int): Flow<List<WordCard>>
+}
+\end{kotlin}
+
+\subsection{关键机制逐个击破}
+
+\paragraph{职责边界。} \srcofficial/\srccommunity Birdbrain 的 proficiency 和选题在服务端计算。\srcinferred Android 客户端如果试图复刻模型，会遇到模型版本、特征缺失、隐私、包体和一致性问题。正确边界是：客户端缓存服务端 schedule，展示“今天复习”，记录练习结果；离线时用简化 SM-2 风格算法给用户一个可用体验，但上线后以服务端 schedule 覆盖。
+
+\paragraph{Room schema 与 Flow。} WordCard 表包含 \code{userId}、\code{wordId}、\code{nextReviewAt}、\code{easeFactor}、\code{intervalDays}、\code{lastResult}。\srcinferred \code{nextReviewAt} 必须建索引，因为首页或练习入口会频繁查询“现在 due 的前 N 个”。Room 的 Flow 能自然驱动 UI：本地数据库更新后，复习列表自动刷新；进程被杀重启后，也能从 Room 恢复。
+
+\paragraph{同步协议。} 课程结束后，客户端上传 challenge responses：题目 ID、答题结果、耗时、是否使用提示等。服务端更新 proficiency 并返回新的 review schedule，或客户端随后拉取。\srcinferred pending queue 要保证至少一次上传，带幂等 ID，避免网络重试导致重复计入。拉取 schedule 时按 user/course 维度替换本地对应集合，并记录 serverVersion。
+
+\paragraph{离线降级与覆盖策略。} 离线时，客户端可以根据 \code{lastResult} 调整 interval：答错则缩短，答对则延长，形成一个 SM-2 风格的简化 schedule。重点是联网后不要和服务端“合并”两个 schedule，而是以服务端覆盖。原因：课程进度、XP、购买资源是用户资产，冲突时要保守合并；复习调度是系统建议，权威来自服务端模型。\srcinferred 这与第八章离线课程进度的保守合并形成对照，能体现你不是机械套同步模板。
+
+\paragraph{数据量与查询性能。} 每个用户几千到几万词卡都不算大，但移动端查询必须稳定。\srcinferred 用 \code{(userId, nextReviewAt)} 复合索引，查询只取 due 的 limit，不要一次加载所有卡片再在内存过滤。旧课程、重置进度、删除账号时应清理对应 userId/courseId 数据。多账号设备上所有表都必须带 userId，避免串数据。
+
+\paragraph{展示掌握度。} \srcinferred 客户端不需要知道 Birdbrain 内部模型，也不应暴露过细概率。可以展示服务端给的 bucket：薄弱、一般、熟练，或本地根据 \code{nextReviewAt} 与最近结果估算一个 UI 进度条。话术上要强调：这是解释性展示，不是客户端决策权。
+
+\subsection{边界情况}
+
+\begin{itemize}
+  \item 用户正在离线练习，联网后 schedule 更新：当前 session 不打断，下一 session 使用服务端结果。
+  \item 用户重置课程：删除该课程 WordCard、pending queue 标记作废。
+  \item 时区变化：\code{nextReviewAt} 用 UTC Instant 存，展示时按本地时区格式化。
+  \item 服务端返回空 schedule：显示“今天没有复习”而不是错误。
+\end{itemize}
+
+\begin{followup}[“服务端和本地对该复习哪些词给出不同答案，用户正在练到一半怎么办？”]
+不要中途换题，避免破坏练习体验。当前 session 用启动时的本地快照完成；结束后上传结果并拉取服务端 schedule，下一轮再生效。如果服务端明确要求废弃某些题，可在 session 结束后清理。
+\end{followup}
+
+\begin{followup}[“本地兜底算法与服务端模型长期偏离会有什么问题？”]
+用户会练到不该练的词，导致学习效率下降，实验结果也会被污染。所以本地算法只应作为短期离线兜底，并记录 source。设备重新联网后尽快上传离线结果，让服务端重新计算，客户端用服务端覆盖。
+\end{followup}
+
+\begin{followup}[“如何不暴露模型细节又展示掌握度？”]
+让服务端返回粗粒度 bucket 或 display score，而不是完整模型特征。客户端只做颜色、文案和排序展示。这样既保护模型演进空间，也避免用户把一个精确小数误解成绝对能力评判。
+\end{followup}
+
+\begin{idea}[资产与建议的同步策略不同]
+用户资产要保守合并，系统建议可以由权威覆盖。复习 schedule 属于“建议”，不是“用户拥有的进度”；这就是为什么它的离线冲突策略不同于 XP、连胜或课程完成记录。
+\end{idea}
+
+\begin{pitfall}[在客户端复刻 Birdbrain]
+面试时不要说“我在 Android 端跑一个 ML 模型决定出题”。这会把模型版本、特征一致性、电量、包体和实验解释都变复杂。更好的边界是服务端智能、客户端可靠。
+\end{pitfall}
+
+\designq{9}{把一个 DuoState 式全局状态重构成 MVVM}{Hard}
+
+\srcofficial Google Android Developers 博客公开描述 Duolingo Android Reboot：巨型全局可变状态 \code{DuoState} 被 XP、streak、lessons 等共享访问，ANR 每月恶化 5--10\%，某次发布崩溃率增加 10\%、慢帧 25\%、入门设备课程启动慢 70\%；团队停更功能 8 周，引入 MVVM、Dagger + Hilt、模块化、Repository pattern 和多线程，最终 ANR 降 41\%、帧率不达标时间降 28\%、滚动速度提升 40\%。\footnote{\url{https://android-developers.googleblog.com/2021/08/android-app-excellence-duolingo.html}} 这题官方基础最扎实，也是最能考察资深度的重构类设计题。
+
+\subsection{题面与常见变体}
+
+\begin{itemize}
+  \item 给你一个被 XP、连胜、课程进度、宝石共享读写的巨型可变状态对象，怎么拆？
+  \item 如何从全局单例迁移到 MVVM + Repository + Hilt，同时不影响发版？
+  \item PM 不愿停 8 周做重构，你如何用数据说服？
+\end{itemize}
+
+\subsection{需求澄清：你该问什么}
+
+\begin{itemize}
+  \item “当前最痛的指标是什么？”ANR、崩溃、慢帧、课程启动耗时、开发 lead time，先建立基线。
+  \item “DuoState 里有哪些域？”XP、Streak、Lesson、Leaderboard、Shop、Session 等按功能域拆。
+  \item “是否允许停更或只能渐进？”官方曾集中 8 周；面试中要同时给渐进方案与集中方案取舍。
+  \item “团队规模和模块边界如何？”如果多个团队共享状态，必须有编译期边界防回退。
+\end{itemize}
+
+\subsection{架构总览}
+
+\begin{lstlisting}
+Before:
+  Any screen / manager / util
+          |
+          v
+  +---------------------+
+  | global mutable      |
+  | DuoState            |
+  | xp/streak/lessons   |
+  | gems/leaderboard    |
+  +---------------------+
+
+After:
+  Screen -> ViewModel -> Domain Repository -> Data sources
+             |                 |                 |
+             v                 v                 v
+        StateFlow         single writer       Room / Network / Cache
+             |
+             v
+       immutable UiState
+
+Gradle modules:
+  feature_lesson -> lesson_api -> lesson_impl
+  feature_shop   -> shop_api   -> shop_impl
+  app wires dependencies with Hilt
+\end{lstlisting}
+
+\subsection{数据模型 / 关键接口}
+
+\begin{kotlin}
+data class StreakState(
+    val current: Int,
+    val freezeAvailable: Boolean,
+    val lastUpdatedAt: Instant
+)
+
+interface StreakRepository {
+    val streak: StateFlow<StreakState>
+    suspend fun refresh()
+    suspend fun applyLessonCompleted(event: LessonCompleted)
+}
+
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val streakRepository: StreakRepository,
+    private val sessionRepository: SessionRepository
+) : ViewModel()
+\end{kotlin}
+
+\subsection{关键机制逐个击破}
+
+\paragraph{先量化再动手。} \srcofficial 官方重构能被接受，是因为问题被量化：ANR 每月恶化、崩溃和慢帧明显上升、入门设备课程启动变慢。\srcinferred 面试中你应先建立 dashboard：ANR rate、crash-free sessions、slow/frozen frames、lesson start p95、home scroll jank、cold start、开发周期和回滚次数。没有基线，重构就像“工程师洁癖”；有基线，重构才是业务风险控制。
+
+\paragraph{按功能域拆 Repository。} 不要按技术层先拆成 \code{NetworkManager}、\code{DatabaseManager}、\code{StateManager}，那只是把全局状态换个名字。\srcinferred 应按业务域拆：\code{SessionRepository}、\code{StreakRepository}、\code{LeaderboardRepository}、\code{ShopRepository}。每个 Repository 拥有自己的数据源、缓存和写路径，对外暴露不可变状态流。这样团队边界也自然：Leaderboard 团队不应直接改 Streak 内部字段。
+
+\paragraph{Hilt 与显式依赖。} \srcofficial 官方用 Dagger + Hilt 替代全局 DuoState。\srcinferred 依赖显式化本身就消灭了一半耦合：过去任何类都能读写 \code{DuoState.gems}；现在构造函数里没有 \code{ShopRepository} 就无法访问宝石状态。谁读谁写从运行期约定变成编译期可见，code review 可以直接看到依赖扩散。
+
+\paragraph{读写路径分离与单一写者。} 全局可变对象最大的问题是 read-modify-write 竞态：A 屏刷新 XP，B 管理器同时改 streak，最后一次写覆盖前一次。\srcinferred 每个状态域应该只有一个写者 Repository；UI 只收集 \code{StateFlow}，发出 intent，不直接 mutate。跨域事件如 LessonCompleted 通过明确方法或 domain event 分发，由各 Repository 自己更新本域，必要时用事务或有序队列保证一致性。
+
+\paragraph{StateFlow 与不可变快照。} 用 \code{MutableStateFlow} 内部维护状态，对外暴露 \code{StateFlow}；状态是 data class，不是可变对象。\srcinferred UI 每次看到的是一个完整快照，Compose 或 View 层可以稳定 diff。回扣第七章/第四章的竞态原则：不要把同一个可变引用传给多个消费者再期待大家“别乱改”。
+
+\paragraph{把工作移出主线程。} \srcofficial 官方重构包括 Repository pattern 与多线程，把工作移出主线程。\srcinferred Repository 是天然边界：网络、数据库、JSON 解析、diff 计算都在 IO/Default dispatcher；ViewModel 只收集结果并暴露 UI state。所有 public suspend API 要说明线程语义，避免调用方在主线程做阻塞等待。
+
+\paragraph{模块化与防回退。} \srcofficial 官方按功能模块化。\srcinferred Gradle 模块可以采用 \code{feature\_lesson} 依赖 \code{streak\_api}，但不能依赖 \code{streak\_impl} 的内部表或可变状态。用 \code{internal}、API/impl 分离、dependency analysis 和 lint 规则防止跨模块偷访问。否则两年后大家又会为了赶进度新建一个 \code{GlobalUserState}。
+
+\paragraph{迁移策略：绞杀者与集中重构。} 默认安全策略是 strangler：旧 \code{DuoState} 外包一层 adapter，新功能走 Repository，老功能按域迁移；feature flag 控制回退；一段时间内双读或影子比对，但尽量避免长期双写。\srcinferred 然而官方选择停更 8 周集中重构，这并不幼稚。\srcofficial 当耦合是全局性的、任何渐进迁移都要长期维护复杂适配层和双写一致性时，集中重构可能总成本更低、风险窗口更短。高级回答要诚实讨论取舍，而不是机械说“大爆炸一定错”。
+
+\paragraph{如何向 PM 论证 8 周。} \srcofficial 这直接对应 Take the Long View 与 Prioritize Ruthlessly。\srcinferred 可以这样算账：ANR 每月恶化 5--10\%，慢帧影响留存和课程完成；每个功能都要绕过 DuoState，开发 lead time 变长，回归率升高。若不还债，未来两个季度速度会继续下降；集中 8 周的目标不是“代码更漂亮”，而是把 ANR、慢帧、课程启动和发版回滚拉回可控区间。
+
+\subsection{边界情况}
+
+\begin{itemize}
+  \item 迁移中同一状态新旧两套来源不一致：定义权威来源和影子校验，不让 UI 随机读。
+  \item 回滚：feature flag 回到旧路径，但数据库迁移要向后兼容。
+  \item 团队继续加新全局变量：CI/lint 禁止，架构评审把关。
+  \item 性能变差：每个迁移域都要看基线指标，不等到最后总验收。
+\end{itemize}
+
+\begin{followup}[“重构期间如何保证不出回归？”]
+先补 characterization tests，锁住旧行为；新 Repository 做 shadow read，与旧 DuoState 对比但不影响用户；按功能 flag 灰度；关键路径加 crash、ANR、slow frame、业务指标监控。迁移不是只靠人工 QA，而是每个域有可观测验收。
+\end{followup}
+
+\begin{followup}[“如果不允许停更怎么办？”]
+采用 strangler：先冻结 DuoState 新增字段，建立 adapter；选痛点最大但边界较清晰的域先迁移，如 Streak；新功能只能接 Repository；旧功能逐步替换。代价是周期更长、适配层更复杂，所以要限制双写时间并定期删除旧路径。
+\end{followup}
+
+\begin{followup}[“怎么防止两年后重新长出新的 DuoState？”]
+技术上用模块边界、\code{internal}、lint、dependency graph 和架构测试；流程上要求新共享状态必须有 owner、Repository API 和迁移计划；文化上在 code review 中拒绝“先放全局以后再说”。架构不是一次项目，而是一套防回退机制。
+\end{followup}
+
+\begin{idea}[度量是架构债的入口和出口]
+架构债的偿还必须先有度量，否则你既说服不了别人，也验收不了自己。Duolingo 这次重构的说服力正来自 ANR、慢帧、滚动和启动时间这些可量化指标。
+\end{idea}
+
+\begin{keypoint}[资深度信号]
+这题不要只背 MVVM、Hilt、Repository。资深候选人会讲：如何量化问题、如何划分所有权、如何迁移、如何回滚、如何防止组织在压力下重新制造全局状态。
+\end{keypoint}
+
+

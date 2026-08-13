@@ -1,0 +1,246 @@
+\chapter{查错轮方法论：60 分钟怎么评审}
+
+如果说算法轮考的是“你能不能在压力下把一个问题解出来”，那么 Duolingo 的 Code Review 轮考的是另一种更接近日常工作的能力：\textbf{你能不能像一个资深同事那样组织表达}。这不是一句场面话。真实团队里，最有价值的评审者不是那个能在五分钟里挑出十五个命名问题的人，而是那个会先指出“这里可能让用户崩溃”“这里会在页面退出后继续写状态”“这里把失败域扩大到了整节课”的人。风格意见可以有，但它们必须排在用户损失、数据损坏、ANR、泄漏之后。
+
+这也是为什么 FAANG 式刷题准备在这一轮迁移最差。刷题训练你在一个干净输入上追求最优复杂度；查错轮要求你在一段不完美、带业务语义、带生命周期、带线程边界的 Kotlin 代码里判断风险。它最接近 Android 工程师每天真正做的事：读别人刚改的代码，判断是否能安全进主干，然后用让人愿意接受的方式提出修改建议。
+
+Duolingo 把这一轮单独拿出来，并不奇怪。\srcofficial\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}} 官方说明里，Code Review 是工业界岗位都有的 60 分钟独立环节；而 Android 岗还有专门版本。换句话说，你不是在做一套泛泛的“找 bug”题，而是在展示你是否像一个会维护大型 Kotlin Android 应用的人。
+
+\section{这一轮的形式与官方说明}
+
+\srcofficial\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}} Duolingo 官方把 Code Review 描述成一个 60 分钟、在 CodeSignal 上进行的独立面试。所有 industry role 都会遇到它；Backend、iOS、Android 有各自版本；任务是阅读一段代码改动，识别问题并提出改进。官方还特别提醒：面试官会帮助你导航，不要被这一轮吓到。新毕业生流程通常用 Whiteboard 轮替代它，这也说明 Code Review 更偏向对真实工程经验的评估。
+
+对 Android/Kotlin 候选人来说，这一点尤其重要。你看到的不是抽象伪代码，而往往是接近真实移动端工程的文件组：ViewModel、Repository、Fragment、Flow、Room、RecyclerView、Compose 或协程。 \srccommunity 候选人报告过的题型包括：带空指针风险的数据处理管线、在 \code{GlobalScope} 中发起协程、Fragment 中没有绑定生命周期的网络响应处理，以及“评审 RecyclerView 列表更新代码，有什么性能或崩溃风险”。这些不是随机知识点，而是 Android 代码库里最容易把用户体验拖垮的边界。
+
+还有一层背景解释了为什么 Kotlin 惯用性本身也是信号。\srcofficial\footnote{\url{https://blog.duolingo.com/migrating-duolingos-android-app-to-100-kotlin/}} Duolingo 曾在两年内迁移到 100\% Kotlin，并同时使用 detekt、ktlint、Android Lint、IntelliJ inspections 和自研 linter Splinter。一个候选人的代码评审如果只会说“这里可能 NPE”，却看不出 Java 味 Kotlin、可空类型契约、协程 scope、Flow 生命周期，那就不像一个会融入这套工程文化的人。
+
+最后，Duolingo Android Reboot 的故事给这一轮定了调。\srcofficial\footnote{\url{https://android-developers.googleblog.com/2021/08/android-app-excellence-duolingo.html}} 公开案例提到，早期 Android 应用里一个被 XP、连胜、课程等模块共享的巨大可变状态对象 \code{DuoState}，让 ANR 每月恶化 5--10\%；某次发布还带来 10\% 崩溃增加、低端设备首帧与课程启动明显变慢。团队最终冻结功能 8 周，重建为 MVVM、Dagger/Hilt、Repository 与模块化架构，获得 ANR 下降 41\%、错过帧 deadline 下降 28\%、滚动速度提升 40\% 的结果。这意味着：全局可变状态、主线程重活、生命周期越界，不是“理论上的坏味道”，而是 Duolingo 真正付过代价的故障类型。
+
+\section{评审的优先级阶梯}
+
+查错轮最核心的能力，是排序。你当然要能看见问题，但更要知道先说哪个、后说哪个、哪些只值得一句带过。下面这条阶梯请背下来；它比任何单个 Kotlin API 都重要。
+
+\begin{enumerate}
+  \item \textbf{正确性与崩溃}：crash、ANR、数据损坏、安全问题、用户进度丢失。这一层直接伤害用户或业务指标。
+  \item \textbf{资源与泄漏}：内存泄漏、协程未取消、监听器未移除、Fragment view 销毁后仍被引用。这一层会把短期小 bug 拖成长期稳定性问题。
+  \item \textbf{并发与竞态}：线程可见性、原子性、主线程约束、读改写丢失、取消传播。这一层通常不稳定复现，但一旦线上发生很难排查。
+  \item \textbf{契约与可测试性}：API 暴露过宽、依赖不可注入、时间与 dispatcher 写死、副作用藏在 getter 或 mapper 里。这一层决定代码未来能不能安全演进。
+  \item \textbf{性能}：主线程 IO、列表全量刷新、Compose 过度重组、重复网络请求、对象分配过多。性能问题要和用户路径绑定讲，不要泛泛说“会慢”。
+  \item \textbf{可读性与惯用性}：命名、重复代码、Java 味 Kotlin、没用 \code{?.}、\code{let} 滥用、过长函数。这一层不是不重要，而是不能抢在前面。
+\end{enumerate}
+
+\begin{idea}[先说会让用户损失的，再说会让同事痛苦的]
+一个资深 reviewer 的默认排序是：先保护用户，再保护系统，最后保护审美。用户会崩溃、课程进度会丢、低端机会上 ANR 的问题，必须排在“这个变量名不够 Kotlin”之前。你可以在最后补一句“还有几个 nits”，但不能用 nits 开场。
+\end{idea}
+
+\begin{pitfall}[以风格问题开场]
+经典失败样子是：候选人读到第一行就说“这个类名不够好”“这里可以用 \code{also}”，然后五分钟后才发现代码会在 Fragment view 销毁后更新 UI。面试官会认为你缺乏工程风险排序。查错轮不是 lint 竞赛；Duolingo 已经有 detekt、ktlint、Android Lint 和 Splinter \srcofficial\footnote{\url{https://blog.duolingo.com/migrating-duolingos-android-app-to-100-kotlin/}}，他们需要的是能补足机器规则之外判断的人。
+\end{pitfall}
+
+\section{一遍读、两遍读、三遍读}
+
+不要从第一行开始逐字抠。60 分钟看似很长，但真实代码一旦有两个文件、三层调用和几个异步边界，时间很快被细节吞掉。推荐用三遍读法。
+
+\textbf{第一遍，只看数据流与线程边界。} 问三个问题：数据从哪里来？在哪个线程或 dispatcher 上被改？最后写到哪里？比如课程提交结果从网络返回，进入 Repository，更新本地 Room，再通过 \code{StateFlow} 驱动 ViewModel。你先不要管变量名，也不要管 mapper 是否漂亮；先画出“谁在什么线程上改什么状态”。这一遍最容易抓到 crash、ANR、数据损坏、主线程 IO 和竞态。
+
+\textbf{第二遍，看生命周期与所有权。} 谁创建了这个协程？谁负责取消？谁持有 Fragment view、adapter、listener、callback、context？这个对象活得是否比它引用的 UI 更久？一个网络请求在用户退出课程页后继续回来，是否还会写 \code{binding}？一个 Flow 在 \code{onCreateView} 里收集，view 重建后是否重复订阅？这一遍找的是泄漏、幽灵更新、重复事件。
+
+\textbf{第三遍，才看语法、惯用法与局部可读性。} 这时再看可空类型、\code{!!}、\code{mapNotNull}、\code{copy}、命名、重复逻辑、sealed state 是否更好。不是因为这些不重要，而是因为它们通常不会比前两遍的问题更贵。
+
+\begin{keypoint}[为什么这个顺序有效]
+昂贵 bug 往往跨行、跨函数、跨生命周期：它们不会暴露在某个单独的 \code{if} 里。三遍读法先建立系统图，再看所有权，最后做局部清理，正好匹配 Android 线上故障的形态。 \srcinferred
+\end{keypoint}
+
+\section{说出口的模板}
+
+查错轮不是你在纸上写审阅意见，而是你边读边说。话术会影响评分：太武断像没经验，太含糊像不敢判断。好的表达结构是“影响先行、条件清楚、修复具体”。
+
+\begin{sayit}[提出问题]
+中文：我会把这里标成一个崩溃风险，因为 \code{user.profile!!} 来自网络响应，而前面没有保证 profile 一定存在。用户如果是新账号或响应降级，就会直接 crash。\par
+English: I would flag this as a crash risk because \code{user.profile!!} depends on a network field that is not guaranteed to be present. A safer fix is to model the missing profile state explicitly instead of asserting non-null.
+\end{sayit}
+
+\begin{sayit}[给出修复]
+中文：我建议把线程约束放到 Repository 内部，用注入的 IO dispatcher 包住 Room 查询。这样调用方不需要记住“必须在后台线程调用”，测试里也能替换 dispatcher。\par
+English: I would move the dispatcher boundary into the repository. The suspend function should protect its own threading contract, and the dispatcher should be injected so the ViewModel and tests do not rely on global dispatchers.
+\end{sayit}
+
+\begin{sayit}[表达不确定]
+中文：我不确定这个方法一定从哪个线程调用。如果它可能在主线程上跑，那么这段同步数据库查询会有 ANR 风险；我会问调用链，或者把它改成内部 \code{withContext(ioDispatcher)} 来消除假设。\par
+English: I am not sure what the calling context is. If this can run on the main thread, the synchronous database read is an ANR risk. I would either confirm the caller contract or make the function enforce the IO dispatcher itself.
+\end{sayit}
+
+\begin{sayit}[软化风格意见]
+中文：这是一个 nit，可以最后再处理：这里的 \code{if (x != null)} 可以写成可空链或 \code{mapNotNull}，会更 Kotlin 一点，但它不是我最担心的问题。\par
+English: This is a nit and I would not block on it: we could make this more idiomatic Kotlin with a null-safe chain, but the lifecycle issue above is the one I would prioritize.
+\end{sayit}
+
+\begin{idea}[会提问也是 senior signal]
+不要把未知条件硬猜成事实。问“这个方法是从哪个线程调用的？”“这个 scope 谁取消？”“这个 Flow 是 cold 还是 hot？”比直接断言“这里一定错了”更像真实 reviewer。正确的 hedge 不是怂，而是在约束不完整时保护判断质量。
+\end{idea}
+
+\section{七类 Checklist}
+
+下面的 checklist 不是让你机械读完，而是让你在沉默时有抓手。读到某类代码，就快速过对应问题。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}p{2.6cm}X@{}}
+\toprule
+\textbf{类别} & \textbf{评审时问自己什么} \\
+\midrule
+空安全 & 网络字段、Room 字段、Intent extra 是否可空？有没有 \code{!!}、\code{lateinit} 未初始化、\code{first()} 空集合崩溃？错误态是否被建模成 sealed state？详见第六章。 \\
+协程 Scope 与 Dispatcher & 是否用了 \code{GlobalScope}？协程是否跟 ViewModel、viewLifecycleOwner 或 WorkManager 绑定？IO 是否跑在主线程？dispatcher 是否可注入？详见第四章。 \\
+Flow / StateFlow / LiveData & Fragment 收集是否用 \code{repeatOnLifecycle}？\code{StateFlow} 是否被用来发一次性事件？\code{stateIn} 的 \code{SharingStarted} 是否合理？上游是否重复订阅？详见第四章。 \\
+Compose 副作用与重组 & 网络请求是否直接写在 Composable body？\code{LaunchedEffect} key 是否稳定？\code{remember} 是否遗漏状态键？派生状态是否导致过度重组？详见第六章。 \\
+生命周期与内存泄漏 & Fragment view 是否在 \code{onDestroyView} 后仍被持有？listener、callback、adapter、binding 是否释放？是否把 Activity context 存进单例？详见第五章。 \\
+RecyclerView / 列表 & 是否 \code{notifyDataSetChanged()} 全量刷新？DiffUtil item identity 是否稳定？异步 submit 与旧列表引用是否竞态？点击 position 是否过期？详见第五章。 \\
+Kotlin 惯用性 & 是否 Java 味空判断、可变集合外泄、data class 被错误复用、\code{Result} 被吞、\code{runCatching} 吃掉取消？是否能用不可变快照表达状态？详见第六章。 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+再把它拆成可背的问题：
+\begin{itemize}
+  \item \textbf{空安全}：这个值来自不可信边界吗？如果为 \code{null}，用户看到的是空态、错误态还是 crash？\code{?: return} 是否偷偷吞掉了业务失败？
+  \item \textbf{协程}：这个 job 谁拥有？屏幕走了会不会取消？异常会不会击穿父 scope？是否在 \code{catch (Exception)} 中吞了 \code{CancellationException}？
+  \item \textbf{Flow}：这是 state 还是 event？收集是否随生命周期停止？\code{collectLatest} 会不会取消一半写库操作？\code{flowOn} 是否改变了预期线程？
+  \item \textbf{Compose}：副作用是否放进 \code{LaunchedEffect} / \code{DisposableEffect}？key 改变时是否会重启？重组是否导致重复请求？
+  \item \textbf{生命周期}：谁注册，谁反注册？谁持有 view？长生命周期对象是否引用短生命周期对象？
+  \item \textbf{列表}：item identity 与 content equality 是否分开？列表 mutation 是否在 submit 后继续发生？点击回调是否用 \code{bindingAdapterPosition} 并检查 \code{NO\_POSITION}？
+  \item \textbf{惯用性}：可变状态是否封装？public API 是否暴露 \code{MutableStateFlow}？Java getter/setter 风格是否掩盖副作用？
+\end{itemize}
+
+\section{一个完整的评审演练}
+
+假设你在 CodeSignal 里看到一个新改动：课程结束页要加载总结卡片，展示 XP、连胜文案和推荐下一课。代码很短，但混了 Repository、ViewModel、Room、网络和 UI state。
+
+\begin{ktbug}
+data class LessonSummaryUi(
+    val title: String,
+    val xpText: String,
+    val streakText: String,
+    val nextLessonId: String?
+)
+
+class LessonSummaryViewModel(
+    private val sessionRepository: SessionRepository,
+    private val userRepository: UserRepository
+) : ViewModel() {
+
+    private val _summary = MutableStateFlow<LessonSummaryUi?>(null)
+    val summary: StateFlow<LessonSummaryUi?> = _summary
+
+    fun load(sessionId: String) {
+        viewModelScope.launch {
+            val session = sessionRepository.getSession(sessionId)
+            val user = userRepository.cachedUser!!
+            _summary.value = LessonSummaryUi(
+                title = "Great job, ${user.displayName}!",
+                xpText = "+${session.xpEarned} XP",
+                streakText = "${user.streakDays + 1} day streak",
+                nextLessonId = session.recommendations.first().lessonId
+            )
+            userRepository.saveLastSeenLesson(session.recommendations.first().lessonId)
+        }
+    }
+}
+
+class SessionRepository(
+    private val api: SessionApi,
+    private val dao: SessionDao
+) {
+    suspend fun getSession(sessionId: String): SessionSummary {
+        val cached = dao.findSummary(sessionId)
+        return cached ?: api.fetchSessionSummary(sessionId).also {
+            dao.insert(it)
+        }
+    }
+}
+\end{ktbug}
+
+第一遍看数据流与线程边界：\code{load} 在 \code{viewModelScope} 中启动，默认在主线程；\code{SessionRepository.getSession} 内部没有切 dispatcher，却做了 Room 查询、网络请求和写库。即使 Room suspend DAO 通常会处理线程，代码片段本身没有表达契约；如果 \code{dao.findSummary} 是同步 DAO 或封装层阻塞调用，就会把主线程卡住。更稳的评审说法是：线程契约没有由被调用方保证。
+
+第二遍看生命周期与所有权：这里用的是 \code{viewModelScope}，比 \code{GlobalScope} 好；ViewModel 清掉后 job 会取消。主要生命周期问题不在这里。继续看状态所有权：\code{summary} 暴露成只读 \code{StateFlow}，这个方向是对的。
+
+第三遍看局部正确性与惯用性：\code{cachedUser!!} 是明显崩溃风险；\code{recommendations.first()} 在空推荐时也会崩溃，而且调用了两次；UI 文案把 \code{streakDays + 1} 写死，可能与服务端结算口径不一致；\code{saveLastSeenLesson} 是副作用，和 UI state 组装混在一起，测试不够清楚。
+
+按优先级，你可以这样输出：
+\begin{enumerate}
+  \item \textbf{崩溃风险}：\code{cachedUser!!} 与 \code{recommendations.first()} 都假设远端和缓存一定完整；新用户、离线、推荐为空时会 crash。
+  \item \textbf{ANR / 线程契约风险}：Repository suspend 函数没有自保 dispatcher，调用方默认主线程时可能把 Room 或磁盘 IO 放到 UI 线程。
+  \item \textbf{数据一致性}：连胜文案在客户端 \code{+ 1}，可能和后端最终结果不一致；最好使用 session summary 返回的已结算 streak。
+  \item \textbf{可测试性}：保存 last seen lesson 的副作用和 state 组装耦合，建议明确错误态、空推荐态，并注入 dispatcher。
+  \item \textbf{nit}：\code{first()} 结果应保存为局部变量，避免重复取值，也让意图更清楚。
+\end{enumerate}
+
+\begin{ktfix}
+data class LessonSummaryUi(
+    val title: String,
+    val xpText: String,
+    val streakText: String,
+    val nextLessonId: String?
+)
+
+sealed interface LessonSummaryState {
+    data object Loading : LessonSummaryState
+    data class Ready(val ui: LessonSummaryUi) : LessonSummaryState
+    data class Error(val message: String) : LessonSummaryState
+}
+
+class LessonSummaryViewModel(
+    private val sessionRepository: SessionRepository,
+    private val userRepository: UserRepository
+) : ViewModel() {
+
+    private val _summary = MutableStateFlow<LessonSummaryState>(LessonSummaryState.Loading)
+    val summary: StateFlow<LessonSummaryState> = _summary
+
+    fun load(sessionId: String) {
+        viewModelScope.launch {
+            _summary.value = LessonSummaryState.Loading
+            val result = runCatching {
+                val session = sessionRepository.getSession(sessionId)
+                val user = userRepository.cachedUser()
+                    ?: error("User cache is not ready")
+                val nextLesson = session.recommendations.firstOrNull()
+
+                nextLesson?.let { userRepository.saveLastSeenLesson(it.lessonId) }
+
+                LessonSummaryUi(
+                    title = "Great job, ${user.displayName}!",
+                    xpText = "+${session.xpEarned} XP",
+                    streakText = "${session.streakDaysAfterSession} day streak",
+                    nextLessonId = nextLesson?.lessonId
+                )
+            }
+            _summary.value = result.fold(
+                onSuccess = { LessonSummaryState.Ready(it) },
+                onFailure = { LessonSummaryState.Error("We could not load your summary.") }
+            )
+        }
+    }
+}
+
+class SessionRepository(
+    private val api: SessionApi,
+    private val dao: SessionDao,
+    private val ioDispatcher: CoroutineDispatcher
+) {
+    suspend fun getSession(sessionId: String): SessionSummary = withContext(ioDispatcher) {
+        val cached = dao.findSummary(sessionId)
+        cached ?: api.fetchSessionSummary(sessionId).also { dao.insert(it) }
+    }
+}
+\end{ktfix}
+
+\begin{pitfall}[修复也要分层]
+不要把所有问题都塞进一个“更 Kotlin”的重写里。真正的修复顺序是：先把崩溃路径变成状态，再把线程契约收进 Repository，最后再清理重复表达。这样面试官能看到你是在按风险推进，而不是在炫技。
+\end{pitfall}
+
+\begin{keypoint}[五行速记]
+Code Review 轮考的是风险排序，不是 nit 数量。\par
+先说正确性、崩溃、ANR、数据损坏，再说风格。\par
+三遍读：数据流与线程，生命周期与所有权，语法与惯用法。\par
+不确定时提问并说明条件，不要把猜测说成事实。\par
+每个问题都要带 impact、触发条件和具体修复。
+\end{keypoint}

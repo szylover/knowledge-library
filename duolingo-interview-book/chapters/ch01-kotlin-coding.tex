@@ -1,0 +1,574 @@
+\chapter{算法轮：用 Kotlin 写出“像 Kotlin”的代码}
+
+如果说 FAANG 的算法轮常常在测试你能不能把一道抽象题推到最优，那么 Duolingo 的 Android 技术视频面更像是在看：你能不能在一小时里，用 Kotlin 写出未来同事愿意继续维护的代码。官方披露的技术视频面为 60 分钟，通常在 CodeSignal 中进行，Android 候选人使用 Kotlin，有时会有一位主面试官和一位观察者同时在场。\srcofficial\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}} 社区面经也反复指向同一个结论：难度上限并不追求 LeetCode Hard，更多是 Medium 以内的数据结构、遍历、建模与 Big-O 讨论。\srccommunity\footnote{\url{https://interviewing.io/duolingo-interview-questions}} 但这不代表它容易。它只是把压力从“谜题难度”转移到了“代码质量下限”。
+
+这点对 Android/Kotlin 候选人尤其重要。Duolingo 曾公开讲过它们花了约两年完成 100\% Kotlin 迁移，并用 detekt、ktlint 与内部 linter Splinter 维护代码质量。\srcofficial\footnote{\url{https://blog.duolingo.com/migrating-duolingos-android-app-to-100-kotlin/}} 所以，一段能跑但充满 Java 味的 Kotlin，在这里不是小瑕疵，而是负信号。面试官当然关心你会不会栈、队列、图遍历；但他们也在观察你是否自然使用空安全、不可变建模、表达式式的集合操作、清楚的类边界。
+
+本章的第二条主线是：Duolingo 高频题形很少是“给一个数组，返回一个数字”，而更像“给一个类，让它对一串操作做出正确判断或维护正确状态”。最典型的 DataStream 题就是这样：你不是一次性求答案，而是在 add/remove 的序列里维护一组候选假设。这种题考的不是背模板，而是状态建模、不变量、公共 API 与边界处理。把这一点吃透，比再刷十道冷门 DP 更有用。
+
+\section{Kotlin 编码心法}
+
+\subsection*{用类型表达状态，而不是用整数和注释解释状态}
+
+在 Kotlin 里，状态不是靠注释保护的，而应当被类型系统托住。面试中如果你写出 \code{status = 0}、\code{status = 1} 再靠注释说明含义，面试官会立刻看到 Java 旧习惯。更好的做法是用 \code{enum class} 表示有限枚举，用 \code{sealed class} 表示带数据的状态族；配合 \code{when} 的穷尽性检查，编译器会帮你发现漏分支。
+
+\begin{ktbug}
+class LessonState(var status: Int, var error: String?)
+
+fun render(state: LessonState): String {
+    return when (state.status) {
+        0 -> "Loading"
+        1 -> "Done"
+        2 -> "Error: ${state.error}"
+        else -> "Unknown"
+    }
+}
+\end{ktbug}
+
+\begin{ktfix}
+sealed class LessonState {
+    object Loading : LessonState()
+    data class Ready(val title: String) : LessonState()
+    data class Failed(val message: String) : LessonState()
+}
+
+fun render(state: LessonState): String = when (state) {
+    LessonState.Loading -> "Loading"
+    is LessonState.Ready -> state.title
+    is LessonState.Failed -> "Error: ${state.message}"
+}
+\end{ktfix}
+
+第一段代码的问题不是“不能工作”，而是把不变量藏在人的脑子里：\code{status=2} 时 \code{error} 理应非空，但类型系统不知道。第二段代码把状态拆成三种互斥形态，\code{Failed} 天然携带错误信息，\code{Ready} 天然携带标题。这就是 Kotlin 面试里的第一层信号：你写的不是 Java 的语法糖，而是 Kotlin 的类型建模。
+
+\subsection*{空安全不是语法题，而是边界意识}
+
+Android 代码离不开网络、缓存、生命周期与 nullable 数据。不要把 \code{!!} 当快捷键；它在面试里几乎等价于“我还没想清楚这里为什么非空”。如果某个值来自外部输入，用 \code{?:} 给出兜底；如果它是业务不变量，用 \code{requireNotNull} 明确失败原因；如果只是存在才继续，用 \code{?.let} 收窄作用域。
+
+\begin{ktbug}
+fun avatarUrl(user: User?): String {
+    return user!!.profile!!.avatarUrl!!
+}
+\end{ktbug}
+
+\begin{ktfix}
+fun avatarUrl(user: User?): String =
+    user?.profile?.avatarUrl ?: DEFAULT_AVATAR_URL
+
+fun submit(answer: Answer?) {
+    val nonNullAnswer = requireNotNull(answer) { "Answer must exist before submit" }
+    send(nonNullAnswer)
+}
+\end{ktfix}
+
+这里的关键不是“永远不抛异常”，而是区分两类情况：缺头像是可恢复的 UI 兜底；提交答案为空则违反流程不变量，应当早失败、说清楚。面试官听到你这样解释，会知道你不是机械地躲避 \code{!!}，而是在设计错误边界。
+
+\subsection*{集合操作要像 Kotlin，但别炫技}
+
+Kotlin 的标准库让许多数组和哈希表题写得更接近问题本身。统计、分组、索引、求和、取最大值，优先想到 \code{filter}、\code{map}、\code{groupBy}、\code{associateBy}、\code{sumOf}、\code{maxByOrNull}。不过面试不是函数式编程秀场。链式调用超过三四步、每一步还带复杂 lambda 时，可读性和可调试性会下降。好的标准是：代码读起来像题意，而不是像你在证明自己会 API。
+
+\begin{kotlin}
+data class Skill(val id: String, val topic: String, val xp: Int, val mastered: Boolean)
+
+fun xpByTopic(skills: List<Skill>): Map<String, Int> =
+    skills
+        .filter { it.mastered }
+        .groupBy { it.topic }
+        .mapValues { (_, topicSkills) -> topicSkills.sumOf { it.xp } }
+
+fun skillIndex(skills: List<Skill>): Map<String, Skill> =
+    skills.associateBy { it.id }
+\end{kotlin}
+
+如果你担心链条过长，可以主动说：“这里我先用标准库表达意图；如果后面要加日志或调试中间状态，我会拆成局部变量。”这句话本身就是成熟信号。
+
+\subsection*{不可变优先，让更新点变少}
+
+算法题里当然可以用可变数组和队列，但对象状态不要随手暴露为 \code{MutableList}。能用 \code{val} 就不用 \code{var}；返回 \code{List} 而不是 \code{MutableList}；数据对象更新优先用 \code{copy()}。不可变不是洁癖，而是降低面试中出错面的办法。
+
+\begin{kotlin}
+data class UiState(
+    val isLoading: Boolean = false,
+    val words: List<String> = emptyList(),
+    val error: String? = null,
+)
+
+fun UiState.withWords(newWords: List<String>): UiState =
+    copy(isLoading = false, words = newWords, error = null)
+\end{kotlin}
+
+\subsection*{用 object、伴生对象与扩展函数收敛小工具}
+
+Kotlin 里单例配置适合 \code{object}，命名构造适合 \code{companion object}，不拥有状态的小转换适合扩展函数。它们的共同目的都是让调用处更像业务语言，而不是到处散落工具函数。
+
+\begin{kotlin}
+object CachePolicy {
+    const val MAX_ITEMS = 200
+    const val TTL_MILLIS = 10 * 60 * 1000L
+}
+
+data class WordId(val raw: String) {
+    companion object {
+        fun fromApi(value: String): WordId = WordId(value.trim().lowercase())
+    }
+}
+
+fun String.normalizedWord(): String = trim().lowercase()
+\end{kotlin}
+
+\begin{idea}[面试官读你的代码时，第一眼看的是命名与状态建模，第二眼才是复杂度]
+复杂度当然要对，但多数 Duolingo 编码题的复杂度并不离奇。真正拉开差距的是：类名是否说明职责，状态是否互斥，方法是否只做一件事，边界是否被类型表达。一个 \bigO{n} 的乱糟糟实现，不如一个同样 \bigO{n} 但可读、可扩展、容易自测的实现。
+\end{idea}
+
+\begin{pitfall}[最容易泄露的 Java 味]
+面试 Kotlin 里常见的负信号包括：大量 \code{!!}；用 \code{ArrayList} 和 \code{HashMap} 作为返回类型而不是接口 \code{List}/\code{Map}；可用 \code{data class} 却手写 getter；用整数 flag 表示状态；把所有函数塞进静态工具类思维；循环里手动维护一堆临时变量却不命名中间概念；忘记主动说明 Big-O。它们单独看都不致命，连在一起就会让人怀疑你只是“会写 Kotlin 语法的 Java 工程师”。
+\end{pitfall}
+
+最后，Big-O 要主动开口。官方建议候选人准备讨论复杂度与边界。\srcofficial\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}} 你不需要等面试官问才说：“这里每个操作摊还 \bigO{1}，空间和候选结构数量成正比，在本题是常数。”这类报价会让对话变得稳定。
+
+\section{答题节奏：60 分钟怎么用}
+
+60 分钟看似很长，真正写代码的时间并不多。一个可靠节奏是：前 5 分钟澄清题意与输入输出；接着 5 分钟口述方案、不变量与复杂度；用 20 分钟写最小可用版本；再用 10 分钟拿样例和自造边界手动跑；最后 15 分钟处理边界、优化、追问与重构。官方明确建议候选人务实，从能在时间内完成的最简单版本开始，并且边想边说、把面试官当合作者。\srcofficial\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}}
+
+这个节奏的重点不是机械计时，而是防止两种极端：一种是没想清楚就写，30 分钟后发现接口错了；另一种是一直追求完美抽象，20 分钟过去还没有可运行代码。Duolingo 的题通常允许你先写朴素版本，再在追问里展示优化意识。你应该把“先跑通”当成策略，而不是妥协。
+
+\begin{sayit}[每个阶段可以直接说出口的话]
+澄清时说：“Let me restate the problem first. We receive a sequence of operations, and the class should maintain enough state to answer after each operation. I want to clarify empty input, duplicate values, and what to return when multiple answers are possible.”
+
+动手前说：“I will start with the simplest complete version: maintain the candidate hypotheses explicitly, then we can discuss whether any state can be compressed.”
+
+写完第一版后说：“Before optimizing, I want to walk through a small example and one edge case, because hidden tests usually punish state bugs more than asymptotic tricks.”
+
+追问时说：“That changes the contract slightly. I would first name the new output semantics, then adjust the internal representation. I do not want to silently widen the scope without confirming it.”
+\end{sayit}
+
+\section{题目精解}
+
+% ===========================================================================
+\problem{面经报告 · 高频}{数据流结构判定 (DataStream)}{Medium}
+
+\subsection*{题意}
+
+社区面经中最详细的一题是 DataStream：给定一串 \code{add(x)} 与 \code{remove(x)} 操作，判断底层结构可能是 Stack、Queue 还是 PriorityQueue。\srccommunity\footnote{\url{https://programhelp.net/vo/duolingo-sde-interview-recap/}} interviewing.io 也报告过同族题：定义一个类，根据“put this value, get this value”的流式操作推断底层数据结构。\srccommunity\footnote{\url{https://interviewing.io/duolingo-interview-questions}} 如果多种结构都能解释当前序列，就返回多个候选；如果都不能解释，就返回空集合。
+
+\subsection*{思路推导}
+
+这题的核心不是某个数据结构，而是“不变量筛选”。你同时维护三个模拟器：一个栈、一个队列、一个优先队列；再维护三个候选是否仍成立的标记。每次 \code{add(x)}，所有仍可能的模拟器都加入 \code{x}。每次 \code{remove(x)}，分别从三个模拟器取出它们认为应该被移除的值：栈取最后进入的，队列取最早进入的，优先队列取最大值。如果模拟器为空，或者取出的值不等于 \code{x}，该候选被淘汰。\code{guess()} 返回尚未被淘汰的候选集合。
+
+注意优先队列的 tie。若题目没有说重复值如何比较，最安全的解释是 PriorityQueue 只按值比较；两个相等最大值取哪个都不影响 \code{remove(x)} 的可观察结果。Kotlin 的 \code{PriorityQueue} 默认是小根堆，所以最大堆要传反向比较器。
+
+\begin{kotlin}
+import java.util.ArrayDeque
+import java.util.PriorityQueue
+
+enum class Kind { STACK, QUEUE, PRIORITY_QUEUE }
+
+class DataStream {
+    private val stack = ArrayDeque<Int>()
+    private val queue = ArrayDeque<Int>()
+    private val maxHeap = PriorityQueue<Int>(compareByDescending { it })
+
+    private val possible = Kind.entries.associateWith { true }.toMutableMap()
+
+    fun add(value: Int) {
+        if (possible[Kind.STACK] == true) stack.addLast(value)
+        if (possible[Kind.QUEUE] == true) queue.addLast(value)
+        if (possible[Kind.PRIORITY_QUEUE] == true) maxHeap.add(value)
+    }
+
+    fun remove(value: Int) {
+        checkStack(value)
+        checkQueue(value)
+        checkPriorityQueue(value)
+    }
+
+    fun guess(): Set<Kind> = possible
+        .filterValues { it }
+        .keys
+        .toSet()
+
+    private fun checkStack(expected: Int) {
+        if (possible[Kind.STACK] != true) return
+        val actual = stack.pollLast()
+        if (actual != expected) possible[Kind.STACK] = false
+    }
+
+    private fun checkQueue(expected: Int) {
+        if (possible[Kind.QUEUE] != true) return
+        val actual = queue.pollFirst()
+        if (actual != expected) possible[Kind.QUEUE] = false
+    }
+
+    private fun checkPriorityQueue(expected: Int) {
+        if (possible[Kind.PRIORITY_QUEUE] != true) return
+        val actual = maxHeap.poll()
+        if (actual != expected) possible[Kind.PRIORITY_QUEUE] = false
+    }
+}
+\end{kotlin}
+
+这版代码刻意保留三个模拟器，而不是过早压缩状态。因为面试里最重要的是让不变量清楚：每个候选模拟器的内容，代表“如果真实结构是它，那么到目前为止内部应当长这样”。一旦某个输出与预期不一致，候选永久淘汰。
+
+\begin{keypoint}[复杂度]
+\code{add} 对栈和队列是 \bigO{1}，对优先队列是 \bigO{\log n}；\code{remove} 同理被优先队列主导，为 \bigO{\log n}。空间 \bigO{n}，因为最坏情况下三个模拟器都保留全部元素；候选种类固定为 3，所以候选集合本身是常数空间。
+\end{keypoint}
+
+\begin{idea}[用不变量筛选候选假设]
+DataStream 的可迁移心法是：当你不知道真实模型是哪一个，就维护一组“仍能解释观测”的候选假设；每来一个新观测，就用不变量淘汰矛盾者。这不仅适用于数据结构判定，也适用于类型推断、协议探测、A/B 归因、日志事件归类。面试官真正想看的，是你能不能把“猜”变成可维护的状态机。
+\end{idea}
+
+\begin{pitfall}[三个边界最容易漏]
+第一，空结构上 \code{remove} 不能崩溃，而应淘汰对应候选；\code{pollFirst}/\code{pollLast} 返回 nullable，正好表达这一点。第二，所有候选都被淘汰时，\code{guess()} 返回空集合，不要强行选一个。第三，优先队列有重复最大值时，只比较值，不要引入不存在的稳定顺序假设。
+\end{pitfall}
+
+\begin{followup}[“如果你不能保证这个数据流会按某种模式来，怎么判断应该用哪种数据结构？”]
+这会把确定性判定改成评分或概率问题。公共 API 也要随之改变：\code{guess()} 不再返回 \code{Set<Kind>}，而返回按置信度排序的结果，例如每个候选记录 \code{matchedRemoves / totalRemoves}、最近窗口的一致率，或者一个带权分数。这样即使三种结构都偶尔不一致，也能说“Stack 的解释力最高，但置信度只有 0.62”。关键是主动指出：一旦输入不保证来自某个完美模型，原来的布尔候选不变量就不够了，必须把“是否可能”升级为“多大程度上像”。
+\end{followup}
+
+% ===========================================================================
+\problem{面经报告}{二叉树前序遍历与迭代优化}{Easy}
+
+\subsection*{题意}
+
+Glassdoor 汇总的 Duolingo 面经中出现过二叉树前序遍历，以及“如何优化”的追问。\srccommunity\footnote{\url{https://www.glassdoor.com/Interview/Duolingo-Interview-Questions-E629348.htm}} 前序遍历顺序是 root、left、right。基础版可以递归；优化版通常讨论显式栈；如果面试官继续追问空间，则可以提 Morris traversal。
+
+\subsection*{思路推导}
+
+递归是最自然的第一版：访问当前节点，再递归左、右子树。它短、正确、适合先跑通。问题是递归深度等于树高，极端链状树可能触发 \code{StackOverflowError}，这在 Android 上不是理论问题。第二版用显式栈模拟调用栈：先压右孩子，再压左孩子，保证左孩子先弹出。第三版 Morris traversal 利用临时线索指针做到 \bigO{1} 额外空间，但会短暂修改树结构，代码复杂度更高。
+
+\begin{kotlin}
+data class TreeNode(
+    val value: Int,
+    var left: TreeNode? = null,
+    var right: TreeNode? = null,
+)
+
+fun preorderRecursive(root: TreeNode?): List<Int> {
+    val result = mutableListOf<Int>()
+
+    fun dfs(node: TreeNode?) {
+        if (node == null) return
+        result += node.value
+        dfs(node.left)
+        dfs(node.right)
+    }
+
+    dfs(root)
+    return result
+}
+
+fun preorderIterative(root: TreeNode?): List<Int> {
+    if (root == null) return emptyList()
+
+    val result = mutableListOf<Int>()
+    val stack = ArrayDeque<TreeNode>()
+    stack.addLast(root)
+
+    while (stack.isNotEmpty()) {
+        val node = stack.removeLast()
+        result += node.value
+        node.right?.let { stack.addLast(it) }
+        node.left?.let { stack.addLast(it) }
+    }
+    return result
+}
+
+fun preorderMorris(root: TreeNode?): List<Int> {
+    val result = mutableListOf<Int>()
+    var current = root
+
+    while (current != null) {
+        val left = current.left
+        if (left == null) {
+            result += current.value
+            current = current.right
+        } else {
+            var predecessor = left
+            while (predecessor?.right != null && predecessor.right !== current) {
+                predecessor = predecessor.right
+            }
+            if (predecessor?.right == null) {
+                result += current.value
+                predecessor?.right = current
+                current = current.left
+            } else {
+                predecessor.right = null
+                current = current.right
+            }
+        }
+    }
+    return result
+}
+\end{kotlin}
+
+\begin{keypoint}[复杂度]
+三种写法时间都是 \bigO{n}。递归与显式栈空间为 \bigO{h}，\code{h} 是树高；Morris traversal 额外空间 \bigO{1}，但会临时改指针，代码风险更高。
+\end{keypoint}
+
+\begin{idea}[优化不是永远追求最省空间]
+在移动端，\bigO{1} 空间听起来诱人，但 Morris traversal 需要修改树结构。如果这棵树来自共享缓存、UI 状态或并发读取路径，临时改指针可能比 \bigO{h} 栈更危险。成熟回答应当是：“如果树可能很深，我优先改成显式栈避免系统栈溢出；只有在内存极紧且树结构可安全修改时，才考虑 Morris。”
+\end{idea}
+
+\begin{pitfall}[Kotlin 可空节点不要用 \code{!!}]
+链式树结构最容易诱惑你写 \code{node.left!!}。但前序遍历的边界本来就是空子树，正确写法应当让 nullable 流过控制结构：\code{node.left?.let { ... }} 或函数入口直接接收 \code{TreeNode?}。这比在代码里撒 \code{!!} 更能体现 Kotlin 基本功。
+\end{pitfall}
+
+\begin{followup}[“如果树非常深，递归为什么不好？”]
+递归消耗的是线程调用栈，不受你业务层集合容量控制。Android 主线程栈空间有限，极深输入会导致 \code{StackOverflowError}。显式栈把风险转移到堆上，并且更容易做分批、取消或协程调度；这是移动端语境下比单纯背复杂度更好的解释。
+\end{followup}
+
+% ===========================================================================
+\problem{面经报告}{图遍历与边界压力测试}{Medium}
+
+\subsection*{题意}
+
+图遍历和优化题也出现在 Duolingo 面经汇总中，且新毕业生 OA 被报告为 CodeSignal 四题，包含图与数据结构遍历，隐藏测试会惩罚边界处理不足。\srccommunity\footnote{\url{https://www.glassdoor.com/Interview/Duolingo-Interview-Questions-E629348.htm}} 我们把它改写成更贴近 Duolingo 的 Android 场景：课程技能树中，每个 skill 可能依赖若干前置 skill。给定已掌握集合与依赖边，计算当前可解锁的 skill；如果依赖图有环，要能检测出来；若问到目标 skill，还能用 BFS 说明最短解锁路径的层数。
+
+\subsection*{思路推导}
+
+解锁判断是拓扑思想：一个 skill 可解锁，当它尚未 mastered 且所有前置依赖都已 mastered。若要批量模拟“接下来不断学习可解锁技能”，可以维护入度和邻接表，先把已满足依赖的节点入队，逐步削减后继入度。环检测同样来自拓扑排序：处理完后仍有未处理节点，说明存在环或无法满足的依赖。
+
+边界比算法更重要：空图返回空；自环应被识别为环；重复边要去重，否则入度会被多加；不连通分量不能漏；超深 DFS 可能爆栈，面试里可以主动选择迭代 BFS/Kahn。
+
+\begin{kotlin}
+data class SkillGraph(
+    val skills: Set<String>,
+    val prerequisites: Map<String, Set<String>>,
+)
+
+data class UnlockResult(
+    val unlockableNow: Set<String>,
+    val hasCycle: Boolean,
+)
+
+fun analyzeUnlocks(graph: SkillGraph, mastered: Set<String>): UnlockResult {
+    val normalizedPrereqs = graph.skills.associateWith { skill ->
+        graph.prerequisites[skill].orEmpty().filter { it in graph.skills }.toSet()
+    }
+
+    val unlockableNow = normalizedPrereqs
+        .filter { (skill, prereqs) -> skill !in mastered && prereqs.all { it in mastered } }
+        .keys
+        .toSet()
+
+    val outgoing = graph.skills.associateWith { mutableSetOf<String>() }.toMutableMap()
+    val indegree = graph.skills.associateWith { 0 }.toMutableMap()
+
+    for ((skill, prereqs) in normalizedPrereqs) {
+        for (pre in prereqs) {
+            if (outgoing.getValue(pre).add(skill)) {
+                indegree[skill] = indegree.getValue(skill) + 1
+            }
+        }
+    }
+
+    val queue = ArrayDeque<String>()
+    indegree.filterValues { it == 0 }.keys.forEach { queue.addLast(it) }
+
+    var visited = 0
+    while (queue.isNotEmpty()) {
+        val current = queue.removeFirst()
+        visited++
+        for (next in outgoing.getValue(current)) {
+            val nextDegree = indegree.getValue(next) - 1
+            indegree[next] = nextDegree
+            if (nextDegree == 0) queue.addLast(next)
+        }
+    }
+
+    return UnlockResult(
+        unlockableNow = unlockableNow,
+        hasCycle = visited != graph.skills.size,
+    )
+}
+
+fun shortestPrerequisiteDistance(
+    graph: SkillGraph,
+    start: String,
+    target: String,
+): Int? {
+    if (start == target) return 0
+
+    val outgoing = graph.skills.associateWith { mutableSetOf<String>() }.toMutableMap()
+    for ((skill, prereqs) in graph.prerequisites) {
+        for (pre in prereqs) outgoing.getOrPut(pre) { mutableSetOf() }.add(skill)
+    }
+
+    val seen = mutableSetOf(start)
+    val queue = ArrayDeque<Pair<String, Int>>()
+    queue.addLast(start to 0)
+
+    while (queue.isNotEmpty()) {
+        val (current, distance) = queue.removeFirst()
+        for (next in outgoing[current].orEmpty()) {
+            if (!seen.add(next)) continue
+            if (next == target) return distance + 1
+            queue.addLast(next to distance + 1)
+        }
+    }
+    return null
+}
+\end{kotlin}
+
+\begin{keypoint}[复杂度]
+设技能数为 \code{V}、去重后的依赖边为 \code{E}。构图与 Kahn 拓扑排序时间 \bigO{V + E}，空间 \bigO{V + E}。BFS 最短层数同样是 \bigO{V + E}。
+\end{keypoint}
+
+\begin{pitfall}[隐藏测试常打这些边界]
+空图、只有一个节点、自环、重复依赖边、不在 \code{skills} 集合里的脏依赖、不连通分量、所有节点都已掌握、没有任何节点可解锁、链很深导致递归 DFS 爆栈。你不一定要把每个边界都写成测试，但面试中至少要口头走两三个，证明你知道 hidden cases 会从哪里来。
+\end{pitfall}
+
+\begin{followup}[“如果要实时更新 mastered 集合呢？”]
+如果用户每完成一课就更新一次，不必每次从零扫描全图。可以维护每个 skill 剩余未满足依赖数；当一个 skill mastered 后，只更新它的后继节点，把剩余数减一，变成零时加入可解锁集合。这样单次更新成本接近该 skill 的出边数，适合客户端本地状态增量维护。
+\end{followup}
+
+% ===========================================================================
+\problem{面经报告}{链表操作}{Medium}
+
+\subsection*{题意}
+
+链表操作也出现在 Duolingo 面经汇总中。\srccommunity\footnote{\url{https://www.glassdoor.com/Interview/Duolingo-Interview-Questions-E629348.htm}} 这里选一个常见 Medium 变体：给定单链表 \code{L0 -> L1 -> ... -> Ln}，重排为 \code{L0 -> Ln -> L1 -> Ln-1 -> ...}。要求原地修改节点连接，不额外创建新节点。
+
+\subsection*{思路推导}
+
+标准三步：第一，用快慢指针找到中点；第二，反转后半段；第三，把前半段与反转后的后半段交替合并。这题真正适合 Kotlin 的教学点是 nullable discipline。链表节点的 \code{next} 天然可空，写法要围绕 \code{?.}、局部变量和早返回组织，而不是用一串 \code{!!} 硬闯。
+
+\begin{kotlin}
+class ListNode(
+    val value: Int,
+    var next: ListNode? = null,
+)
+
+fun reorderList(head: ListNode?) {
+    if (head?.next == null) return
+
+    val secondHalf = splitSecondHalf(head)
+    val reversed = reverse(secondHalf)
+    mergeAlternating(head, reversed)
+}
+
+private fun splitSecondHalf(head: ListNode): ListNode? {
+    var slow: ListNode = head
+    var fast: ListNode? = head.next
+
+    while (fast?.next != null) {
+        slow = slow.next ?: break
+        fast = fast.next?.next
+    }
+
+    val second = slow.next
+    slow.next = null
+    return second
+}
+
+private fun reverse(head: ListNode?): ListNode? {
+    var previous: ListNode? = null
+    var current = head
+
+    while (current != null) {
+        val next = current.next
+        current.next = previous
+        previous = current
+        current = next
+    }
+    return previous
+}
+
+private fun mergeAlternating(firstHead: ListNode, secondHead: ListNode?) {
+    var first: ListNode? = firstHead
+    var second = secondHead
+
+    while (first != null && second != null) {
+        val firstNext = first.next
+        val secondNext = second.next
+
+        first.next = second
+        second.next = firstNext
+
+        first = firstNext
+        second = secondNext
+    }
+}
+\end{kotlin}
+
+\begin{keypoint}[复杂度]
+快慢指针、中段反转、交替合并各扫描一次链表，时间 \bigO{n}；除少量指针变量外不分配额外节点，空间 \bigO{1}。
+\end{keypoint}
+
+\begin{idea}[把指针题拆成阶段，不要在一个循环里做完]
+链表题最怕“聪明地一遍完成”。面试里更稳的做法是把中点、反转、合并拆成三个私有函数，每个函数都有单一不变量。这样不仅更容易写对，也方便你在追问里替换某一步，例如把反转改成用栈，或把合并规则改成每次取两个节点。
+\end{idea}
+
+\begin{pitfall}[快慢指针的偶数长度边界]
+偶数长度时中点切在哪里会影响合并是否形成环。这里用 \code{fast = head.next}，让前半段长度不小于后半段；切断 \code{slow.next = null} 是必须的，否则合并时可能把旧链路带回来形成环。
+\end{pitfall}
+
+\begin{followup}[“如果链表很长且来自 UI 列表数据，是否应该原地改？”]
+如果节点对象被其他层共享，原地重排会产生副作用。Android 实际 UI 数据更常见是不可变 \code{List<Item>} 加 DiffUtil，而不是可变链表节点。可以回答：算法题按原地链表写；生产代码里我会优先返回新的不可变列表，除非性能分析证明必须复用节点。
+\end{followup}
+
+% ===========================================================================
+\problem{面经报告 · 变体}{设计一个带过期与容量上限的本地缓存}{Medium}
+
+\subsection*{题意}
+
+HashMap 操作题在面经汇总中出现过。\srccommunity\footnote{\url{https://www.glassdoor.com/Interview/Duolingo-Interview-Questions-E629348.htm}} 我们把它包装成 Android 语境：客户端要缓存发音音频或课程数据，缓存有容量上限，并且每个条目有 TTL。实现 \code{get(key)} 与 \code{put(key, value)}：读取过期条目应返回空并删除；超过容量时淘汰最近最少使用的条目。
+
+\subsection*{思路推导}
+
+JVM 已经给了一个很适合面试的工具：\code{LinkedHashMap} 支持 access-order，也就是每次 \code{get} 或 \code{put} 会把条目移动到末尾。这样最旧的条目就在迭代器开头。TTL 则存在 entry 里，每次 \code{get} 检查当前时间。为了可测试性，不要在代码里直接调用 \code{System.currentTimeMillis()}，而是注入 \code{Clock} 函数。
+
+\begin{kotlin}
+class TtlLruCache<K, V>(
+    private val maxSize: Int,
+    private val ttlMillis: Long,
+    private val nowMillis: () -> Long = { System.currentTimeMillis() },
+) {
+    init {
+        require(maxSize > 0) { "maxSize must be positive" }
+        require(ttlMillis > 0) { "ttlMillis must be positive" }
+    }
+
+    private data class Entry<V>(val value: V, val expiresAt: Long)
+
+    private val map = object : LinkedHashMap<K, Entry<V>>(16, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<K, Entry<V>>): Boolean {
+            return size > maxSize
+        }
+    }
+
+    @Synchronized
+    fun get(key: K): V? {
+        val entry = map[key] ?: return null
+        if (entry.expiresAt <= nowMillis()) {
+            map.remove(key)
+            return null
+        }
+        return entry.value
+    }
+
+    @Synchronized
+    fun put(key: K, value: V) {
+        map[key] = Entry(value = value, expiresAt = nowMillis() + ttlMillis)
+    }
+
+    @Synchronized
+    fun size(): Int = map.size
+}
+\end{kotlin}
+
+\begin{keypoint}[复杂度]
+\code{get} 与 \code{put} 在哈希良好的情况下为 \bigO{1}；空间为 \bigO{capacity}。TTL 采用懒删除，所以过期项可能在未访问前暂时占位，但容量淘汰仍由 \code{LinkedHashMap} 控制。
+\end{keypoint}
+
+\begin{idea}[把时间作为依赖注入]
+缓存题的隐藏难点是测试。直接读系统时间会让单元测试又慢又不稳定；把 \code{nowMillis} 作为函数注入，就可以在测试里手动推进时间。这是 Android 代码里非常可迁移的设计心法：凡是不可控外部环境，先变成依赖。
+\end{idea}
+
+\begin{pitfall}[线程安全别轻描淡写]
+Android 上 Repository、预加载任务、播放器回调可能从不同线程访问缓存。面试里可以先用 \code{@Synchronized} 说明最小线程安全版本；如果吞吐量更高，再讨论 \code{Mutex}、单线程 dispatcher 或分段锁。不要一边说“本地缓存”，一边完全忽略并发访问。
+\end{pitfall}
+
+\begin{followup}[“如果这是 Android 上的磁盘缓存呢？”]
+磁盘缓存会多出文件命名、原子写入、崩溃恢复、总字节数限制、后台清理、加密与隐私策略。内存里的 \code{LinkedHashMap} 只能保留索引思路，不能直接照搬。完整答案会转向 asset-cache 设计：元数据表记录 key、路径、大小、最后访问时间和过期时间；写入先落临时文件，成功后原子 rename；淘汰按 LRU 和总字节数双条件执行。这个问题会在后面的设计章节继续展开。
+\end{followup}

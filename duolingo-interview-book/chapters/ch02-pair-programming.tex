@@ -1,0 +1,327 @@
+\chapter{结对编程轮：75 分钟在别人的代码里干活}
+
+很多候选人知道 Duolingo 有算法轮，却不知道还有一轮更不像 LeetCode：Pair Programming。官方把这一轮描述为在 production-like codebase 里工作，目标是让候选人感受成为 Duolingo 工程师是什么样子，同时评估你能否读懂别人的代码、快速学习并协作推进任务。Android 候选人仍然使用 Kotlin，Duolingo 会提前发送环境设置说明；这一轮时长 75 分钟，是整个 loop 中最长的一轮。\srcofficial\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}}
+
+这轮最难的地方不是某个 API，而是你必须在陌生代码里做真实改动。算法轮可以靠你自己的节奏完成；结对编程轮则会暴露工作习惯：会不会先找既有模式，会不会尊重代码风格，会不会边读边说，会不会在卡住时接受提示，会不会为了完美方案迟迟不交付。Duolingo 官方建议候选人务实、先做能在时间内完成的版本、把面试官当合作者；这在结对轮里不是建议，而是生存策略。\srcofficial\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}}
+
+\section{赛前准备：环境是最被低估的失分点}
+
+社区报告里，一个反复出现的非技术风险是开发环境与屏幕共享：VS Code、Live Share、权限、网络、终端共享，任何一个环节出问题，都会把 75 分钟切掉一大块。\srccommunity\footnote{\url{https://interviewing.io/duolingo-interview-questions}} 对 Android 候选人尤其要注意：这轮很可能不是 Android Studio 里让你舒舒服服地用熟悉快捷键重构，而是在 VS Code 或远程协作环境里改 Kotlin。你的 Android Studio 肌肉记忆、插件、AI 补全、Gradle 面板，都可能不在场。
+
+赛前预检应当具体到操作，而不是一句“我会准备环境”。至少做一次和朋友的 Live Share 演练；确认你会分享终端、切换文件、全局搜索、运行测试；准备备用网络或热点；关闭通知和勿扰；把仓库按说明提前 clone、build、跑最小测试；确认 JDK、Android SDK、Gradle cache 与 Kotlin 插件状态；问 recruiter 哪些工具会预装，是否允许本地 IDE，是否会给 mock backend；最后，练习不用 AI 插件时的编辑器快捷键。
+
+\begin{pitfall}[环境失败会被误读成协作失败]
+如果你前 20 分钟都在找权限按钮，面试官未必会把它完全归因于工具。它会影响他们对“能否快速上手生产环境”的判断。真正成熟的做法是在一开始就说：“I tested Live Share and terminal sharing yesterday, but if this environment has issues I can switch to screen share and narrate each change.” 你不是保证永不出错，而是证明你有降级方案。
+\end{pitfall}
+
+\section{读陌生代码的 20 分钟法则}
+
+拿到任务后，第一反应不要是新建文件。你应该用前 20 分钟建立地图：先读目录结构和依赖注入入口，知道 app/module/feature/data/ui 大致分层；再找到一个与任务最相似的既有功能，把它端到端读一遍；接着定位数据流方向：UI \(\leftarrow\) ViewModel \(\leftarrow\) Repository \(\leftarrow\) Local/Remote；最后才决定在哪些文件做最小改动。
+
+这套方法的核心是“找先例”。如果任务是展示 Word of the Day，就去找已经展示 Daily Quest、Streak、Lesson Tip 或类似卡片的代码；如果任务是新增 API，就找已有 service 方法、repository 方法和 ViewModel state 的组合；如果任务是 adapter 增删，就找项目里已有 ListAdapter 的 DiffUtil 写法。你不需要从零设计一个干净架构，面试官恰恰在看你能不能融入既有架构。
+
+\begin{idea}[不要从零设计，要找到代码库里的先例并模仿它]
+结对轮考的不是“你能不能发明一个更好的架构”，而是“你能不能在别人的约定里安全交付”。先例是最快的隐性文档：命名、错误处理、协程作用域、状态流、测试风格、日志方式，全都藏在相似功能里。照着先例做，通常比自作主张更像真实同事。
+\end{idea}
+
+\begin{sayit}[把读代码方法说出来]
+“I am going to spend a few minutes finding an existing feature that looks similar, because I want to follow the codebase conventions rather than invent a new pattern.”
+
+“I see the data flow is UI to ViewModel to Repository to RemoteDataSource. I will first wire a hardcoded value through that path, then replace the hardcoded part with the real logic.”
+
+“I am not changing this abstraction yet because it is used elsewhere. I will keep the first pass local and ask before widening the scope.”
+\end{sayit}
+
+\section{通用打法：先跑通，再做对，最后做好}
+
+结对编程的最佳节奏是三段式：先跑通，再做对，最后做好。先跑通，意思是用 hardcoded response 或 fake data 把 UI 到数据层的路径接通，让大家看到端到端行为。再做对，才替换成真实 API、真实过滤逻辑、真实错误状态。最后做好，则是补边界、命名、测试、空状态、loading、重试、DiffUtil、线程与生命周期。
+
+这并不是偷懒，而是符合官方“be pragmatic, start with the simplest version you can finish in time”的建议。\srcofficial\footnote{\url{https://blog.duolingo.com/interviewing-with-duolingos-engineering-team/}} 在 75 分钟里，一段端到端跑通的朴素实现，比一个局部很优雅但没有接到 UI 的抽象更有说服力。你应该在一开始就宣布计划：“我会先 hardcode 一条数据确认路径，再替换成真实逻辑。”这样面试官不会误以为你只会写假代码，而会看到你在控制风险。
+
+问与不问也要拿捏。会影响产品语义的地方要问：空数据展示什么？失败是否重试？是否需要缓存？是否影响实验？不影响第一版的小实现细节可以先假设并说出口：我先沿用现有 repository 的错误包装；我先用已有 dispatcher；我先不引入分页。接受提示时不要防御，直接复述并应用：“That makes sense. I was about to create a new state field, but reusing the existing content state is more consistent. I will adjust.” 这句话比沉默硬扛更像同事。
+
+\section{已报告与高置信的题型}
+
+\subsection{新增一个 API 调用并展示数据}
+
+\subsubsection*{题面}
+
+社区面经报告过一个 backend-flavored 任务：给首页增加 Word of the Day API。候选人先浏览 models 和 routes，站起一个返回 hardcoded value 的 endpoint，再逐步加入推荐逻辑：简单版随机选一个用户正在学但未掌握的词，更好版按最近学习主题推荐。\srccommunity\footnote{\url{https://programhelp.net/vo/duolingo-sde-interview-recap/}} Android analogue 则是：在既有 MVVM 功能中新增一个 API 调用，并把返回的 Word of the Day 展示到首页卡片。
+
+\subsubsection*{前 5 分钟做什么}
+
+先找一个首页已有卡片，从 UI 读到 ViewModel，再读 Repository 和 service interface。确认项目用的是 Retrofit、Ktor 还是内部 client；确认 UI 用 XML、RecyclerView、Compose 或混合；确认 state 是 \code{StateFlow}、LiveData 还是自定义 store。然后说清楚第一版路径：Remote 返回 hardcoded/fake word，Repository 暴露 domain model，ViewModel 更新 state，UI 展示 title 和 pronunciation。
+
+\subsubsection*{分步实现计划}
+
+第一步新增 API DTO 与 service 方法，但可以先让 fake implementation 返回固定值。第二步在 Repository 中映射到 domain model，并处理空响应。第三步 ViewModel 在 \code{init} 或显式 \code{load()} 中调用 repository，写入 \code{StateFlow}。第四步 UI 订阅 state，展示 loading、content、error。第五步把 hardcoded 推荐换成真实逻辑：随机取正在学但未掌握的词；若时间允许，再按最近学习 topic 排序。
+
+\subsubsection*{关键代码骨架}
+
+\begin{kotlin}
+data class WordOfDay(
+    val id: String,
+    val text: String,
+    val translation: String,
+    val topic: String,
+)
+
+interface WordService {
+    suspend fun fetchWordOfDay(): WordOfDayDto
+}
+
+class WordRepository(
+    private val service: WordService,
+) {
+    suspend fun wordOfDay(): Result<WordOfDay> = runCatching {
+        service.fetchWordOfDay().toDomain()
+    }
+}
+
+data class HomeUiState(
+    val isLoadingWord: Boolean = false,
+    val wordOfDay: WordOfDay? = null,
+    val wordError: String? = null,
+)
+
+class HomeViewModel(
+    private val repository: WordRepository,
+) : ViewModel() {
+    private val _state = MutableStateFlow(HomeUiState())
+    val state: StateFlow<HomeUiState> = _state
+
+    fun loadWordOfDay() {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoadingWord = true, wordError = null) }
+            repository.wordOfDay()
+                .onSuccess { word ->
+                    _state.update { it.copy(isLoadingWord = false, wordOfDay = word) }
+                }
+                .onFailure { error ->
+                    _state.update {
+                        it.copy(isLoadingWord = false, wordError = error.message ?: "Unable to load word")
+                    }
+                }
+        }
+    }
+}
+\end{kotlin}
+
+\subsubsection*{容易翻车的点}
+
+最常见的错误是只写 service，不把数据接到 UI；或者只写 UI mock，不说明如何替换真实 API。其次是把网络异常直接抛到 ViewModel 外，让 loading 永远不结束。再者是忘记生命周期：UI 订阅 \code{StateFlow} 应该遵循项目已有的 lifecycle-aware 方式。最后，推荐逻辑不要自行扩大范围到复杂 ML 排序；先交付随机未掌握词，再讲 topic-based ranking 是下一步。
+
+\begin{followup}[“如果要按最近学习主题推荐呢？”]
+Repository 可以拿到 \code{recentTopics} 与 \code{learningWords} 后做一个简单排序：过滤未掌握词，再按 topic 是否出现在最近主题中加权，最后稳定地取分数最高或在同分中随机。关键是说明这会改变数据依赖，可能需要新增 endpoint 或把本地学习记录传入推荐函数；不要在 ViewModel 里堆业务排序。
+\end{followup}
+
+\subsection{补全 RecyclerView Adapter 的增删与自动刷新}
+
+\subsubsection*{题面}
+
+Android-flavored 社区报告提到过不完整的 RecyclerView Adapter：需要支持 add/remove，并在数据变化时自动刷新。\srccommunity 这题表面是 Adapter，实际在看你是否知道现代 Android 列表更新不应粗暴 \code{notifyDataSetChanged()}，而应优先使用 \code{ListAdapter} 与 DiffUtil，必要时讨论 stable IDs 和主线程安全。
+
+\subsubsection*{前 5 分钟做什么}
+
+先确认项目已有列表组件怎么写：是否用 \code{ListAdapter}、\code{RecyclerView.Adapter}、PagingDataAdapter 或 Compose LazyColumn。找一个现成 Adapter 复制风格。然后确认 item 是否有稳定 id，remove 是按位置还是按 id，add 是否插到头部、尾部或排序位置。
+
+\subsubsection*{分步实现计划}
+
+第一版把 Adapter 改为持有不可变列表快照，每次增删生成新列表并 submit；第二版引入 \code{DiffUtil.ItemCallback}；第三版如果项目需要动画和状态恢复，开启 stable IDs；最后补空列表和越界 remove 的行为。
+
+\subsubsection*{关键代码骨架}
+
+\begin{kotlin}
+data class WordItem(
+    val id: String,
+    val text: String,
+    val mastery: Int,
+)
+
+class WordAdapter(
+    private val onClick: (WordItem) -> Unit,
+) : ListAdapter<WordItem, WordViewHolder>(Diff) {
+
+    init {
+        setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int): Long = getItem(position).id.hashCode().toLong()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
+        return WordViewHolder.create(parent, onClick)
+    }
+
+    override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    fun addItem(item: WordItem) {
+        submitList(currentList + item)
+    }
+
+    fun removeItem(id: String) {
+        submitList(currentList.filterNot { it.id == id })
+    }
+
+    private object Diff : DiffUtil.ItemCallback<WordItem>() {
+        override fun areItemsTheSame(oldItem: WordItem, newItem: WordItem): Boolean =
+            oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: WordItem, newItem: WordItem): Boolean =
+            oldItem == newItem
+    }
+}
+\end{kotlin}
+
+\subsubsection*{容易翻车的点}
+
+\code{notifyDataSetChanged()} 不是不能用，但你应该主动说它会牺牲动画、局部刷新和性能，只适合临时跑通或数据很小的场景。\code{submitList(currentList)} 如果传同一个可变列表实例，DiffUtil 可能看不到变化；所以要提交新列表。Adapter 更新必须在主线程。stable IDs 也不是万能药，id 必须稳定且冲突概率可接受；如果 \code{hashCode()} 风险不可接受，项目应提供 Long id。
+
+\begin{followup}[“如果列表来自 ViewModel 的 StateFlow 呢？”]
+Adapter 不应该自己拥有业务真相。更好的结构是 ViewModel 暴露 \code{StateFlow<List<WordItem>>}，Fragment/Activity 收集后调用 \code{submitList}。Adapter 的 add/remove 可以只作为局部练习；生产代码中，点击删除应回调 ViewModel，由状态源更新列表，再单向流回 UI。
+\end{followup}
+
+\subsection{在既有 SDUI 解析框架中新增组件类型}
+
+\subsubsection*{题面}
+
+Duolingo 公开写过 Server-Driven UI：服务端下发组件树，客户端解析组件并递归渲染。\srcinferred\footnote{\url{https://blog.duolingo.com/server-driven-ui/}} 高置信的 Android 结对变体是：已有 \code{Component} sealed class、JSON parser 与 renderer，现在要新增一种组件，比如 \code{PromoBanner} 或 \code{WordCard}。重点不是写一个 view，而是理解未知组件、版本兼容和递归渲染。
+
+\subsubsection*{前 5 分钟做什么}
+
+先找现有组件从 JSON 到 UI 的全链路：schema/DTO、parser、domain sealed class、renderer、测试 fixture。确认未知 type 当前怎么处理：忽略、渲染占位，还是抛异常。然后照一个最相似的组件复制路径，不改变整体 parser 架构。
+
+\subsubsection*{分步实现计划}
+
+第一步给 sealed class 增加新类型。第二步给 DTO/parser 增加 type 分支，并把缺字段情况降级为 \code{Unknown} 或返回 null。第三步 renderer 增加对应 UI。第四步加一个 JSON fixture 或单元测试，覆盖新组件和未知组件。
+
+\subsubsection*{关键代码骨架}
+
+\begin{kotlin}
+sealed class Component {
+    data class TextBlock(val text: String) : Component()
+    data class WordCard(val word: String, val translation: String) : Component()
+    data class Column(val children: List<Component>) : Component()
+    data class Unknown(val type: String) : Component()
+}
+
+fun parseComponent(json: JsonObject): Component {
+    return when (val type = json["type"]?.jsonPrimitive?.contentOrNull) {
+        "text" -> Component.TextBlock(
+            text = json["text"]?.jsonPrimitive?.contentOrNull.orEmpty(),
+        )
+        "word_card" -> {
+            val word = json["word"]?.jsonPrimitive?.contentOrNull
+            val translation = json["translation"]?.jsonPrimitive?.contentOrNull
+            if (word == null || translation == null) {
+                Component.Unknown(type)
+            } else {
+                Component.WordCard(word = word, translation = translation)
+            }
+        }
+        "column" -> Component.Column(
+            children = json["children"]
+                ?.jsonArray
+                .orEmpty()
+                .mapNotNull { it.jsonObjectOrNull()?.let(::parseComponent) },
+        )
+        else -> Component.Unknown(type = type ?: "missing")
+    }
+}
+\end{kotlin}
+
+\subsubsection*{容易翻车的点}
+
+未知组件类型不能让旧客户端崩溃。SDUI 的本质是服务端可能比客户端更新，如果 Android 遇到未来 type 就 crash，发布节奏会被锁死。另一个坑是递归 children 中一个坏组件拖垮整棵树；更稳的策略是局部降级。最后，新增组件要遵守版本策略：服务端何时可以下发，旧客户端如何忽略，是否需要 feature flag。
+
+\begin{followup}[“为什么不用 else throw?”]
+因为 SDUI 的契约不是“输入永远来自同版本代码”，而是“客户端要面对服务端可演进 schema”。throw 适合开发期发现本地 bug；生产解析外部 payload 时，未知 type 应当优雅降级并记录日志。这样服务端才能渐进发布新组件。
+\end{followup}
+
+\subsection{在课程完成流程中实现乐观更新}
+
+\subsubsection*{题面}
+
+Duolingo 公开讨论过 frontend prediction：为了让体验更快，客户端可以先预测操作成功并立即更新界面，再与服务端结果对账。\srcinferred\footnote{\url{https://blog.duolingo.com/frontend-prediction/}} 高置信 Android 变体是：用户完成 lesson 后，立刻更新本地 XP、streak 或 skill progress，同时发请求；请求失败时回滚。需要注意，Duolingo 明确不把预测用于货币化购买等高风险操作。\srcinferred\footnote{\url{https://blog.duolingo.com/frontend-prediction/}}
+
+\subsubsection*{前 5 分钟做什么}
+
+先找到现有 lesson completion 的状态源：ViewModel、Repository、本地 store、remote endpoint。确认哪些字段可以乐观更新，哪些必须等服务端。问清楚失败 UX：toast、snackbar、静默重试还是回滚动画。明确第一版只处理非货币化进度，不碰购买、订阅、宝石扣费。
+
+\subsubsection*{分步实现计划}
+
+先保存更新前快照；立即把 StateFlow 更新到 optimistic state；发起网络请求；成功时用服务端 canonical response reconcile；失败时恢复快照并暴露错误事件。若有多个并发完成事件，要给 mutation 编号或串行化，避免旧失败回滚新状态。
+
+\subsubsection*{关键代码骨架}
+
+\begin{kotlin}
+data class ProgressState(
+    val xp: Int,
+    val streak: Int,
+    val completedLessons: Set<String>,
+    val errorMessage: String? = null,
+)
+
+class LessonViewModel(
+    private val repository: LessonRepository,
+) : ViewModel() {
+    private val _progress = MutableStateFlow(ProgressState(0, 0, emptySet()))
+    val progress: StateFlow<ProgressState> = _progress
+
+    fun completeLesson(lessonId: String, earnedXp: Int) {
+        val before = _progress.value
+        val optimistic = before.copy(
+            xp = before.xp + earnedXp,
+            completedLessons = before.completedLessons + lessonId,
+            errorMessage = null,
+        )
+        _progress.value = optimistic
+
+        viewModelScope.launch {
+            repository.completeLesson(lessonId)
+                .onSuccess { serverState -> _progress.value = serverState.toProgressState() }
+                .onFailure { error ->
+                    _progress.value = before.copy(
+                        errorMessage = error.message ?: "Could not save progress",
+                    )
+                }
+        }
+    }
+}
+\end{kotlin}
+
+\subsubsection*{容易翻车的点}
+
+乐观更新最大的坑是并发：用户连续完成两个操作，第一个失败时不能简单回滚到最早快照，否则会抹掉第二个成功。面试时间不够时，可以先声明 single flight 假设；若要扩展，用 mutation queue 或让 Repository 串行化。第二个坑是边界选择：购买、扣费、订阅这类 monetized 操作不应预测成功。完整设计会在后续章节继续讨论。
+
+\begin{followup}[“如果失败后用户已经看到了新 XP，回滚会不会很差？”]
+这取决于产品语义。低风险进度可以展示轻量错误并重新同步；高风险资产必须以服务端为准。技术上可以把 optimistic state 标记为 pending，让 UI 用微弱状态提示“正在保存”，失败时解释原因，而不是突然无声回退。
+\end{followup}
+
+\section{评分维度与自查表}
+
+下表把社区报告中的评价点整理成结对轮自查表。\srccommunity\footnote{\url{https://interviewing.io/duolingo-interview-questions}}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+\toprule
+\textbf{维度} & \textbf{强信号} & \textbf{弱信号} \\
+\midrule
+读代码 & 先找相似功能，沿数据流端到端阅读 & 随手新建文件，忽略既有模式 \\
+Kotlin 风格 & 使用 sealed class、StateFlow、不可变 state、空安全 & Java-flavored Kotlin，大量 \code{!!} 与可变共享状态 \\
+协作沟通 & 持续 narrate，澄清范围，接受提示后快速调整 & 闷头写，卡住不说，提示后辩解 \\
+交付策略 & hardcode 跑通，再替换真实逻辑，保留可演示路径 & 追求完美抽象，75 分钟没有端到端结果 \\
+边界意识 & 主动处理空数据、网络失败、生命周期、主线程刷新 & 只处理 happy path，loading/error 卡死 \\
+代码风格 & 模仿项目命名、错误包装、测试方式 & 重写架构或引入个人偏好 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{keypoint}[75 分钟的目标]
+你不是来证明自己一个人能写完整功能，而是证明自己加入一个陌生团队后，能快速读懂约定、做出小而正确的改动、在不确定时沟通、在时间限制内交付可运行路径。面试官给提示不是失败信号；你如何接住提示，才是评分的一部分。
+\end{keypoint}
+
+\begin{pitfall}[经典失败模式]
+最常见的失败是闷头写不说话；第二是看不惯既有代码风格，顺手重构半个模块；第三是纠结完美方案，最后没有任何东西跑通；第四是不问就扩大范围，把“展示一个词”做成复杂推荐系统；第五是忽略环境与屏幕共享，真实编码时间被工具吃掉。结对轮的关键词不是 hero，而是 teammate。
+\end{pitfall}

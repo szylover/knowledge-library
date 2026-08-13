@@ -1,0 +1,572 @@
+\chapter{查错题集 C：Compose、空安全与 Kotlin 惯用性}
+
+这一章看的是两类容易被低估的问题。第一类是 Compose 副作用与重组：它们不一定崩溃，却会带来重复请求、旧数据、掉帧和难以复现的 UI 抖动。第二类是空安全与 Kotlin 惯用性：Duolingo 官方写过，Android 端花了两年迁移到 100\% Kotlin，并配套 detekt、ktlint、Android Lint 与自研 Splinter；历史上 NPE crash 也是迁移动机之一 \srcofficial\footnote{\url{https://blog.duolingo.com/migrating-duolingos-android-app-to-100-kotlin/}}。因此在它的 Android 专属 Kotlin Code Review 里，代码“像不像 Kotlin”不是审美题，而是可靠性信号。Duolingo 也公开提到在 Shop、Purchase Flow 等 SDUI 场景使用 Compose \srcofficial\footnote{\url{https://blog.duolingo.com/server-driven-ui/}}，所以 Compose 查错要按生产代码标准看。
+
+% ===========================================================================
+\bugcase{13}{把 MutableStateFlow 暴露出去，并用 SharedFlow 存持久状态}{状态暴露}
+
+\subsection*{场景}
+商店页 \code{ShopViewModel} 展示宝石余额、道具卡、订阅入口和购买结果 toast。页面从 SDUI 配置拿卡片，用户旋屏或从支付页返回时应立即看到当前状态。下面代码把可写 StateFlow 直接公开，又把持久 UI 状态和一次性导航事件混在 Flow 里，两个方向都会出错。
+
+\begin{ktbug}
+class ShopViewModel(
+    private val shopRepository: ShopRepository,
+    private val purchaseTracker: PurchaseTracker
+) : ViewModel() {
+    val uiState = MutableStateFlow(ShopState())
+    val purchaseEvents = MutableStateFlow<PurchaseEvent?>(null)
+    val cards = MutableSharedFlow<List<ShopCard>>()
+
+    fun loadShop() {
+        viewModelScope.launch {
+            uiState.value = uiState.value.copy(loading = true)
+            val response = shopRepository.loadShopCards()
+            cards.emit(response.cards)
+            uiState.value = ShopState(
+                loading = false,
+                gemBalance = response.gemBalance,
+                subscriptionVisible = response.showSubscription
+            )
+        }
+    }
+
+    fun buy(card: ShopCard) {
+        viewModelScope.launch {
+            val receipt = shopRepository.purchase(card.id)
+            purchaseTracker.trackSuccess(card.id)
+            purchaseEvents.value = PurchaseEvent.NavigateToReceipt(receipt.id)
+            uiState.value = uiState.value.copy(gemBalance = receipt.newGemBalance)
+        }
+    }
+}
+\end{ktbug}
+
+\begin{sayit}[面试里怎么说]
+我会先说影响：外部 UI 可以直接改 \code{uiState}，破坏 ViewModel 单向数据流；\code{SharedFlow} 没有 replay 时旋屏后新订阅者拿不到 cards，可能白屏；用 StateFlow 存导航事件又会在重新订阅时重复导航。Then: ``State is replayable; events are not. I would expose read-only StateFlow and send one-off effects through a Channel or a SharedFlow with replay zero.''
+\end{sayit}
+
+\subsection*{根因分析}
+\code{MutableStateFlow} 是可写权限。把它作为 public \code{val} 暴露出去，Fragment、Composable、测试替身甚至另一个 ViewModel 都能随手改商店状态。状态来源一旦不唯一，评审时就很难推理“宝石余额为什么变了”。这违反了单向数据流，也让并发更新更容易互相覆盖。
+
+第二个问题是状态和事件的语义混乱。状态的判据是：新观察者加入时，重放当前值是正确的。商店卡片、余额、loading 都是状态；旋屏后应该立刻拿到。事件的判据是：重放会产生副作用。导航到收据页、弹 toast、震动反馈都不该因为旋屏重新发生。\code{SharedFlow} 默认不保留值，用它存 cards 会让新 UI 看不到当前商店；\code{StateFlow} 永远有最新值，用它存导航事件会让返回后再次跳转。
+
+\begin{ktfix}
+data class ShopState(
+    val loading: Boolean = false,
+    val gemBalance: Int = 0,
+    val subscriptionVisible: Boolean = false,
+    val cards: List<ShopCard> = emptyList()
+)
+
+sealed interface ShopEvent {
+    data class NavigateToReceipt(val receiptId: String) : ShopEvent
+    data class ShowPurchaseError(val message: String) : ShopEvent
+}
+
+class ShopViewModel(
+    private val shopRepository: ShopRepository,
+    private val purchaseTracker: PurchaseTracker
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(ShopState())
+    val uiState: StateFlow<ShopState> = _uiState.asStateFlow()
+
+    private val _events = Channel<ShopEvent>(Channel.BUFFERED)
+    val events: Flow<ShopEvent> = _events.receiveAsFlow()
+
+    fun loadShop() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(loading = true) }
+            val response = shopRepository.loadShopCards()
+            _uiState.value = ShopState(
+                loading = false,
+                gemBalance = response.gemBalance,
+                subscriptionVisible = response.showSubscription,
+                cards = response.cards
+            )
+        }
+    }
+
+    fun buy(card: ShopCard) {
+        viewModelScope.launch {
+            runCatching { shopRepository.purchase(card.id) }
+                .onSuccess { receipt ->
+                    purchaseTracker.trackSuccess(card.id)
+                    _uiState.update { it.copy(gemBalance = receipt.newGemBalance) }
+                    _events.send(ShopEvent.NavigateToReceipt(receipt.id))
+                }
+                .onFailure { _events.send(ShopEvent.ShowPurchaseError("Purchase failed")) }
+        }
+    }
+}
+\end{ktfix}
+
+\begin{idea}[可写性是一种权限]
+默认只暴露只读接口：\code{StateFlow} 而不是 \code{MutableStateFlow}，\code{List} 而不是 \code{MutableList}，领域服务方法而不是裸字段。权限越小，状态变化路径越少，Code Review 越容易判断正确性。
+\end{idea}
+
+\begin{pitfall}[状态与事件的判据]
+不要按“它来自 ViewModel”来分类，要按“能不能安全重放”分类。余额可以重放，导航不可以；错误 banner 如果屏幕重建后仍应显示，是状态；toast 如果只说一次，是事件。这个判据比具体选 Channel 还是 SharedFlow 更重要。
+\end{pitfall}
+
+\begin{followup}[“为什么不用 LiveData？”]
+LiveData 也能承载状态，但 StateFlow 更贴近协程、组合操作和 Kotlin 只读包装。关键不在名字，而在是否维持单向数据流、是否有清晰的 replay 语义。团队如果仍用 LiveData，同样应暴露 \code{LiveData} 而不是 \code{MutableLiveData}。
+\end{followup}
+
+\begin{followup}[“SingleLiveEvent 为什么是错的方向？”]
+SingleLiveEvent 试图在状态容器上补一个“只消费一次”的补丁，常遇到多观察者、旋屏竞态和测试不确定性。更清晰的方向是类型上分流：持久状态走 StateFlow，一次性 effect 走 Channel 或 replay 为 0 的 SharedFlow。
+\end{followup}
+
+% ===========================================================================
+\bugcase{14}{LaunchedEffect 的 key 用错，副作用写在 composable 函数体里}{Compose 副作用}
+
+\subsection*{场景}
+课程详情页迁到 Compose 后，需要进入页面时上报曝光，并在 \code{lessonId} 变化时重新拉取内容。产品允许用户在同一个容器里切换不同课程；如果 effect key 写错，就会出现两种相反问题：重组时重复请求，或切课后还显示旧课程。
+
+\begin{ktbug}
+@Composable
+fun LessonDetailScreen(
+    lessonId: String,
+    viewModel: LessonDetailViewModel,
+    onStartLesson: (String) -> Unit
+) {
+    val state by viewModel.state.collectAsState()
+
+    viewModel.loadLesson(lessonId)
+    viewModel.trackLessonImpression(lessonId)
+
+    LaunchedEffect(Unit) {
+        viewModel.refreshRecommendations(lessonId)
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        LessonHeader(
+            title = state.title,
+            subtitle = state.subtitle,
+            locked = state.locked
+        )
+        RecommendationCarousel(items = state.recommendations)
+        Button(
+            enabled = !state.locked,
+            onClick = { onStartLesson(lessonId) }
+        ) {
+            Text(text = stringResource(R.string.start_lesson))
+        }
+    }
+}
+\end{ktbug}
+
+\begin{sayit}[面试里怎么说]
+我会先说影响：函数体里的 load 和曝光上报会在每次重组时重复执行；而 \code{LaunchedEffect(Unit)} 只跑一次，lessonId 变化时推荐内容不会刷新。Then: ``Composable functions should be idempotent. Side effects must be placed in effect APIs with keys that match the lifecycle of the work.''
+\end{sayit}
+
+\subsection*{根因分析}
+Compose 可以因为很多原因重组：state 变化、父组件重组、配置变化、列表 item 移动。Composable 函数体应该像“描述 UI 的纯函数”，同样输入多次执行不应产生额外副作用。直接在函数体调用 \code{loadLesson} 和 \code{trackLessonImpression}，等于把网络请求与埋点绑定到重组次数；一个 loading 状态变化就可能触发下一次 load，形成隐蔽循环。
+
+\code{LaunchedEffect(Unit)} 是另一种错：它确实避免了每次重组都跑，但 key 是 Unit，表示“这个调用点进入 composition 后只启动一次”。当 \code{lessonId} 从西语课程变成法语课程，同一个 Composable 仍在，effect 不会重启，用户看到旧推荐。正确 key 应该表达副作用依赖的身份：加载课程依赖 \code{lessonId}，就用 \code{LaunchedEffect(lessonId)}。
+
+几个 effect 的选择可以这样讲：\code{LaunchedEffect} 启动可挂起任务，key 变则取消旧任务并重启；\code{SideEffect} 在成功重组后把 Compose 状态同步到非 Compose 对象，不能挂起；\code{DisposableEffect} 管注册与解注册，key 变或离开 composition 时释放；\code{rememberUpdatedState} 用来在长生命周期 effect 中拿到最新 lambda，而不把 lambda 作为重启 key。
+
+\begin{ktfix}
+@Composable
+fun LessonDetailScreen(
+    lessonId: String,
+    viewModel: LessonDetailViewModel,
+    onStartLesson: (String) -> Unit
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val latestOnStartLesson by rememberUpdatedState(onStartLesson)
+
+    LaunchedEffect(lessonId) {
+        viewModel.loadLesson(lessonId)
+        viewModel.refreshRecommendations(lessonId)
+        viewModel.trackLessonImpression(lessonId)
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        LessonHeader(
+            title = state.title,
+            subtitle = state.subtitle,
+            locked = state.locked
+        )
+        RecommendationCarousel(items = state.recommendations)
+        Button(
+            enabled = !state.locked,
+            onClick = { latestOnStartLesson(lessonId) }
+        ) {
+            Text(text = stringResource(R.string.start_lesson))
+        }
+    }
+}
+\end{ktfix}
+
+\begin{pitfall}[lambda 不一定适合当 key]
+如果把 \code{onStartLesson} 或 \code{onImpression} 这类 lambda 直接放进 key，而父组件每次重组都创建新 lambda，effect 就会被反复取消重启。需要“effect 不重启，但内部使用最新 lambda”时，用 \code{rememberUpdatedState} 保存最新引用。
+\end{pitfall}
+
+\begin{idea}[key 是副作用的生命周期声明]
+写 \code{LaunchedEffect(x)} 不是为了让 lint 安静，而是在声明：这项工作属于 x；x 变了，旧工作就过期。查错时把每个 effect 翻译成这句话，很多 key 错误会立刻显形。
+\end{idea}
+
+\begin{followup}[“如果曝光只想在整个屏幕生命周期内发一次呢？”]
+那就把曝光和加载拆开：加载用 \code{LaunchedEffect(lessonId)}，屏幕级曝光用 \code{LaunchedEffect(Unit)}，或者让导航层在 screen entry 时上报。一个 effect 只承载一种生命周期语义，不要把“随 lesson 变化”和“整个屏幕一次”揉在同一个块里。
+\end{followup}
+
+% ===========================================================================
+\bugcase{15}{collectAsState 而非 collectAsStateWithLifecycle，以及不稳定参数引发的过度重组}{重组性能}
+
+\subsection*{场景}
+主界面学习路径 \code{PathScreen} 是长列表：顶部有连胜、宝石计数，下面是几十个 lesson node。后台同步 XP、宝石、课程解锁时，上游 Flow 频繁变化。Compose 代码如果不按生命周期收集、不给 LazyColumn key、把不稳定列表和新建 lambda 一路传下去，就会造成后台仍工作、前台整屏重组和滚动位置跳动。
+
+\begin{ktbug}
+@Composable
+fun PathScreen(
+    viewModel: PathViewModel,
+    navigator: LessonNavigator
+) {
+    val state by viewModel.uiState.collectAsState()
+    val lessons = state.lessons.toMutableList()
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        TopStatsBar(
+            streak = state.streakDays,
+            gems = state.gemBalance,
+            onShopClick = { navigator.openShop() }
+        )
+
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(lessons) { lesson ->
+                LessonNode(
+                    lesson = lesson,
+                    isCurrent = lesson.id == state.currentLessonId,
+                    onClick = { navigator.openLesson(lesson.id) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun LessonNode(lesson: PathLesson, isCurrent: Boolean, onClick: () -> Unit) {
+    Row(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
+        Text(text = lesson.title)
+        if (isCurrent) Text(text = stringResource(R.string.current_lesson))
+    }
+}
+\end{ktbug}
+
+\begin{sayit}[面试里怎么说]
+我会先说影响：\code{collectAsState} 可能在后台继续收集，列表没有 key 会让 item 身份随位置漂移；每次重组新建可变 list 和 lambda，会让本可跳过的子树继续重组。Then: ``I would collect with lifecycle awareness, provide stable item keys, and move state reads closer to the leaf composables so recomposition is scoped.''
+\end{sayit}
+
+\subsection*{根因分析}
+\code{collectAsState} 不知道 Android Lifecycle。屏幕进入后台后，上游 Flow 仍可能被收集，触发数据库查询、网络合并或状态计算；对学习路径这种重页面，后台工作会挤占电量和主线程时间。\code{collectAsStateWithLifecycle} 会在合适生命周期状态下收集，停止时取消，回到前台再恢复。
+
+重组性能的另一半是稳定性与读取范围。Compose 编译器会尽量跳过参数没变且稳定的 Composable；但普通 \code{List} 接口和可变集合容易被视为不稳定，每次 \code{toMutableList()} 又创建新对象。\code{LazyColumn.items} 不给 key 时，item 身份默认跟位置走，插入、解锁、排序会导致状态和动画错位。每行 \code{onClick = \{ navigator.openLesson(lesson.id) \}} 都是新 lambda，也会影响跳过判断。根本解法不是到处撒 \code{remember}，而是让状态读取发生在最小 UI 单位、让参数身份稳定、让事件从下往上抬。
+
+\begin{ktfix}
+@Composable
+fun PathRoute(
+    viewModel: PathViewModel,
+    navigator: LessonNavigator
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val onLessonClick: (String) -> Unit = remember(navigator) {
+        { lessonId -> navigator.openLesson(lessonId) }
+    }
+    val onShopClick: () -> Unit = remember(navigator) {
+        { navigator.openShop() }
+    }
+
+    PathScreen(
+        state = state,
+        onLessonClick = onLessonClick,
+        onShopClick = onShopClick
+    )
+}
+
+@Composable
+fun PathScreen(
+    state: PathUiState,
+    onLessonClick: (String) -> Unit,
+    onShopClick: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        TopStatsBar(
+            streak = state.streakDays,
+            gems = state.gemBalance,
+            onShopClick = onShopClick
+        )
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(
+                items = state.lessons,
+                key = { lesson -> lesson.id }
+            ) { lesson ->
+                LessonNode(
+                    lesson = lesson,
+                    isCurrent = lesson.id == state.currentLessonId,
+                    onClick = { onLessonClick(lesson.id) }
+                )
+            }
+        }
+    }
+}
+
+@Immutable
+data class PathLesson(val id: String, val title: String, val locked: Boolean)
+\end{ktfix}
+
+\begin{idea}[重组的单位是读取状态的最小 composable]
+真正有效的优化，是让会变的状态只被需要它的最小节点读取。顶部宝石变化不该让整条路径列表都重新计算；某个 lesson 的进度变化也不该让顶部栏重组。状态下沉、事件上提，比机械加 \code{remember} 更根本。
+\end{idea}
+
+\begin{pitfall}[稳定集合不是语法糖]
+如果列表很大且频繁变化，可以考虑 kotlinx immutable collections 或明确的 \code{@Immutable} 模型，让 Compose 更有信心跳过未变化节点。但不要用注解掩盖真实可变对象；如果对象内部会被原地修改，Compose 看不到变化，UI 反而会 stale。
+\end{pitfall}
+
+\begin{followup}[“怎么定位过度重组？”]
+先用 Android Studio Layout Inspector 看重组计数和跳过次数；再用 Compose Compiler Metrics 看哪些类型不稳定；必要时在可疑 Composable 周围用 \code{Modifier.drawWithContent} 或日志打点。定位顺序是先找“谁读了太大的状态”，再看“哪些参数不稳定”。
+\end{followup}
+
+% ===========================================================================
+\bugcase{16}{!! 强制解包、Java 平台类型与未初始化的 lateinit}{空安全}
+
+\subsection*{场景}
+课程 JSON 从后端下发，\code{LessonRepository} 解析后交给 UI 渲染。服务端偶尔省略 subtitle，某个 Java SDK 返回平台类型，adapter 又在快速回调路径上提前访问。Duolingo 官方迁移 Kotlin 时提到历史 NPE crash 是重要背景之一 \srcofficial\footnote{\url{https://blog.duolingo.com/migrating-duolingos-android-app-to-100-kotlin/}}；这类代码正是 Kotlin 项目里最该被评审拦下的 NPE 入口。
+
+\begin{ktbug}
+class LessonRepository(
+    private val api: LessonApi,
+    private val jsonParser: JavaLessonParser
+) {
+    suspend fun loadLesson(id: String): LessonUiModel {
+        val response = api.getLesson(id)
+        val body = response.body()!!
+        val dto = body.data!!
+        val metadata = jsonParser.parse(dto.metadataJson)
+
+        return LessonUiModel(
+            id = dto.id!!,
+            title = dto.title!!,
+            subtitle = metadata.subtitle.uppercase(),
+            unitName = dto.unit!!.name!!,
+            firstExercisePrompt = dto.exercises!![0].prompt!!,
+            authorNameLength = dto.author!!.name!!.length
+        )
+    }
+}
+
+class LessonListFragment : Fragment(R.layout.fragment_lesson_list) {
+    private lateinit var adapter: LessonAdapter
+
+    fun onLessonsLoaded(lessons: List<LessonUiModel>) {
+        adapter.submitList(lessons)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        adapter = LessonAdapter()
+        requireView().findViewById<RecyclerView>(R.id.lessons).adapter = adapter
+    }
+}
+\end{ktbug}
+
+\begin{sayit}[面试里怎么说]
+我会先说影响：这里有多条 NPE 路径，服务端缺字段、HTTP body 为空、Java parser 返回 null、回调早于 adapter 初始化都会崩。Then: ``Kotlin null-safety only helps if we model nullability at the boundary. I would remove bang-bang operators, validate DTOs in a mapper, and expose non-null domain models to the UI.''
+\end{sayit}
+
+\subsection*{根因分析}
+\code{!!} 是把 Kotlin 的空安全关掉。它没有恢复数据正确性，只是把“这里可能为空”的信息推迟到运行期崩溃。\code{response.body()!!} 遇到 204、错误 body 或反序列化失败会崩；\code{dto.exercises!![0]} 同时假设列表非空；\code{user.name!!.length} 假设后端永不回 null。移动端面对的是灰度服务端、旧缓存、弱网重试和版本不一致，所有这些假设都会被真实用户击穿。
+
+Java 平台类型是另一个洞。Kotlin 看到 Java 方法返回 \code{String!}，既可以当可空，也可以当非空；编译器不会替你兜底。\code{metadata.subtitle.uppercase()} 看起来像安全 Kotlin，实际上 \code{subtitle} 可能来自 Java null。\code{lateinit} 也类似：它绕过构造期初始化检查，如果某条异步回调先于 \code{onViewCreated} 到达，访问 adapter 就会抛 \code{UninitializedPropertyAccessException}。
+
+\begin{ktfix}
+class LessonRepository(
+    private val api: LessonApi,
+    private val jsonParser: JavaLessonParser
+) {
+    suspend fun loadLesson(id: String): LessonUiModel {
+        val body = requireNotNull(api.getLesson(id).body()) {
+            "Lesson response body is null for lessonId=$id"
+        }
+        val dto = requireNotNull(body.data) {
+            "Lesson response data is null for lessonId=$id"
+        }
+        return dto.toDomain(jsonParser)
+    }
+}
+
+private fun LessonDto.toDomain(jsonParser: JavaLessonParser): LessonUiModel {
+    val metadata = jsonParser.parse(metadataJson)
+    val exercises = exercises.orEmpty()
+    val firstPrompt = exercises.firstOrNull()?.prompt ?: ""
+
+    return LessonUiModel(
+        id = requireNotNull(id) { "Lesson id is required" },
+        title = title.orEmpty(),
+        subtitle = metadata.subtitle?.uppercase().orEmpty(),
+        unitName = unit?.name.orEmpty(),
+        firstExercisePrompt = firstPrompt,
+        authorNameLength = author?.name?.length ?: 0
+    )
+}
+
+class LessonListFragment : Fragment(R.layout.fragment_lesson_list) {
+    private var adapter: LessonAdapter? = null
+
+    fun onLessonsLoaded(lessons: List<LessonUiModel>) {
+        adapter?.submitList(lessons)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        adapter = LessonAdapter()
+        view.findViewById<RecyclerView>(R.id.lessons).adapter = adapter
+    }
+
+    override fun onDestroyView() {
+        adapter = null
+        super.onDestroyView()
+    }
+}
+\end{ktfix}
+
+\begin{idea}[空值应该在系统边界被消灭]
+不要让 UI 层到处写 \code{?.} 防御后端。DTO 可以忠实表达接口可空性，mapper 负责把可空 DTO 收敛成非空 Domain：必需字段用 \code{requireNotNull} 明确失败，非关键文案用默认值或兜底模型。这样业务层才能重新享受 Kotlin 的非空类型。
+\end{idea}
+
+\begin{pitfall}[不是所有 \code{!!} 都同罪]
+\code{!!} 偶尔可以表达“这里为 null 就是程序 bug”，例如测试中强行取 fixture，或某个生命周期不变量已经被前置检查保证。但生产代码里更推荐 \code{requireNotNull} 或 \code{checkNotNull}，因为它带错误信息，能告诉崩溃分析系统是哪条不变量被破坏。评审时要区分“该报错”和“该兜底”。
+\end{pitfall}
+
+\begin{followup}[“\code{::adapter.isInitialized} 可以吗？”]
+可以作为过渡防线，但它没有解决生命周期所有权。Fragment View 销毁后 adapter 也应解绑；如果回调可能晚到，可空字段加 \code{onDestroyView} 置空，比 \code{lateinit} 更能表达“这东西只在 View 存活期存在”。
+\end{followup}
+
+% ===========================================================================
+\bugcase{17}{一整段 Java 味的 Kotlin}{惯用性综合}
+
+\subsection*{场景}
+成就动画页有一段从 Java 机械转换来的 helper：根据用户状态决定 banner 文案、动画类型和下一步动作。它能编译，也能跑，但停在官方迁移文章所说的“自动转换、修编译错误”阶段，还没有进入惯用化重构 \srcofficial\footnote{\url{https://blog.duolingo.com/migrating-duolingos-android-app-to-100-kotlin/}}。查错题里遇到这种代码，不要只说“风格不好”，要把风格和编译期安全、空安全、可维护性连起来。
+
+\begin{ktbug}
+class AchievementFormatter private constructor() {
+    companion object {
+        const val STATE_LOCKED = 0
+        const val STATE_UNLOCKED = 1
+        const val STATE_CLAIMED = 2
+
+        @Volatile private var instance: AchievementFormatter? = null
+
+        fun getInstance(): AchievementFormatter {
+            if (instance == null) {
+                synchronized(AchievementFormatter::class.java) {
+                    if (instance == null) {
+                        instance = AchievementFormatter()
+                    }
+                }
+            }
+            return instance!!
+        }
+    }
+
+    fun format(user: User?, achievements: List<Achievement>): ArrayList<String> {
+        val result = ArrayList<String>()
+        if (user != null) {
+            result.add(String.format("%s has %d gems", user.getName(), user.getGems()))
+        }
+        if (achievements.size > 0) {
+            for (i in 0 until achievements.size) {
+                val achievement = achievements[i]
+                if (achievement.getState() == STATE_UNLOCKED) {
+                    result.add(String.format("Unlocked: %s", achievement.getTitle()))
+                } else if (achievement.getState() == STATE_CLAIMED) {
+                    result.add(String.format("Claimed: %s", achievement.getTitle()))
+                } else if (achievement.getState() == STATE_LOCKED) {
+                    result.add(String.format("Locked: %s", achievement.getTitle()))
+                }
+            }
+        }
+        return result
+    }
+
+    fun animationFor(event: Any): String {
+        if (event is StreakEvent) {
+            return "streak_" + event.days
+        } else if (event is BadgeEvent) {
+            return "badge_" + event.badgeId
+        } else if (event is LeagueEvent) {
+            return "league_" + event.rank
+        }
+        return "none"
+    }
+}
+\end{ktbug}
+
+\begin{sayit}[面试里怎么说]
+我会避免说“我个人不喜欢这种风格”，而是说：这段 Kotlin 还保留 Java 迁移痕迹，问题不只是审美；手写单例、int 状态和 nullable getter 都把错误留到运行期。In English: ``I would frame this as type-safety and readability, not personal taste. Kotlin idioms let the compiler enforce invariants that this code currently checks by convention.''
+\end{sayit}
+
+\subsection*{根因分析}
+Java 味 Kotlin 的危险在于，它看起来“已经迁移”，实际没有获得 Kotlin 的安全收益。手写双检锁单例又长又容易错，Kotlin \code{object} 一行就能表达线程安全单例。\code{STATE\_LOCKED = 0} 这类 int 常量无法阻止非法状态 3 进入系统，\code{when} 也不能做穷尽性检查；sealed class 或 enum 能把状态空间交给编译器。
+
+\code{if (user != null) \{ user.getName() \}} 可以工作，但 Kotlin 更自然的写法是安全调用、属性和作用域函数。\code{achievements.size > 0} 不如 \code{isNotEmpty()} 表达意图；按下标遍历容易引入越界和无意义的索引，直接遍历或 \code{forEachIndexed} 更贴近集合语义。\code{String.format} 在简单拼接上噪声大，字符串模板更清楚。\code{if (event is A) else if} 可以改成 \code{when}；如果事件是 sealed interface，新增事件类型时编译器会提醒你补分支。
+
+\begin{ktfix}
+object AchievementFormatter {
+    fun format(user: User?, achievements: List<Achievement>): List<String> {
+        val result = mutableListOf<String>()
+
+        user?.let {
+            result += "${it.name} has ${it.gems} gems"
+        }
+
+        achievements.forEach { achievement ->
+            val label = when (achievement.state) {
+                AchievementState.Unlocked -> "Unlocked"
+                AchievementState.Claimed -> "Claimed"
+                AchievementState.Locked -> "Locked"
+            }
+            result += "$label: ${achievement.title}"
+        }
+
+        return result
+    }
+
+    fun animationFor(event: AchievementEvent): String = when (event) {
+        is AchievementEvent.Streak -> "streak_${event.days}"
+        is AchievementEvent.Badge -> "badge_${event.badgeId}"
+        is AchievementEvent.League -> "league_${event.rank}"
+        AchievementEvent.None -> "none"
+    }
+}
+
+enum class AchievementState { Locked, Unlocked, Claimed }
+
+data class Achievement(
+    val title: String,
+    val state: AchievementState
+)
+
+sealed interface AchievementEvent {
+    data class Streak(val days: Int) : AchievementEvent
+    data class Badge(val badgeId: String) : AchievementEvent
+    data class League(val rank: Int) : AchievementEvent
+    data object None : AchievementEvent
+}
+\end{ktfix}
+
+\begin{idea}[惯用性的价值不是审美]
+Kotlin idiom 的核心收益，是把运行期错误搬到编译期：sealed class 让 \code{when} 穷尽，非空类型减少 NPE，data class 给出稳定 equality，\code{object} 免掉手写并发单例。评审里这样说，风格意见就不再像挑剔，而像风险控制。
+\end{idea}
+
+\begin{pitfall}[不要把所有 Java 写法一棒打死]
+有些 Java 风格来自互操作边界，例如老 SDK 的 getter、\code{String.format} 处理本地化格式、框架要求空构造。评审时要区分边界妥协和业务代码内部惯性。能用类型系统表达的业务规则，不应继续靠注释和 int 常量维持。
+\end{pitfall}
+
+\begin{followup}[“如果团队正在迁移，是否值得专门做惯用化？”]
+值得，但要分层推进。官方迁移经验也不是“自动转换就结束”，而是先转 Kotlin，再修编译，再做 idiomatic refactor。优先改高 churn、高 crash、高业务核心的文件；对低风险老代码，可以借触碰时顺手消除 Java-ism，避免大爆炸式重写。
+\end{followup}
+
+\begin{keypoint}[Compose 与 Kotlin 查错主线]
+Compose 题看副作用归属：函数体是否纯，effect key 是否表达正确生命周期，状态读取是否被限制在最小范围。Kotlin 题看类型边界：可写性是否最小，null 是否在边界收敛，状态空间是否由 sealed class、enum、不可变 data class 交给编译器。
+\end{keypoint}
+
+把第 7 到第 17 题连起来，其实仍是前面方法论里的严重度阶梯：会崩溃的 NPE、会泄漏的生命周期错误、会错行的列表异步、会重复请求的 Compose effect、会退化体验的全量刷新，都比单纯格式问题更高优先级。而所谓“惯用 Kotlin”，最终也不是为了好看，是为了让这些错误更早、更便宜地暴露出来。
