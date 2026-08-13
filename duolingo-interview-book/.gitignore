@@ -14,3 +14,7 @@
 build*.log
 chapters/*.aux
 main.pdf
+
+drills.pdf
+# make drills 的生成物
+drills.tex

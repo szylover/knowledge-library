@@ -52,15 +52,33 @@ Duolingo 官方公布的工程面试轮次（`blog.duolingo.com/interviewing-wit
 - **[面经报告]** —— 候选人社区报告（Glassdoor、interviewing.io、一亩三分地等）
 - **[高置信推断]** —— 基于 Duolingo 官方技术文章推断的高概率考点，**无直接候选人报告**
 
+## 遮蔽版习题册
+
+查错题和设计题在正文里与答案同页。顺着读会让人以为自己掌握了，但那是**再认**，
+面试考的是**回忆**——看到 bug 认得出来，和面对一段陌生代码自己报出五条并排好序，
+完全是两件事。
+
+```bash
+make drills       # -> drills.pdf，35 页
+```
+
+`make-drills.mjs` 从正文抽出 17 道查错题与 9 道设计题的**题面**（场景 + 有 bug 的代码 /
+题面与常见变体），剥掉 findings、修复代码、话术和追问，每题后面留下限时与答题要求。
+做完再回正文对答案，两者的差集就是要补的东西。
+
+脚本会断言抽出 17 + 9 题，数量不对直接报错——一本悄悄少了几题的习题册比没有更糟。
+`drills.tex` 与 `drills.pdf` 都是生成物，已在 `.gitignore` 中，不要手改。
+
 ## 构建
 
 ```bash
 # WSL / Linux（推荐）
 make              # 两遍 xelatex
+make drills       # 遮蔽版习题册
 # 或
 make tectonic     # 用 tectonic，无需本地 texlive
 ```
 
 等宽字体使用 **DejaVu Sans Mono**，需预先安装到系统字体。
 
-产物：`main.pdf`。
+产物：`main.pdf`（正文）、`drills.pdf`（习题册）。
