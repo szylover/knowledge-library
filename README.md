@@ -75,9 +75,9 @@ session、context compaction、Provider prompt cache、KV cache 边界、extensi
 
 ## 🌍 托福 100+ 在职学习
 
-### 在职 24 周新版托福 100+ 学习全书 — `toefl-100-plus-book/`（主教材 792 页）
+### 在职 24 周新版托福 100+ 学习全书 — `toefl-100-plus-book/`（主教材 794 页）
 
-面向在职学习者的 2026 新版 TOEFL iBT 中文自学教材。覆盖入门诊断、24 周路线、词汇语法发音、听说读写、原创练习、阶段测验、8 套原创模考、评分复盘、*Sapiens* 辅助阅读和 ChatGPT 口语陪练。另有 98 页可打印训练附册，完整合并版共 888 页。
+面向在职学习者的 2026 新版 TOEFL iBT 中文自学教材。按每周 6–6.5 小时设计：工作日 5 天各 45–75 分钟，周末不排托福任务、只保持墨墨背词（24 周内容在此强度下实际约需 36–40 周）。覆盖入门诊断、24 周路线、词汇语法发音、听说读写、原创练习、阶段测验、8 套原创模考、评分复盘、*Sapiens* 辅助阅读和 ChatGPT 口语陪练。另有 98 页可打印训练附册，完整合并版共 891 页。
 
 👉 [阅读说明](./toefl-100-plus-book/README.md) · [下载 PDF](./pdf/toefl-100-plus-book.pdf)
 
@@ -168,7 +168,7 @@ cd physics-textbook && lualatex main.tex && lualatex main.tex
 | `physics-textbook.pdf` | 270 |
 | `physics-exercises.pdf` | 157 |
 | `pi-learning-book.pdf` | 50 |
-| `toefl-100-plus-book.pdf` | 792 |
+| `toefl-100-plus-book.pdf` | 794 |
 
 ## 目录结构
 
